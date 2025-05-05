@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-E-A-T & Helpful Content Analyzer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@4.0.10/css/froala_editor.pkgd.min.css" rel="stylesheet"
+        type="text/css" />
+    <style>
+        body {
+            background-color: #fafafa;
+            color: #333;
+            margin: 0;
+            /* Remove default body margin */
+            padding: 0;
+            /* Remove default body padding */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Ensure body takes full viewport height */
+        }
+
+        /* Keep top elements centered but allow them to span width */
+        .header-content {
+            max-width: 1280px;
+            /* Adjust max-width as needed */
+            margin: 20px auto;
+            padding: 0 20px;
+            /* Add horizontal padding */
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .main-layout {
+            display: flex;
+            flex-grow: 1;
+            /* Allow this container to grow */
+            padding: 0 20px 20px 20px;
+            /* Add padding around columns */
+            gap: 25px;
+            /* Space between columns */
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 100%;
+            /* Override any potential max-width from Materialize */
+            margin: 0;
+            /* Override default margins */
+            /* REMOVED align-items: flex-start; Let columns stretch */
+        }
+
+        .column {
+            flex: 1;
+            /* Each column takes equal space */
+            min-width: 0;
+            /* Prevent columns from overflowing */
+            display: flex;
+            flex-direction: column;
+            /* Stack elements vertically within columns */
+            background: #fff;
+            /* White background for columns */
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        .results-column {
+            /* Specific styles for results column */
+            order: 2;
+            /* Results on the RIGHT */
+            /* Needs flex-grow for resultsArea to expand inside */
+        }
+
+        .input-column {
+            /* Specific styles for input column */
+            order: 1;
+            /* Input on the LEFT */
+            /* REMOVED flex-grow: 0; flex-shrink: 0; Rely on editor fixed height */
+        }
+
+
+        /* --- Content Styles --- */
+        h1 {
+            color: #2e7d32;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5em;
+        }
+
+        h2 {
+            color: #2e7d32;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 1em;
+            font-size: 1.8rem;
+        }
+
+        .api-warning {
+            background-color: #fffde7;
+            border-left: 4px solid #ffeb3b;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .requirements {
+            background: #e8f5e9;
+            border-left: 4px solid #2e7d32;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .requirements ul,
+        .requirements ol {
+            margin-top: 10px;
+            padding-left: 25px;
+        }
+
+        .requirements strong {
+            font-size: 1.1em;
+        }
+
+        #resultsArea {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            min-height: 400px;
+            /* Minimum height, can grow */
+            border: 1px solid #eee;
+            border-radius: 4px;
+            line-height: 1.6;
+            overflow-y: auto;
+            /* Scroll if results content is long */
+            flex-grow: 1;
+            /* Allow results area to fill space in its column */
+        }
+
+        #resultsArea h3 {
+            font-size: 1.5rem;
+            color: #4caf50;
+            margin-top: 1.5em;
+        }
+
+        #resultsArea h4 {
+            font-size: 1.2rem;
+            color: #66bb6a;
+            margin-top: 1em;
+        }
+
+        #resultsArea strong {
+            color: #388e3c;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #d32f2f;
+        }
+
+        table#scoreTable {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        table.striped.green.lighten-5 {
+            border: 1px solid #a5d6a7;
+        }
+
+        table.striped.green.lighten-5 thead tr {
+            border-bottom: 2px solid #2e7d32;
+        }
+
+        table.striped.green.lighten-5 tr td,
+        table.striped.green.lighten-5 tr th {
+            color: #1b5e20;
+            padding: 10px 12px;
+        }
+
+        table.striped.green.lighten-5 th {
+            font-weight: bold;
+        }
+
+        .status-text {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+            text-align: center;
+            height: 1.5em;
+        }
+
+        #editor {
+            /* Height is controlled by Froala's 'height' option in JS */
+            border: 1px solid #ccc;
+            margin-top: 15px;
+            /* Set max height and allow scrolling */
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .editor-controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 0;
+            /* Allows children to respect overflow */
+        }
+
+        /* Ensure Froala editor toolbar and content area fit */
+        .froala-wrapper {
+            border: none !important;
+            /* Remove default wrapper border if editor div has one */
+            /* Froala JS sets the height, internals use flex */
+            display: flex;
+            /* Crucial for internal flex layout */
+            flex-direction: column;
+            /* Stack toolbar and content area */
+        }
+
+        /* Make Froala editable area expand and scroll */
+        .froala-wrapper .fr-element {
+            /* This element is inside the wrapper */
+            flex-grow: 1;
+            /* Allow it to fill space below toolbar */
+            overflow-y: auto;
+            /* Add scroll if content exceeds available space */
+            min-height: 50px;
+            /* Prevent collapsing completely when empty */
+        }
+
+        .overall-score td {
+            font-weight: bold;
+            background-color: #c8e6c9 !important;
+        }
+
+        .progress {
+            background-color: #a5d6a7;
+            margin-top: 15px;
+        }
+
+        .input-field {
+            margin-bottom: 1rem;
+        }
+
+        /* Adjust spacing for input fields */
+        .controls-area {
+            margin-top: 20px;
+        }
+
+        /* Space above controls */
+
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .main-layout {
+                flex-direction: column;
+                /* Stack columns vertically */
+                padding: 0 10px 10px 10px;
+                /* Adjust padding */
+                gap: 15px;
+                /* align-items: stretch; /* Default, usually fine */
+            }
+
+            .column {
+                flex-basis: auto;
+                /* Reset flex basis */
+                width: 100%;
+                /* Full width when stacked */
+                /* flex-grow: 0; /* Prevent columns from growing unexpectedly when stacked */
+            }
+
+            .results-column {
+                order: 2;
+            }
+
+            .input-column {
+                order: 1;
+            }
+
+            #resultsArea {
+                min-height: 250px;
+                /* Adjust height */
+            }
+
+            /* Fixed height editor still applies */
+            #editor {
+                /* Height controlled by JS */
+            }
+
+            .froala-wrapper {
+                /* Height controlled by JS */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="header-content">
+        <h1><i class="material-icons" style="vertical-align: middle; font-size: 1.2em;">assessment</i> E-E-A-T & Helpful
+            Content Analyzer</h1>
+        <p>Enter your <strong>API Key</strong>, optional <strong>Metadata</strong>, and paste your <strong>Article
+                Content</strong> (HTML or plain text) in the editor on the <strong>left</strong>, then click
+            <strong>Analyze</strong>. The analysis results will appear on the <strong>right</strong>. This is using
+            deepseek-chat so this might take 30 seconds to 1 minute</p>
+        <div class="requirements">
+            <strong>Analysis Criteria (based on Google's E-E-A-T & Helpful Content):</strong>
+            <ul>
+                <li><strong>Content Quality & Depth</strong>: Assess detail, completeness, and evidence of first-hand
+                    experience.</li>
+                <li><strong>Expertise & Credibility</strong>: Look for author credentials, cited sources, and expert
+                    quotes.</li>
+                <li><strong>Engagement & Presentation</strong>: Evaluate readability, structure (headings, lists),
+                    visuals, and calls-to-action.</li>
+                <li><strong>Originality & Insight</strong>: Identify unique perspectives, data, or analysis beyond
+                    common knowledge.</li>
+                <li><strong>Trustworthiness & Transparency</strong>: Check for clear authorship, contact info,
+                    disclosures, and methodology explanation.</li>
+                <li><strong>Metadata Relevance (Optional)</strong>: Assess alignment of title, description, and URL with
+                    content focus (if provided).</li>
+            </ul>
+            <p><strong>Feedback Format:</strong></p>
+            <ol>
+                <li>Clear identification of the issue or strength.</li>
+                <li>Specific, actionable recommendations for improvement.</li>
+                <li>Concrete examples where applicable (e.g., suggested phrasings, section ideas).</li>
+                <li>A 1-10 score for each category and a High/Medium/Low priority for fixes.</li>
+            </ol>
+        </div>
+        <div class="api-warning">
+            <i class="material-icons left">warning</i>
+            <strong>Important:</strong>Ask Carl or Emiliano for the API Key
+        </div>
+    </div>
+
+
+    <div class="main-layout">
+
+
+        <div class="column input-column">
+            <h2>Input Content & Analyze</h2>
+            <div class="input-field">
+                <input id="apiKey" type="password">
+                <label for="apiKey">DeepSeek API Key *</label>
+            </div>
+            <p style="margin-top: -0.5rem; margin-bottom: 1.5rem; font-size: 0.9em; color: #555;">Optional Metadata:</p>
+            <div class="input-field">
+                <input id="metaTitle" type="text">
+                <label for="metaTitle">Title Tag (Optional)</label>
+            </div>
+            <div class="input-field">
+                <input id="metaDescription" type="text">
+                <label for="metaDescription">Meta Description (Optional)</label>
+            </div>
+            <div class="input-field">
+                <input id="metaSlug" type="text">
+                <label for="metaSlug">URL Slug (Optional)</label>
+            </div>
+
+
+            <label style="font-size: 0.9em; color: #555; display: block; margin-bottom: -10px;">Article Content
+                *:</label>
+            <div class="editor-controls-wrapper" style="display: flex; flex-direction: column; flex-grow: 1;">
+                <div id="editor" style="flex-grow: 1; display: flex; flex-direction: column;"></div>
+
+
+                <div class="controls-area">
+                    <div class="center-align">
+                        <button id="analyzeButton" class="btn-large green darken-2 waves-effect waves-light">
+                            <i class="material-icons left">play_arrow</i>Analyze Content
+                        </button>
+                    </div>
+                    <div class="progress" style="margin-top:25px; display:none;">
+                        <div class="determinate green darken-1" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+                    <div class="status-text" id="statusText"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="column results-column">
+            <h2>Analysis Results</h2>
+            <table id="scoreTable" class="striped green lighten-5 responsive-table" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Score ( /10)</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreTableBody"></tbody>
+            </table>
+            <div id="resultsArea">Analysis results will appear here.</div>
+        </div>
+
+
+
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/froala-editor@4.0.10/js/froala_editor.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            M.AutoInit(); // Initialize all Materialize components
+            M.updateTextFields(); // <<<<<< IMPORTANT: Ensure labels float correctly for ALL fields
+            try {
+                new FroalaEditor('#editor', {
+                    placeholderText: 'Paste your article HTML or text content here...',
+                    heightMin: 150, heightMax: 400,
+                    // Removed heightMax to allow flexible growth with content/column
+                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', '|', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', '|', 'insertLink', 'insertImage', 'insertTable', '|', 'undo', 'redo', 'clearFormatting', 'html'],
+                    // Make editor expand vertically, requires parent flex settings
+                    height: '100%' // Attempt to use parent height (combined with flex CSS)
+                });
+            } catch (e) {
+                console.error("Froala Editor initialization failed:", e);
+                document.getElementById('editor').innerText = "Failed to load rich text editor. Please paste plain text.";
+            }
+            // Configure Marked
+            if (window.marked) {
+                marked.setOptions({
+                    breaks: true,
+                    gfm: true,
+                    headerIds: false,
+                    mangle: false
+                });
+            }
+        });
+
+
+        // --- Global Variables ---
+        const apiKeyInput = document.getElementById('apiKey');
+        const metaTitleInput = document.getElementById('metaTitle');
+        const metaDescriptionInput = document.getElementById('metaDescription');
+        const metaSlugInput = document.getElementById('metaSlug');
+        const analyzeButton = document.getElementById('analyzeButton');
+        const resultsArea = document.getElementById('resultsArea');
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const scoreTable = document.getElementById('scoreTable');
+        const scoreTableBody = document.getElementById('scoreTableBody');
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.querySelector('.progress');
+        const statusText = document.getElementById('statusText');
+
+
+        const apiUrl = 'https://api.deepseek.com/chat/completions';
+        const modelName = 'deepseek-chat';
+
+
+        analyzeButton.addEventListener('click', handleAnalysis);
+
+
+        async function handleAnalysis() {
+            document.title = 'Analyzing...';
+            const apiKey = apiKeyInput.value.trim();
+            const metaTitle = metaTitleInput.value.trim();
+            const metaDescription = metaDescriptionInput.value.trim();
+            const metaSlug = metaSlugInput.value.trim();
+            let content = '';
+
+
+            // Safely get content from Froala instance
+            if (typeof FroalaEditor !== 'undefined' && FroalaEditor.INSTANCES && FroalaEditor.INSTANCES[0]) {
+                content = FroalaEditor.INSTANCES[0].html.get();
+            } else {
+                const editorDiv = document.getElementById('editor');
+                content = editorDiv.innerText || editorDiv.innerHTML;
+            }
+
+
+            // --- Reset UI ---
+            errorMessageDiv.textContent = '';
+            errorMessageDiv.style.display = 'none';
+            resultsArea.innerHTML = 'Starting analysis...';
+            scoreTable.style.display = 'none';
+            scoreTableBody.innerHTML = '';
+            statusText.textContent = '';
+            progressBar.style.width = '0%';
+            progressContainer.style.display = 'block';
+            analyzeButton.disabled = true;
+            analyzeButton.innerHTML = '<i class="material-icons left">hourglass_top</i>Analyzing...';
+
+
+            // --- Start Analysis Steps ---
+            statusText.textContent = 'Step 1/7: Validating inputs...';
+            moveProgress(5);
+
+
+            if (!apiKey) {
+                showError('API Key is required.');
+                resetState('Please enter your DeepSeek API Key.');
+                return;
+            }
+            if (!content || content.trim().length < 100) {
+                showError('Article content is required (minimum 100 characters).');
+                resetState('Please paste sufficient content into the editor.');
+                return;
+            }
+            statusText.textContent = 'Step 1/7: Inputs validated.';
+            moveProgress(10);
+
+
+            try {
+                statusText.textContent = 'Step 2/7: Preparing analysis prompt...';
+                await sleep(200);
+                moveProgress(15);
+                // Pass metadata to the prompt builder
+                const prompt = buildAnalysisPrompt(content, metaTitle, metaDescription, metaSlug);
+                statusText.textContent = 'Step 2/7: Prompt prepared.';
+                moveProgress(20);
+
+
+                statusText.textContent = 'Step 3/7: Connecting to DeepSeek API...';
+                await sleep(300);
+                moveProgress(25);
+
+
+                // --- API Call ---
+                statusText.textContent = 'Step 4/7: Sending request & awaiting analysis... (This may take a moment)';
+                moveProgress(30);
+                const startTime = Date.now();
+
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: modelName,
+                        messages: [
+                            { role: 'system', content: "You are an expert content analyst specializing in Google's E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) and Helpful Content guidelines. Analyze the provided text (and optional metadata) based on these principles. Structure your response in Markdown. For EACH applicable category (Content Quality, Expertise & Credibility, Engagement & Presentation, Originality & Insight, Trustworthiness & Transparency, and Metadata Relevance *if metadata was provided*), provide:\n1. A heading for the category (e.g., `## Content Quality` or `## Metadata Relevance`).\n2. A brief assessment identifying key issues or strengths.\n3. Specific, actionable fixes or recommendations with examples.\n4. A score line at the end of the category's section formatted *exactly* as: `**Score: [score]/10**` (e.g., `**Score: 7/10**`).\n5. A priority line *immediately after* the score formatted *exactly* as: `**Priority: [High/Medium/Low]**` (e.g., `**Priority: High**`).\nIf no metadata was provided by the user, DO NOT include the 'Metadata Relevance' section in your analysis." },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.5,
+                        max_tokens: 3000 // Increased slightly in case metadata analysis adds length
+                    })
+                });
+
+
+                const elapsed = Date.now() - startTime;
+                const waitTime = Math.max(0, 2000 - elapsed);
+                await fakeProgress(35, 60, waitTime);
+
+
+                // --- Process Response ---
+                statusText.textContent = 'Step 5/7: Receiving and checking response...';
+                moveProgress(65);
+
+
+                if (!response.ok) {
+                    let errorBody = 'Could not retrieve error details from API response.';
+                    try {
+                        const errorData = await response.json();
+                        errorBody = errorData.error?.message || JSON.stringify(errorData);
+                    } catch (e) { /* Ignore parsing error if body isn't JSON */ }
+                    throw new Error(`API Error ${response.status}: ${response.statusText}. Details: ${errorBody}`);
+                }
+                statusText.textContent = 'Step 5/7: Response received successfully.';
+                moveProgress(75);
+
+
+                statusText.textContent = 'Step 6/7: Parsing analysis data...';
+                const data = await response.json();
+                await sleep(200);
+                moveProgress(80);
+
+
+                if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+                    throw new Error('API response did not contain the expected analysis content structure.');
+                }
+                const markdown = data.choices[0].message.content;
+                statusText.textContent = 'Step 6/7: Analysis data parsed.';
+                moveProgress(85);
+
+
+                statusText.textContent = 'Step 7/7: Formatting and displaying results...';
+                await sleep(300);
+                displayResults(markdown);
+                moveProgress(95);
+
+
+                statusText.textContent = 'Analysis complete!';
+                moveProgress(100);
+                document.title = 'Analysis Complete';
+
+
+            } catch (err) {
+                console.error("Analysis Error:", err);
+                showError(`Error during analysis: ${err.message}`);
+                // Ensure state is reset correctly on error
+                if (document.title === 'Analyzing...') {
+                    document.title = 'E-E-A-T & Helpful Content Analyzer';
+                }
+                // No need to call resetState here, finally block handles it
+            } finally {
+                // Always reset the button and potentially hide progress bar
+                resetState();
+                // Hide progress bar AFTER a short delay to show 100% or if error occurred
+                await sleep(500);
+                if (errorMessageDiv.style.display === 'none' && progressBar.style.width === '100%') {
+                    progressContainer.style.display = 'none';
+                } else if (errorMessageDiv.style.display !== 'none') {
+                    progressContainer.style.display = 'none';
+                }
+            }
+        }
+
+
+        // --- Helper Functions ---
+
+
+        function moveProgress(percent) {
+            progressBar.style.width = percent + '%';
+        }
+
+
+        async function fakeProgress(startPercent, endPercent, duration) {
+            const steps = 10;
+            const increment = (endPercent - startPercent) / steps;
+            const delay = duration / steps;
+            let currentPercent = startPercent;
+            for (let i = 0; i < steps; i++) {
+                await sleep(delay);
+                currentPercent += increment;
+                moveProgress(Math.min(currentPercent, endPercent));
+            }
+            moveProgress(endPercent);
+        }
+
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+
+        function showError(message) {
+            errorMessageDiv.textContent = message;
+            errorMessageDiv.style.display = 'block';
+            progressContainer.style.display = 'none'; // Hide progress bar on error
+            statusText.textContent = ''; // Clear status text on error
+        }
+
+
+        function resetState(statusMsg = '') {
+            analyzeButton.disabled = false;
+            analyzeButton.innerHTML = '<i class="material-icons left">play_arrow</i>Analyze Content';
+            // Only update status text if no error is shown AND analysis isn't complete
+            if (errorMessageDiv.style.display === 'none' && statusText.textContent !== 'Analysis complete!') {
+                statusText.textContent = statusMsg;
+            }
+            // Reset title if it's stuck on analyzing
+            if (document.title === 'Analyzing...') {
+                document.title = 'E-E-A-T & Helpful Content Analyzer';
+            }
+            // Note: Progress bar visibility is handled in the finally block of handleAnalysis
+        }
+
+
+        function displayResults(markdown) {
+            let totalScore = 0;
+            let scoreCount = 0;
+            scoreTableBody.innerHTML = '';
+            resultsArea.innerHTML = ''; // Clear previous results before adding new ones
+
+
+            // Regex to find category headers (##), capture the category name,
+            // and the content until the next header or end of string.
+            // It now explicitly looks for the Score/Priority lines within the captured content.
+            const sectionRegex = /^(?:#{2,4})\s*(.*?)\s*\n([\s\S]*?)(?=\n^(?:#{2,4})\s|\n---\n|$(?![\r\n]))/gm;
+            const scoreRegex = /\*\*Score:\s*(\d{1,2})\/10\*\*/;
+            // Optional: Could also extract priority if needed later
+            // const priorityRegex = /\*\*Priority:\s*(High|Medium|Low)\*\*/;
+
+
+            let match;
+            let processedMarkdown = markdown; // Keep a copy for full display
+
+
+            while ((match = sectionRegex.exec(markdown)) !== null) {
+                const category = match[1].trim();
+                const sectionContent = match[2];
+                const scoreMatch = sectionContent.match(scoreRegex);
+
+
+                // Ensure both category and score are found within the section
+                if (category && scoreMatch) {
+                    const score = parseInt(scoreMatch[1], 10);
+                    if (!isNaN(score)) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${category}</td><td>${score} / 10</td>`;
+                        scoreTableBody.appendChild(row);
+                        totalScore += score;
+                        scoreCount++;
+                    } else {
+                        console.warn(`Parsed score is not a number for category: ${category}`);
+                    }
+                } else {
+                    console.log(`Could not find score line in expected format for category: ${category}`);
+                }
+            }
+
+
+
+
+            if (scoreCount > 0) {
+                const overallScore = (totalScore / scoreCount).toFixed(1);
+                const overallRow = document.createElement('tr');
+                overallRow.classList.add('overall-score');
+                overallRow.innerHTML = `<td><strong>Overall Score</strong></td><td><strong>${overallScore} / 10</strong></td>`;
+                // Append overall score row AT THE END of the table body
+                scoreTableBody.appendChild(overallRow);
+                scoreTable.style.display = 'table'; // Show table only if scores were found
+            } else {
+                console.warn("No valid scores found in the response to calculate an overall score.");
+                scoreTable.style.display = 'none';
+                resultsArea.innerHTML = "<p><em>Could not extract scores from the analysis. Displaying raw response below.</em></p><hr>";
+            }
+
+
+            // Display the full Markdown response
+            if (window.marked && marked.parse) {
+                // Append the parsed markdown AFTER the potential warning message
+                resultsArea.innerHTML += marked.parse(processedMarkdown);
+            } else {
+                resultsArea.textContent += "Markdown renderer not available. Raw response:\n\n" + processedMarkdown;
+            }
+            // Progress bar hiding is handled in handleAnalysis.finally
+        }
+
+
+
+
+        function buildAnalysisPrompt(content, metaTitle, metaDescription, metaSlug) {
+            let metadataBlock = '';
+            const hasMetadata = metaTitle || metaDescription || metaSlug;
+
+
+            if (hasMetadata) {
+                metadataBlock += '\n\n--- START PROVIDED METADATA ---\n';
+                if (metaTitle) metadataBlock += `Title Tag: ${metaTitle}\n`;
+                if (metaDescription) metadataBlock += `Meta Description: ${metaDescription}\n`;
+                if (metaSlug) metadataBlock += `URL Slug: ${metaSlug}\n`;
+                metadataBlock += '--- END PROVIDED METADATA ---\n';
+                metadataBlock += "\nPlease analyze the provided metadata's relevance and alignment with the main content under the 'Metadata Relevance' category, following the standard scoring and priority format requested in the system prompt.";
+            } else {
+                metadataBlock = "\n\nNo metadata was provided by the user; skip the 'Metadata Relevance' analysis.";
+            }
+
+
+            const analysisContent = content;
+            return `Please analyze the following article content based on Google's E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) and Helpful Content guidelines. Evaluate it across the categories specified in the system prompt (Content Quality, Expertise & Credibility, Engagement & Presentation, Originality & Insight, Trustworthiness & Transparency).
+${metadataBlock}
+
+
+Follow the formatting instructions precisely for each applicable category:
+1.  Provide a clear heading (e.g., \`## Content Quality\`).
+2.  Assess the content/metadata for that category, noting strengths and weaknesses.
+3.  Offer specific, actionable recommendations for improvement with examples.
+4.  Include the score line EXACTLY as: \`**Score: [score]/10**\`
+5.  Include the priority line EXACTLY as: \`**Priority: [High/Medium/Low]**\`
+
+
+--- START ARTICLE CONTENT ---
+${analysisContent}
+--- END ARTICLE CONTENT ---`;
+        }
+
+
+    </script>
+</body>
+
+</html>
