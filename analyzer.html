@@ -7,29 +7,29 @@
     <title>E-E-A-T & Helpful Content Analyzer</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/froala-editor@4.5.1/css/froala_editor.pkgd.min.css" rel="stylesheet"
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@4.0.10/css/froala_editor.pkgd.min.css" rel="stylesheet"
         type="text/css" />
     <style>
+        /* Your New Color Palette */
+        /* Primary Blue: #0098f7 */
+        /* Accent Teal: #15b69b */
+
         body {
-            background-color: #fafafa;
-            color: #333;
+            background-color: #f8f9fa;
+            /* A very light, neutral grey for a clean look */
+            color: #333333;
+            /* Standard dark grey for body text for readability */
             margin: 0;
-            /* Remove default body margin */
             padding: 0;
-            /* Remove default body padding */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            /* Ensure body takes full viewport height */
         }
 
-        /* Keep top elements centered but allow them to span width */
         .header-content {
             max-width: 1280px;
-            /* Adjust max-width as needed */
             margin: 20px auto;
             padding: 0 20px;
-            /* Add horizontal padding */
             width: 100%;
             box-sizing: border-box;
         }
@@ -37,32 +37,24 @@
         .main-layout {
             display: flex;
             flex-grow: 1;
-            /* Allow this container to grow */
             padding: 20px 20px 20px 20px;
-            /* Adjusted top padding */
             gap: 25px;
-            /* Space between columns */
             box-sizing: border-box;
             width: 100%;
             max-width: 100%;
-            /* Override any potential max-width from Materialize */
             margin: 0;
-            /* Override default margins */
         }
 
         .column {
             flex: 1;
-            /* Each column takes equal space */
             min-width: 0;
-            /* Prevent columns from overflowing */
             display: flex;
             flex-direction: column;
-            /* Stack elements vertically within columns */
             background: #fff;
-            /* White background for columns */
             padding: 20px;
             border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            /* Softer shadow */
             box-sizing: border-box;
         }
 
@@ -74,19 +66,28 @@
             order: 1;
         }
 
-
-        /* --- Content Styles --- */
         h1 {
-            color: #2e7d32;
+            color: #005c94;
+            /* A deeper shade of the primary blue for title text */
             text-align: center;
             font-size: 2.5rem;
             margin-bottom: 0.5em;
             margin-top: 0;
-            /* Adjusted for potential top positioning */
         }
 
+        /* Style for the icon within H1 */
+        h1>i.material-icons {
+            color: #0098f7;
+            /* Primary Blue for the icon */
+            font-size: 1em;
+            /* Adjust if icon size needs to match text better */
+            vertical-align: middle;
+        }
+
+
         h2 {
-            color: #2e7d32;
+            color: #0077c2;
+            /* A medium shade of the primary blue for section titles */
             text-align: center;
             margin-top: 0;
             margin-bottom: 1em;
@@ -94,8 +95,10 @@
         }
 
         .requirements {
-            background: #e8f5e9;
-            border-left: 4px solid #2e7d32;
+            background: #e6f5ff;
+            /* Very light tint of Primary Blue */
+            border-left: 4px solid #0098f7;
+            /* Primary Blue border */
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 4px;
@@ -109,37 +112,40 @@
 
         .requirements strong {
             font-size: 1.1em;
+            color: #005c94;
+            /* Deeper shade of Primary Blue for emphasis */
         }
 
         #resultsArea {
             margin-top: 20px;
             padding: 20px;
-            background: #f9f9f9;
+            background: #ffffff;
             min-height: 400px;
-            /* Minimum height, can grow */
-            border: 1px solid #eee;
+            border: 1px solid #dee2e6;
+            /* Light grey border */
             border-radius: 4px;
             line-height: 1.6;
             overflow-y: auto;
-            /* Scroll if results content is long */
             flex-grow: 1;
-            /* Allow results area to fill space in its column */
         }
 
         #resultsArea h3 {
             font-size: 1.5rem;
-            color: #4caf50;
+            color: #15b69b;
+            /* Accent Teal for these headings */
             margin-top: 1.5em;
         }
 
         #resultsArea h4 {
             font-size: 1.2rem;
-            color: #66bb6a;
+            color: #13a38a;
+            /* Slightly darker/muted Accent Teal */
             margin-top: 1em;
         }
 
         #resultsArea strong {
-            color: #388e3c;
+            color: #0077c2;
+            /* Medium Primary Blue for strong text in results */
         }
 
         .error-message {
@@ -158,34 +164,47 @@
             margin-bottom: 20px;
         }
 
-        table.striped.green.lighten-5 {
-            border: 1px solid #a5d6a7;
+        table.striped.blue-theme-table {
+            border: 1px solid #b3e0ff;
+            /* Lighter tint of Primary Blue for table border */
         }
 
-        table.striped.green.lighten-5 thead tr {
-            border-bottom: 2px solid #2e7d32;
+        table.striped.blue-theme-table thead tr {
+            border-bottom: 2px solid #0098f7;
+            /* Primary Blue bottom border for table header */
         }
 
-        table.striped.green.lighten-5 tr td,
-        table.striped.green.lighten-5 tr th {
-            color: #1b5e20;
+        table.striped.blue-theme-table tr td,
+        table.striped.blue-theme-table tr th {
+            color: #00304A;
+            /* Very Dark Blue for table text, for contrast */
             padding: 10px 12px;
         }
 
-        table.striped.green.lighten-5 th {
-            font-weight: bold;
+        table.striped.blue-theme-table tbody tr:nth-child(odd) {
+            background-color: #e6f5ff;
+            /* Very light tint of Primary Blue for striped rows */
         }
+
+        table.striped.blue-theme-table th {
+            font-weight: bold;
+            background-color: #ccefff;
+            /* Light tint of Primary Blue for table headers */
+        }
+
 
         .status-text {
             margin-top: 10px;
             font-style: italic;
             color: #555;
+            /* Neutral grey for status text */
             text-align: center;
             height: 1.5em;
         }
 
         #editor {
-            border: 1px solid #ccc;
+            border: 1px solid #b3e0ff;
+            /* Lighter tint of Primary Blue for editor border */
             margin-top: 15px;
             max-height: 60vh;
             overflow-y: auto;
@@ -212,20 +231,62 @@
 
         .overall-score td {
             font-weight: bold;
-            background-color: #c8e6c9 !important;
+            background-color: #b3e0ff !important;
+            /* Lighter tint of Primary Blue */
+            color: #00304A !important;
+            /* Dark Blue text for contrast */
         }
 
         .progress {
-            background-color: #a5d6a7;
+            background-color: #b3e0ff;
+            /* Lighter tint of Primary Blue for progress bar background */
             margin-top: 15px;
         }
+
+        .progress .determinate {
+            background-color: #0098f7 !important;
+            /* Primary Blue for progress bar fill */
+        }
+
 
         .input-field {
             margin-bottom: 1rem;
         }
 
+        /* Input field focus styling with Primary Blue */
+        .input-field input[type=text]:focus+label,
+        .input-field input[type=password]:focus+label {
+            color: #0098f7 !important;
+            /* Primary Blue */
+        }
+
+        .input-field input[type=text]:focus,
+        .input-field input[type=password]:focus {
+            border-bottom: 1px solid #0098f7 !important;
+            /* Primary Blue */
+            box-shadow: 0 1px 0 0 #0098f7 !important;
+            /* Primary Blue */
+        }
+
+
         .controls-area {
             margin-top: 20px;
+        }
+
+        /* Button Styling - Overriding Materialize or using a custom class */
+        /* If you keep 'blue darken-2' on the button, this will override it */
+        #analyzeButton.btn-large.blue.darken-2,
+        .btn-large.custom-blue-button {
+            /* Added custom-blue-button as an alternative */
+            background-color: #0098f7 !important;
+            /* Primary Blue */
+            color: #fff !important;
+        }
+
+        #analyzeButton.btn-large.blue.darken-2:hover,
+        .btn-large.custom-blue-button:hover {
+            background-color: #007acc !important;
+            /* A slightly darker shade of Primary Blue for hover */
         }
 
 
@@ -233,7 +294,6 @@
             .main-layout {
                 flex-direction: column;
                 padding: 10px 10px 10px 10px;
-                /* Adjusted top padding */
                 gap: 15px;
             }
 
@@ -279,15 +339,13 @@
                 <input id="metaSlug" type="text">
                 <label for="metaSlug">URL Slug (Optional)</label>
             </div>
-
             <label style="font-size: 0.9em; color: #555; display: block; margin-bottom: -10px;">Article Content
                 *:</label>
             <div class="editor-controls-wrapper" style="display: flex; flex-direction: column; flex-grow: 1;">
                 <div id="editor" style="flex-grow: 1; display: flex; flex-direction: column;"></div>
-
                 <div class="controls-area">
                     <div class="center-align">
-                        <button id="analyzeButton" class="btn-large green darken-2 waves-effect waves-light">
+                        <button id="analyzeButton" class="btn-large blue darken-2 waves-effect waves-light">
                             <i class="material-icons left">play_arrow</i>Analyze Content
                         </button>
                     </div>
@@ -299,7 +357,6 @@
                 </div>
             </div>
         </div>
-
         <div class="column results-column">
             <h2>Analysis Results</h2>
             <table id="scoreTable" class="striped green lighten-5 responsive-table" style="display:none;">
@@ -316,8 +373,8 @@
     </div>
 
     <div class="header-content">
-        <h1><i class="material-icons" style="vertical-align: middle; font-size: 1.2em;">assessment</i> Content Optimizer
-            Instructions</h1>
+        <h1><i class="material-icons" style="vertical-align: middle; font-size: 1.2em;">assessment</i> E-E-A-T & Helpful
+            Content Analyzer</h1>
         <div class="requirements">
             <strong>Analysis Criteria (based on Google's E-E-A-T & Helpful Content):</strong>
             <ul>
@@ -344,15 +401,14 @@
         </div>
     </div>
 
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script type="text/javascript"
         src="https://cdn.jsdelivr.net/npm/froala-editor@4.0.10/js/froala_editor.pkgd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            M.AutoInit(); // Initialize all Materialize components
-            M.updateTextFields(); // <<<<<< IMPORTANT: Ensure labels float correctly for ALL fields
+            M.AutoInit();
+            M.updateTextFields();
             try {
                 new FroalaEditor('#editor', {
                     placeholderText: 'Paste your article HTML or text content here...',
@@ -365,15 +421,9 @@
                 document.getElementById('editor').innerText = "Failed to load rich text editor. Please paste plain text.";
             }
             if (window.marked) {
-                marked.setOptions({
-                    breaks: true,
-                    gfm: true,
-                    headerIds: false,
-                    mangle: false
-                });
+                marked.setOptions({ breaks: true, gfm: true, headerIds: false, mangle: false });
             }
         });
-
 
         const apiKeyInput = document.getElementById('apiKey');
         const metaTitleInput = document.getElementById('metaTitle');
@@ -388,13 +438,24 @@
         const progressContainer = document.querySelector('.progress');
         const statusText = document.getElementById('statusText');
 
-
         const apiUrl = 'https://api.deepseek.com/chat/completions';
         const modelName = 'deepseek-chat';
 
+        // --- NEW: Loading messages and interval ID ---
+        let loadingIntervalId = null;
+        const loadingMessages = [
+            "Analyzing your content...", "Hang on, brewing insights...", "Just a little bit longer...", "Almost there!",
+            "Digging deep into the text...", "Cross-referencing E-E-A-T signals...", "The AI gears are turning...", "Processing your article...",
+            "Evaluating for helpfulness...", "Checking for expertise cues...", "Don't go anywhere, magic is happening!", "Unpacking the details...",
+            "Consulting the content oracles...", "Good things take time...", "Warming up the analysis engine...", "Nearly ready with your feedback...",
+            "Scanning for quality markers...", "Just a moment, please...", "Crafting your analysis...", "This is exciting, right?",
+            "Pondering over the prose...", "Verifying trustworthiness factors...", "Hold tight, results incoming!", "The analysis is in progress...",
+            "Soon you'll see the scores...", "Getting your E-E-A-T breakdown...", "Patience is a virtue, and so is great content!", "Almost at the finish line...",
+            "Finalizing the report...", "Just a few more seconds...", "Crunching the data...", "Optimizing feedback...", "Working on it!", "Stay tuned...",
+            "Gathering thoughts...", "Synthesizing information..."
+        ]; // Added 34 messages
 
         analyzeButton.addEventListener('click', handleAnalysis);
-
 
         async function handleAnalysis() {
             document.title = 'Analyzing...';
@@ -404,7 +465,6 @@
             const metaSlug = metaSlugInput.value.trim();
             let content = '';
 
-
             if (typeof FroalaEditor !== 'undefined' && FroalaEditor.INSTANCES && FroalaEditor.INSTANCES[0]) {
                 content = FroalaEditor.INSTANCES[0].html.get();
             } else {
@@ -412,10 +472,9 @@
                 content = editorDiv.innerText || editorDiv.innerHTML;
             }
 
-
             errorMessageDiv.textContent = '';
             errorMessageDiv.style.display = 'none';
-            resultsArea.innerHTML = 'Starting analysis...';
+            // resultsArea.innerHTML = 'Starting analysis...'; // Replaced by loading messages
             scoreTable.style.display = 'none';
             scoreTableBody.innerHTML = '';
             statusText.textContent = '';
@@ -424,24 +483,33 @@
             analyzeButton.disabled = true;
             analyzeButton.innerHTML = '<i class="material-icons left">hourglass_top</i>Analyzing...';
 
+            // --- NEW: Start loading messages ---
+            if (loadingIntervalId) { // Clear any existing interval
+                clearInterval(loadingIntervalId);
+                loadingIntervalId = null;
+            }
+            resultsArea.innerHTML = `<p style="text-align:center; font-style:italic; color:#555;">${loadingMessages[0]}</p>`; // Show first message immediately
+            loadingIntervalId = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * loadingMessages.length);
+                resultsArea.innerHTML = `<p style="text-align:center; font-style:italic; color:#555;">${loadingMessages[randomIndex]}</p>`;
+            }, 2000); // Change message every 2 seconds
 
             statusText.textContent = 'Step 1/7: Validating inputs...';
             moveProgress(5);
 
-
             if (!apiKey) {
-                showError('API Key is required.');
+                showError('API Key is required.'); // showError will now handle interval clearing
                 resetState('Please enter your DeepSeek API Key.');
+                // No explicit return here, showError handles UI updates
                 return;
             }
             if (!content || content.trim().length < 100) {
-                showError('Article content is required (minimum 100 characters).');
+                showError('Article content is required (minimum 100 characters).'); // showError will handle interval clearing
                 resetState('Please paste sufficient content into the editor.');
                 return;
             }
             statusText.textContent = 'Step 1/7: Inputs validated.';
             moveProgress(10);
-
 
             try {
                 statusText.textContent = 'Step 2/7: Preparing analysis prompt...';
@@ -451,18 +519,15 @@
                 statusText.textContent = 'Step 2/7: Prompt prepared.';
                 moveProgress(20);
 
-
                 statusText.textContent = 'Step 3/7: Connecting to DeepSeek API...';
                 await sleep(300);
                 moveProgress(25);
-
 
                 statusText.textContent = 'Step 4/7: Sending request & awaiting analysis... (This may take a moment)';
                 moveProgress(30);
                 const startTime = Date.now();
 
-
-                const response = await fetch(apiUrl, {
+                const response = await fetch(apiUrl, { /* ... API call details ... */
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -479,33 +544,25 @@
                     })
                 });
 
-
                 const elapsed = Date.now() - startTime;
                 const waitTime = Math.max(0, 2000 - elapsed);
                 await fakeProgress(35, 60, waitTime);
 
-
                 statusText.textContent = 'Step 5/7: Receiving and checking response...';
                 moveProgress(65);
 
-
                 if (!response.ok) {
                     let errorBody = 'Could not retrieve error details from API response.';
-                    try {
-                        const errorData = await response.json();
-                        errorBody = errorData.error?.message || JSON.stringify(errorData);
-                    } catch (e) { /* Ignore parsing error if body isn't JSON */ }
+                    try { const errorData = await response.json(); errorBody = errorData.error?.message || JSON.stringify(errorData); } catch (e) { /* Ignore */ }
                     throw new Error(`API Error ${response.status}: ${response.statusText}. Details: ${errorBody}`);
                 }
                 statusText.textContent = 'Step 5/7: Response received successfully.';
                 moveProgress(75);
 
-
                 statusText.textContent = 'Step 6/7: Parsing analysis data...';
                 const data = await response.json();
                 await sleep(200);
                 moveProgress(80);
-
 
                 if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
                     throw new Error('API response did not contain the expected analysis content structure.');
@@ -514,25 +571,34 @@
                 statusText.textContent = 'Step 6/7: Analysis data parsed.';
                 moveProgress(85);
 
-
                 statusText.textContent = 'Step 7/7: Formatting and displaying results...';
                 await sleep(300);
+
+                // --- NEW: Clear loading interval before displaying results ---
+                if (loadingIntervalId) {
+                    clearInterval(loadingIntervalId);
+                    loadingIntervalId = null;
+                }
                 displayResults(markdown);
                 moveProgress(95);
-
 
                 statusText.textContent = 'Analysis complete!';
                 moveProgress(100);
                 document.title = 'Analysis Complete';
 
-
             } catch (err) {
                 console.error("Analysis Error:", err);
+                // showError will handle interval clearing
                 showError(`Error during analysis: ${err.message}`);
                 if (document.title === 'Analyzing...') {
                     document.title = 'E-E-A-T & Helpful Content Analyzer';
                 }
             } finally {
+                // --- NEW: Ensure interval is cleared in finally as a safeguard ---
+                if (loadingIntervalId) {
+                    clearInterval(loadingIntervalId);
+                    loadingIntervalId = null;
+                }
                 resetState();
                 await sleep(500);
                 if (errorMessageDiv.style.display === 'none' && progressBar.style.width === '100%') {
@@ -543,38 +609,30 @@
             }
         }
 
-
-        function moveProgress(percent) {
-            progressBar.style.width = percent + '%';
-        }
-
+        function moveProgress(percent) { progressBar.style.width = percent + '%'; }
 
         async function fakeProgress(startPercent, endPercent, duration) {
-            const steps = 10;
-            const increment = (endPercent - startPercent) / steps;
-            const delay = duration / steps;
-            let currentPercent = startPercent;
-            for (let i = 0; i < steps; i++) {
-                await sleep(delay);
-                currentPercent += increment;
-                moveProgress(Math.min(currentPercent, endPercent));
-            }
+            const steps = 10; const increment = (endPercent - startPercent) / steps;
+            const delay = duration / steps; let currentPercent = startPercent;
+            for (let i = 0; i < steps; i++) { await sleep(delay); currentPercent += increment; moveProgress(Math.min(currentPercent, endPercent)); }
             moveProgress(endPercent);
         }
 
-
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
+        function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
         function showError(message) {
+            // --- NEW: Clear loading interval on error ---
+            if (loadingIntervalId) {
+                clearInterval(loadingIntervalId);
+                loadingIntervalId = null;
+            }
             errorMessageDiv.textContent = message;
             errorMessageDiv.style.display = 'block';
             progressContainer.style.display = 'none';
             statusText.textContent = '';
+            // --- NEW: Update resultsArea to indicate failure ---
+            resultsArea.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Analysis failed.</p><p style="text-align:center;">Please check the error message above or in the console.</p>`;
         }
-
 
         function resetState(statusMsg = '') {
             analyzeButton.disabled = false;
@@ -585,46 +643,35 @@
             if (document.title === 'Analyzing...') {
                 document.title = 'E-E-A-T & Helpful Content Analyzer';
             }
+            // If no error and not complete, and results area might still have loading message
+            if (errorMessageDiv.style.display === 'none' && statusText.textContent !== 'Analysis complete!' && loadingIntervalId === null) {
+                // Optional: Reset resultsArea if it wasn't an error and not showing results yet
+                // resultsArea.innerHTML = 'Analysis results will appear here.'; // Or keep last loading message if analysis was just reset
+            }
         }
 
-
         function displayResults(markdown) {
-            let totalScore = 0;
-            let scoreCount = 0;
+            // Interval should be cleared before this function is called
+            let totalScore = 0; let scoreCount = 0;
             scoreTableBody.innerHTML = '';
-            resultsArea.innerHTML = '';
-
+            resultsArea.innerHTML = ''; // Clear previous content (including loading messages)
 
             const sectionRegex = /^(?:#{2,4})\s*(.*?)\s*\n([\s\S]*?)(?=\n^(?:#{2,4})\s|\n---\n|$(?![\r\n]))/gm;
             const scoreRegex = /\*\*Score:\s*(\d{1,2})\/10\*\*/;
-
-
-            let match;
-            let processedMarkdown = markdown;
-
+            let match; let processedMarkdown = markdown;
 
             while ((match = sectionRegex.exec(markdown)) !== null) {
-                const category = match[1].trim();
-                const sectionContent = match[2];
+                const category = match[1].trim(); const sectionContent = match[2];
                 const scoreMatch = sectionContent.match(scoreRegex);
-
-
                 if (category && scoreMatch) {
                     const score = parseInt(scoreMatch[1], 10);
                     if (!isNaN(score)) {
                         const row = document.createElement('tr');
                         row.innerHTML = `<td>${category}</td><td>${score} / 10</td>`;
-                        scoreTableBody.appendChild(row);
-                        totalScore += score;
-                        scoreCount++;
-                    } else {
-                        console.warn(`Parsed score is not a number for category: ${category}`);
-                    }
-                } else {
-                    console.log(`Could not find score line in expected format for category: ${category}`);
-                }
+                        scoreTableBody.appendChild(row); totalScore += score; scoreCount++;
+                    } else { console.warn(`Parsed score is not a number for category: ${category}`); }
+                } else { console.log(`Could not find score line in expected format for category: ${category}`); }
             }
-
 
             if (scoreCount > 0) {
                 const overallScore = (totalScore / scoreCount).toFixed(1);
@@ -634,17 +681,13 @@
                 scoreTableBody.appendChild(overallRow);
                 scoreTable.style.display = 'table';
             } else {
-                console.warn("No valid scores found in the response to calculate an overall score.");
+                console.warn("No valid scores found to calculate an overall score.");
                 scoreTable.style.display = 'none';
                 resultsArea.innerHTML = "<p><em>Could not extract scores from the analysis. Displaying raw response below.</em></p><hr>";
             }
 
-
-            if (window.marked && marked.parse) {
-                resultsArea.innerHTML += marked.parse(processedMarkdown);
-            } else {
-                resultsArea.textContent += "Markdown renderer not available. Raw response:\n\n" + processedMarkdown;
-            }
+            if (window.marked && marked.parse) { resultsArea.innerHTML += marked.parse(processedMarkdown); }
+            else { resultsArea.textContent += "Markdown renderer not available. Raw response:\n\n" + processedMarkdown; }
         }
 
         function buildAnalysisPrompt(content, metaTitle, metaDescription, metaSlug) {
@@ -661,16 +704,12 @@
             } else {
                 metadataBlock = "\n\nNo metadata was provided by the user; skip the 'Metadata Relevance' analysis.";
             }
-
             const analysisContent = content;
-
-            // New instruction regarding image links
             const imageLinkInstruction = "\n\n**Important Note on Image Links:** During your analysis, please disregard the functionality, presence, or apparent broken state of any embedded image links (e.g., `<img>` tags), including but not limited to those from 'fileschool.github.io' or any other domain. Do not penalize the content score in any E-E-A-T category (such as Engagement & Presentation or Trustworthiness) due to these image links. Your evaluation should focus on the textual content and other assessable E-E-A-T signals, assuming images are placeholders or will be handled separately.\n";
 
             return `Please analyze the following article content based on Google's E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) and Helpful Content guidelines. Evaluate it across the categories specified in the system prompt (Content Quality, Expertise & Credibility, Engagement & Presentation, Originality & Insight, Trustworthiness & Transparency).
-${imageLinkInstruction} {/* <--- Added instruction here */}
+${imageLinkInstruction}
 ${metadataBlock}
-
 
 Follow the formatting instructions precisely for each applicable category:
 1.  Provide a clear heading (e.g., \`## Content Quality\`).
@@ -678,7 +717,6 @@ Follow the formatting instructions precisely for each applicable category:
 3.  Offer specific, actionable recommendations for improvement with examples.
 4.  Include the score line EXACTLY as: \`**Score: [score]/10**\`
 5.  Include the priority line EXACTLY as: \`**Priority: [High/Medium/Low]**\`
-
 
 --- START ARTICLE CONTENT ---
 ${analysisContent}
