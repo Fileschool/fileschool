@@ -43,9 +43,21 @@
         /* Section heading with hoverable anchor link icon */
         .section-heading-wrapper {
             @apply flex items-center gap-2;
+            width: 100%;
+        }
+        .section-heading-wrapper h2 {
+            @apply text-2xl font-semibold text-gray-800 mb-4;
+            border-bottom: none;
+        }
+        .section-heading-border {
+            @apply border-b pb-2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .section-heading-wrapper .anchor-link {
             @apply text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity;
+            margin-top: 2px;
         }
 
         /* Image placeholder styling */
@@ -129,8 +141,10 @@
                 <!-- Digital Asset Management Section -->
                 <section id="digital-asset-management" class="mb-12 bg-white rounded-lg shadow-sm p-6">
                     <div class="group section-heading-wrapper">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Digital Asset Management</h2>
-                        <a href="#digital-asset-management" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                        <div class="section-heading-border">
+                            <h2>Digital Asset Management</h2>
+                            <a href="#digital-asset-management" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                        </div>
                     </div>
                     
                     <div id="list-view" class="mb-8">
@@ -174,8 +188,10 @@
 
                 <section id="metadata" class="mb-12 bg-white rounded-lg shadow-sm p-6">
                     <div class="group section-heading-wrapper">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Metadata</h2>
-                        <a href="#metadata" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                        <div class="section-heading-border">
+                            <h2>Metadata</h2>
+                            <a href="#metadata" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                        </div>
                     </div>
                     <p class="text-gray-600 leading-relaxed mb-4">In the <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Edit View</code>, you can manually add, edit, or remove tags and descriptions for each asset. Changes are saved in real-time and are immediately reflected in search.</p>
                     <img src="meta_data_management.png" alt="Metadata Management UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x500/e2e8f0/4a5568?text=Metadata+Management+UI';">
@@ -185,8 +201,10 @@
                 <!-- Event Logger Section -->
                 <section id="event-logger" class="mb-12 bg-white rounded-lg shadow-sm p-6">
                     <div class="group section-heading-wrapper">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Event Logger</h2>
-                        <a href="#event-logger" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                        <div class="section-heading-border">
+                            <h2>Event Logger</h2>
+                            <a href="#event-logger" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                        </div>
                     </div>
                     <p class="text-gray-600 leading-relaxed">The Event Logger provides a complete, searchable audit trail for actions performed on your assets. The interface allows filtering by action type, file type, and date range.</p>
                     <img src="eventlogger.png" alt="Event Logger UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x600/e2e8f0/4a5568?text=Event+Logger+UI';">
@@ -231,8 +249,10 @@
                  <!-- Access Control Section -->
                 <section id="access-control" class="bg-white rounded-lg shadow-sm p-6">
                     <div class="group section-heading-wrapper">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Role-Based Access Control</h2>
-                        <a href="#access-control" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                        <div class="section-heading-border">
+                            <h2>Role-Based Access Control</h2>
+                            <a href="#access-control" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                        </div>
                     </div>
                     <p class="text-gray-600 leading-relaxed">Access to the DAM and Event Logger is managed via the <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Asset Manager</code> role. This role grants full access to all DAM functionalities but restricts access to other sensitive areas like Billing or API configurations.</p>
                 </section>
