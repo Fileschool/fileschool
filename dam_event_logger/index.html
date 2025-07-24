@@ -16,7 +16,7 @@
         /* Use Inter as the default font */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
+            /* The background color is now set on the body via Tailwind classes */
             color: #374151;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -50,20 +50,25 @@
 
         /* Image placeholder styling */
         .img-placeholder {
-            @apply w-full max-w-4xl border rounded-lg my-4 shadow-sm;
+            @apply w-full max-w-4xl border rounded-lg my-4 shadow-sm mx-auto block;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
         .img-caption {
-            @apply text-center text-sm text-gray-500 mt-1 mb-6;
+            @apply text-xs italic text-gray-500 mt-1 mb-6;
+            display: flex;
+            justify-content: center;
         }
     </style>
 </head>
-<body class="bg-white">
+<body class="bg-gray-50">
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center px-6 z-50">
+    <header class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center px-6 md:px-10 lg:px-16 z-50">
         <div class="flex items-center gap-4">
                 <a href="#" class="flex items-center gap-3">
-                    <img src="filestack_logo.png" alt="Filestack Logo" width="32" height="32">
+                    <img src="filestack_logo.png" alt="Filestack Logo" width="32" height="32" onerror="this.onerror=null;this.src='https://placehold.co/32x32/ffffff/000000?text=FS';">
                     <span class="font-bold text-xl text-gray-800">filestack</span>
                 </a>
             <span class="text-gray-300">|</span>
@@ -83,9 +88,9 @@
         </div>
     </header>
 
-    <div class="flex pt-16">
+    <div class="container mx-auto flex pt-16">
         <!-- Left Sidebar Navigation -->
-        <aside class="hidden lg:block w-64 border-r border-gray-200 h-[calc(100vh-4rem)] sticky top-16 p-4">
+        <aside class="hidden lg:block w-64 border-r border-gray-200 h-[calc(100vh-4rem)] sticky top-16 p-4 flex-shrink-0">
             <nav>
                 <div class="main-nav-category">Getting Started</div>
                 <a href="#" class="main-nav-link block px-4 py-1.5">Overview</a>
@@ -102,9 +107,9 @@
 
         <!-- Main Content & Right Sidebar -->
         <div class="flex-1 lg:grid lg:grid-cols-12">
-            <main class="lg:col-span-8 xl:col-span-9 px-6 md:px-10 lg:px-16 py-12">
+        <main class="lg:col-span-8 xl:col-span-9 px-6 md:px-10 lg:px-16 py-12">
                 
-                <section id="asset-management-intro">
+                <section id="asset-management-intro" class="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <!-- Breadcrumbs -->
                     <div class="text-sm text-gray-500 mb-4">
                         <a href="#" class="hover:text-gray-700">Asset Management</a>
@@ -122,7 +127,7 @@
                 </section>
 
                 <!-- Digital Asset Management Section -->
-                <section id="digital-asset-management" class="mb-12">
+                <section id="digital-asset-management" class="mb-12 bg-white rounded-lg shadow-sm p-6">
                     <div class="group section-heading-wrapper">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Digital Asset Management</h2>
                         <a href="#digital-asset-management" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
@@ -132,17 +137,17 @@
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">List View</h3>
                         <p class="text-gray-600 leading-relaxed mb-4">The DAM provides two primary views for browsing assets. The <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">List View</code> shows file details in sortable columns.</p>
                         <img src="list_view.png" alt="DAM List View UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x600/e2e8f0/4a5568?text=DAM+List+View';">
-                        <div class="img-caption">List view showing file details in sortable columns</div>
+                        <div class="img-caption"><div>List view showing file details in sortable columns</div></div>
                     </div>
                     
                     <div id="block-view" class="mb-8">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Block View</h3>
                         <p class="text-gray-600 leading-relaxed mb-4">The <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Block View</code> which displays asset thumbnails for a more visual approach.</p>
                         <img src="block_view.png" alt="DAM Block View UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x700/e2e8f0/4a5568?text=DAM+Block+View';">
-                        <div class="img-caption">Block view displaying asset thumbnails</div>
+                        <div class="img-caption"><div>Block view displaying asset thumbnails</div></div>
                         <p class="text-gray-600 leading-relaxed mt-6 mb-4">Each asset in both views has an options menu for quick actions like Download, Edit, Share, and Delete.</p>
                         <img src="edit_delete.png" alt="Asset options menu" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/800x200/e2e8f0/4a5568?text=Asset+Options+Menu';">
-                        <div class="img-caption">Options menu for quick actions</div> 
+                        <div class="img-caption"><div>Options menu for quick actions</div></div> 
                     </div>
 
                     <div id="search-and-filter" class="mb-8">
@@ -160,29 +165,32 @@
                          <h3 class="text-xl font-semibold text-gray-800 mb-4">Integrated Uploading & Transformations</h3>
                          <p class="text-gray-600 leading-relaxed mb-4">Upload new assets directly within the DAM using an integrated Filepicker. For image assets, you can perform transformations like resizing and cropping from the <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Edit View</code>.</p>
                          <img src="integrated.png" alt="Integrated Filepicker UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x800/e2e8f0/4a5568?text=Integrated+Filepicker';">
-                         <div class="img-caption">Integrated Filepicker for uploading new assets</div>
+                         <div class="img-caption"><div>Integrated Filepicker for uploading new assets</div></div>
+
+                         <img src="transformations_ui.png" alt="Integrated Filepicker UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x800/e2e8f0/4a5568?text=Integrated+Filepicker';">
+                         <div class="img-caption"><div>Transformations UI embedded in the DAM</div></div>
                     </div>
                 </section>
 
-                <section id="metadata" class="mb-12">
+                <section id="metadata" class="mb-12 bg-white rounded-lg shadow-sm p-6">
                     <div class="group section-heading-wrapper">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Metadata</h2>
                         <a href="#metadata" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
                     </div>
                     <p class="text-gray-600 leading-relaxed mb-4">In the <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Edit View</code>, you can manually add, edit, or remove tags and descriptions for each asset. Changes are saved in real-time and are immediately reflected in search.</p>
                     <img src="meta_data_management.png" alt="Metadata Management UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x500/e2e8f0/4a5568?text=Metadata+Management+UI';">
-                    <div class="img-caption">Metadata management interface for adding tags and descriptions</div>
+                    <div class="img-caption"><div>Metadata management interface for adding tags and descriptions</div></div>
                 </section>
                 
                 <!-- Event Logger Section -->
-                <section id="event-logger" class="mb-12">
+                <section id="event-logger" class="mb-12 bg-white rounded-lg shadow-sm p-6">
                     <div class="group section-heading-wrapper">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Event Logger</h2>
                         <a href="#event-logger" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
                     </div>
                     <p class="text-gray-600 leading-relaxed">The Event Logger provides a complete, searchable audit trail for actions performed on your assets. The interface allows filtering by action type, file type, and date range.</p>
                     <img src="eventlogger.png" alt="Event Logger UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x600/e2e8f0/4a5568?text=Event+Logger+UI';">
-                    <div class="img-caption">Event Logger showing audit trail of asset actions</div>
+                    <div class="img-caption"><div>Event Logger showing audit trail of asset actions</div></div>
                     
                     <h4 class="text-lg font-semibold mt-6 mb-4">Tracked Events</h4>
                     <div class="overflow-x-auto">
@@ -221,7 +229,7 @@
                 </section>
 
                  <!-- Access Control Section -->
-                <section id="access-control">
+                <section id="access-control" class="bg-white rounded-lg shadow-sm p-6">
                     <div class="group section-heading-wrapper">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Role-Based Access Control</h2>
                         <a href="#access-control" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
@@ -231,7 +239,7 @@
             </main>
 
             <!-- Right Sidebar "On This Page" Navigation -->
-            <aside class="hidden xl:block lg:col-span-4 xl:col-span-3 py-12 pr-6">
+            <aside class="hidden xl:block lg:col-span-4 xl:col-span-3 py-12 pl-6 pr-12">
                 <nav class="sticky top-20">
                     <h4 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-3">On this page</h4>
                     <ul>
@@ -257,40 +265,41 @@
         // Initialize Feather Icons
         feather.replace();
 
-        // JavaScript for active sidebar link highlighting on scroll
-        window.addEventListener('scroll', () => {
-            // Get all the sections that have an ID
-            const sections = document.querySelectorAll('main section[id], main div[id]');
-            // Get all the navigation links
+        // Enhanced scroll highlighting for right sidebar
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section[id], div[id]');
             const navLinks = document.querySelectorAll('.on-page-nav-link');
             
-            let currentSectionId = '';
-
-            // Find which section is currently in view
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                // 150px offset to make the highlight trigger a bit sooner
-                if (window.scrollY >= sectionTop - 150) {
-                    currentSectionId = section.id;
-                }
-            });
-
-            // Add or remove the 'active' class from nav links
-            navLinks.forEach(link => {
-                // Remove active class from all links first
-                link.classList.remove('active');
+            function highlightActiveSection() {
+                let fromTop = window.scrollY + 100; // Adjusted offset
+                let currentSection = null;
                 
-                // Get the parent link (the main category)
-                const parentLink = link.closest('ul')?.previousElementSibling;
-
-                if (link.getAttribute('href') === `#${currentSectionId}`) {
-                    link.classList.add('active');
-                    // If a sub-link is active, its parent should be active too
-                    if (parentLink) {
-                        parentLink.classList.add('active');
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    
+                    if (fromTop >= sectionTop && fromTop < sectionTop + sectionHeight) {
+                        currentSection = section.id;
                     }
-                }
-            });
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                        
+                        // Also highlight parent link if this is a sub-link
+                        const parentLink = link.closest('ul')?.previousElementSibling;
+                        if (parentLink && parentLink.classList.contains('on-page-nav-link')) {
+                            parentLink.classList.add('active');
+                        }
+                    }
+                });
+            }
+
+            // Run once on load and then on scroll
+            highlightActiveSection();
+            window.addEventListener('scroll', highlightActiveSection);
         });
     </script>
 </body>
