@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Feather Icons for UI icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
     <style>
         /* Use Inter as the default font */
         body {
@@ -19,95 +21,98 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+
+        /* Custom styles to match Filestack docs */
+        .main-nav-link {
+            @apply text-sm text-gray-600 hover:text-gray-900;
+        }
+        .main-nav-link.active {
+            @apply text-white bg-gray-800 rounded-md;
+        }
+        .main-nav-category {
+            @apply text-xs text-gray-500 font-bold uppercase tracking-wider mt-6 mb-2 px-4;
+        }
         
-        /* Main content container styling */
-        .main-content-area {
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 2rem;
+        .on-page-nav-link {
+            @apply block text-sm text-gray-500 hover:text-gray-900 py-1 border-l-2 border-transparent hover:border-gray-400 pl-3;
+        }
+        .on-page-nav-link.active {
+            @apply font-semibold text-gray-900 border-l-2 border-gray-800;
         }
 
-        /* Styling for code blocks */
-        .code-block-wrapper {
-            background-color: #f3f4f6;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.375rem;
-            margin-top: 0.5rem;
-            margin-bottom: 1.5rem;
+        /* Section heading with hoverable anchor link icon */
+        .section-heading-wrapper {
+            @apply flex items-center gap-2;
         }
-        .code-block {
-            padding: 1rem;
-            color: #1f2937;
-            font-size: 0.875rem;
-            overflow-x: auto;
+        .section-heading-wrapper .anchor-link {
+            @apply text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity;
         }
-        
-        /* Inline code styling */
-        code.inline-code {
-            background-color: #e5e7eb;
-            color: #be123c;
-            padding: 0.125rem 0.375rem;
-            border-radius: 0.25rem;
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-        
-        /* Table styling */
-        table {
-            width: 100%;
-            margin-top: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-collapse: collapse;
-        }
-        th, td {
-            text-align: left;
-            padding: 0.75rem 1rem;
-            border: 1px solid #e5e7eb;
-        }
-        th {
-            background-color: #f9fafb;
-            font-weight: 600;
-        }
-        
+
         /* Image placeholder styling */
         .img-placeholder {
-            width: 80%;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid #d1d5db;
+            @apply w-full max-w-4xl border rounded-lg my-4 shadow-sm;
         }
-        
-        /* Smaller image styling */
-        .img-small {
-            width: 60%;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid #d1d5db;
-        }
-        
-        /* Image caption styling */
         .img-caption {
-            text-align: center;
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-top: -0.5rem;
-            margin-bottom: 1.5rem;
+            @apply text-center text-sm text-gray-500 mt-1 mb-6;
         }
     </style>
 </head>
 <body class="bg-white">
 
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
-            
-            <!-- Main Content -->
-            <main class="lg:col-span-9">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center px-6 z-50">
+        <div class="flex items-center gap-4">
+            <a href="#" class="flex items-center gap-3">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="6" fill="#EF4A25"></rect><path d="M15.998 19.333c-2.208 0-4-1.79-4-4 0-2.208 1.792-4 4-4s4 1.792 4 4c0 2.21-1.792 4-4 4zm0-6.667c-1.473 0-2.667 1.194-2.667 2.667 0 1.473 1.194 2.667 2.667 2.667s2.667-1.194 2.667-2.667c0-1.473-1.194-2.667-2.667-2.667zM26 26H6a.667.667 0 01-.667-.667V6.667c0-.368.298-.667.667-.667h1.333V4.667a.667.667 0 111.334 0v1.333h4V4.667a.667.667 0 111.333 0v1.333h4V4.667a.667.667 0 111.333 0v1.333h4V4.667a.667.667 0 111.334 0v1.333h1.333c.368 0 .667.298.667.667v18.666c0 .369-.298.667-.667.667zM7.333 24.667h17.334V7.999H7.333v16.668z" fill="#fff"></path></svg>
+                <span class="font-bold text-xl text-gray-800">filestack</span>
+            </a>
+            <span class="text-gray-300">|</span>
+            <span class="text-gray-500 tracking-widest text-sm">DOCS</span>
+        </div>
+        <div class="flex-grow"></div>
+        <div class="flex items-center gap-4">
+            <div class="relative hidden md:block">
+                <input type="text" placeholder="Search in docs" class="w-64 bg-gray-100 border border-gray-200 rounded-md py-1.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#EF4A25] focus:border-transparent">
+                <i data-feather="search" class="absolute top-1/2 right-3 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+            </div>
+            <a href="#" class="hidden sm:block bg-[#EF4A25] text-white font-semibold text-sm px-4 py-2 rounded-md hover:bg-[#D94120] transition-colors">SIGN UP FREE</a>
+            <a href="#" class="hidden sm:block text-sm font-semibold text-gray-700 hover:text-[#EF4A25]">LOG IN</a>
+            <button class="md:hidden">
+                <i data-feather="menu" class="w-6 h-6 text-gray-600"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex pt-16">
+        <!-- Left Sidebar Navigation -->
+        <aside class="hidden lg:block w-64 border-r border-gray-200 h-[calc(100vh-4rem)] sticky top-16 p-4">
+            <nav>
+                <div class="main-nav-category">Getting Started</div>
+                <a href="#" class="main-nav-link block px-4 py-1.5">Overview</a>
+                <a href="#" class="main-nav-link block px-4 py-1.5">What is Filestack?</a>
+                <a href="#" class="main-nav-link block px-4 py-1.5">Quick Start</a>
+
+                <div class="main-nav-category">Asset Management</div>
+                <a href="#intro" class="main-nav-link active block px-4 py-1.5">DAM & Event Logger</a>
+                <a href="#" class="main-nav-link block px-4 py-1.5">File Tags</a>
+                <a href="#" class="main-nav-link block px-4 py-1.5">Transformations UI</a>
+
+                <div class="main-nav-category">Auditing</div>
+                 <a href="#event-logger" class="main-nav-link block px-4 py-1.5">Event Logger</a>
+                 <a href="#access-control" class="main-nav-link block px-4 py-1.5">Access Control</a>
+
+                <div class="main-nav-category">Security</div>
+                <a href="#" class="main-nav-link block px-4 py-1.5">Security Policies</a>
+                <a href="#" class="main-nav-link block px-4 py-1.5">Domain Whitelists</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content & Right Sidebar -->
+        <div class="flex-1 lg:grid lg:grid-cols-12">
+            <main class="lg:col-span-8 xl:col-span-9 px-6 md:px-10 lg:px-16 py-12">
                 <!-- Breadcrumbs -->
                 <div class="text-sm text-gray-500 mb-4">
-                    <a href="#" class="hover:text-gray-700">Documentation</a>
+                    <a href="#" class="hover:text-gray-700">Asset Management</a>
                     <span class="mx-2">&rsaquo;</span>
                     <span>Digital Asset Management</span>
                 </div>
@@ -115,168 +120,194 @@
                 <!-- Page Title -->
                 <h1 class="text-4xl font-bold tracking-tight text-gray-900 mb-8">Digital Asset Management & Event Logger</h1>
 
-                <div class="main-content-area">
-                    <!-- Intro Section -->
-                    <section id="intro" class="mb-12">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Overview</h2>
-                        <p class="text-gray-600 leading-relaxed">
-                            The Filestack Digital Asset Management (DAM) is a comprehensive interface within the Developer Portal designed to give you direct control over your application's assets. It includes robust tools for searching, organizing, and modifying your files, alongside a detailed Event Logger for auditing purposes.
-                        </p>
-                    </section>
+                <!-- Intro Section -->
+                <section id="intro" class="mb-12">
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        The Filestack Digital Asset Management (DAM) is a comprehensive interface within the Developer Portal designed to give you direct control over your application's assets. It includes robust tools for searching, organizing, and modifying your files, alongside a detailed Event Logger for auditing purposes.
+                    </p>
+                </section>
 
-                    <!-- DAM Section -->
-                    <section id="dam" class="mb-12">
+                <!-- DAM Section -->
+                <section id="dam" class="mb-12">
+                    <div class="group section-heading-wrapper">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Digital Asset Management (DAM)</h2>
-                        
-                        <div id="dam-views" class="mb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-4">List and Block Views</h3>
-                            <p class="text-gray-600 leading-relaxed mb-4">The DAM provides two primary views for browsing assets. You can toggle between a <code class="inline-code">List View</code> which shows file details in sortable columns, and a <code class="inline-code">Block View</code> which displays asset thumbnails.</p>
-                            <img src="list_view.png" alt="DAM List View UI Placeholder" class="img-placeholder">
-                            <div class="img-caption">List view showing file details in sortable columns</div>
-                            <p class="text-gray-600 leading-relaxed mt-6 mb-4">Each asset in both views has an options menu for quick actions like Download, Edit, Share, and Delete.</p>
-                            <img src="edit_delete.png" alt="DAM Block View UI Placeholder" class="img-small">
-                            <div class="img-caption">Options menu for quick actions like Download, Edit, Share, and Delete</div> 
-                            <img src="block_view.png" alt="DAM Block View UI Placeholder" class="img-placeholder">
-                            <div class="img-caption">Block view displaying asset thumbnails</div>
-                        </div>
-
-                        <div id="dam-search" class="mb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Advanced Search & Filtering</h3>
-                            <p class="text-gray-600 leading-relaxed mb-4">Quickly locate specific files using advanced search functionality. You can search by file names, handles, tags, and metadata. You can also filter by:</p>
-                            <ul class="list-disc list-inside text-gray-600 space-y-1">
-                                <li>File Tags</li>
-                                <li>File Types (e.g., Image, Document, Video)</li>
-                                <li>Upload Date Range</li>
-                                <li>Upload Source</li>
-                            </ul>
-                        </div>
-                        
-                        <div id="dam-upload" class="mb-8">
-                             <h3 class="text-xl font-semibold text-gray-800 mb-4">Integrated Uploading & Transformations</h3>
-                             <p class="text-gray-600 leading-relaxed mb-4">Upload new assets directly within the DAM using an integrated Filepicker. For image assets, you can perform transformations like resizing and cropping from the <code class="inline-code">Edit View</code>.</p>
-                             <img src="integrated.png" alt="Integrated Filepicker UI Placeholder" class="img-placeholder">
-                             <div class="img-caption">Integrated Filepicker for uploading new assets</div>
-                        </div>
-
-                        <div id="dam-metadata" class="mb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Metadata Management</h3>
-                            <p class="text-gray-600 leading-relaxed mb-4">In the <code class="inline-code">Edit View</code>, you can manually add, edit, or remove tags and descriptions for each asset. Changes are saved in real-time and are immediately reflected in search.</p>
-                            <img src="meta_data_management.png" alt="Metadata Management UI Placeholder" class="img-placeholder">
-                            <div class="img-caption">Metadata management interface for adding tags and descriptions</div>
-                        </div>
-                    </section>
+                        <a href="#dam" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                    </div>
                     
-                    <!-- Event Logger Section -->
-                    <section id="event-logger" class="mb-12">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Event Logger</h2>
-                        <p class="text-gray-600 leading-relaxed">The Event Logger provides a complete, searchable audit trail for actions performed on your assets. The interface allows filtering by action type, file type, and date range.</p>
-                        <img src="event_logger.png" alt="Event Logger UI Placeholder" class="img-placeholder">
-                        <div class="img-caption">Event Logger showing audit trail of asset actions</div>
+                    <div id="dam-views" class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">List and Block Views</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">The DAM provides two primary views for browsing assets. You can toggle between a <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">List View</code> which shows file details in sortable columns, and a <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Block View</code> which displays asset thumbnails.</p>
+                        <img src="list_view.png" alt="DAM List View UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x600/e2e8f0/4a5568?text=DAM+List+View';">
+                        <div class="img-caption">List view showing file details in sortable columns</div>
                         
-                        <h4 class="text-lg font-semibold mt-6 mb-2">Tracked Events</h4>
-                        <table>
-                            <thead>
+                        <p class="text-gray-600 leading-relaxed mt-6 mb-4">Each asset in both views has an options menu for quick actions like Download, Edit, Share, and Delete.</p>
+                        <img src="edit_delete.png" alt="Asset options menu" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/800x200/e2e8f0/4a5568?text=Asset+Options+Menu';">
+                        <div class="img-caption">Options menu for quick actions like Download, Edit, Share, and Delete</div> 
+                        
+                        <img src="block_view.png" alt="DAM Block View UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x700/e2e8f0/4a5568?text=DAM+Block+View';">
+                        <div class="img-caption">Block view displaying asset thumbnails</div>
+                    </div>
+
+                    <div id="dam-search" class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Advanced Search & Filtering</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Quickly locate specific files using advanced search functionality. You can search by file names, handles, tags, and metadata. You can also filter by:</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 pl-2">
+                            <li>File Tags</li>
+                            <li>File Types (e.g., Image, Document, Video)</li>
+                            <li>Upload Date Range</li>
+                            <li>Upload Source</li>
+                        </ul>
+                    </div>
+                    
+                    <div id="dam-upload" class="mb-8">
+                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Integrated Uploading & Transformations</h3>
+                         <p class="text-gray-600 leading-relaxed mb-4">Upload new assets directly within the DAM using an integrated Filepicker. For image assets, you can perform transformations like resizing and cropping from the <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Edit View</code>.</p>
+                         <img src="integrated.png" alt="Integrated Filepicker UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x800/e2e8f0/4a5568?text=Integrated+Filepicker';">
+                         <div class="img-caption">Integrated Filepicker for uploading new assets</div>
+                    </div>
+
+                    <div id="dam-metadata" class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Metadata Management</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">In the <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Edit View</code>, you can manually add, edit, or remove tags and descriptions for each asset. Changes are saved in real-time and are immediately reflected in search.</p>
+                        <img src="meta_data_management.png" alt="Metadata Management UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x500/e2e8f0/4a5568?text=Metadata+Management+UI';">
+                        <div class="img-caption">Metadata management interface for adding tags and descriptions</div>
+                    </div>
+                </section>
+                
+                <!-- Event Logger Section -->
+                <section id="event-logger" class="mb-12">
+                    <div class="group section-heading-wrapper">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Event Logger</h2>
+                        <a href="#event-logger" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed">The Event Logger provides a complete, searchable audit trail for actions performed on your assets. The interface allows filtering by action type, file type, and date range.</p>
+                    <img src="eventlogger.png" alt="Event Logger UI" class="img-placeholder" onerror="this.onerror=null;this.src='https://placehold.co/1200x600/e2e8f0/4a5568?text=Event+Logger+UI';">
+                    <div class="img-caption">Event Logger showing audit trail of asset actions</div>
+                    
+                    <h4 class="text-lg font-semibold mt-6 mb-4">Tracked Events</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="border-b">
                                 <tr>
-                                    <th>Event</th>
-                                    <th>Description</th>
-                                    <th>Logged Details</th>
+                                    <th class="text-sm font-semibold text-gray-700 p-3">Event</th>
+                                    <th class="text-sm font-semibold text-gray-700 p-3">Description</th>
+                                    <th class="text-sm font-semibold text-gray-700 p-3">Logged Details</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><code class="inline-code">Upload</code></td>
-                                    <td>A new file was uploaded.</td>
-                                    <td>Action, User, Timestamp, Application</td>
+                                <tr class="border-b">
+                                    <td class="p-3"><code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Upload</code></td>
+                                    <td class="p-3 text-gray-600">A new file was uploaded.</td>
+                                    <td class="p-3 text-gray-600">Action, User, Timestamp, Application</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-3"><code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Edit</code></td>
+                                    <td class="p-3 text-gray-600">An asset's metadata was modified.</td>
+                                    <td class="p-3 text-gray-600">Action, User, Timestamp, Application</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-3"><code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Transform</code></td>
+                                    <td class="p-3 text-gray-600">An asset was converted or transformed.</td>
+                                    <td class="p-3 text-gray-600">Action, User, Timestamp, Application</td>
                                 </tr>
                                 <tr>
-                                    <td><code class="inline-code">Edit</code></td>
-                                    <td>An asset's metadata was modified.</td>
-                                    <td>Action, User, Timestamp, Application</td>
-                                </tr>
-                                <tr>
-                                    <td><code class="inline-code">Transform</code></td>
-                                    <td>An asset was converted or transformed.</td>
-                                    <td>Action, User, Timestamp, Application</td>
-                                </tr>
-                                <tr>
-                                    <td><code class="inline-code">Delete</code></td>
-                                    <td>An asset was removed.</td>
-                                    <td>Action, User, Timestamp, Application</td>
+                                    <td class="p-3"><code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Delete</code></td>
+                                    <td class="p-3 text-gray-600">An asset was removed.</td>
+                                    <td class="p-3 text-gray-600">Action, User, Timestamp, Application</td>
                                 </tr>
                             </tbody>
                         </table>
-                    </section>
+                    </div>
+                </section>
 
-                     <!-- Access Control Section -->
-                    <section id="access-control">
+                 <!-- Access Control Section -->
+                <section id="access-control">
+                    <div class="group section-heading-wrapper">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Role-Based Access Control</h2>
-                        <p class="text-gray-600 leading-relaxed">Access to the DAM and Event Logger is managed via the <code class="inline-code">Asset Manager</code> role. This role grants full access to all DAM functionalities but restricts access to other sensitive areas like Billing or API configurations.</p>
-                    </section>
-                </div>
+                        <a href="#access-control" class="anchor-link"><i data-feather="link-2" class="w-5 h-5"></i></a>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed">Access to the DAM and Event Logger is managed via the <code class="bg-gray-100 text-[#EF4A25] px-1.5 py-0.5 rounded font-mono text-sm">Asset Manager</code> role. This role grants full access to all DAM functionalities but restricts access to other sensitive areas like Billing or API configurations.</p>
+                </section>
             </main>
 
-            <!-- Right Sidebar Navigation -->
-            <aside class="hidden lg:block lg:col-span-3">
-                <nav class="sticky top-12">
+            <!-- Right Sidebar "On This Page" Navigation -->
+            <aside class="hidden xl:block lg:col-span-4 xl:col-span-3 py-12 pr-6">
+                <nav class="sticky top-20">
                     <h4 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-3">On this page</h4>
                     <ul>
-                        <li><a href="#intro" class="block text-sm text-orange-600 font-medium py-1">Overview</a></li>
-                        <li><a href="#dam" class="block text-sm text-gray-600 hover:text-gray-900 py-1">Digital Asset Management</a>
+                        <li><a href="#intro" class="on-page-nav-link">Overview</a></li>
+                        <li>
+                            <a href="#dam" class="on-page-nav-link">Digital Asset Management</a>
                             <ul class="pl-4 mt-1">
-                                <li><a href="#dam-views" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Views</a></li>
-                                <li><a href="#dam-search" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Search</a></li>
-                                <li><a href="#dam-upload" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Uploading</a></li>
-                                <li><a href="#dam-metadata" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Metadata</a></li>
+                                <li><a href="#dam-views" class="on-page-nav-link">Views</a></li>
+                                <li><a href="#dam-search" class="on-page-nav-link">Search</a></li>
+                                <li><a href="#dam-upload" class="on-page-nav-link">Uploading</a></li>
+                                <li><a href="#dam-metadata" class="on-page-nav-link">Metadata</a></li>
                             </ul>
                         </li>
-                        <li><a href="#event-logger" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Event Logger</a></li>
-                        <li><a href="#access-control" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Access Control</a></li>
+                        <li><a href="#event-logger" class="on-page-nav-link">Event Logger</a></li>
+                        <li><a href="#access-control" class="on-page-nav-link">Access Control</a></li>
                     </ul>
                 </nav>
             </aside>
-
         </div>
     </div>
 
     <script>
+        // Initialize Feather Icons
+        feather.replace();
+
         // JavaScript for active sidebar link highlighting on scroll
         document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('main section > div, main section > h2');
-            const navLinks = document.querySelectorAll('aside nav a');
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('aside nav a.on-page-nav-link');
 
-            const onScroll = () => {
-                let current = 'intro';
-                
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    if (pageYOffset >= sectionTop - 70) {
-                        current = section.id || section.parentElement.id;
-                    }
-                });
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    // Create a map to track intersection status of each section
+                    const intersectionMap = new Map();
+                    entries.forEach((entry) => {
+                        intersectionMap.set(entry.target.id, entry.isIntersecting);
+                    });
 
-                navLinks.forEach(link => {
-                    const href = link.getAttribute('href');
-                    link.classList.remove('text-orange-600', 'font-medium');
-                    link.classList.add('text-gray-600', 'text-gray-500'); // Reset all links
-                    
-                    if (href === `#${current}`) {
-                        link.classList.add('text-orange-600', 'font-medium');
-                        link.classList.remove('text-gray-600', 'text-gray-500');
-                        
-                        // Also highlight the parent link
-                        if(link.parentElement.parentElement.previousElementSibling) {
-                             const parentLink = link.parentElement.parentElement.previousElementSibling;
-                             parentLink.classList.add('text-orange-600', 'font-medium');
-                             parentLink.classList.remove('text-gray-600');
+                    let activeSectionId = null;
+
+                    // Iterate through sections in document order to find the first one intersecting
+                    for (const section of sections) {
+                        if (intersectionMap.get(section.id)) {
+                            activeSectionId = section.id;
+                            break; // Found the topmost visible section
                         }
                     }
-                });
-            };
+                    
+                    // First, remove 'active' from all links to reset state
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                    });
 
-            window.addEventListener('scroll', onScroll);
-            onScroll(); // Run on page load
+                    if (activeSectionId) {
+                        const activeLink = document.querySelector(`.on-page-nav-link[href="#${activeSectionId}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
+                            // Also activate parent link if it's a sub-item
+                            const parentUl = activeLink.closest('ul');
+                            if (parentUl && parentUl.previousElementSibling?.tagName === 'A') {
+                                parentUl.previousElementSibling.classList.add('active');
+                            }
+                        }
+                    }
+                },
+                {
+                    // Set a margin to trigger when the section is near the top of the viewport
+                    rootMargin: '-10% 0px -80% 0px',
+                    threshold: 0,
+                }
+            );
+
+            sections.forEach((section) => {
+                observer.observe(section);
+            });
         });
     </script>
-
 </body>
 </html>
