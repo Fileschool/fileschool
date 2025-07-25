@@ -345,6 +345,11 @@
                 <div id="editor" style="flex-grow: 1; display: flex; flex-direction: column;"></div>
                 <div class="controls-area">
                     <div class="center-align">
+                        <button id="chunkabilityButton" class="btn-large blue darken-2 waves-effect waves-light" style="margin-bottom: 15px;">
+                            <i class="material-icons left">content_cut</i>Check Chunkability
+                        </button>
+                    </div>
+                    <div class="center-align">
                         <button id="analyzeButton" class="btn-large blue darken-2 waves-effect waves-light">
                             <i class="material-icons left">play_arrow</i>Analyze Content
                         </button>
@@ -456,6 +461,7 @@
         ]; // Added 34 messages
 
         analyzeButton.addEventListener('click', handleAnalysis);
+        document.getElementById('chunkabilityButton').addEventListener('click', handleChunkabilityAnalysis);
 
         async function handleAnalysis() {
             document.title = 'Analyzing...';
@@ -604,6 +610,147 @@
                 if (errorMessageDiv.style.display === 'none' && progressBar.style.width === '100%') {
                     progressContainer.style.display = 'none';
                 } else if (errorMessageDiv.style.display !== 'none') {
+                    progressContainer.style.display = 'none';
+                }
+            }
+        }
+
+        async function handleChunkabilityAnalysis() {
+            document.title = 'Analyzing Chunkability...';
+            const apiKey = apiKeyInput.value.trim();
+            let content = '';
+
+            if (typeof FroalaEditor !== 'undefined' && FroalaEditor.INSTANCES && FroalaEditor.INSTANCES[0]) {
+                content = FroalaEditor.INSTANCES[0].html.get();
+            } else {
+                const editorDiv = document.getElementById('editor');
+                content = editorDiv.innerText || editorDiv.innerHTML;
+            }
+
+            errorMessageDiv.textContent = '';
+            errorMessageDiv.style.display = 'none';
+            scoreTable.style.display = 'none';
+            scoreTableBody.innerHTML = '';
+            statusText.textContent = '';
+            progressBar.style.width = '0%';
+            progressContainer.style.display = 'block';
+            document.getElementById('chunkabilityButton').disabled = true;
+            document.getElementById('chunkabilityButton').innerHTML = '<i class="material-icons left">hourglass_top</i>Analyzing...';
+
+            if (loadingIntervalId) {
+                clearInterval(loadingIntervalId);
+                loadingIntervalId = null;
+            }
+            resultsArea.innerHTML = `<p style="text-align:center; font-style:italic; color:#555;">Checking content chunkability...</p>`;
+            loadingIntervalId = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * loadingMessages.length);
+                resultsArea.innerHTML = `<p style="text-align:center; font-style:italic; color:#555;">${loadingMessages[randomIndex]}</p>`;
+            }, 2000);
+
+            statusText.textContent = 'Step 1/5: Validating inputs...';
+            moveProgress(10);
+
+            if (!apiKey) {
+                showError('API Key is required.');
+                resetState('Please enter your DeepSeek API Key.');
+                return;
+            }
+            if (!content || content.trim().length < 100) {
+                showError('Article content is required (minimum 100 characters).');
+                resetState('Please paste sufficient content into the editor.');
+                return;
+            }
+            statusText.textContent = 'Step 1/5: Inputs validated.';
+            moveProgress(20);
+
+            try {
+                statusText.textContent = 'Step 2/5: Preparing chunkability prompt...';
+                await sleep(200);
+                moveProgress(30);
+
+                const prompt = `You are an expert content evaluator focused on SEO and AI retrievability. Review the following passage and assess whether it meets these criteria:
+
+1. Heading Alignment: Does the passage clearly and directly support the given heading?
+2. Entity Coverage: Does it fully and accurately explain or engage with the specified entity?
+3. Topical Focus: Does it stay on-topic without introducing unrelated points or filler?
+4. Chunkability for LLMs: Is the passage concise, self-contained, and clearly structured so that it can be easily retrieved and understood by a language model?
+
+Please provide:
+- A Yes/No for each of the 4 criteria
+- A brief explanation or suggestion for any "No"
+- An overall rating (1-10) for alignment and chunkability
+
+Content to analyze:
+${content}`;
+
+                statusText.textContent = 'Step 3/5: Sending request to API...';
+                moveProgress(50);
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: modelName,
+                        messages: [
+                            { role: 'system', content: "You are an expert content evaluator focused on SEO and AI retrievability." },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.5,
+                        max_tokens: 2000
+                    })
+                });
+
+                statusText.textContent = 'Step 4/5: Processing response...';
+                moveProgress(70);
+
+                if (!response.ok) {
+                    let errorBody = 'Could not retrieve error details from API response.';
+                    try { const errorData = await response.json(); errorBody = errorData.error?.message || JSON.stringify(errorData); } catch (e) { /* Ignore */ }
+                    throw new Error(`API Error ${response.status}: ${response.statusText}. Details: ${errorBody}`);
+                }
+
+                const data = await response.json();
+                if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+                    throw new Error('API response did not contain the expected analysis content structure.');
+                }
+
+                statusText.textContent = 'Step 5/5: Formatting results...';
+                moveProgress(90);
+
+                if (loadingIntervalId) {
+                    clearInterval(loadingIntervalId);
+                    loadingIntervalId = null;
+                }
+
+                const markdown = data.choices[0].message.content;
+                if (window.marked && marked.parse) {
+                    resultsArea.innerHTML = marked.parse(markdown);
+                } else {
+                    resultsArea.textContent = markdown;
+                }
+
+                statusText.textContent = 'Chunkability analysis complete!';
+                moveProgress(100);
+                document.title = 'Chunkability Analysis Complete';
+
+            } catch (err) {
+                console.error("Chunkability Analysis Error:", err);
+                showError(`Error during chunkability analysis: ${err.message}`);
+                if (document.title === 'Analyzing Chunkability...') {
+                    document.title = 'E-E-A-T & Helpful Content Analyzer';
+                }
+            } finally {
+                if (loadingIntervalId) {
+                    clearInterval(loadingIntervalId);
+                    loadingIntervalId = null;
+                }
+                document.getElementById('chunkabilityButton').disabled = false;
+                document.getElementById('chunkabilityButton').innerHTML = '<i class="material-icons left">content_cut</i>Check Chunkability';
+                await sleep(500);
+                if (errorMessageDiv.style.display === 'none' && progressBar.style.width === '100%') {
                     progressContainer.style.display = 'none';
                 }
             }
