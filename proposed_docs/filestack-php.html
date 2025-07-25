@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filestack PHP - Filestack Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter as the default font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #374151;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Main content container styling */
+        .main-content-area {
+            background-color: #ffffff; /* White content area */
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        /* Styling for code blocks */
+        .code-block-wrapper {
+            background-color: #1f2937;
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .code-block {
+            padding: 1rem;
+            color: #d1d5db;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", monospace;
+        }
+        
+        /* Inline code styling */
+        code.inline-code {
+            background-color: #e5e7eb;
+            color: #be123c;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        
+        /* General link styling */
+        a {
+            color: #ea580c;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            
+            <main class="lg:col-span-9">
+                <div class="text-sm text-gray-500 mb-4">
+                    <a href="#" class="hover:text-gray-700">Documentation</a>
+                    <span class="mx-2">&rsaquo;</span>
+                    <span>Filestack PHP</span>
+                </div>
+
+                <h1 class="text-4xl font-bold tracking-tight text-gray-900 mb-8">Filestack PHP 🐘</h1>
+
+                <div class="main-content-area">
+                    <section id="filestack-php" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Filestack PHP</h2><p class="text-gray-600 leading-relaxed">This is the official PHP SDK for Filestack - API and content management system that makes it easy to add powerful file uploading and transformation capabilities to any web or mobile application.</p></section><section id="requirements" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Requirements</h2><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>PHP 8.3+</li></ul></section><section id="resources" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Resources</h2><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>Filestack</li><li>Documentation</li></ul></section><section id="installing" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Installing</h2>
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">Install filestack with composer, either run</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>$ composer require --prefer-dist filestack/filestack-php</code></pre>
+        </div>
+    </div>
+    </section><section id="usage" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Usage</h2><p class="text-gray-600 leading-relaxed">Filestack library gives you access to three useful classes:</p><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>FilestackClient - for easy file upload (creates Filelink objects)</li><li>Filelink - for file handling (downloading, converting etc.)</li><li>FileSecurity - for applying policy and signature values to your API calls</li></ul>
+    <div id="uploading-files">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Uploading files</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">First, you need to create an instance of FilestackClient</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>use Filestack\FilestackClient;
+$client = new FilestackClient(&#x27;YOUR_API_KEY&#x27;);</code></pre>
+        </div>
+    </div>
+    
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">Call the upload() function</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>$filelink = $client-&gt;upload(&#x27;/path/to/file&#x27;);</code></pre>
+        </div>
+    </div>
+    
+    <div id="storage">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Storage</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">Amazon S3 is used to store your files by default. If you wish to use a different one, you can pass in additional parameter 'location' when making upload() and store calls</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>$client = new FilestackClient(&#x27;YOUR_API_KEY&#x27;);
+$extras = [
+    &#x27;Location&#x27; =&gt; &#x27;dropbox&#x27;,
+    &#x27;Filename&#x27; =&gt; &#x27;somefilename.jpg&#x27;,
+];
+$filepath = &#x27;/path/to/file&#x27;;
+$filelink = $client-&gt;upload($filepath);
+# get metadata of file
+$metadata = $client-&gt;getMetaData($filelink-&gt;handle, $fields);
+# get content of a file
+$content = $client-&gt;getContent($filelink-&gt;handle);
+# download a file
+$destination = &#x27;/path/to/file&#x27;;
+$result = $client-&gt;download($filelink-&gt;handle, $destination);
+# overwrite a file
+$filelink2 = $client-&gt;overwrite(&#x27;/path/to/file&#x27;, $filelink-&gt;handle);</code></pre>
+        </div>
+    </div>
+    
+    <div id="manipulating-files">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Manipulating files</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">Filelink objects can be created in two ways:
+by uploading a file using FilestackClient
+by initializing Filelink with file handle and api_key
+First method was shown above, the second method is also very easy and will create objects representing files that were already uploaded.</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>use Filestack\filelink;
+$filelink = new Filelink(&#x27;some-file-handle&#x27;, &#x27;YOUR_API_KEY&#x27;);
+# transforming an image
+$transformed_filelink = $filelink
+            -&gt;circle()
+            -&gt;blur([&#x27;amount&#x27; =&gt; &#x27;20&#x27;])
+            -&gt;save();
+# get metadata
+$metadata = $filelink-&gt;getMetaData();
+# get content of a file
+$content = $filelink-&gt;getContent();
+$filepath = &#x27;/path/to/file&#x27;;
+# download a file
+$filelink-&gt;download($filepath);
+# overwrite remote file with local file
+$filelink-&gt;overwrite($filepath);
+# delete remote file
+$filelink-&gt;delete();</code></pre>
+        </div>
+    </div>
+    
+    <div id="tagging-files-and-detecting-safe-for-work-content">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Tagging files and detecting safe for work content</h3>
+        
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>use Filestack\FilestackClient;
+use Filestack\FilestackSecurity;
+$security = new FilestackSecurity(&#x27;YOUR_SECURITY_SECRET&#x27;);
+$client = new FilestackClient(&#x27;YOUR_API_KEY&#x27;, $security);
+$file_handle = &#x27;some-file-handle&#x27;;
+# get tags with client
+$result_json = $client-&gt;getTags($file_handle);
+# get tags with filelink
+$filelink = new Filelink($file_handle, &#x27;YOUR_API_KEY&#x27;, $security);
+$json_result = $filelink-&gt;getTags();
+# get safe for work flag with client
+$result_json = $client-&gt;getSafeForWork($file_handle);
+# get safe for work flag with filelink
+$json_result = $filelink-&gt;getSafeForWork();</code></pre>
+        </div>
+    </div>
+    <p class="text-gray-600 leading-relaxed">For more examples, see the examples/ folder in this project.</p></section><section id="intelligent-ingestion" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Intelligent Ingestion</h2><p class="text-gray-600 leading-relaxed">The Intelligent Ingestion feature allows user to upload a file in chunks of not precised size. This creates a more stable upload flow that ensures the file being uploaded will eventually complete successfully, regardless of network latency or timeout errors.</p><p class="text-gray-600 leading-relaxed">However, the upload process may be slower than the normal upload flow for large files, as there are errors are retried using the exponential backoff retry strategy.</p><p class="text-gray-600 leading-relaxed">Lastly, this feature has to be turned on for the apikey being used. To turn on this feature please contact Filestack at support@filestack.com.</p>
+    <div id="">
+        
+        
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>$client = new FilestackClient(&#x27;YOUR_API_KEY&#x27;);
+$filelink = $client-&gt;upload(&#x27;/path/to/file&#x27;, [&#x27;intelligent&#x27; =&gt; true]);</code></pre>
+        </div>
+    </div>
+    </section><section id="versioning" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Versioning</h2><p class="text-gray-600 leading-relaxed">Filestack PHP SDK follows the Semantic Versioning.</p></section><section id="code-standard" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Code Standard</h2><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>PSR-2 coding standard (http://www.php-fig.org/psr/psr-2/)</li><li>PSR-4 autoloading standard (http://www.php-fig.org/psr/psr-4/)</li><li>phpDoc documentation comments standard (https://www.phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html)</li></ul></section><section id="testing" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Testing</h2>
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">To run tests, from the project root director, run</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>vendor/bin/phpunit</code></pre>
+        </div>
+    </div>
+    
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">To generate coverage report, run following command (will generage html files under directory coverage/)</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>vendor/bin/phpunit --coverage-xml=coverage</code></pre>
+        </div>
+    </div>
+    
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">To run PHPMD for CodeClimate checks</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>vendor/bin/phpmd filestack xml phpmd-rules.xml &gt; logs/phpmd-report-filestack.xml
+vendor/bin/phpmd tests xml phpmd-rules.xml &gt; logs/phpmd-report-tests.xml</code></pre>
+        </div>
+    </div>
+    </section><section id="generating-documentation" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Generating documentation</h2>
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">To get project metrics use phar file for https://github.com/sebastianbergmann/phploc</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>./phploc.phar --log-xml=phploc.xml .</code></pre>
+        </div>
+    </div>
+    
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">To generate documentation use phar file from https://github.com/theseer/phpdox</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>./phpdox.phar</code></pre>
+        </div>
+    </div>
+    </section><section id="issues" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Issues</h2><p class="text-gray-600 leading-relaxed">If you have problems, please create a Github Issue.</p></section><section id="contributing" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Contributing</h2><p class="text-gray-600 leading-relaxed">Please see CONTRIBUTING.md for details.</p></section><section id="credits" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Credits</h2><p class="text-gray-600 leading-relaxed">Thank you to all the contributors.</p></section>
+                </div>
+            </main>
+
+            <aside class="hidden lg:block lg:col-span-3">
+                <nav class="sticky top-12">
+                    <h4 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-3">On this page</h4>
+                    <ul>
+                        <li><a href="#filestack-php" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Filestack PHP</a></li><li><a href="#requirements" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Requirements</a></li><li><a href="#resources" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Resources</a></li><li><a href="#installing" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Installing</a></li><li><a href="#usage" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Usage</a><ul class="pl-4 mt-1"><li><a href="#uploading-files" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Uploading files</a></li><li><a href="#storage" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Storage</a></li><li><a href="#manipulating-files" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Manipulating files</a></li><li><a href="#tagging-files-and-detecting-safe-for-work-content" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Tagging files and detecting safe for work content</a></li></ul></li><li><a href="#intelligent-ingestion" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Intelligent Ingestion</a></li><li><a href="#versioning" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Versioning</a></li><li><a href="#code-standard" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Code Standard</a></li><li><a href="#testing" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Testing</a></li><li><a href="#generating-documentation" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Generating documentation</a></li><li><a href="#issues" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Issues</a></li><li><a href="#contributing" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Contributing</a></li><li><a href="#credits" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Credits</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for active sidebar link highlighting on scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('aside nav a');
+
+            const onScroll = () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-orange-600', 'font-medium');
+                    if (!link.href.includes('#')) return;
+
+                    const linkHref = link.getAttribute('href').substring(1);
+
+                    if (linkHref === current) {
+                        link.classList.add('text-orange-600', 'font-medium');
+                        const parentUl = link.closest('ul.pl-4');
+                        if (parentUl) {
+                            const parentLink = parentUl.previousElementSibling;
+                            if (parentLink && parentLink.tagName === 'A') {
+                                parentLink.classList.add('text-orange-600', 'font-medium');
+                            }
+                        }
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', onScroll);
+            onScroll(); // Run on page load
+        });
+    </script>
+
+</body>
+</html>

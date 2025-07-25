@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javascript SDK for the Filestack API and content management system. - Filestack Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter as the default font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #374151;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Main content container styling */
+        .main-content-area {
+            background-color: #ffffff; /* White content area */
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        /* Styling for code blocks */
+        .code-block-wrapper {
+            background-color: #1f2937;
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .code-block {
+            padding: 1rem;
+            color: #d1d5db;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", monospace;
+        }
+        
+        /* Inline code styling */
+        code.inline-code {
+            background-color: #e5e7eb;
+            color: #be123c;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        
+        /* General link styling */
+        a {
+            color: #ea580c;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            
+            <main class="lg:col-span-9">
+                <div class="text-sm text-gray-500 mb-4">
+                    <a href="#" class="hover:text-gray-700">Documentation</a>
+                    <span class="mx-2">&rsaquo;</span>
+                    <span>Javascript SDK for the Filestack API and content management system.</span>
+                </div>
+
+                <h1 class="text-4xl font-bold tracking-tight text-gray-900 mb-8">Javascript SDK for the Filestack API and content management system. 📜</h1>
+
+                <div class="main-content-area">
+                    <section id="what's-in-the-box?" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">What&#x27;s in the box?</h2><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>A multi-part uploader powered on the backend by the Filestack CIN.</li><li>An interface to the Filestack Processing Engine for transforming assets via URLs.</li><li>The Filestack Picker - an upload widget for the web that integrates over a dozen cloud providers and provides pre-upload image editing.</li></ul></section><section id="installation" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Installation</h2>
+    <div id="">
+        
+        
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>npm install filestack-js</code></pre>
+        </div>
+    </div>
+    <p class="text-gray-600 leading-relaxed">To get your free API key, sign up for a Filestack account here: https://dev.filestack.com/signup/free.</p></section><section id="api-documentation" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">API Documentation</h2><p class="text-gray-600 leading-relaxed">https://filestack.github.io/filestack-js/</p></section><section id="usage" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Usage</h2>
+    <div id="es-module">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">ES module</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">Browsers</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>import * as filestack from &#x27;filestack-js&#x27;;
+const client = filestack.init(&#x27;apikey&#x27;);</code></pre>
+        </div>
+    </div>
+    
+    <div id="umd-module">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">UMD module</h3>
+        
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>&lt;script src=&quot;//static.filestackapi.com/filestack-js/{MAJOR_VERSION}.x.x/filestack.min.js&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  const client = filestack.init(&#x27;apikey&#x27;);
+&lt;/script&gt;</code></pre>
+        </div>
+    </div>
+    <p class="text-gray-600 leading-relaxed">where {MAJOR_VERSION} is one of the MAJOR versions of the filestack-js ie:</p>
+    <div id="">
+        
+        
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>&lt;script src=&quot;//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  const client = filestack.init(&#x27;apikey&#x27;);
+&lt;/script&gt;</code></pre>
+        </div>
+    </div>
+    
+    <div id="sri">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">SRI</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">Subresource Integrity (SRI) is a security feature that enables browsers to verify that files they fetch (for example, from a CDN) are delivered without unexpected manipulation. It works by allowing you to provide a cryptographic hash that a fetched file must match
+To obtain sri hashes for filestack-js library check manifest.json file on CDN:
+https://static.filestackapi.com/filestack-js/{LIBRARY_VERSION}/manifest.json</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>&lt;script src=&quot;//static.filestackapi.com/filestack-js/{LIBRARY_VERSION}/filestack.min.js.gz&quot; integrity=&quot;{FILE_HASH}&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;</code></pre>
+        </div>
+    </div>
+    <p class="text-gray-600 leading-relaxed">Where {LIBRARY_VERSION} is currently used library version and {FILE_HASH} is one of the hashes from integrity field in manifest.json file</p>
+    <div id="commonjs-module">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">CommonJS module</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">Node</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>const client = require(&#x27;filestack-js&#x27;).init(&#x27;apikey&#x27;);</code></pre>
+        </div>
+    </div>
+    </section><section id="module-overview" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Module Overview</h2><p class="text-gray-600 leading-relaxed">The package.json specifies two separate modules:
+main for the CommonJS module (intended for Node runtimes)
+browser for the pre-bundled ES module (intended for browser runtimes)</p><p class="text-gray-600 leading-relaxed">Node projects which depend on filestack-js will follow the main field in package.json. When building for the browser, newer tools (like Webpack, Rollup, and Parcel) follow the browser field, which will resolve to the pre-bundled ES module. Both modules follow the same API, but some methods behave differently based on their runtime. For example, client.upload treats the file argument as a file path in Node but in browsers it assumes a Blob object.</p><p class="text-gray-600 leading-relaxed">The pre-bundled browser module is also available in UMD format. This is useful if you are using script tags on a web page instead of bundling your application. It can be retrieved from both the Filestack CDN and the unpkg CDN:</p><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>Filestack CDN</li><li>unpkg</li></ul></section><section id="releases-info" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Releases Info</h2><p class="text-gray-600 leading-relaxed">Major releases will bo listed (with detailed examples) in releases folder starting from version 3.0.0</p></section><section id="live-examples-(jsfiddle)" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Live examples (JSFiddle)</h2><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>Upload image</li><li>Multiupload</li><li>Open picker</li><li>Open picker in inline mode</li><li>Crop images</li><li>Multiple drop panes</li><li>Preview</li><li>Import using RequireJS</li><li>Retrieve image data</li><li>Transform image</li><li>Custom Picker CSS</li><li>Assign file to user</li></ul>
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">Examples can be run locally with:</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>npm run examples</code></pre>
+        </div>
+    </div>
+    </section><section id="picker-quick-start" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Picker Quick Start</h2><p class="text-gray-600 leading-relaxed">If you are here to use the picker widget, it can be initialized from the Filestack client by calling client.picker(options). Options for the picker are documented here.</p><p class="text-gray-600 leading-relaxed">The picker instance returned from client.picker can be controlled with a few methods:</p><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>open - Create the application and mount it into the DOM based on the displayMode.</li><li>close - Close the application and remove its resources from the DOM.</li><li>crop(files) - Create the application, mount it, and pre-select the passed files for cropping.</li><li>cancel - Cancel all uploads controlled by this instance.</li></ul><p class="text-gray-600 leading-relaxed">Please see our examples above to learn more about customizing the picker for your use case.</p></section><section id="polyfills" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Polyfills</h2><p class="text-gray-600 leading-relaxed">If you target IE11 or iOS before 8.0 you will need to add additional polyfills to your page or application. (We are no longer support IE11 and older browser, so it can stop working on this browser)</p><p class="text-gray-600 leading-relaxed">Polyfills we recommend:**</p><ul class="list-disc list-inside text-gray-600 space-y-2 mt-4"><li>Module (for bundling):</li><li>https://babeljs.io/docs/en/babel-polyfill</li></ul></section><section id="development" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Development</h2><p class="text-gray-600 leading-relaxed">Most tests in this library are expected to interface with actual backend services. Because we like to run tests during development, these services are mocked during unit testing.</p><p class="text-gray-600 leading-relaxed">All tests are using Jest.</p>
+    <div id="">
+        
+        <p class="text-gray-600 leading-relaxed mb-4">To run units:</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>npm test</code></pre>
+        </div>
+    </div>
+    </section><section id="debugging" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Debugging</h2><p class="text-gray-600 leading-relaxed">Filestack-js uses debug, so just run with environmental variable DEBUG set to fs.*.</p>
+    <div id="node">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Node</h3>
+        
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>DEBUG=fs.* node example_upload.js</code></pre>
+        </div>
+    </div>
+    
+    <div id="browser">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Browser</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">Debug's enable state is persisted by localStorage</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>localStorage.debug = &#x27;fs:*&#x27;</code></pre>
+        </div>
+    </div>
+    <p class="text-gray-600 leading-relaxed">And then refresh the page.</p>
+    <div id="error-event">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Error event</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">The upload.error event was added to sdk. To obtain every upload request error just add callback to it. Error contains details field with responseBody, responseHeaders, code (only when error type is FilestackErrorType.REQUEST)</p>
+        <div class="code-block-wrapper">
+            <pre class="code-block"><code>&lt;script&gt;
+  const client = filestack.init(&#x27;apikey&#x27;);
+  client.on(&#x27;upload.error&#x27;, (filestackError) =&gt; {
+    console.log(filestackError);
+  });
+&lt;/script&gt;</code></pre>
+        </div>
+    </div>
+    <p class="text-gray-600 leading-relaxed">Upload abort throws an FilestackError with type FilestackErrorType.ABORTED</p></section><section id="sentry-integration" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Sentry Integration</h2><p class="text-gray-600 leading-relaxed">If you're using Sentry to monitor your application, Filestack will automatically report upload errors to Sentry, and tag them with helpful diagnostic information via @sentry/browser.</p></section><section id="versioning" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Versioning</h2><p class="text-gray-600 leading-relaxed">We use SemVer for versioning. For the versions available, see the tags on this repository.</p></section><section id="contributing" class="mb-12"><h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Contributing</h2><p class="text-gray-600 leading-relaxed">We follow the conventional commits specification to ensure consistent commit messages and changelog formatting.</p></section>
+                </div>
+            </main>
+
+            <aside class="hidden lg:block lg:col-span-3">
+                <nav class="sticky top-12">
+                    <h4 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-3">On this page</h4>
+                    <ul>
+                        <li><a href="#what's-in-the-box?" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">What&#x27;s in the box?</a></li><li><a href="#installation" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Installation</a></li><li><a href="#api-documentation" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">API Documentation</a></li><li><a href="#usage" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Usage</a><ul class="pl-4 mt-1"><li><a href="#es-module" class="block text-sm text-gray-500 hover:text-gray-900 py-1">ES module</a></li><li><a href="#umd-module" class="block text-sm text-gray-500 hover:text-gray-900 py-1">UMD module</a></li><li><a href="#sri" class="block text-sm text-gray-500 hover:text-gray-900 py-1">SRI</a></li><li><a href="#commonjs-module" class="block text-sm text-gray-500 hover:text-gray-900 py-1">CommonJS module</a></li></ul></li><li><a href="#module-overview" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Module Overview</a></li><li><a href="#releases-info" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Releases Info</a></li><li><a href="#live-examples-(jsfiddle)" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Live examples (JSFiddle)</a></li><li><a href="#picker-quick-start" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Picker Quick Start</a></li><li><a href="#polyfills" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Polyfills</a></li><li><a href="#development" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Development</a></li><li><a href="#debugging" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Debugging</a><ul class="pl-4 mt-1"><li><a href="#node" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Node</a></li><li><a href="#browser" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Browser</a></li><li><a href="#error-event" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Error event</a></li></ul></li><li><a href="#sentry-integration" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Sentry Integration</a></li><li><a href="#versioning" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Versioning</a></li><li><a href="#contributing" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Contributing</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for active sidebar link highlighting on scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('aside nav a');
+
+            const onScroll = () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-orange-600', 'font-medium');
+                    if (!link.href.includes('#')) return;
+
+                    const linkHref = link.getAttribute('href').substring(1);
+
+                    if (linkHref === current) {
+                        link.classList.add('text-orange-600', 'font-medium');
+                        const parentUl = link.closest('ul.pl-4');
+                        if (parentUl) {
+                            const parentLink = parentUl.previousElementSibling;
+                            if (parentLink && parentLink.tagName === 'A') {
+                                parentLink.classList.add('text-orange-600', 'font-medium');
+                            }
+                        }
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', onScroll);
+            onScroll(); // Run on page load
+        });
+    </script>
+
+</body>
+</html>
