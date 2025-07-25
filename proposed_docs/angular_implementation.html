@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filestack for Angular - Filestack Docs</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter as the default font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #374151;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Main content container styling */
+        .main-content-area {
+            background-color: #ffffff; /* White content area */
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* Added shadow */
+        }
+
+        /* Styling for code blocks */
+        .code-block-wrapper {
+            background-color: #1f2937; /* Darker background for code */
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .code-block {
+            padding: 1rem;
+            color: #d1d5db; /* Lighter text for contrast */
+            font-size: 0.875rem;
+            overflow-x: auto;
+            font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", monospace;
+        }
+        
+        /* Inline code styling */
+        code.inline-code {
+            background-color: #e5e7eb;
+            color: #be123c;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        
+        /* General link styling */
+        a {
+            color: #ea580c;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            
+            <!-- Main Content -->
+            <main class="lg:col-span-9">
+                <!-- Breadcrumbs -->
+                <div class="text-sm text-gray-500 mb-4">
+                    <a href="#" class="hover:text-gray-700">Documentation</a>
+                    <span class="mx-2">&rsaquo;</span>
+                    <span>Filestack for Angular</span>
+                </div>
+
+                <!-- Page Title -->
+                <h1 class="text-4xl font-bold tracking-tight text-gray-900 mb-8">Filestack for Angular</h1>
+
+                <div class="main-content-area">
+                    <!-- Intro Section -->
+                    <section id="overview" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Overview</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                           The <code class="inline-code">@filestack/angular</code> library is a component-based wrapper for the core <a href="https://filestack.github.io/filestack-js/" target="_blank">filestack-js SDK</a>. It's designed to help you integrate Filestack's file handling services into your Angular applications with minimal effort and a familiar developer experience. You can implement the powerful Filestack Picker and its features in just a few lines of code. The <code class="inline-code">FilestackAngularModule</code> provides everything you need to get started, including:
+                        </p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 mt-4">
+                            <li><code class="inline-code">FilestackService</code>: A wrapper for the filestack-js client with added support for Observables.</li>
+                            <li><code class="inline-code">FilestackTransformPipe</code>: An Angular pipe for easily creating transformation URLs in your templates.</li>
+                            <li><code class="inline-code">PickerOverlayComponent</code>: A component for the Filestack picker in overlay mode.</li>
+                            <li><code class="inline-code">PickerInlineComponent</code>: A component for the picker in inline mode.</li>
+                            <li><code class="inline-code">PickerDropPaneComponent</code>: A component for the picker in drop pane mode.</li>
+                        </ul>
+                    </section>
+
+                    <!-- Usage Section -->
+                    <section id="usage" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Usage</h2>
+                        
+                        <div id="usage-install" class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Installation</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">Install the necessary packages from NPM.</p>
+                            <div class="code-block-wrapper">
+                                <pre class="code-block"><code>npm install filestack-js @filestack/angular</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div id="usage-import" class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Module Setup</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">Import <code class="inline-code">FilestackModule</code> into your <code class="inline-code">app.module.ts</code> and configure it with your API key.</p>
+                             <div class="code-block-wrapper">
+                                <pre class="code-block"><code>import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+import { FilestackModule } from '@filestack/angular';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    // Add your Filestack API key
+    FilestackModule.forRoot({ apikey: 'YOUR_APIKEY' })
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Components Section -->
+                    <section id="components" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Picker Components</h2>
+                        <p class="text-gray-600 leading-relaxed">The library provides three main components to render the picker in different ways. They share the following inputs and outputs.</p>
+                        
+                        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-4">Available Inputs</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code class="inline-code">apikey</code></td>
+                                    <td>String</td>
+                                    <td>Your Filestack API key.</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="inline-code">options</code></td>
+                                    <td>Object</td>
+                                    <td>Controls the picker's behavior. See <a href="https://filestack.github.io/filestack-js/interfaces/PickerOptions.html" target="_blank">PickerOptions</a>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="inline-code">clientOptions</code></td>
+                                    <td>Object</td>
+                                    <td>Options to initialize the client (cname, security, etc). See <a href="https://filestack.github.io/filestack-js/interfaces/ClientOptions.html" target="_blank">ClientOptions</a>.</td>
+                                </tr>
+                                 <tr>
+                                    <td><code class="inline-code">source</code></td>
+                                    <td>String</td>
+                                    <td>Filestack handle or external URL for actions like transform, remove, or preview.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-4">Available Outputs</h3>
+                         <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code class="inline-code">uploadSuccess</code></td>
+                                    <td>Subject</td>
+                                    <td>An event emitter that fires on a successful upload.</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="inline-code">uploadError</code></td>
+                                    <td>Subject</td>
+                                    <td>An event emitter that fires when an upload error occurs.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    
+                     <!-- Service Section -->
+                    <section id="service" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">FilestackService</h2>
+                        <p class="text-gray-600 leading-relaxed mb-4">For advanced use cases, you can access the underlying filestack-js client functionality through the <code class="inline-code">FilestackService</code>. This allows you to use methods like <code class="inline-code">transform()</code>, <code class="inline-code">storeURL()</code>, and <code class="inline-code">upload()</code>, while leveraging the power of Observables.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Return</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code class="inline-code">init()</code></td><td>void</td><td>Initializes the filestack client with your API key.</td></tr>
+                                <tr><td><code class="inline-code">picker()</code></td><td>PickerInstance</td><td>Opens or closes the picker instance.</td></tr>
+                                <tr><td><code class="inline-code">transform()</code></td><td>string</td><td>Creates a transformation URL.</td></tr>
+                                <tr><td><code class="inline-code">retrieve()</code></td><td>Observable</td><td>Retrieves info about a Filestack handle.</td></tr>
+                                <tr><td><code class="inline-code">metadata()</code></td><td>Observable</td><td>Accesses metadata for a file via its handle.</td></tr>
+                                <tr><td><code class="inline-code">storeURL()</code></td><td>Observable</td><td>Gets info about a Filestack handle's metadata.</td></tr>
+                                <tr><td><code class="inline-code">upload()</code></td><td>Observable</td><td>Uploads a file to Filestack.</td></tr>
+                                <tr><td><code class="inline-code">remove()</code></td><td>Observable</td><td>Removes a file from storage.</td></tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Examples Section -->
+                    <section id="examples" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Examples</h2>
+                        
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Open Picker with Custom Button</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Use the <code class="inline-code">&lt;ng-picker-overlay&gt;</code> component and place a custom button inside it to act as the trigger.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>&lt;!-- component.html --&gt;
+&lt;ng-picker-overlay
+  [apikey]="apikey"
+  (uploadSuccess)="onUploadSuccess($event)"&gt;
+  &lt;button class="your-custom-button"&gt;Open Picker&lt;/button&gt;
+&lt;/ng-picker-overlay&gt;</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">Render Picker Inline</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Use the <code class="inline-code">&lt;ng-picker-inline&gt;</code> component to render the picker directly inside a container in your application's DOM.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>&lt;!-- component.html --&gt;
+&lt;ng-picker-inline
+  [apikey]="apikey"
+  (uploadSuccess)="onUploadSuccess($event)"&gt;
+&lt;/ng-picker-inline&gt;</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">Use the Transform Pipe</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Apply transformations directly in your template using the <code class="inline-code">filestackTransform</code> pipe.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>&lt;!-- component.html --&gt;
+&lt;img [src]="'FILE_HANDLE' | filestackTransform: transformOptions"&gt;
+
+// component.ts
+import { TransformOptions } from 'filestack-js';
+
+export class AppComponent {
+  transformOptions: TransformOptions = {
+    resize: { width: 400 },
+    sepia: { tone: 80 }
+  };
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">Upload with FilestackService</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Use a standard file input and the service to programmatically upload a file.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>&lt;!-- component.html --&gt;
+&lt;input type='file' (change)="fileChanged($event)"&gt;
+&lt;button (click)="uploadFile()"&gt;Upload File&lt;/button&gt;
+
+// component.ts
+export class AppComponent implements OnInit {
+  file: any;
+
+  constructor(private filestackService: FilestackService) {}
+
+  ngOnInit() {
+    this.filestackService.init('YOUR_API_KEY'); 
+  }
+
+  fileChanged(e) {
+    this.file = e.target.files[0];
+  }
+
+  uploadFile() {
+    this.filestackService.upload(this.file)
+      .subscribe(res => console.log(res));
+  }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- More Info Section -->
+                    <section id="more-info" class="mb-12">
+                         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">More Resources</h2>
+                         <ul class="list-disc list-inside text-gray-600 space-y-2 mt-4">
+                            <li><strong>CDN Access:</strong> The compiled module is on <a href="https://static.filestackapi.com/filestack-angular/" target="_blank">our CDN</a> at <code class="inline-code">https://static.filestackapi.com/filestack-angular/{VERSION}/filestack-angular.umd.min.js</code>.</li>
+                            <li><strong>Development:</strong> To run the example app locally, run <code class="inline-code">ng serve example</code> and visit <a href="http://localhost:4200/">http://localhost:4200/</a>.</li>
+                            <li><strong>Contribution:</strong> Contributions and ideas are welcome! The project follows the <a href="https://www.conventionalcommits.org/" target="_blank">conventional commits</a> specification.</li>
+                         </ul>
+                    </section>
+
+                </div>
+            </main>
+
+            <!-- Right Sidebar Navigation -->
+            <aside class="hidden lg:block lg:col-span-3">
+                <nav class="sticky top-12">
+                    <h4 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-3">On this page</h4>
+                    <ul>
+                        <li><a href="#overview" class="block text-sm text-orange-600 font-medium py-1">Overview</a></li>
+                        <li><a href="#usage" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Usage</a></li>
+                        <li><a href="#components" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Picker Components</a></li>
+                        <li><a href="#service" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">FilestackService</a></li>
+                        <li><a href="#examples" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Examples</a></li>
+                        <li><a href="#more-info" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">More Resources</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for active sidebar link highlighting on scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('aside nav a');
+
+            const onScroll = () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-orange-600', 'font-medium');
+                    if (!link.href.includes('#')) return;
+
+                    const linkHref = link.getAttribute('href').substring(1);
+
+                    if (linkHref === current) {
+                        link.classList.add('text-orange-600', 'font-medium');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', onScroll);
+            onScroll(); // Run on page load
+        });
+    </script>
+
+</body>
+</html>

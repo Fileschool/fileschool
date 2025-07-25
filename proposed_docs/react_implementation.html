@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filestack for React - Filestack Docs</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter as the default font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Changed to light gray */
+            color: #374151;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Main content container styling */
+        .main-content-area {
+            background-color: #ffffff; /* Changed to white */
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* Added shadow */
+        }
+
+        /* Styling for code blocks */
+        .code-block-wrapper {
+            background-color: #1f2937; /* Darker background for code */
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .code-block {
+            padding: 1rem;
+            color: #d1d5db; /* Lighter text for contrast */
+            font-size: 0.875rem;
+            overflow-x: auto;
+            font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", monospace;
+        }
+        
+        /* Inline code styling */
+        code.inline-code {
+            background-color: #e5e7eb;
+            color: #be123c;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        
+        /* General link styling */
+        a {
+            color: #ea580c;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            
+            <!-- Main Content -->
+            <main class="lg:col-span-9">
+                <!-- Breadcrumbs -->
+                <div class="text-sm text-gray-500 mb-4">
+                    <a href="#" class="hover:text-gray-700">Documentation</a>
+                    <span class="mx-2">&rsaquo;</span>
+                    <span>Filestack for React</span>
+                </div>
+
+                <!-- Page Title -->
+                <h1 class="text-4xl font-bold tracking-tight text-gray-900 mb-8">Filestack for React ⚛️</h1>
+
+                <div class="main-content-area">
+                    <!-- Intro Section -->
+                    <section id="overview" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Overview</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            The <code class="inline-code">filestack-react</code> library is a component-based wrapper for the core <a href="https://filestack.github.io/filestack-js/" target="_blank">filestack-js SDK</a>. It's designed to help you integrate Filestack's file handling services into your React applications with minimal effort and a familiar developer experience. You can implement the powerful Filestack Picker and its features in just a few lines of code.
+                        </p>
+                    </section>
+
+                    <!-- Usage Section -->
+                    <section id="usage" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Usage</h2>
+                        
+                        <div id="usage-install" class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Installation</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">Install the package from NPM.</p>
+                            <div class="code-block-wrapper">
+                                <pre class="code-block"><code>npm install filestack-react</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div id="usage-import" class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Implementation</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">Import a picker component and add it to your app. The only required prop is your Filestack API key.</p>
+                             <div class="code-block-wrapper">
+                                <pre class="code-block"><code>import { PickerOverlay } from 'filestack-react';
+
+const App = () => (
+  &lt;PickerOverlay
+    apikey={'YOUR_API_KEY'}
+    onUploadDone={(res) => console.log(res)}
+  /&gt;
+);</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Props Section -->
+                    <section id="props" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Component Props</h2>
+                        <p class="text-gray-600 leading-relaxed">Customize the picker's behavior and appearance using these props.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code class="inline-code">apikey</code></td>
+                                    <td>String</td>
+                                    <td>Yes</td>
+                                    <td>Your Filestack API key.</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="inline-code">clientOptions</code></td>
+                                    <td>Object</td>
+                                    <td>No</td>
+                                    <td>Options to initialize the filestack-js client. See <a href="https://filestack.github.io/filestack-js/interfaces/ClientOptions.html" target="_blank">docs</a>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="inline-code">pickerOptions</code></td>
+                                    <td>Object</td>
+                                    <td>No</td>
+                                    <td>Controls the picker's behavior and UI. See <a href="https://filestack.github.io/filestack-js/interfaces/PickerOptions.html" target="_blank">docs</a> for all available settings.</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="inline-code">onSuccess</code></td>
+                                    <td>Function</td>
+                                    <td>No</td>
+                                    <td><span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Deprecated</span> A function called after a successful action. Use <code class="inline-code">onUploadDone</code> instead.</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="inline-code">onUploadDone</code></td>
+                                    <td>Function</td>
+                                    <td>No</td>
+                                    <td>Callback function that runs when all files have been successfully uploaded. Receives the result object.</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="inline-code">onError</code></td>
+                                    <td>Function</td>
+                                    <td>No</td>
+                                    <td>Callback function that runs when an error occurs.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    
+                    <!-- Examples Section -->
+                    <section id="examples" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Picker Components & Examples</h2>
+                        <p class="text-gray-600 leading-relaxed mb-6">The library provides three main components to render the picker in different ways.</p>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">PickerOverlay</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Renders the picker in a modal that overlays your application.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>import { PickerOverlay } from 'filestack-react';
+
+&lt;PickerOverlay apikey={'YOUR_APIKEY'} /&gt;
+</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">PickerInline</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Renders the picker directly inside a container in your application's DOM.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>import { PickerInline } from 'filestack-react';
+
+&lt;PickerInline apikey={'YOUR_APIKEY'} /&gt;
+</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">PickerDropPane</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">Renders a drag-and-drop area for uploads.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>import { PickerDropPane } from 'filestack-react';
+
+&lt;PickerDropPane apikey={'YOUR_APIKEY'} /&gt;
+</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">Custom Container</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4">To embed the <code class="inline-code">PickerInline</code> or <code class="inline-code">PickerDropPane</code> in a specific element, pass that element as a child.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>&lt;PickerInline apikey={'YOUR_APIKEY'}&gt;
+  &lt;div id="my-filestack-container" style={{ height: '400px' }} /&gt;
+&lt;/PickerInline&gt;
+</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Client Section -->
+                    <section id="client" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Using the filestack-js Client</h2>
+                        <p class="text-gray-600 leading-relaxed mb-4">For advanced use cases, you can access the underlying <code class="inline-code">filestack-js</code> client instance directly. This allows you to use methods like <code class="inline-code">transform()</code>, <code class="inline-code">storeURL()</code>, and <code class="inline-code">remove()</code>.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="code-block"><code>import { client } from 'filestack-react';
+
+const filestackClient = client.init('YOUR_APIKEY');
+
+filestackClient.transform(handle, { resize: { width: 100 } })
+  .then(res => {
+    console.log(res);
+  });
+</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- SSR Section -->
+                    <section id="ssr" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Server-Side Rendering (SSR)</h2>
+                        <p class="text-gray-600 leading-relaxed mb-4">If you are using <code class="inline-code">filestack-react</code> in an SSR project (like Next.js or Gatsby), you may need to dynamically import the component to avoid errors related to the <code class="inline-code">window</code> object. For known workarounds, please see these issues on GitHub:</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1">
+                            <li><a href="https://github.com/filestack/filestack-react/issues/57" target="_blank">Issue #57</a></li>
+                            <li><a href="https://github.com/filestack/filestack-react/issues/65" target="_blank">Issue #65</a></li>
+                        </ul>
+                    </section>
+
+                    <!-- Migration Section -->
+                    <section id="migration" class="mb-12">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Migration Guides</h2>
+                        
+                        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-4">Migrating from v3/v4 to Latest</h3>
+                        <p class="text-gray-600 leading-relaxed">Key props have been renamed for consistency.</p>
+                        <table>
+                            <thead>
+                                <tr><th>Old Prop (v3/v4)</th><th>New Prop</th><th>Comment</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code class="inline-code">actionOptions</code></td><td><code class="inline-code">pickerOptions</code></td><td>Unified naming for picker configuration.</td></tr>
+                                <tr><td><code class="inline-code">action</code></td><td>N/A</td><td>The default picker action is now always 'pick'.</td></tr>
+                                <tr><td><code class="inline-code">customRender</code></td><td>N/A</td><td>Clients are now responsible for rendering logic.</td></tr>
+                                <tr><td><code class="inline-code">componentDisplayMode</code></td><td>N/A</td><td>Render logic is handled by the client.</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">Migrating from v1/v2 to v3+</h3>
+                        <p class="text-gray-600 leading-relaxed">Props were re-structured for clarity.</p>
+                        <table>
+                             <thead>
+                                <tr><th>Old Prop (v1/v2)</th><th>New Prop</th><th>Comment</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code class="inline-code">mode</code></td><td><code class="inline-code">actionOptions</code></td><td>Emphasizes association with a picker 'action'.</td></tr>
+                                <tr><td><code class="inline-code">options.security</code></td><td><code class="inline-code">clientOptions.security</code></td><td>Security options are now grouped under clientOptions.</td></tr>
+                                <tr><td><code class="inline-code">buttonText</code></td><td><code class="inline-code">componentDisplayMode.customText</code></td><td>Use the componentDisplayMode option. (Deprecated in v4+)</td></tr>
+                                <tr><td><code class="inline-code">buttonClass</code></td><td><code class="inline-code">componentDisplayMode.customClass</code></td><td>Use the componentDisplayMode option. (Deprecated in v4+)</td></tr>
+                                <tr><td><code class="inline-code">render</code></td><td><code class="inline-code">customRender</code></td><td>Use the customRender prop. (Deprecated in v4+)</td></tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- More Info Section -->
+                    <section id="more-info" class="mb-12">
+                         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">More Resources</h2>
+                         <ul class="list-disc list-inside text-gray-600 space-y-2 mt-4">
+                            <li><strong>Live Demo:</strong> Try the picker on <a href="https://codepen.io/Filestack/pen/KEpVdR" target="_blank">CodePen</a> (Note: this demo may not reflect the latest version).</li>
+                            <li><strong>Development:</strong> All components are located in the <code class="inline-code">src/picker/</code> directory of the repository. Run <code class="inline-code">npm run build</code> to compile changes.</li>
+                            <li><strong>Contribution:</strong> Contributions and ideas are welcome! The project follows the <a href="https://www.conventionalcommits.org/" target="_blank">conventional commits</a> specification.</li>
+                         </ul>
+                    </section>
+
+                </div>
+            </main>
+
+            <!-- Right Sidebar Navigation -->
+            <aside class="hidden lg:block lg:col-span-3">
+                <nav class="sticky top-12">
+                    <h4 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-3">On this page</h4>
+                    <ul>
+                        <li><a href="#overview" class="block text-sm text-orange-600 font-medium py-1">Overview</a></li>
+                        <li><a href="#usage" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Usage</a>
+                            <ul class="pl-4 mt-1">
+                                <li><a href="#usage-install" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Installation</a></li>
+                                <li><a href="#usage-import" class="block text-sm text-gray-500 hover:text-gray-900 py-1">Implementation</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#props" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Component Props</a></li>
+                        <li><a href="#examples" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Examples</a></li>
+                        <li><a href="#client" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Using the Client</a></li>
+                        <li><a href="#ssr" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">SSR</a></li>
+                        <li><a href="#migration" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">Migration Guides</a></li>
+                        <li><a href="#more-info" class="block text-sm text-gray-600 hover:text-gray-900 py-1 mt-1">More Resources</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for active sidebar link highlighting on scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('aside nav a');
+
+            const onScroll = () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-orange-600', 'font-medium');
+                    if (!link.href.includes('#')) return;
+
+                    const linkHref = link.getAttribute('href').substring(1);
+
+                    if (linkHref === current) {
+                        link.classList.add('text-orange-600', 'font-medium');
+                        
+                        // Highlight parent link if it's a sub-item
+                        const parentUl = link.closest('ul.pl-4');
+                        if (parentUl) {
+                            const parentLink = parentUl.previousElementSibling;
+                            if (parentLink && parentLink.tagName === 'A') {
+                                parentLink.classList.add('text-orange-600', 'font-medium');
+                            }
+                        }
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', onScroll);
+            onScroll(); // Run on page load
+        });
+    </script>
+
+</body>
+</html>
