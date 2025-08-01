@@ -190,21 +190,16 @@
             background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             background-size: 200% 100%;
         }
-
-        /* Hide navs when they don't have content */
-        nav[data-has-content="false"] {
-            display: none;
-        }
     </style>
 </head>
 
-<body class="text-gray-800 h-screen flex flex-col">
+<body class="text-gray-800 min-h-screen flex flex-col">
 
     <!-- Main Layout -->
-    <main class="w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6 flex-grow min-h-0">
+    <main class="flex-1 w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6 min-h-0">
 
         <!-- Input Column -->
-        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col">
+        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col min-h-0">
             <h2 class="text-xl md:text-2xl font-bold text-center text-gray-700 mb-6">Input Content & Analyze</h2>
 
             <!-- API Key Input -->
@@ -238,13 +233,13 @@
             </div>
 
             <!-- Editor -->
-            <div class="flex-grow flex flex-col min-h-[400px]">
+            <div class="flex-1 flex flex-col min-h-0">
                 <label class="block text-sm font-medium text-gray-600 mb-2">Article Content *</label>
-                <div id="editor" class="flex-grow border border-gray-300 rounded-md"></div>
+                <div id="editor" class="flex-1 border border-gray-300 rounded-md min-h-0"></div>
             </div>
 
             <!-- Controls Area -->
-            <div class="mt-6">
+            <div class="mt-6 flex-shrink-0">
                 <button id="analyzeButton"
                     class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400">
                     <i class="material-icons">play_arrow</i>
@@ -261,11 +256,11 @@
         </div>
 
         <!-- Results Column -->
-        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col">
-            <h2 class="text-xl md:text-2xl font-bold text-center text-gray-700 mb-4">Analysis Results</h2>
+        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col min-h-0">
+            <h2 class="text-xl md:text-2xl font-bold text-center text-gray-700 mb-4 flex-shrink-0">Analysis Results</h2>
 
             <!-- Tabs -->
-            <div class="border-b border-gray-200">
+            <div class="border-b border-gray-200 flex-shrink-0">
                 <nav id="tabs" class="flex space-x-4" aria-label="Tabs">
                     <a href="#" data-tab="contentAnalysisTab"
                         class="tab-link tab-active text-gray-500 hover:text-blue-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors">Content
@@ -275,45 +270,51 @@
                 </nav>
             </div>
 
-            <!-- Tab Content -->
-            <div class="flex-grow mt-4 overflow-hidden min-h-0">
+            <!-- Tab Content Container -->
+            <div class="flex-1 mt-4 min-h-0 overflow-hidden">
                 <!-- Content Analysis Tab -->
-                <div id="contentAnalysisTab" class="tab-content flex flex-col lg:flex-row gap-4 h-full">
+                <div id="contentAnalysisTab" class="tab-content h-full flex flex-col lg:flex-row gap-4">
                     <!-- Nav -->
-                    <nav id="contentNav" data-has-content="false"
-                        class="lg:block w-full lg:w-1/3 h-full overflow-y-auto bg-gray-50 p-3 rounded-lg border">
-                        <h3 class="font-bold text-blue-800 mb-3">Quick Navigation</h3>
-                        <ul id="contentNavLinks" class="space-y-2"></ul>
+                    <nav id="contentNav" class="hidden lg:block w-full lg:w-1/3 flex-shrink-0">
+                        <div class="h-full overflow-y-auto bg-gray-50 p-3 rounded-lg border">
+                            <h3 class="font-bold text-blue-800 mb-3">Quick Navigation</h3>
+                            <ul id="contentNavLinks" class="space-y-2"></ul>
+                        </div>
                     </nav>
                     <!-- Results -->
-                    <div id="contentResultsWrapper" class="w-full lg:w-2/3 h-full overflow-y-auto">
-                        <div id="resultsArea" class="p-1">
-                            <div class="text-center text-gray-500 p-8">
-                                <i class="material-icons text-5xl text-gray-400">assessment</i>
-                                <h3 class="text-lg font-semibold mt-4">Ready to analyze your content</h3>
-                                <p class="mt-2 text-sm">Paste your content and click "Analyze" to get detailed E-E-A-T
-                                    feedback and recommendations.</p>
+                    <div id="contentResultsWrapper" class="w-full lg:w-2/3 flex-1 min-h-0">
+                        <div class="h-full overflow-y-auto">
+                            <div id="resultsArea" class="p-1">
+                                <div class="text-center text-gray-500 p-8">
+                                    <i class="material-icons text-5xl text-gray-400">assessment</i>
+                                    <h3 class="text-lg font-semibold mt-4">Ready to analyze your content</h3>
+                                    <p class="mt-2 text-sm">Paste your content and click "Analyze" to get detailed
+                                        E-E-A-T feedback and recommendations.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Chunkability Tab -->
-                <div id="chunkabilityTab" class="tab-content hidden flex-col lg:flex-row gap-4 h-full">
+                <div id="chunkabilityTab" class="tab-content hidden h-full flex flex-col lg:flex-row gap-4">
                     <!-- Nav -->
-                    <nav id="chunkNav" data-has-content="false"
-                        class="lg:block w-full lg:w-1/3 h-full overflow-y-auto bg-gray-50 p-3 rounded-lg border">
-                        <h3 class="font-bold text-blue-800 mb-3">Quick Navigation</h3>
-                        <ul id="chunkNavLinks" class="space-y-2"></ul>
+                    <nav id="chunkNav" class="hidden lg:block w-full lg:w-1/3 flex-shrink-0">
+                        <div class="h-full overflow-y-auto bg-gray-50 p-3 rounded-lg border">
+                            <h3 class="font-bold text-blue-800 mb-3">Quick Navigation</h3>
+                            <ul id="chunkNavLinks" class="space-y-2"></ul>
+                        </div>
                     </nav>
                     <!-- Results -->
-                    <div id="chunkabilityResultsWrapper" class="w-full lg:w-2/3 h-full overflow-y-auto">
-                        <div id="chunkabilityResults" class="p-1">
-                            <div class="text-center text-gray-500 p-8">
-                                <i class="material-icons text-5xl text-gray-400">view_module</i>
-                                <h3 class="text-lg font-semibold mt-4">Ready to check chunkability</h3>
-                                <p class="mt-2 text-sm">Chunkability analysis will assess how well your content can be
-                                    processed by AI systems.</p>
+                    <div id="chunkabilityResultsWrapper" class="w-full lg:w-2/3 flex-1 min-h-0">
+                        <div class="h-full overflow-y-auto">
+                            <div id="chunkabilityResults" class="p-1">
+                                <div class="text-center text-gray-500 p-8">
+                                    <i class="material-icons text-5xl text-gray-400">view_module</i>
+                                    <h3 class="text-lg font-semibold mt-4">Ready to check chunkability</h3>
+                                    <p class="mt-2 text-sm">Chunkability analysis will assess how well your content can
+                                        be processed by AI systems.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -323,7 +324,7 @@
     </main>
 
     <!-- Footer Section with Criteria -->
-    <footer class="w-full p-4 md:p-6">
+    <footer class="w-full p-4 md:p-6 mt-6 flex-shrink-0">
         <h1
             class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-4 flex items-center justify-center gap-3">
             <i class="material-icons text-blue-500" style="font-size: 1.2em;">assessment</i>
@@ -548,10 +549,8 @@
                 progressBar.style.width = '0%';
                 analyzeButton.disabled = true;
                 analyzeButton.querySelector('span').textContent = 'Analyzing...';
-
-                contentNav.dataset.hasContent = 'false';
-                chunkNav.dataset.hasContent = 'false';
-
+                contentNav.classList.add('hidden');
+                chunkNav.classList.add('hidden');
                 resultsArea.innerHTML = createSkeletonLoading(false);
                 chunkabilityResults.innerHTML = createSkeletonLoading(true);
 
@@ -618,7 +617,7 @@
                         const processedContent = generateNavigation(htmlContent, contentNavLinks, 'content');
                         resultsArea.innerHTML = processedContent;
                         applyStylingToResults(resultsArea);
-                        contentNav.dataset.hasContent = 'true';
+                        contentNav.classList.remove('hidden');
                     } else {
                         resultsArea.innerHTML = '<p class="text-center text-gray-500 p-4">Could not extract Content Analysis.</p>';
                     }
@@ -629,7 +628,7 @@
                         const processedChunk = generateNavigation(chunkHtml, chunkNavLinks, 'chunk');
                         chunkabilityResults.innerHTML = processedChunk;
                         applyStylingToResults(chunkabilityResults);
-                        chunkNav.dataset.hasContent = 'true';
+                        chunkNav.classList.remove('hidden');
                     } else {
                         chunkabilityResults.innerHTML = '<p class="text-center text-gray-500 p-4">No chunkability analysis found.</p>';
                     }
@@ -727,8 +726,6 @@ ${metadataContent}
                 statusText.textContent = '';
                 resultsArea.innerHTML = `<p class="text-center text-red-600 font-bold p-4">Analysis failed. Check the error message.</p>`;
                 chunkabilityResults.innerHTML = `<p class="text-center text-red-600 font-bold p-4">Analysis failed.</p>`;
-                contentNav.dataset.hasContent = 'false';
-                chunkNav.dataset.hasContent = 'false';
             }
 
             function resetState() {
