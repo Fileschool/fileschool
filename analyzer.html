@@ -7,7 +7,7 @@
     <title>E-E-A-T & Helpful Content Analyzer</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/froala-editor@4.0.10/css/froala_editor.pkgd.min.css" rel="stylesheet"
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@4.6.0/css/froala_editor.pkgd.min.css" rel="stylesheet"
         type="text/css" />
     <style>
         /* Your New Color Palette */
@@ -16,9 +16,7 @@
 
         body {
             background-color: #f8f9fa;
-            /* A very light, neutral grey for a clean look */
             color: #333333;
-            /* Standard dark grey for body text for readability */
             margin: 0;
             padding: 0;
             display: flex;
@@ -43,6 +41,7 @@
             width: 100%;
             max-width: 100%;
             margin: 0;
+            height: calc(100vh - 200px);
         }
 
         .column {
@@ -54,12 +53,14 @@
             padding: 20px;
             border-radius: 4px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            /* Softer shadow */
             box-sizing: border-box;
+            max-height: 100%;
         }
 
         .results-column {
             order: 2;
+            overflow: hidden;
+            position: relative;
         }
 
         .input-column {
@@ -68,26 +69,20 @@
 
         h1 {
             color: #005c94;
-            /* A deeper shade of the primary blue for title text */
             text-align: center;
             font-size: 2.5rem;
             margin-bottom: 0.5em;
             margin-top: 0;
         }
 
-        /* Style for the icon within H1 */
         h1>i.material-icons {
             color: #0098f7;
-            /* Primary Blue for the icon */
             font-size: 1em;
-            /* Adjust if icon size needs to match text better */
             vertical-align: middle;
         }
 
-
         h2 {
             color: #0077c2;
-            /* A medium shade of the primary blue for section titles */
             text-align: center;
             margin-top: 0;
             margin-bottom: 1em;
@@ -96,9 +91,7 @@
 
         .requirements {
             background: #e6f5ff;
-            /* Very light tint of Primary Blue */
             border-left: 4px solid #0098f7;
-            /* Primary Blue border */
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 4px;
@@ -113,39 +106,320 @@
         .requirements strong {
             font-size: 1.1em;
             color: #005c94;
-            /* Deeper shade of Primary Blue for emphasis */
+        }
+
+        /* Navigation Sidebar Styles */
+        .results-wrapper {
+            display: flex;
+            height: 100%;
+            gap: 20px;
+        }
+
+        .results-nav {
+            width: 280px;
+            min-width: 280px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            position: sticky;
+            top: 20px;
+            align-self: flex-start;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .results-nav h3 {
+            font-size: 1.1rem;
+            color: #005c94;
+            margin: 0 0 20px 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .nav-section {
+            margin-bottom: 20px;
+        }
+
+        .nav-section h4 {
+            font-size: 0.9rem;
+            color: #0077c2;
+            margin: 0 0 8px 0;
+            font-weight: 500;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 10px;
+        }
+
+        .nav-links a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 10px 16px;
+            border-radius: 6px;
+            display: block;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            line-height: 1.4;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-links a:hover {
+            background: #e6f5ff;
+            color: #0098f7;
+            border-left-color: #0098f7;
+            transform: translateX(2px);
+        }
+
+        .nav-links a.active {
+            background: #0098f7;
+            color: white;
+            border-left-color: #005c94;
+            font-weight: 500;
+        }
+
+        .nav-links a .score {
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+
+        .nav-links a.active .score {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Results Content Area */
+        .results-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 10px;
         }
 
         #resultsArea {
-            margin-top: 20px;
-            padding: 20px;
+            padding: 30px;
             background: #ffffff;
             min-height: 400px;
-            border: 1px solid #dee2e6;
-            /* Light grey border */
-            border-radius: 4px;
-            line-height: 1.6;
-            overflow-y: auto;
-            flex-grow: 1;
+            line-height: 1.8;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Enhanced Results Formatting */
+        #resultsArea>h2:first-child {
+            margin-top: 0;
+        }
+
+        #resultsArea h2 {
+            font-size: 1.8rem;
+            color: #15b69b;
+            margin: 3em 0 1.5em 0;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #15b69b;
+            position: relative;
+        }
+
+        #resultsArea h2:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 60px;
+            height: 3px;
+            background: #0098f7;
         }
 
         #resultsArea h3 {
-            font-size: 1.5rem;
-            color: #15b69b;
-            /* Accent Teal for these headings */
-            margin-top: 1.5em;
+            font-size: 1.4rem;
+            color: #13a38a;
+            margin: 2em 0 1em 0;
+            font-weight: 600;
         }
 
         #resultsArea h4 {
             font-size: 1.2rem;
-            color: #13a38a;
-            /* Slightly darker/muted Accent Teal */
-            margin-top: 1em;
+            color: #0f8b75;
+            margin: 1.5em 0 0.8em 0;
+            font-weight: 500;
         }
 
         #resultsArea strong {
             color: #0077c2;
-            /* Medium Primary Blue for strong text in results */
+            font-weight: 600;
+        }
+
+        #resultsArea ul,
+        #resultsArea ol {
+            margin: 1.5em 0;
+            padding-left: 2em;
+        }
+
+        #resultsArea li {
+            margin: 0.8em 0;
+            line-height: 1.8;
+        }
+
+        #resultsArea p {
+            margin: 1.2em 0;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Score and Priority Styling */
+        #resultsArea p:has(strong:contains("Score:")) {
+            background: #f0f9ff;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 1.5em 0;
+            border-left: 4px solid #0098f7;
+            font-size: 1.1rem;
+        }
+
+        #resultsArea p:has(strong:contains("Priority:")) {
+            background: #e8f5f2;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 1em 0;
+            border-left: 4px solid #15b69b;
+        }
+
+        /* Enhanced Warning Note Styling */
+        .warning-note {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%) !important;
+            padding: 16px 20px 16px 50px !important;
+            border-radius: 8px !important;
+            margin: 2em 0 !important;
+            border: 2px solid #f39c12 !important;
+            border-left: 6px solid #e67e22 !important;
+            font-style: italic !important;
+            color: #8b4513 !important;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.15) !important;
+            position: relative !important;
+        }
+        
+        .warning-note::before {
+            content: "⚠️";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4em;
+            background: #f39c12;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        
+        .warning-note strong {
+            color: #d68910 !important;
+            font-weight: 700 !important;
+        }
+
+        /* Optimized Skeleton Loading Animation */
+        .skeleton-loading {
+            padding: 20px;
+        }
+
+        .skeleton-loading.active {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .skeleton-line {
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton-line.animated::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .skeleton-line.short {
+            width: 60%;
+        }
+
+        .skeleton-line.medium {
+            width: 80%;
+        }
+
+        .skeleton-line.long {
+            width: 95%;
+        }
+
+        .skeleton-title {
+            height: 30px;
+            width: 70%;
+            background: #15b69b;
+            border-radius: 6px;
+            margin: 20px 0 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton-title.animated::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        .analyzing-text {
+            text-align: center;
+            font-size: 1.2em;
+            color: #0098f7;
+            margin: 20px 0;
+            font-weight: 500;
         }
 
         .error-message {
@@ -162,49 +436,54 @@
         table#scoreTable {
             width: 100%;
             margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         table.striped.blue-theme-table {
-            border: 1px solid #b3e0ff;
-            /* Lighter tint of Primary Blue for table border */
+            border: none;
         }
 
         table.striped.blue-theme-table thead tr {
-            border-bottom: 2px solid #0098f7;
-            /* Primary Blue bottom border for table header */
+            background: #0098f7;
+            color: white;
+        }
+
+        table.striped.blue-theme-table thead th {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            padding: 14px 16px;
+            border: none;
         }
 
         table.striped.blue-theme-table tr td,
         table.striped.blue-theme-table tr th {
             color: #00304A;
-            /* Very Dark Blue for table text, for contrast */
-            padding: 10px 12px;
+            padding: 12px 16px;
         }
 
         table.striped.blue-theme-table tbody tr:nth-child(odd) {
+            background-color: #f8fbff;
+        }
+
+        table.striped.blue-theme-table tbody tr:hover {
             background-color: #e6f5ff;
-            /* Very light tint of Primary Blue for striped rows */
+            transition: background-color 0.2s ease;
         }
-
-        table.striped.blue-theme-table th {
-            font-weight: bold;
-            background-color: #ccefff;
-            /* Light tint of Primary Blue for table headers */
-        }
-
 
         .status-text {
             margin-top: 10px;
             font-style: italic;
             color: #555;
-            /* Neutral grey for status text */
             text-align: center;
             height: 1.5em;
         }
 
         #editor {
             border: 1px solid #b3e0ff;
-            /* Lighter tint of Primary Blue for editor border */
             margin-top: 15px;
             max-height: 60vh;
             overflow-y: auto;
@@ -231,75 +510,276 @@
 
         .overall-score td {
             font-weight: bold;
-            background-color: #b3e0ff !important;
-            /* Lighter tint of Primary Blue */
-            color: #00304A !important;
-            /* Dark Blue text for contrast */
+            background-color: #0098f7 !important;
+            color: white !important;
+            font-size: 1.1rem;
         }
 
         .progress {
             background-color: #b3e0ff;
-            /* Lighter tint of Primary Blue for progress bar background */
             margin-top: 15px;
         }
 
         .progress .determinate {
             background-color: #0098f7 !important;
-            /* Primary Blue for progress bar fill */
         }
-
 
         .input-field {
             margin-bottom: 1rem;
         }
 
-        /* Input field focus styling with Primary Blue */
         .input-field input[type=text]:focus+label,
         .input-field input[type=password]:focus+label {
             color: #0098f7 !important;
-            /* Primary Blue */
         }
 
         .input-field input[type=text]:focus,
         .input-field input[type=password]:focus {
             border-bottom: 1px solid #0098f7 !important;
-            /* Primary Blue */
             box-shadow: 0 1px 0 0 #0098f7 !important;
-            /* Primary Blue */
         }
-
 
         .controls-area {
             margin-top: 20px;
         }
 
-        /* Button Styling - Overriding Materialize or using a custom class */
-        /* If you keep 'blue darken-2' on the button, this will override it */
         #analyzeButton.btn-large.blue.darken-2,
         .btn-large.custom-blue-button {
-            /* Added custom-blue-button as an alternative */
             background-color: #0098f7 !important;
-            /* Primary Blue */
             color: #fff !important;
         }
 
         #analyzeButton.btn-large.blue.darken-2:hover,
         .btn-large.custom-blue-button:hover {
             background-color: #007acc !important;
-            /* A slightly darker shade of Primary Blue for hover */
         }
 
+        /* Tab styling */
+        .tabs .tab a {
+            color: #00B093;
+        }
+
+        .tabs .tab a:hover {
+            color: #00B093;
+            background-color: rgba(0, 176, 147, 0.1);
+        }
+
+        .tabs .indicator {
+            background-color: #00B093;
+        }
+
+        .tabs .tab a.active {
+            color: #00B093;
+            background-color: transparent;
+        }
+
+        .tabs .tab a:focus,
+        .tabs .tab a:focus.active {
+            background-color: transparent;
+        }
+
+        /* Chunkability Results Styling - Match Content Analysis */
+        #chunkabilityResults {
+            padding: 30px;
+            background: #ffffff;
+            min-height: 400px;
+            line-height: 1.8;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        #chunkabilityResults>h2:first-child {
+            margin-top: 0;
+        }
+
+        #chunkabilityResults h2 {
+            font-size: 1.8rem;
+            color: #15b69b;
+            margin: 3em 0 1.5em 0;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #15b69b;
+            position: relative;
+        }
+
+        #chunkabilityResults h2:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 60px;
+            height: 3px;
+            background: #0098f7;
+        }
+
+        #chunkabilityResults h3 {
+            font-size: 1.4rem;
+            color: #13a38a;
+            margin: 2em 0 1em 0;
+            font-weight: 600;
+        }
+
+        #chunkabilityResults h4 {
+            font-size: 1.2rem;
+            color: #0f8b75;
+            margin: 1.5em 0 0.8em 0;
+            font-weight: 500;
+        }
+
+        #chunkabilityResults h5,
+        #chunkabilityResults h6 {
+            font-size: 1.1rem;
+            color: #0c7a68;
+            margin: 1.2em 0 0.6em 0;
+            font-weight: 500;
+        }
+
+        #chunkabilityResults p {
+            margin: 1.2em 0;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        #chunkabilityResults ul,
+        #chunkabilityResults ol {
+            margin: 1.5em 0;
+            padding-left: 2em;
+        }
+
+        #chunkabilityResults li {
+            margin: 0.8em 0;
+            line-height: 1.8;
+        }
+
+        #chunkabilityResults strong {
+            color: #0077c2;
+            font-weight: 600;
+        }
+
+        /* Score and Priority Styling for Chunkability */
+        #chunkabilityResults p:has(strong:contains("Score:")) {
+            background: #f0f9ff;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 1.5em 0;
+            border-left: 4px solid #0098f7;
+            font-size: 1.1rem;
+        }
+
+        #chunkabilityResults p:has(strong:contains("Priority:")) {
+            background: #e8f5f2;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 1em 0;
+            border-left: 4px solid #15b69b;
+        }
+
+
+        #chunkabilityResults .criteria {
+            background: #f0f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #15b69b;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        #chunkabilityResults .yes {
+            color: #2e7d32;
+            font-weight: 600;
+            background: #e8f5e9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        #chunkabilityResults .no {
+            color: #c62828;
+            font-weight: 600;
+            background: #ffebee;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        #chunkabilityResults .rating {
+            font-weight: bold;
+            color: #00B093;
+            font-size: 1.3em;
+            background: #e6f7f4;
+            padding: 10px 16px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #chunkabilityResults blockquote {
+            border-left: 4px solid #15b69b;
+            background: #f8fcff;
+            padding: 20px 24px;
+            margin: 24px 0;
+            font-style: italic;
+            color: #555;
+            border-radius: 0 8px 8px 0;
+        }
+
+        #chunkabilityResults code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #d63384;
+            font-family: 'Courier New', monospace;
+        }
+
+        #chunkabilityResults pre {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .tab-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Ensure both tab contents have identical layout */
+        #contentAnalysisTab,
+        #chunkabilityTab {
+            width: 100%;
+            height: 100%;
+        }
+
+        #contentAnalysisTab .results-wrapper,
+        #chunkabilityTab .results-wrapper {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Hide navigation on initial load */
+        .results-nav:not(.has-results) {
+            display: none;
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
 
         @media (max-width: 992px) {
             .main-layout {
                 flex-direction: column;
                 padding: 10px 10px 10px 10px;
                 gap: 15px;
+                height: auto;
             }
 
             .column {
                 flex-basis: auto;
                 width: 100%;
+                max-height: none;
             }
 
             .results-column {
@@ -310,8 +790,22 @@
                 order: 1;
             }
 
-            #resultsArea {
+            .results-wrapper {
+                flex-direction: column;
+            }
+
+            .results-nav {
+                width: 100%;
+                max-height: 300px;
+                margin-bottom: 20px;
+                position: relative;
+                top: auto;
+            }
+
+            #resultsArea,
+            #chunkabilityResults {
                 min-height: 250px;
+                max-height: 400px;
             }
         }
     </style>
@@ -328,15 +822,16 @@
             </div>
             <p style="margin-top: -0.5rem; margin-bottom: 1.5rem; font-size: 0.9em; color: #555;">Optional Metadata:</p>
             <div class="input-field">
-                <input id="metaTitle" type="text">
+                <input id="metaTitle" type="text" placeholder="Complete Guide to Digital Marketing Strategies in 2024">
                 <label for="metaTitle">Title Tag (Optional)</label>
             </div>
             <div class="input-field">
-                <input id="metaDescription" type="text">
+                <input id="metaDescription" type="text"
+                    placeholder="Discover proven digital marketing strategies and tactics that will boost your online presence and drive more conversions in 2024.">
                 <label for="metaDescription">Meta Description (Optional)</label>
             </div>
             <div class="input-field">
-                <input id="metaSlug" type="text">
+                <input id="metaSlug" type="text" placeholder="complete-guide-digital-marketing-strategies-2024">
                 <label for="metaSlug">URL Slug (Optional)</label>
             </div>
             <label style="font-size: 0.9em; color: #555; display: block; margin-bottom: -10px;">Article Content
@@ -345,13 +840,8 @@
                 <div id="editor" style="flex-grow: 1; display: flex; flex-direction: column;"></div>
                 <div class="controls-area">
                     <div class="center-align">
-                        <button id="chunkabilityButton" class="btn-large blue darken-2 waves-effect waves-light" style="margin-bottom: 15px;">
-                            <i class="material-icons left">content_cut</i>Check Chunkability
-                        </button>
-                    </div>
-                    <div class="center-align">
                         <button id="analyzeButton" class="btn-large blue darken-2 waves-effect waves-light">
-                            <i class="material-icons left">play_arrow</i>Analyze Content
+                            <i class="material-icons left">play_arrow</i>Analyze & Check Chunkability
                         </button>
                     </div>
                     <div class="progress" style="margin-top:25px; display:none;">
@@ -364,16 +854,66 @@
         </div>
         <div class="column results-column">
             <h2>Analysis Results</h2>
-            <table id="scoreTable" class="striped green lighten-5 responsive-table" style="display:none;">
+            <table id="scoreTable" class="striped blue-theme-table responsive-table" style="display:none;">
                 <thead>
                     <tr>
                         <th>Category</th>
-                        <th>Score ( /10)</th>
+                        <th>Score</th>
                     </tr>
                 </thead>
                 <tbody id="scoreTableBody"></tbody>
             </table>
-            <div id="resultsArea">Analysis results will appear here.</div>
+            <div class="tabs-container">
+                <ul class="tabs">
+                    <li class="tab col s6"><a class="active" href="#contentAnalysisTab">Content Analysis</a></li>
+                    <li class="tab col s6"><a href="#chunkabilityTab">Chunkability</a></li>
+                </ul>
+            </div>
+            <div id="contentAnalysisTab" class="tab-content">
+                <div class="results-wrapper">
+                    <nav class="results-nav" id="contentNav">
+                        <h3>Quick Navigation</h3>
+                        <ul class="nav-links" id="contentNavLinks">
+                            <!-- Navigation links will be dynamically generated here -->
+                        </ul>
+                    </nav>
+                    <div class="results-content">
+                        <div id="resultsArea">
+                            <div class="analyzing-text">
+                                <i class="material-icons"
+                                    style="vertical-align: middle; margin-right: 8px;">assessment</i>
+                                Ready to analyze your content
+                            </div>
+                            <p style="text-align: center; color: #666; margin-top: 20px;">
+                                Paste your content and click "Analyze" to get detailed E-E-A-T feedback and
+                                recommendations.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="chunkabilityTab" class="tab-content">
+                <div class="results-wrapper">
+                    <nav class="results-nav" id="chunkNav">
+                        <h3>Quick Navigation</h3>
+                        <ul class="nav-links" id="chunkNavLinks">
+                            <!-- Navigation links will be dynamically generated here -->
+                        </ul>
+                    </nav>
+                    <div class="results-content">
+                        <div id="chunkabilityResults">
+                            <div class="analyzing-text">
+                                <i class="material-icons"
+                                    style="vertical-align: middle; margin-right: 8px;">view_module</i>
+                                Ready to check chunkability
+                            </div>
+                            <p style="text-align: center; color: #666; margin-top: 20px;">
+                                Chunkability analysis will assess how well your content can be processed by AI systems.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -396,6 +936,9 @@
                 <li><strong>Metadata Relevance (Optional)</strong>: Assess alignment of title, description, and URL with
                     content focus (if provided).</li>
             </ul>
+            <p><strong>Important Note:</strong> <em>Due to API limitations, this analysis focuses exclusively on textual
+                    content. Images, graphics, and visual elements are automatically excluded from all scoring and
+                    recommendations.</em></p>
             <p><strong>Feedback Format:</strong></p>
             <ol>
                 <li>Clear identification of the issue or strength.</li>
@@ -408,12 +951,18 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/froala-editor@4.0.10/js/froala_editor.pkgd.min.js"></script>
+        src="https://cdn.jsdelivr.net/npm/froala-editor@4.6.0/js/froala_editor.pkgd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             M.AutoInit();
             M.updateTextFields();
+            
+            // Initialize tabs specifically
+            const tabsElement = document.querySelector('.tabs');
+            if (tabsElement) {
+                M.Tabs.init(tabsElement);
+            }
             try {
                 new FroalaEditor('#editor', {
                     placeholderText: 'Paste your article HTML or text content here...',
@@ -446,322 +995,217 @@
         const apiUrl = 'https://api.deepseek.com/chat/completions';
         const modelName = 'deepseek-chat';
 
+        // Navigation elements
+        const contentNav = document.getElementById('contentNav');
+        const contentNavLinks = document.getElementById('contentNavLinks');
+        const chunkNav = document.getElementById('chunkNav');
+        const chunkNavLinks = document.getElementById('chunkNavLinks');
+
         // --- NEW: Loading messages and interval ID ---
         let loadingIntervalId = null;
         const loadingMessages = [
-            "Analyzing your content...", "Hang on, brewing insights...", "Just a little bit longer...", "Almost there!",
-            "Digging deep into the text...", "Cross-referencing E-E-A-T signals...", "The AI gears are turning...", "Processing your article...",
-            "Evaluating for helpfulness...", "Checking for expertise cues...", "Don't go anywhere, magic is happening!", "Unpacking the details...",
-            "Consulting the content oracles...", "Good things take time...", "Warming up the analysis engine...", "Nearly ready with your feedback...",
-            "Scanning for quality markers...", "Just a moment, please...", "Crafting your analysis...", "This is exciting, right?",
-            "Pondering over the prose...", "Verifying trustworthiness factors...", "Hold tight, results incoming!", "The analysis is in progress...",
-            "Soon you'll see the scores...", "Getting your E-E-A-T breakdown...", "Patience is a virtue, and so is great content!", "Almost at the finish line...",
-            "Finalizing the report...", "Just a few more seconds...", "Crunching the data...", "Optimizing feedback...", "Working on it!", "Stay tuned...",
-            "Gathering thoughts...", "Synthesizing information..."
-        ]; // Added 34 messages
+            "Analyzing content structure...",
+            "Evaluating E-E-A-T signals...",
+            "Processing expertise indicators...",
+            "Checking trustworthiness factors...",
+            "Assessing content depth...",
+            "Analyzing engagement elements...",
+            "Reviewing originality markers...",
+            "Examining authoritativeness...",
+            "Evaluating user experience...",
+            "Processing content quality...",
+            "Analyzing readability patterns...",
+            "Checking source credibility...",
+            "Assessing content completeness...",
+            "Reviewing metadata alignment...",
+            "Analyzing chunkability factors...",
+            "Processing final recommendations..."
+        ];
 
-        analyzeButton.addEventListener('click', handleAnalysis);
-        document.getElementById('chunkabilityButton').addEventListener('click', handleChunkabilityAnalysis);
+        // Optimized navigation generation with special handling for chunkability
+        function generateNavigation(content, navContainer, prefix = '') {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            const headings = tempDiv.querySelectorAll('h2, h3');
+            const navItems = [];
+            const fragment = document.createDocumentFragment();
+            
+            // Check if this is chunkability content
+            const isChunkability = prefix === 'chunk';
 
-        async function handleAnalysis() {
-            document.title = 'Analyzing...';
-            const apiKey = apiKeyInput.value.trim();
-            const metaTitle = metaTitleInput.value.trim();
-            const metaDescription = metaDescriptionInput.value.trim();
-            const metaSlug = metaSlugInput.value.trim();
-            let content = '';
+            headings.forEach((heading, index) => {
+                const text = heading.textContent;
+                const id = `${prefix}heading-${index}`;
+                heading.id = id;
 
-            if (typeof FroalaEditor !== 'undefined' && FroalaEditor.INSTANCES && FroalaEditor.INSTANCES[0]) {
-                content = FroalaEditor.INSTANCES[0].html.get();
-            } else {
-                const editorDiv = document.getElementById('editor');
-                content = editorDiv.innerText || editorDiv.innerHTML;
-            }
-
-            errorMessageDiv.textContent = '';
-            errorMessageDiv.style.display = 'none';
-            // resultsArea.innerHTML = 'Starting analysis...'; // Replaced by loading messages
-            scoreTable.style.display = 'none';
-            scoreTableBody.innerHTML = '';
-            statusText.textContent = '';
-            progressBar.style.width = '0%';
-            progressContainer.style.display = 'block';
-            analyzeButton.disabled = true;
-            analyzeButton.innerHTML = '<i class="material-icons left">hourglass_top</i>Analyzing...';
-
-            // --- NEW: Start loading messages ---
-            if (loadingIntervalId) { // Clear any existing interval
-                clearInterval(loadingIntervalId);
-                loadingIntervalId = null;
-            }
-            resultsArea.innerHTML = `<p style="text-align:center; font-style:italic; color:#555;">${loadingMessages[0]}</p>`; // Show first message immediately
-            loadingIntervalId = setInterval(() => {
-                const randomIndex = Math.floor(Math.random() * loadingMessages.length);
-                resultsArea.innerHTML = `<p style="text-align:center; font-style:italic; color:#555;">${loadingMessages[randomIndex]}</p>`;
-            }, 2000); // Change message every 2 seconds
-
-            statusText.textContent = 'Step 1/7: Validating inputs...';
-            moveProgress(5);
-
-            if (!apiKey) {
-                showError('API Key is required.'); // showError will now handle interval clearing
-                resetState('Please enter your DeepSeek API Key.');
-                // No explicit return here, showError handles UI updates
-                return;
-            }
-            if (!content || content.trim().length < 100) {
-                showError('Article content is required (minimum 100 characters).'); // showError will handle interval clearing
-                resetState('Please paste sufficient content into the editor.');
-                return;
-            }
-            statusText.textContent = 'Step 1/7: Inputs validated.';
-            moveProgress(10);
-
-            try {
-                statusText.textContent = 'Step 2/7: Preparing analysis prompt...';
-                await sleep(200);
-                moveProgress(15);
-                const prompt = buildAnalysisPrompt(content, metaTitle, metaDescription, metaSlug);
-                statusText.textContent = 'Step 2/7: Prompt prepared.';
-                moveProgress(20);
-
-                statusText.textContent = 'Step 3/7: Connecting to DeepSeek API...';
-                await sleep(300);
-                moveProgress(25);
-
-                statusText.textContent = 'Step 4/7: Sending request & awaiting analysis... (This may take a moment)';
-                moveProgress(30);
-                const startTime = Date.now();
-
-                const response = await fetch(apiUrl, { /* ... API call details ... */
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: modelName,
-                        messages: [
-                            { role: 'system', content: "You are an expert content analyst specializing in Google's E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) and Helpful Content guidelines. Analyze the provided text (and optional metadata) based on these principles. Structure your response in Markdown. For EACH applicable category (Content Quality, Expertise & Credibility, Engagement & Presentation, Originality & Insight, Trustworthiness & Transparency, and Metadata Relevance *if metadata was provided*), provide:\n1. A heading for the category (e.g., `## Content Quality` or `## Metadata Relevance`).\n2. A brief assessment identifying key issues or strengths.\n3. Specific, actionable fixes or recommendations with examples.\n4. A score line at the end of the category's section formatted *exactly* as: `**Score: [score]/10**` (e.g., `**Score: 7/10**`).\n5. A priority line *immediately after* the score formatted *exactly* as: `**Priority: [High/Medium/Low]**` (e.g., `**Priority: High**`).\nIf no metadata was provided by the user, DO NOT include the 'Metadata Relevance' section in your analysis." },
-                            { role: 'user', content: prompt }
-                        ],
-                        temperature: 0.5,
-                        max_tokens: 7000
-                    })
-                });
-
-                const elapsed = Date.now() - startTime;
-                const waitTime = Math.max(0, 2000 - elapsed);
-                await fakeProgress(35, 60, waitTime);
-
-                statusText.textContent = 'Step 5/7: Receiving and checking response...';
-                moveProgress(65);
-
-                if (!response.ok) {
-                    let errorBody = 'Could not retrieve error details from API response.';
-                    try { const errorData = await response.json(); errorBody = errorData.error?.message || JSON.stringify(errorData); } catch (e) { /* Ignore */ }
-                    throw new Error(`API Error ${response.status}: ${response.statusText}. Details: ${errorBody}`);
-                }
-                statusText.textContent = 'Step 5/7: Response received successfully.';
-                moveProgress(75);
-
-                statusText.textContent = 'Step 6/7: Parsing analysis data...';
-                const data = await response.json();
-                await sleep(200);
-                moveProgress(80);
-
-                if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
-                    throw new Error('API response did not contain the expected analysis content structure.');
-                }
-                const markdown = data.choices[0].message.content;
-                statusText.textContent = 'Step 6/7: Analysis data parsed.';
-                moveProgress(85);
-
-                statusText.textContent = 'Step 7/7: Formatting and displaying results...';
-                await sleep(300);
-
-                // --- NEW: Clear loading interval before displaying results ---
-                if (loadingIntervalId) {
-                    clearInterval(loadingIntervalId);
-                    loadingIntervalId = null;
-                }
-                displayResults(markdown);
-                moveProgress(95);
-
-                statusText.textContent = 'Analysis complete!';
-                moveProgress(100);
-                document.title = 'Analysis Complete';
-
-            } catch (err) {
-                console.error("Analysis Error:", err);
-                // showError will handle interval clearing
-                showError(`Error during analysis: ${err.message}`);
-                if (document.title === 'Analyzing...') {
-                    document.title = 'E-E-A-T & Helpful Content Analyzer';
-                }
-            } finally {
-                // --- NEW: Ensure interval is cleared in finally as a safeguard ---
-                if (loadingIntervalId) {
-                    clearInterval(loadingIntervalId);
-                    loadingIntervalId = null;
-                }
-                resetState();
-                await sleep(500);
-                if (errorMessageDiv.style.display === 'none' && progressBar.style.width === '100%') {
-                    progressContainer.style.display = 'none';
-                } else if (errorMessageDiv.style.display !== 'none') {
-                    progressContainer.style.display = 'none';
-                }
-            }
-        }
-
-        async function handleChunkabilityAnalysis() {
-            document.title = 'Analyzing Chunkability...';
-            const apiKey = apiKeyInput.value.trim();
-            let content = '';
-
-            if (typeof FroalaEditor !== 'undefined' && FroalaEditor.INSTANCES && FroalaEditor.INSTANCES[0]) {
-                content = FroalaEditor.INSTANCES[0].html.get();
-            } else {
-                const editorDiv = document.getElementById('editor');
-                content = editorDiv.innerText || editorDiv.innerHTML;
-            }
-
-            errorMessageDiv.textContent = '';
-            errorMessageDiv.style.display = 'none';
-            scoreTable.style.display = 'none';
-            scoreTableBody.innerHTML = '';
-            statusText.textContent = '';
-            progressBar.style.width = '0%';
-            progressContainer.style.display = 'block';
-            document.getElementById('chunkabilityButton').disabled = true;
-            document.getElementById('chunkabilityButton').innerHTML = '<i class="material-icons left">hourglass_top</i>Analyzing...';
-
-            if (loadingIntervalId) {
-                clearInterval(loadingIntervalId);
-                loadingIntervalId = null;
-            }
-            resultsArea.innerHTML = `<p style="text-align:center; font-style:italic; color:#555;">Checking content chunkability...</p>`;
-            loadingIntervalId = setInterval(() => {
-                const randomIndex = Math.floor(Math.random() * loadingMessages.length);
-                resultsArea.innerHTML = `<p style="text-align:center; font-style:italic; color:#555;">${loadingMessages[randomIndex]}</p>`;
-            }, 2000);
-
-            statusText.textContent = 'Step 1/5: Validating inputs...';
-            moveProgress(10);
-
-            if (!apiKey) {
-                showError('API Key is required.');
-                resetState('Please enter your DeepSeek API Key.');
-                return;
-            }
-            if (!content || content.trim().length < 100) {
-                showError('Article content is required (minimum 100 characters).');
-                resetState('Please paste sufficient content into the editor.');
-                return;
-            }
-            statusText.textContent = 'Step 1/5: Inputs validated.';
-            moveProgress(20);
-
-            try {
-                statusText.textContent = 'Step 2/5: Preparing chunkability prompt...';
-                await sleep(200);
-                moveProgress(30);
-
-                const prompt = `You are an expert content evaluator focused on SEO and AI retrievability. Review the following passage and assess whether it meets these criteria:
-
-1. Heading Alignment: Does the passage clearly and directly support the given heading?
-2. Entity Coverage: Does it fully and accurately explain or engage with the specified entity?
-3. Topical Focus: Does it stay on-topic without introducing unrelated points or filler?
-4. Chunkability for LLMs: Is the passage concise, self-contained, and clearly structured so that it can be easily retrieved and understood by a language model?
-
-Please provide:
-- A Yes/No for each of the 4 criteria
-- A brief explanation or suggestion for any "No"
-- An overall rating (1-10) for alignment and chunkability
-
-Content to analyze:
-${content}`;
-
-                statusText.textContent = 'Step 3/5: Sending request to API...';
-                moveProgress(50);
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: modelName,
-                        messages: [
-                            { role: 'system', content: "You are an expert content evaluator focused on SEO and AI retrievability." },
-                            { role: 'user', content: prompt }
-                        ],
-                        temperature: 0.5,
-                        max_tokens: 2000
-                    })
-                });
-
-                statusText.textContent = 'Step 4/5: Processing response...';
-                moveProgress(70);
-
-                if (!response.ok) {
-                    let errorBody = 'Could not retrieve error details from API response.';
-                    try { const errorData = await response.json(); errorBody = errorData.error?.message || JSON.stringify(errorData); } catch (e) { /* Ignore */ }
-                    throw new Error(`API Error ${response.status}: ${response.statusText}. Details: ${errorBody}`);
+                // Extract score if present (optimize regex)
+                let scoreText = '';
+                const nextEl = heading.nextElementSibling;
+                if (nextEl) {
+                    const scoreMatch = nextEl.textContent?.match(/Score:\s*(\d+)\/10/);
+                    if (scoreMatch) {
+                        scoreText = `<span class="score">${scoreMatch[1]}/10</span>`;
+                    }
                 }
 
-                const data = await response.json();
-                if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
-                    throw new Error('API response did not contain the expected analysis content structure.');
-                }
-
-                statusText.textContent = 'Step 5/5: Formatting results...';
-                moveProgress(90);
-
-                if (loadingIntervalId) {
-                    clearInterval(loadingIntervalId);
-                    loadingIntervalId = null;
-                }
-
-                const markdown = data.choices[0].message.content;
-                if (window.marked && marked.parse) {
-                    resultsArea.innerHTML = marked.parse(markdown);
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${id}`;
+                a.className = 'nav-link';
+                a.innerHTML = `${text}${scoreText}`;
+                
+                // Special handling for chunkability navigation
+                if (isChunkability) {
+                    // Skip the main "Chunkability Analysis" header
+                    if (text.toLowerCase().includes('chunkability analysis')) {
+                        return; // Skip this heading
+                    }
+                    
+                    // Treat numbered items (like "1. Heading Alignment Assessment") as main items (H2 style)
+                    // and everything else as sub-items (H3 style)
+                    const isNumberedItem = /^\d+\.\s/.test(text);
+                    
+                    if (!isNumberedItem && heading.tagName === 'H3') {
+                        li.style.paddingLeft = '20px';
+                        a.style.fontSize = '0.825rem';
+                    }
                 } else {
-                    resultsArea.textContent = markdown;
+                    // Standard content analysis handling
+                    if (heading.tagName === 'H3') {
+                        li.style.paddingLeft = '20px';
+                        a.style.fontSize = '0.825rem';
+                    }
                 }
+                
+                li.appendChild(a);
+                fragment.appendChild(li);
+                navItems.push({ link: a, targetId: id });
+            });
 
-                statusText.textContent = 'Chunkability analysis complete!';
-                moveProgress(100);
-                document.title = 'Chunkability Analysis Complete';
+            navContainer.innerHTML = '';
+            navContainer.appendChild(fragment);
 
-            } catch (err) {
-                console.error("Chunkability Analysis Error:", err);
-                showError(`Error during chunkability analysis: ${err.message}`);
-                if (document.title === 'Analyzing Chunkability...') {
-                    document.title = 'E-E-A-T & Helpful Content Analyzer';
+            // Use event delegation for better performance
+            navContainer.addEventListener('click', (e) => {
+                const link = e.target.closest('.nav-link');
+                if (link) {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        
+                        // Update active state efficiently
+                        const activeLink = navContainer.querySelector('.nav-link.active');
+                        if (activeLink) activeLink.classList.remove('active');
+                        link.classList.add('active');
+                    }
                 }
-            } finally {
-                if (loadingIntervalId) {
-                    clearInterval(loadingIntervalId);
-                    loadingIntervalId = null;
-                }
-                document.getElementById('chunkabilityButton').disabled = false;
-                document.getElementById('chunkabilityButton').innerHTML = '<i class="material-icons left">content_cut</i>Check Chunkability';
-                await sleep(500);
-                if (errorMessageDiv.style.display === 'none' && progressBar.style.width === '100%') {
-                    progressContainer.style.display = 'none';
-                }
-            }
+            });
+
+            return tempDiv.innerHTML;
         }
+
+        // Function to apply warning styling to notes
+        function applyWarningNoteStyling(container) {
+            const paragraphs = container.querySelectorAll('p');
+            let notesFound = 0;
+            
+            paragraphs.forEach(p => {
+                const strongElements = p.querySelectorAll('strong');
+                strongElements.forEach(strong => {
+                    if (strong.textContent.includes('Note:')) {
+                        p.classList.add('warning-note');
+                        notesFound++;
+                        console.log('Applied warning-note styling to:', p.textContent.substring(0, 100) + '...');
+                    }
+                });
+                
+                // Also check if the paragraph itself contains "Note:" even without strong tags
+                if (p.textContent.includes('Note:') && p.textContent.includes('analysis focuses exclusively')) {
+                    p.classList.add('warning-note');
+                    notesFound++;
+                    console.log('Applied warning-note styling to note paragraph:', p.textContent.substring(0, 100) + '...');
+                }
+            });
+            
+            console.log(`Applied warning styling to ${notesFound} notes in`, container.id || 'container');
+        }
+
+        // Optimized skeleton loading animation
+        function createSkeletonLoading() {
+            return `
+                <div class="skeleton-loading active">
+                    <div class="analyzing-text">
+                        <i class="material-icons" style="vertical-align: middle; margin-right: 8px;">sync</i>
+                        Analyzing your content...
+                    </div>
+                    <div class="skeleton-title animated"></div>
+                    <div class="skeleton-line long animated"></div>
+                    <div class="skeleton-line medium animated"></div>
+                    <div class="skeleton-line short animated"></div>
+                    <div class="skeleton-line long animated"></div>
+                    
+                    <div class="skeleton-title animated" style="margin-top: 30px;"></div>
+                    <div class="skeleton-line medium animated"></div>
+                    <div class="skeleton-line long animated"></div>
+                    <div class="skeleton-line short animated"></div>
+                    <div class="skeleton-line medium animated"></div>
+                    
+                    <div class="skeleton-title animated" style="margin-top: 30px;"></div>
+                    <div class="skeleton-line long animated"></div>
+                    <div class="skeleton-line short animated"></div>
+                    <div class="skeleton-line medium animated"></div>
+                </div>
+            `;
+        }
+
+        function createChunkabilitySkeletonLoading() {
+            return `
+                <div class="skeleton-loading active">
+                    <div class="analyzing-text">
+                        <i class="material-icons" style="vertical-align: middle; margin-right: 8px;">view_module</i>
+                        Analyzing chunkability...
+                    </div>
+                    <div class="skeleton-title animated"></div>
+                    <div class="skeleton-line long animated"></div>
+                    <div class="skeleton-line medium animated"></div>
+                    
+                    <div class="skeleton-title animated" style="margin-top: 25px;"></div>
+                    <div class="skeleton-line short animated"></div>
+                    <div class="skeleton-line long animated"></div>
+                    
+                    <div class="skeleton-title animated" style="margin-top: 25px;"></div>
+                    <div class="skeleton-line medium animated"></div>
+                    <div class="skeleton-line short animated"></div>
+                </div>
+            `;
+        }
+
+        analyzeButton.addEventListener('click', async () => {
+            // Initialize tabs properly
+            const tabsElement = document.querySelector('.tabs');
+            if (!M.Tabs.getInstance(tabsElement)) {
+                M.Tabs.init(tabsElement);
+            }
+
+            // Run combined analysis
+            await handleCombinedAnalysis();
+        });
 
         function moveProgress(percent) { progressBar.style.width = percent + '%'; }
 
         async function fakeProgress(startPercent, endPercent, duration) {
-            const steps = 10; const increment = (endPercent - startPercent) / steps;
-            const delay = duration / steps; let currentPercent = startPercent;
-            for (let i = 0; i < steps; i++) { await sleep(delay); currentPercent += increment; moveProgress(Math.min(currentPercent, endPercent)); }
+            const steps = 5; // Reduced steps for better performance
+            const increment = (endPercent - startPercent) / steps;
+            const delay = duration / steps;
+            let currentPercent = startPercent;
+            
+            for (let i = 0; i < steps; i++) {
+                await sleep(delay);
+                currentPercent += increment;
+                moveProgress(Math.min(currentPercent, endPercent));
+            }
             moveProgress(endPercent);
         }
 
@@ -779,96 +1223,530 @@ ${content}`;
             statusText.textContent = '';
             // --- NEW: Update resultsArea to indicate failure ---
             resultsArea.innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Analysis failed.</p><p style="text-align:center;">Please check the error message above or in the console.</p>`;
+            document.getElementById('chunkabilityResults').innerHTML = `<p style="text-align:center; color:red; font-weight:bold;">Analysis failed.</p>`;
+
+            // Hide navigation on error
+            contentNav.classList.remove('has-results');
+            chunkNav.classList.remove('has-results');
         }
 
         function resetState(statusMsg = '') {
             analyzeButton.disabled = false;
-            analyzeButton.innerHTML = '<i class="material-icons left">play_arrow</i>Analyze Content';
+            analyzeButton.innerHTML = '<i class="material-icons left">play_arrow</i>Analyze & Check Chunkability';
             if (errorMessageDiv.style.display === 'none' && statusText.textContent !== 'Analysis complete!') {
                 statusText.textContent = statusMsg;
             }
             if (document.title === 'Analyzing...') {
                 document.title = 'E-E-A-T & Helpful Content Analyzer';
             }
-            // If no error and not complete, and results area might still have loading message
-            if (errorMessageDiv.style.display === 'none' && statusText.textContent !== 'Analysis complete!' && loadingIntervalId === null) {
-                // Optional: Reset resultsArea if it wasn't an error and not showing results yet
-                // resultsArea.innerHTML = 'Analysis results will appear here.'; // Or keep last loading message if analysis was just reset
-            }
         }
 
         function displayResults(markdown) {
-            // Interval should be cleared before this function is called
-            let totalScore = 0; let scoreCount = 0;
-            scoreTableBody.innerHTML = '';
-            resultsArea.innerHTML = ''; // Clear previous content (including loading messages)
+            let totalScore = 0;
+            let scoreCount = 0;
+            
+            // Clear containers efficiently
+            scoreTableBody.textContent = '';
+            resultsArea.textContent = '';
 
-            const sectionRegex = /^(?:#{2,4})\s*(.*?)\s*\n([\s\S]*?)(?=\n^(?:#{2,4})\s|\n---\n|$(?![\r\n]))/gm;
-            const scoreRegex = /\*\*Score:\s*(\d{1,2})\/10\*\*/;
-            let match; let processedMarkdown = markdown;
+            // Optimize regex processing - split into lines first
+            const lines = markdown.split('\n');
+            const sections = [];
+            let currentSection = null;
+            let currentContent = [];
 
-            while ((match = sectionRegex.exec(markdown)) !== null) {
-                const category = match[1].trim(); const sectionContent = match[2];
-                const scoreMatch = sectionContent.match(scoreRegex);
-                if (category && scoreMatch) {
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.startsWith('##') || line.startsWith('###') || line.startsWith('####')) {
+                    // Save previous section
+                    if (currentSection) {
+                        sections.push({
+                            title: currentSection,
+                            content: currentContent.join('\n')
+                        });
+                    }
+                    // Start new section
+                    currentSection = line.replace(/^#+\s*/, '').trim();
+                    currentContent = [];
+                } else {
+                    currentContent.push(line);
+                }
+            }
+            
+            // Don't forget the last section
+            if (currentSection) {
+                sections.push({
+                    title: currentSection,
+                    content: currentContent.join('\n')
+                });
+            }
+
+            // Process sections more efficiently
+            const scorePattern = /\*\*Score:\s*(\d{1,2})\/10\*\*/;
+            const excludeCategories = ['overall summary', 'content analysis summary', 'chunkability analysis'];
+            
+            sections.forEach(section => {
+                const category = section.title.toLowerCase();
+                if (excludeCategories.some(exc => category.includes(exc))) return;
+
+                const scoreMatch = section.content.match(scorePattern);
+                if (scoreMatch) {
                     const score = parseInt(scoreMatch[1], 10);
                     if (!isNaN(score)) {
                         const row = document.createElement('tr');
-                        row.innerHTML = `<td>${category}</td><td>${score} / 10</td>`;
-                        scoreTableBody.appendChild(row); totalScore += score; scoreCount++;
-                    } else { console.warn(`Parsed score is not a number for category: ${category}`); }
-                } else { console.log(`Could not find score line in expected format for category: ${category}`); }
-            }
+                        const categoryCell = document.createElement('td');
+                        const scoreCell = document.createElement('td');
+                        categoryCell.textContent = section.title;
+                        scoreCell.textContent = `${score}/10`;
+                        row.appendChild(categoryCell);
+                        row.appendChild(scoreCell);
+                        scoreTableBody.appendChild(row);
+                        totalScore += score;
+                        scoreCount++;
+                    }
+                }
+            });
 
+            // Add overall score
             if (scoreCount > 0) {
                 const overallScore = (totalScore / scoreCount).toFixed(1);
                 const overallRow = document.createElement('tr');
                 overallRow.classList.add('overall-score');
-                overallRow.innerHTML = `<td><strong>Overall Score</strong></td><td><strong>${overallScore} / 10</strong></td>`;
+                const categoryCell = document.createElement('td');
+                const scoreCell = document.createElement('td');
+                categoryCell.innerHTML = '<strong>Overall Score</strong>';
+                scoreCell.innerHTML = `<strong>${overallScore}/10</strong>`;
+                overallRow.appendChild(categoryCell);
+                overallRow.appendChild(scoreCell);
                 scoreTableBody.appendChild(overallRow);
                 scoreTable.style.display = 'table';
             } else {
-                console.warn("No valid scores found to calculate an overall score.");
                 scoreTable.style.display = 'none';
                 resultsArea.innerHTML = "<p><em>Could not extract scores from the analysis. Displaying raw response below.</em></p><hr>";
             }
 
-            if (window.marked && marked.parse) { resultsArea.innerHTML += marked.parse(processedMarkdown); }
-            else { resultsArea.textContent += "Markdown renderer not available. Raw response:\n\n" + processedMarkdown; }
-        }
-
-        function buildAnalysisPrompt(content, metaTitle, metaDescription, metaSlug) {
-            let metadataBlock = '';
-            const hasMetadata = metaTitle || metaDescription || metaSlug;
-
-            if (hasMetadata) {
-                metadataBlock += '\n\n--- START PROVIDED METADATA ---\n';
-                if (metaTitle) metadataBlock += `Title Tag: ${metaTitle}\n`;
-                if (metaDescription) metadataBlock += `Meta Description: ${metaDescription}\n`;
-                if (metaSlug) metadataBlock += `URL Slug: ${metaSlug}\n`;
-                metadataBlock += '--- END PROVIDED METADATA ---\n';
-                metadataBlock += "\nPlease analyze the provided metadata's relevance and alignment with the main content under the 'Metadata Relevance' category, following the standard scoring and priority format requested in the system prompt.";
+            // Render markdown more efficiently
+            if (window.marked && marked.parse) {
+                requestAnimationFrame(() => {
+                    const htmlContent = marked.parse(markdown);
+                    const processedContent = generateNavigation(htmlContent, contentNavLinks, 'content');
+                    resultsArea.innerHTML = processedContent;
+                    
+                    // Apply warning styling to notes (with delay to ensure DOM is ready)
+                    setTimeout(() => {
+                        applyWarningNoteStyling(resultsArea);
+                    }, 100);
+                    
+                    contentNav.classList.add('has-results');
+                });
             } else {
-                metadataBlock = "\n\nNo metadata was provided by the user; skip the 'Metadata Relevance' analysis.";
+                resultsArea.innerHTML = `<pre>${markdown}</pre>`;
+                applyWarningNoteStyling(resultsArea);
             }
-            const analysisContent = content;
-            const imageLinkInstruction = "\n\n**Important Note on Image Links:** During your analysis, please disregard the functionality, presence, or apparent broken state of any embedded image links (e.g., `<img>` tags), including but not limited to those from 'fileschool.github.io' or any other domain. Do not penalize the content score in any E-E-A-T category (such as Engagement & Presentation or Trustworthiness) due to these image links. Your evaluation should focus on the textual content and other assessable E-E-A-T signals, assuming images are placeholders or will be handled separately.\n";
-
-            return `Please analyze the following article content based on Google's E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) and Helpful Content guidelines. Evaluate it across the categories specified in the system prompt (Content Quality, Expertise & Credibility, Engagement & Presentation, Originality & Insight, Trustworthiness & Transparency).
-${imageLinkInstruction}
-${metadataBlock}
-
-Follow the formatting instructions precisely for each applicable category:
-1.  Provide a clear heading (e.g., \`## Content Quality\`).
-2.  Assess the content/metadata for that category, noting strengths and weaknesses.
-3.  Offer specific, actionable recommendations for improvement with examples.
-4.  Include the score line EXACTLY as: \`**Score: [score]/10**\`
-5.  Include the priority line EXACTLY as: \`**Priority: [High/Medium/Low]**\`
-
---- START ARTICLE CONTENT ---
-${analysisContent}
---- END ARTICLE CONTENT ---`;
         }
+
+        async function handleCombinedAnalysis() {
+            document.title = 'Analyzing...';
+            const apiKey = apiKeyInput.value.trim();
+            const metaTitle = metaTitleInput.value.trim();
+            const metaDescription = metaDescriptionInput.value.trim();
+            const metaSlug = metaSlugInput.value.trim();
+            let content = '';
+
+            if (typeof FroalaEditor !== 'undefined' && FroalaEditor.INSTANCES && FroalaEditor.INSTANCES[0]) {
+                content = FroalaEditor.INSTANCES[0].html.get();
+            } else {
+                const editorDiv = document.getElementById('editor');
+                content = editorDiv.innerText || editorDiv.innerHTML;
+            }
+
+            // Clear previous results and show loading states
+            errorMessageDiv.textContent = '';
+            errorMessageDiv.style.display = 'none';
+            scoreTable.style.display = 'none';
+            scoreTableBody.innerHTML = '';
+            statusText.textContent = '';
+            progressBar.style.width = '0%';
+            progressContainer.style.display = 'block';
+            analyzeButton.disabled = true;
+            analyzeButton.innerHTML = '<i class="material-icons left">hourglass_top</i>Analyzing...';
+
+            // Hide navigation initially
+            contentNav.classList.remove('has-results');
+            chunkNav.classList.remove('has-results');
+
+            // Show skeleton loading in both tabs
+            resultsArea.innerHTML = createSkeletonLoading();
+            document.getElementById('chunkabilityResults').innerHTML = createChunkabilitySkeletonLoading();
+
+            // Start cycling through loading messages (optimized)
+            let messageIndex = 0;
+            if (loadingIntervalId) {
+                clearInterval(loadingIntervalId);
+            }
+            loadingIntervalId = setInterval(() => {
+                const skeletonText = resultsArea.querySelector('.analyzing-text');
+                const chunkabilityText = document.getElementById('chunkabilityResults').querySelector('.analyzing-text');
+                if (skeletonText && chunkabilityText) {
+                    const iconElement = skeletonText.querySelector('.material-icons');
+                    const message = loadingMessages[messageIndex];
+                    if (iconElement && iconElement.nextSibling) {
+                        iconElement.nextSibling.textContent = message;
+                    } else {
+                        skeletonText.innerHTML = `<i class="material-icons" style="vertical-align: middle; margin-right: 8px;">sync</i>${message}`;
+                    }
+                    messageIndex = (messageIndex + 1) % loadingMessages.length;
+                }
+            }, 3000);
+
+            statusText.textContent = 'Step 1/7: Validating inputs...';
+            moveProgress(5);
+
+            if (!apiKey) {
+                showError('API Key is required.');
+                resetState('Please enter your DeepSeek API Key.');
+                return;
+            }
+            if (!content || content.trim().length < 100) {
+                showError('Article content is required (minimum 100 characters).');
+                resetState('Please paste sufficient content into the editor.');
+                return;
+            }
+
+            try {
+                statusText.textContent = 'Step 2/7: Preparing combined analysis prompt...';
+                moveProgress(15);
+
+                const prompt = `You are an expert content analyst specializing in Google's E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) and Helpful Content guidelines. Please provide a comprehensive analysis with clear section headers.
+
+**CRITICAL INSTRUCTION: EXCLUDE ALL IMAGES FROM ANALYSIS**
+- Do NOT evaluate, score, or comment on any images, graphics, visual elements, or image tags
+- Focus EXCLUSIVELY on textual content, structure, and written information
+- Do NOT penalize content for missing images or broken image links
+- Image-related elements should be completely ignored in all scoring categories
+
+**IMPORTANT: Use these EXACT section headers:**
+## Content Quality & Depth
+## Expertise & Credibility  
+## Engagement & Presentation
+## Originality & Insight
+## Trustworthiness & Transparency
+${metaTitle || metaDescription || metaSlug ? '## Metadata Relevance' : ''}
+## Content Analysis Summary
+## Chunkability Analysis
+
+For each E-E-A-T category (Content Quality through ${metaTitle || metaDescription || metaSlug ? 'Metadata Relevance' : 'Trustworthiness & Transparency'}):
+- Assess strengths and weaknesses (TEXT ONLY - ignore all visual elements)
+- Provide specific, actionable recommendations for textual improvements
+- Use bullet points and clear formatting for recommendations
+- Include: **Score: [X]/10** (based solely on textual content)
+- Include: **Priority: [High/Medium/Low]**
+- End with: **Note: This analysis focuses exclusively on textual content and excludes all visual elements due to API limitations.**
+
+For Content Analysis Summary:
+- Provide a comprehensive overview of the main findings
+- List the top 3-5 most critical improvements needed using bullet points
+- Prioritize recommendations by impact (High/Medium/Low priority items)
+- Include an action plan with specific next steps in a numbered list
+- Mention the overall content strengths to build upon
+- End with: **Note: This analysis focuses exclusively on textual content and excludes all visual elements due to API limitations.**
+
+For Chunkability Analysis, evaluate TEXT-BASED elements only with PROPER SPACING:
+
+### 1. Heading Alignment Assessment
+**Status:** ✅/❌ - Do text headings clearly organize topics?
+**Details:** [Detailed explanation with line breaks]
+
+### 2. Entity Coverage Assessment  
+**Status:** ✅/❌ - Are key entities/concepts well-defined in text?
+**Details:** [Detailed explanation with line breaks]
+
+### 3. Topical Focus Assessment
+**Status:** ✅/❌ - Does each text section stay on topic?
+**Details:** [Detailed explanation with line breaks]
+
+### 4. LLM Retrievability Assessment
+**Status:** ✅/❌ - Can AI easily extract information from text?
+**Details:** [Detailed explanation with line breaks]
+
+### 5. Overall Chunkability Rating
+**Rating:** [X]/10 (text-based assessment only)
+**Justification:** [Detailed explanation]
+
+### 6. Specific Chunkability Recommendations
+- **High Priority:** [List items with explanations using bullet points]
+- **Medium Priority:** [List items with explanations using bullet points]  
+- **Low Priority:** [List items with explanations using bullet points]
+
+**Note: This analysis focuses exclusively on textual content and excludes all visual elements due to API limitations.**
+
+--- CONTENT TO ANALYZE ---
+${content}
+${metaTitle ? '\nTitle: ' + metaTitle : ''}
+${metaDescription ? '\nDescription: ' + metaDescription : ''}
+${metaSlug ? '\nSlug: ' + metaSlug : ''}
+--- END CONTENT ---`;
+
+                statusText.textContent = 'Step 3/7: Sending request to API...';
+                moveProgress(30);
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: modelName,
+                        messages: [
+                            {
+                                role: 'system',
+                                content: "You are an expert content analyst. Provide detailed E-E-A-T evaluation with scores and chunkability assessment. Use the exact section headers requested and format clearly with markdown. Use bullet points, numbered lists, and proper formatting for better readability. CRITICAL: Completely ignore all images, graphics, and visual elements in your analysis - focus exclusively on textual content and structure. Do not penalize content for any image-related issues."
+                            },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.5,
+                        max_tokens: 8000
+                    })
+                });
+
+                statusText.textContent = 'Step 4/7: Processing response...';
+                moveProgress(60);
+
+                if (!response.ok) {
+                    let errorBody = 'Could not retrieve error details';
+                    try {
+                        const errorData = await response.json();
+                        errorBody = errorData.error?.message || JSON.stringify(errorData);
+                    } catch (e) { /* Ignore */ }
+                    throw new Error(`API Error ${response.status}: ${response.statusText}. Details: ${errorBody}`);
+                }
+
+                const data = await response.json();
+                if (!data.choices?.[0]?.message?.content) {
+                    throw new Error('API response did not contain analysis content');
+                }
+
+                statusText.textContent = 'Step 5/7: Parsing results...';
+                moveProgress(75);
+
+                const markdown = data.choices[0].message.content;
+                console.log('Full API Response:', markdown); // Debug log
+
+                // Split the response into content analysis and chunkability sections
+                const contentAnalysis = extractContentAnalysis(markdown);
+                const chunkabilityAnalysis = extractChunkabilityAnalysis(markdown);
+
+                console.log('Content Analysis:', contentAnalysis); // Debug log
+                console.log('Chunkability Analysis:', chunkabilityAnalysis); // Debug log
+
+                statusText.textContent = 'Step 6/7: Displaying results...';
+                moveProgress(90);
+
+                // Clear loading interval before displaying results
+                if (loadingIntervalId) {
+                    clearInterval(loadingIntervalId);
+                    loadingIntervalId = null;
+                }
+
+                // Display content analysis
+                if (contentAnalysis && contentAnalysis.trim()) {
+                    console.log('Content Analysis extracted length:', contentAnalysis.length);
+                    console.log('Content Analysis contains Note:', contentAnalysis.includes('Note:'));
+                    displayResults(contentAnalysis);
+                } else {
+                    // Fallback: display the full response if we can't extract properly
+                    console.log('Full markdown length:', markdown.length);
+                    console.log('Full markdown contains Note:', markdown.includes('Note:'));
+                    displayResults(markdown);
+                    console.warn('Could not extract content analysis section, displaying full response');
+                }
+
+                // Display chunkability analysis
+                const chunkabilityContainer = document.getElementById('chunkabilityResults');
+                if (chunkabilityAnalysis && chunkabilityAnalysis.trim()) {
+                    if (window.marked && marked.parse) {
+                        const chunkHtml = marked.parse(chunkabilityAnalysis);
+                        const processedChunk = generateNavigation(chunkHtml, chunkNavLinks, 'chunk');
+                        chunkabilityContainer.innerHTML = processedChunk;
+                        
+                        // Apply warning styling to notes
+                        applyWarningNoteStyling(chunkabilityContainer);
+                        
+                        chunkNav.classList.add('has-results');
+                    } else {
+                        chunkabilityContainer.innerHTML = `<pre>${chunkabilityAnalysis}</pre>`;
+                        applyWarningNoteStyling(chunkabilityContainer);
+                    }
+                } else {
+                    // Fallback: look for any chunkability content in the full response
+                    const fallbackChunk = extractFallbackChunkability(markdown);
+                    if (fallbackChunk) {
+                        if (window.marked && marked.parse) {
+                            const chunkHtml = marked.parse(fallbackChunk);
+                            const processedChunk = generateNavigation(chunkHtml, chunkNavLinks, 'chunk');
+                            chunkabilityContainer.innerHTML = processedChunk;
+                            
+                            // Apply warning styling to notes
+                            applyWarningNoteStyling(chunkabilityContainer);
+                            
+                            chunkNav.classList.add('has-results');
+                        } else {
+                            chunkabilityContainer.innerHTML = `<pre>${fallbackChunk}</pre>`;
+                            applyWarningNoteStyling(chunkabilityContainer);
+                        }
+                    } else {
+                        chunkabilityContainer.innerHTML = '<p style="text-align:center; color:#888;">No chunkability analysis found in response.</p>';
+                    }
+                    console.warn('Could not extract chunkability section properly');
+                }
+
+                statusText.textContent = 'Analysis complete!';
+                moveProgress(100);
+                document.title = 'Analysis Complete';
+
+            } catch (err) {
+                console.error("Analysis Error:", err);
+                showError(`Error during analysis: ${err.message}`);
+                document.title = 'E-E-A-T & Helpful Content Analyzer';
+            } finally {
+                if (loadingIntervalId) {
+                    clearInterval(loadingIntervalId);
+                    loadingIntervalId = null;
+                }
+                resetState();
+                await sleep(500);
+                if (errorMessageDiv.style.display === 'none') {
+                    progressContainer.style.display = 'none';
+                }
+            }
+        }
+
+        function extractContentAnalysis(markdown) {
+            // Simple and fast extraction
+            const chunkabilityIndex = markdown.indexOf('## Chunkability Analysis');
+            if (chunkabilityIndex !== -1) {
+                return markdown.substring(0, chunkabilityIndex).trim();
+            }
+
+            // Alternative patterns (case insensitive)
+            const altIndex = markdown.toLowerCase().indexOf('## chunkability');
+            if (altIndex !== -1) {
+                return markdown.substring(0, altIndex).trim();
+            }
+
+            return markdown; // Return full markdown if no chunkability section found
+        }
+
+        function extractChunkabilityAnalysis(markdown) {
+            const lowerMarkdown = markdown.toLowerCase();
+            
+            // Try primary pattern first
+            let index = lowerMarkdown.indexOf('## chunkability analysis');
+            if (index !== -1) {
+                return markdown.substring(index).trim();
+            }
+
+            // Try alternative patterns
+            const patterns = ['## chunkability', '# chunkability', 'chunkability analysis'];
+            for (const pattern of patterns) {
+                index = lowerMarkdown.indexOf(pattern);
+                if (index !== -1) {
+                    return markdown.substring(index).trim();
+                }
+            }
+
+            return null;
+        }
+
+        function extractFallbackChunkability(markdown) {
+            // Look for any content that mentions chunkability-related terms
+            const lines = markdown.split('\n');
+            let chunkabilityContent = '';
+            let foundChunkabilityContent = false;
+
+            for (const line of lines) {
+                const lowerLine = line.toLowerCase();
+                if (lowerLine.includes('chunk') || lowerLine.includes('retriev') ||
+                    lowerLine.includes('heading alignment') || lowerLine.includes('entity coverage') ||
+                    lowerLine.includes('topical focus') || lowerLine.includes('llm')) {
+                    foundChunkabilityContent = true;
+                    chunkabilityContent += line + '\n';
+                } else if (foundChunkabilityContent && line.trim() === '') {
+                    chunkabilityContent += line + '\n';
+                } else if (foundChunkabilityContent && line.startsWith('#')) {
+                    // New section started, continue collecting if it seems related
+                    chunkabilityContent += line + '\n';
+                } else if (foundChunkabilityContent) {
+                    chunkabilityContent += line + '\n';
+                }
+            }
+
+            return chunkabilityContent.trim() || null;
+        }
+
+        // Optimized scroll observer
+        let scrollObserver = null;
+        function setupScrollObserver() {
+            // Clean up existing observer
+            if (scrollObserver) {
+                scrollObserver.disconnect();
+            }
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -70% 0px',
+                threshold: 0
+            };
+
+            let activeLink = null;
+            scrollObserver = new IntersectionObserver((entries) => {
+                // Process only the most relevant entry to reduce work
+                const visibleEntries = entries.filter(entry => entry.isIntersecting);
+                if (visibleEntries.length === 0) return;
+                
+                // Get the first visible entry (topmost)
+                const entry = visibleEntries[0];
+                const id = entry.target.id;
+                const newActiveLink = document.querySelector(`a[href="#${id}"]`);
+                
+                if (newActiveLink && newActiveLink !== activeLink) {
+                    if (activeLink) activeLink.classList.remove('active');
+                    newActiveLink.classList.add('active');
+                    activeLink = newActiveLink;
+                }
+            }, observerOptions);
+
+            // Observe headings more efficiently
+            requestAnimationFrame(() => {
+                document.querySelectorAll('h2[id], h3[id]').forEach(heading => {
+                    scrollObserver.observe(heading);
+                });
+            });
+        }
+
+        // Optimized results observer
+        document.addEventListener('DOMContentLoaded', () => {
+            let observerTimeout = null;
+            const resultsObserver = new MutationObserver((mutations) => {
+                // Debounce observer calls to reduce CPU usage
+                if (observerTimeout) clearTimeout(observerTimeout);
+                observerTimeout = setTimeout(() => {
+                    const hasResults = contentNav.classList.contains('has-results') || 
+                                     chunkNav.classList.contains('has-results');
+                    if (hasResults) {
+                        setupScrollObserver();
+                    }
+                }, 100);
+            });
+
+            resultsObserver.observe(document.body, {
+                childList: false,
+                subtree: false,
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        });
     </script>
 </body>
 
