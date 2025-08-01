@@ -190,13 +190,18 @@
             background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             background-size: 200% 100%;
         }
+
+        /* Hide navs when they don't have content */
+        nav[data-has-content="false"] {
+            display: none;
+        }
     </style>
 </head>
 
-<body class="text-gray-800">
+<body class="text-gray-800 h-screen flex flex-col">
 
     <!-- Main Layout -->
-    <main class="w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6">
+    <main class="w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6 flex-grow min-h-0">
 
         <!-- Input Column -->
         <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col">
@@ -271,12 +276,12 @@
             </div>
 
             <!-- Tab Content -->
-            <div class="flex-grow mt-4 overflow-hidden">
+            <div class="flex-grow mt-4 overflow-hidden min-h-0">
                 <!-- Content Analysis Tab -->
                 <div id="contentAnalysisTab" class="tab-content flex flex-col lg:flex-row gap-4 h-full">
                     <!-- Nav -->
-                    <nav id="contentNav"
-                        class="hidden lg:block w-full lg:w-1/3 h-full overflow-y-auto bg-gray-50 p-3 rounded-lg border">
+                    <nav id="contentNav" data-has-content="false"
+                        class="lg:block w-full lg:w-1/3 h-full overflow-y-auto bg-gray-50 p-3 rounded-lg border">
                         <h3 class="font-bold text-blue-800 mb-3">Quick Navigation</h3>
                         <ul id="contentNavLinks" class="space-y-2"></ul>
                     </nav>
@@ -296,8 +301,8 @@
                 <!-- Chunkability Tab -->
                 <div id="chunkabilityTab" class="tab-content hidden flex-col lg:flex-row gap-4 h-full">
                     <!-- Nav -->
-                    <nav id="chunkNav"
-                        class="hidden lg:block w-full lg:w-1/3 h-full overflow-y-auto bg-gray-50 p-3 rounded-lg border">
+                    <nav id="chunkNav" data-has-content="false"
+                        class="lg:block w-full lg:w-1/3 h-full overflow-y-auto bg-gray-50 p-3 rounded-lg border">
                         <h3 class="font-bold text-blue-800 mb-3">Quick Navigation</h3>
                         <ul id="chunkNavLinks" class="space-y-2"></ul>
                     </nav>
@@ -318,7 +323,7 @@
     </main>
 
     <!-- Footer Section with Criteria -->
-    <footer class="w-full p-4 md:p-6 mt-6">
+    <footer class="w-full p-4 md:p-6">
         <h1
             class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-4 flex items-center justify-center gap-3">
             <i class="material-icons text-blue-500" style="font-size: 1.2em;">assessment</i>
@@ -543,8 +548,10 @@
                 progressBar.style.width = '0%';
                 analyzeButton.disabled = true;
                 analyzeButton.querySelector('span').textContent = 'Analyzing...';
-                contentNav.classList.add('hidden');
-                chunkNav.classList.add('hidden');
+
+                contentNav.dataset.hasContent = 'false';
+                chunkNav.dataset.hasContent = 'false';
+
                 resultsArea.innerHTML = createSkeletonLoading(false);
                 chunkabilityResults.innerHTML = createSkeletonLoading(true);
 
@@ -611,7 +618,7 @@
                         const processedContent = generateNavigation(htmlContent, contentNavLinks, 'content');
                         resultsArea.innerHTML = processedContent;
                         applyStylingToResults(resultsArea);
-                        contentNav.classList.remove('hidden');
+                        contentNav.dataset.hasContent = 'true';
                     } else {
                         resultsArea.innerHTML = '<p class="text-center text-gray-500 p-4">Could not extract Content Analysis.</p>';
                     }
@@ -622,7 +629,7 @@
                         const processedChunk = generateNavigation(chunkHtml, chunkNavLinks, 'chunk');
                         chunkabilityResults.innerHTML = processedChunk;
                         applyStylingToResults(chunkabilityResults);
-                        chunkNav.classList.remove('hidden');
+                        chunkNav.dataset.hasContent = 'true';
                     } else {
                         chunkabilityResults.innerHTML = '<p class="text-center text-gray-500 p-4">No chunkability analysis found.</p>';
                     }
@@ -720,6 +727,8 @@ ${metadataContent}
                 statusText.textContent = '';
                 resultsArea.innerHTML = `<p class="text-center text-red-600 font-bold p-4">Analysis failed. Check the error message.</p>`;
                 chunkabilityResults.innerHTML = `<p class="text-center text-red-600 font-bold p-4">Analysis failed.</p>`;
+                contentNav.dataset.hasContent = 'false';
+                chunkNav.dataset.hasContent = 'false';
             }
 
             function resetState() {
