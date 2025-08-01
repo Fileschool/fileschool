@@ -279,8 +279,8 @@
             color: #444;
         }
 
-        /* Score and Priority Styling */
-        #resultsArea p:has(strong:contains("Score:")) {
+        /* Score and Priority Styling - Separate from warning note */
+        #resultsArea .score-info {
             background: #f0f9ff;
             padding: 12px 16px;
             border-radius: 6px;
@@ -289,7 +289,7 @@
             font-size: 1.1rem;
         }
 
-        #resultsArea p:has(strong:contains("Priority:")) {
+        #resultsArea .priority-info {
             background: #e8f5f2;
             padding: 10px 14px;
             border-radius: 6px;
@@ -297,7 +297,7 @@
             border-left: 4px solid #15b69b;
         }
 
-        /* Enhanced Warning Note Styling */
+        /* Enhanced Warning Note Styling - Only for the final note */
         .warning-note {
             background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%) !important;
             padding: 16px 20px 16px 50px !important;
@@ -310,7 +310,7 @@
             box-shadow: 0 4px 12px rgba(243, 156, 18, 0.15) !important;
             position: relative !important;
         }
-        
+
         .warning-note::before {
             content: "⚠️";
             position: absolute;
@@ -326,9 +326,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
-        
+
         .warning-note strong {
             color: #d68910 !important;
             font-weight: 700 !important;
@@ -344,9 +344,12 @@
         }
 
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.7;
             }
@@ -368,7 +371,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             animation: shimmer 2s infinite;
         }
 
@@ -401,7 +404,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             animation: shimmer 2s infinite;
         }
 
@@ -409,6 +412,7 @@
             0% {
                 left: -100%;
             }
+
             100% {
                 left: 100%;
             }
@@ -656,7 +660,7 @@
         }
 
         /* Score and Priority Styling for Chunkability */
-        #chunkabilityResults p:has(strong:contains("Score:")) {
+        #chunkabilityResults .score-info {
             background: #f0f9ff;
             padding: 12px 16px;
             border-radius: 6px;
@@ -665,7 +669,7 @@
             font-size: 1.1rem;
         }
 
-        #chunkabilityResults p:has(strong:contains("Priority:")) {
+        #chunkabilityResults .priority-info {
             background: #e8f5f2;
             padding: 10px 14px;
             border-radius: 6px;
@@ -957,7 +961,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             M.AutoInit();
             M.updateTextFields();
-            
+
             // Initialize tabs specifically
             const tabsElement = document.querySelector('.tabs');
             if (tabsElement) {
@@ -1029,7 +1033,7 @@
             const headings = tempDiv.querySelectorAll('h2, h3');
             const navItems = [];
             const fragment = document.createDocumentFragment();
-            
+
             // Check if this is chunkability content
             const isChunkability = prefix === 'chunk';
 
@@ -1053,18 +1057,18 @@
                 a.href = `#${id}`;
                 a.className = 'nav-link';
                 a.innerHTML = `${text}${scoreText}`;
-                
+
                 // Special handling for chunkability navigation
                 if (isChunkability) {
                     // Skip the main "Chunkability Analysis" header
                     if (text.toLowerCase().includes('chunkability analysis')) {
                         return; // Skip this heading
                     }
-                    
+
                     // Treat numbered items (like "1. Heading Alignment Assessment") as main items (H2 style)
                     // and everything else as sub-items (H3 style)
                     const isNumberedItem = /^\d+\.\s/.test(text);
-                    
+
                     if (!isNumberedItem && heading.tagName === 'H3') {
                         li.style.paddingLeft = '20px';
                         a.style.fontSize = '0.825rem';
@@ -1076,7 +1080,7 @@
                         a.style.fontSize = '0.825rem';
                     }
                 }
-                
+
                 li.appendChild(a);
                 fragment.appendChild(li);
                 navItems.push({ link: a, targetId: id });
@@ -1094,7 +1098,7 @@
                     const targetElement = document.getElementById(targetId);
                     if (targetElement) {
                         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        
+
                         // Update active state efficiently
                         const activeLink = navContainer.querySelector('.nav-link.active');
                         if (activeLink) activeLink.classList.remove('active');
@@ -1106,30 +1110,42 @@
             return tempDiv.innerHTML;
         }
 
-        // Function to apply warning styling to notes
+        // Function to apply warning styling to notes - UPDATED
         function applyWarningNoteStyling(container) {
             const paragraphs = container.querySelectorAll('p');
             let notesFound = 0;
-            
+
             paragraphs.forEach(p => {
-                const strongElements = p.querySelectorAll('strong');
-                strongElements.forEach(strong => {
-                    if (strong.textContent.includes('Note:')) {
-                        p.classList.add('warning-note');
-                        notesFound++;
-                        console.log('Applied warning-note styling to:', p.textContent.substring(0, 100) + '...');
-                    }
-                });
-                
-                // Also check if the paragraph itself contains "Note:" even without strong tags
-                if (p.textContent.includes('Note:') && p.textContent.includes('analysis focuses exclusively')) {
+                const pText = p.textContent || '';
+                // Only apply warning styling to the final note about API limitations
+                if (pText.includes('Note:') && pText.includes('analysis focuses exclusively on textual content') && pText.includes('API limitations')) {
                     p.classList.add('warning-note');
                     notesFound++;
-                    console.log('Applied warning-note styling to note paragraph:', p.textContent.substring(0, 100) + '...');
+                    console.log('Applied warning-note styling to API limitation note');
                 }
             });
-            
+
             console.log(`Applied warning styling to ${notesFound} notes in`, container.id || 'container');
+        }
+
+        // Function to apply score and priority styling - NEW
+        function applyScoreAndPriorityStyling(container) {
+            const paragraphs = container.querySelectorAll('p');
+
+            paragraphs.forEach(p => {
+                const pText = p.textContent || '';
+                const pHtml = p.innerHTML || '';
+
+                // Check for Score pattern
+                if (pHtml.includes('<strong>Score:') && pHtml.includes('/10</strong>') && !p.classList.contains('warning-note')) {
+                    p.classList.add('score-info');
+                }
+
+                // Check for Priority pattern
+                if (pHtml.includes('<strong>Priority:') && (pHtml.includes('High</strong>') || pHtml.includes('Medium</strong>') || pHtml.includes('Low</strong>')) && !p.classList.contains('warning-note')) {
+                    p.classList.add('priority-info');
+                }
+            });
         }
 
         // Optimized skeleton loading animation
@@ -1200,7 +1216,7 @@
             const increment = (endPercent - startPercent) / steps;
             const delay = duration / steps;
             let currentPercent = startPercent;
-            
+
             for (let i = 0; i < steps; i++) {
                 await sleep(delay);
                 currentPercent += increment;
@@ -1244,7 +1260,7 @@
         function displayResults(markdown) {
             let totalScore = 0;
             let scoreCount = 0;
-            
+
             // Clear containers efficiently
             scoreTableBody.textContent = '';
             resultsArea.textContent = '';
@@ -1272,7 +1288,7 @@
                     currentContent.push(line);
                 }
             }
-            
+
             // Don't forget the last section
             if (currentSection) {
                 sections.push({
@@ -1284,7 +1300,7 @@
             // Process sections more efficiently
             const scorePattern = /\*\*Score:\s*(\d{1,2})\/10\*\*/;
             const excludeCategories = ['overall summary', 'content analysis summary', 'chunkability analysis'];
-            
+
             sections.forEach(section => {
                 const category = section.title.toLowerCase();
                 if (excludeCategories.some(exc => category.includes(exc))) return;
@@ -1331,16 +1347,18 @@
                     const htmlContent = marked.parse(markdown);
                     const processedContent = generateNavigation(htmlContent, contentNavLinks, 'content');
                     resultsArea.innerHTML = processedContent;
-                    
-                    // Apply warning styling to notes (with delay to ensure DOM is ready)
+
+                    // Apply styling with delay to ensure DOM is ready
                     setTimeout(() => {
+                        applyScoreAndPriorityStyling(resultsArea);
                         applyWarningNoteStyling(resultsArea);
                     }, 100);
-                    
+
                     contentNav.classList.add('has-results');
                 });
             } else {
                 resultsArea.innerHTML = `<pre>${markdown}</pre>`;
+                applyScoreAndPriorityStyling(resultsArea);
                 applyWarningNoteStyling(resultsArea);
             }
         }
@@ -1441,7 +1459,7 @@ For each E-E-A-T category (Content Quality through ${metaTitle || metaDescriptio
 - Use bullet points and clear formatting for recommendations
 - Include: **Score: [X]/10** (based solely on textual content)
 - Include: **Priority: [High/Medium/Low]**
-- End with: **Note: This analysis focuses exclusively on textual content and excludes all visual elements due to API limitations.**
+- DO NOT add any note about API limitations in individual sections
 
 For Content Analysis Summary:
 - Provide a comprehensive overview of the main findings
@@ -1501,7 +1519,7 @@ ${metaSlug ? '\nSlug: ' + metaSlug : ''}
                         messages: [
                             {
                                 role: 'system',
-                                content: "You are an expert content analyst. Provide detailed E-E-A-T evaluation with scores and chunkability assessment. Use the exact section headers requested and format clearly with markdown. Use bullet points, numbered lists, and proper formatting for better readability. CRITICAL: Completely ignore all images, graphics, and visual elements in your analysis - focus exclusively on textual content and structure. Do not penalize content for any image-related issues."
+                                content: "You are an expert content analyst. Provide detailed E-E-A-T evaluation with scores and chunkability assessment. Use the exact section headers requested and format clearly with markdown. Use bullet points, numbered lists, and proper formatting for better readability. CRITICAL: Completely ignore all images, graphics, and visual elements in your analysis - focus exclusively on textual content and structure. Do not penalize content for any image-related issues. Only add the API limitations note at the end of the Content Analysis Summary and Chunkability Analysis sections, not in individual category sections."
                             },
                             { role: 'user', content: prompt }
                         ],
@@ -1569,13 +1587,17 @@ ${metaSlug ? '\nSlug: ' + metaSlug : ''}
                         const chunkHtml = marked.parse(chunkabilityAnalysis);
                         const processedChunk = generateNavigation(chunkHtml, chunkNavLinks, 'chunk');
                         chunkabilityContainer.innerHTML = processedChunk;
-                        
-                        // Apply warning styling to notes
-                        applyWarningNoteStyling(chunkabilityContainer);
-                        
+
+                        // Apply styling
+                        setTimeout(() => {
+                            applyScoreAndPriorityStyling(chunkabilityContainer);
+                            applyWarningNoteStyling(chunkabilityContainer);
+                        }, 100);
+
                         chunkNav.classList.add('has-results');
                     } else {
                         chunkabilityContainer.innerHTML = `<pre>${chunkabilityAnalysis}</pre>`;
+                        applyScoreAndPriorityStyling(chunkabilityContainer);
                         applyWarningNoteStyling(chunkabilityContainer);
                     }
                 } else {
@@ -1586,13 +1608,17 @@ ${metaSlug ? '\nSlug: ' + metaSlug : ''}
                             const chunkHtml = marked.parse(fallbackChunk);
                             const processedChunk = generateNavigation(chunkHtml, chunkNavLinks, 'chunk');
                             chunkabilityContainer.innerHTML = processedChunk;
-                            
-                            // Apply warning styling to notes
-                            applyWarningNoteStyling(chunkabilityContainer);
-                            
+
+                            // Apply styling
+                            setTimeout(() => {
+                                applyScoreAndPriorityStyling(chunkabilityContainer);
+                                applyWarningNoteStyling(chunkabilityContainer);
+                            }, 100);
+
                             chunkNav.classList.add('has-results');
                         } else {
                             chunkabilityContainer.innerHTML = `<pre>${fallbackChunk}</pre>`;
+                            applyScoreAndPriorityStyling(chunkabilityContainer);
                             applyWarningNoteStyling(chunkabilityContainer);
                         }
                     } else {
@@ -1640,7 +1666,7 @@ ${metaSlug ? '\nSlug: ' + metaSlug : ''}
 
         function extractChunkabilityAnalysis(markdown) {
             const lowerMarkdown = markdown.toLowerCase();
-            
+
             // Try primary pattern first
             let index = lowerMarkdown.indexOf('## chunkability analysis');
             if (index !== -1) {
@@ -1704,12 +1730,12 @@ ${metaSlug ? '\nSlug: ' + metaSlug : ''}
                 // Process only the most relevant entry to reduce work
                 const visibleEntries = entries.filter(entry => entry.isIntersecting);
                 if (visibleEntries.length === 0) return;
-                
+
                 // Get the first visible entry (topmost)
                 const entry = visibleEntries[0];
                 const id = entry.target.id;
                 const newActiveLink = document.querySelector(`a[href="#${id}"]`);
-                
+
                 if (newActiveLink && newActiveLink !== activeLink) {
                     if (activeLink) activeLink.classList.remove('active');
                     newActiveLink.classList.add('active');
@@ -1732,8 +1758,8 @@ ${metaSlug ? '\nSlug: ' + metaSlug : ''}
                 // Debounce observer calls to reduce CPU usage
                 if (observerTimeout) clearTimeout(observerTimeout);
                 observerTimeout = setTimeout(() => {
-                    const hasResults = contentNav.classList.contains('has-results') || 
-                                     chunkNav.classList.contains('has-results');
+                    const hasResults = contentNav.classList.contains('has-results') ||
+                        chunkNav.classList.contains('has-results');
                     if (hasResults) {
                         setupScrollObserver();
                     }
