@@ -6,8 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekly Content Production Timeline</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <meta name="robots" content="noindex" />
+    <style>
+        /* Custom styles for SVG lines and hover effects */
+        #timeline-svg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            /* Allows clicking through the SVG to the cards */
+            z-index: 10;
+        }
 
+        .timeline-line {
+            fill: none;
+            stroke-width: 2.5px;
+            transition: stroke-width 0.3s ease, opacity 0.3s ease;
+            opacity: 0.3;
+        }
+
+        .line-filestack {
+            stroke: #f97316;
+        }
+
+        /* orange-500 */
+        .line-froala {
+            stroke: #2563eb;
+        }
+
+        /* blue-600 */
+
+        /* Hover states */
+        .task-card {
+            transition: opacity 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            min-height: 110px;
+            /* Ensure consistent height for empty placeholders */
+        }
+
+        .task-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .group:not(.highlight) .task-card {
+            opacity: 0.15;
+        }
+
+        .group.highlight [data-article-id].highlight-active {
+            opacity: 1 !important;
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .group.highlight .timeline-line.highlight-active {
+            opacity: 1 !important;
+            stroke-width: 4px;
+        }
+    </style>
 </head>
 
 <body class="bg-slate-100 p-4 sm:p-8 font-sans text-slate-800">
@@ -16,7 +72,7 @@
         <div class="text-center text-slate-500 text-lg mt-2 mb-8">6 Articles: 4 Internal + 2 External | 4 Writers | 1
             SEO Specialist</div>
 
-        <!-- Summary -->
+        <!-- Summary & Legend -->
         <div class="flex flex-col sm:flex-row justify-center gap-8 mb-10 p-6 bg-slate-50 rounded-xl">
             <div class="text-center">
                 <div class="text-4xl font-bold text-orange-500">3</div>
@@ -27,36 +83,33 @@
                 <div class="text-sm text-slate-600 mt-1">Froala Articles<br>(2 Internal, 1 External)</div>
             </div>
         </div>
-
-        <!-- Legend -->
         <div class="flex justify-center gap-4 sm:gap-6 mb-12 flex-wrap">
             <div class="flex items-center gap-2 text-sm">
-                <div class="w-6 h-6 rounded border-2 bg-orange-50 border-orange-500"></div>
-                <span>Filestack Internal</span>
+                <div class="w-6 h-6 rounded border-2 bg-orange-50 border-orange-500"></div><span>Filestack
+                    Internal</span>
             </div>
             <div class="flex items-center gap-2 text-sm">
-                <div class="w-6 h-6 rounded border-2 border-dashed bg-orange-50 border-orange-500"></div>
-                <span>Filestack External</span>
+                <div class="w-6 h-6 rounded border-2 border-dashed bg-orange-50 border-orange-500"></div><span>Filestack
+                    External</span>
             </div>
             <div class="flex items-center gap-2 text-sm">
-                <div class="w-6 h-6 rounded border-2 bg-blue-50 border-blue-600"></div>
-                <span>Froala Internal</span>
+                <div class="w-6 h-6 rounded border-2 bg-blue-50 border-blue-600"></div><span>Froala Internal</span>
             </div>
             <div class="flex items-center gap-2 text-sm">
-                <div class="w-6 h-6 rounded border-2 border-dashed bg-blue-50 border-blue-600"></div>
-                <span>Froala External</span>
+                <div class="w-6 h-6 rounded border-2 border-dashed bg-blue-50 border-blue-600"></div><span>Froala
+                    External</span>
             </div>
             <div class="flex items-center gap-2 text-sm">
-                <div class="w-6 h-6 rounded border-2 bg-green-50 border-green-500"></div>
-                <span>Published Article</span>
+                <div class="w-6 h-6 rounded border-2 bg-green-50 border-green-500"></div><span>Published Article</span>
             </div>
         </div>
 
-        <!-- Timeline -->
-        <div class="relative">
+        <!-- Timeline Container -->
+        <div class="relative" id="timeline-container">
+            <svg id="timeline-svg-overlay"></svg>
             <!-- Monday -->
             <div class="relative pl-8 mb-12">
-                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200"></div>
+                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200 z-0"></div>
                 <div class="day-header bg-slate-700 text-white font-bold py-2 px-4 rounded-lg inline-block mb-6">MONDAY
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
@@ -65,25 +118,35 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         9:00 AM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                1</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                3</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
@@ -92,27 +155,37 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         2:00 PM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Create brief, research competitors, find
-                                internal links</p><span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Create brief, research competitors, find
+                                    internal links</p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Create brief, research competitors, find
-                                internal links</p><span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Create brief, research competitors, find
+                                    internal links</p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4">
@@ -121,34 +194,44 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         5:00 PM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Write final title, headings & technical
-                                angle</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                1</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Write final title, headings & technical
+                                    angle</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Write final title, headings & technical
-                                angle</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                3</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Write final title, headings & technical
+                                    angle</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
             </div>
 
             <!-- Tuesday -->
             <div class="relative pl-8 mb-12">
-                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200"></div>
+                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200 z-0"></div>
                 <div class="day-header bg-slate-700 text-white font-bold py-2 px-4 rounded-lg inline-block mb-6">TUESDAY
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
@@ -157,42 +240,56 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         9:00 AM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                2</span>
-                        </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                4</span>
-                        </div>
-                        <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div></div>
+                        <div></div>
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    2</span>
                             </div>
-                            <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                1</span>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
                             </div>
-                            <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                3</span>
+                        </div>
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -202,25 +299,35 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         3:00 PM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                1</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                3</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4">
@@ -229,34 +336,44 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         5:00 PM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags</p>
-                            <span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
+                                </p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags</p>
-                            <span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
+                                </p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
             </div>
 
             <!-- Wednesday -->
             <div class="relative pl-8 mb-12">
-                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200"></div>
+                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200 z-0"></div>
                 <div class="day-header bg-slate-700 text-white font-bold py-2 px-4 rounded-lg inline-block mb-6">
                     WEDNESDAY</div>
                 <div class="time-block flex items-start gap-4 mb-8">
@@ -265,27 +382,37 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         11:00 AM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool</p>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                1</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
+                                </p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
-                                </p<span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">
-                                Writer 3</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
+                                </p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
@@ -294,45 +421,59 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         3:00 PM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Make final improvements based on analysis
-                            </p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                1</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Make final improvements based on
+                                    analysis</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Make final improvements based on analysis
-                            </p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                3</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Make final improvements based on
+                                    analysis</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                2</span>
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    2</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                4</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4">
@@ -341,34 +482,44 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         5:00 PM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags</p>
-                            <span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div></div>
+                        <div></div>
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
+                                </p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags</p>
-                            <span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
+                                </p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
             </div>
 
             <!-- Thursday -->
             <div class="relative pl-8 mb-12">
-                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200"></div>
+                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200 z-0"></div>
                 <div class="day-header bg-slate-700 text-white font-bold py-2 px-4 rounded-lg inline-block mb-6">
                     THURSDAY</div>
                 <div class="time-block flex items-start gap-4 mb-8">
@@ -377,41 +528,51 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         9:00 AM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-sm font-bold text-green-800">Publish final article on website</p>
-                                <svg class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                    </path>
-                                </svg>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div>
+                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
+                                data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
+                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
                             </div>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                1</span>
                         </div>
-                        <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #1</span></div>
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-sm font-bold text-green-800">Publish final article on website</p>
-                                <svg class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                    </path>
-                                </svg>
+                        <div>
+                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
+                                data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
+                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
                             </div>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                3</span>
                         </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
@@ -420,27 +581,37 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         11:00 AM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool</p>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                2</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div></div>
+                        <div></div>
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
+                                </p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    2</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool</p>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                4</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
+                                </p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4">
@@ -449,34 +620,44 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         3:00 PM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Make final improvements based on analysis
-                            </p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                2</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div></div>
+                        <div></div>
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Make final improvements based on
+                                    analysis</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    2</span>
+                            </div>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Make final improvements based on analysis
-                            </p><span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                4</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Make final improvements based on
+                                    analysis</p><span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
+                            </div>
                         </div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
             </div>
 
             <!-- Friday -->
             <div class="relative pl-8 mb-12">
-                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200"></div>
+                <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200 z-0"></div>
                 <div class="day-header bg-slate-700 text-white font-bold py-2 px-4 rounded-lg inline-block mb-6">FRIDAY
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
@@ -485,74 +666,88 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         9:00 AM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-sm font-bold text-green-800">Publish final article on website</p>
-                                <svg class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                    </path>
-                                </svg>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div></div>
+                        <div></div>
+                        <div>
+                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
+                                data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
+                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    2</span>
                             </div>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                2</span>
                         </div>
-                        <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-sm font-bold text-green-800">Publish final article on website</p>
-                                <svg class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                    </path>
-                                </svg>
+                        <div>
+                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
+                                data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
+                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
                             </div>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                4</span>
                         </div>
-                        <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                        <div>
+                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
+                                data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                                </div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
+                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
                             </div>
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-sm font-bold text-green-800">Send to Daniel</p>
-                                <svg class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                1</span>
                         </div>
-                        <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                        <div>
+                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
+                                data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                                </div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
+                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <span
+                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
                             </div>
-                            <div class="flex justify-between items-center mb-2">
-                                <p class="text-sm font-bold text-green-800">Send to Daniel</p>
-                                <svg class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <span
-                                class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                3</span>
                         </div>
                     </div>
                 </div>
@@ -562,46 +757,58 @@
                     <div
                         class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         11:00 AM</div>
-                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Quality check & add links from older content
-                            </p><span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
-                        </div>
-                        <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                    #2</span></div>
-                            <p class="text-sm font-semibold text-slate-700">Quality check & add links from older content
-                            </p><span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
-                        </div>
-                        <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                    class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                    <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <div></div>
+                        <div></div>
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Quality check & add links from older
+                                    content</p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
                             </div>
-                            <p class="text-sm font-semibold text-slate-700">Quality check & add links from older content
-                            </p><span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
                         </div>
-                        <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3">
-                            <div class="flex justify-between items-center mb-2"><span
-                                    class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                    class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Quality check & add links from older
+                                    content</p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
                             </div>
-                            <p class="text-sm font-semibold text-slate-700">Quality check & add links from older content
-                            </p><span
-                                class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                Specialist</span>
+                        </div>
+                        <div>
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
+                                data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
+                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Send to Daniel</p><span
+                                        class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">
+                                    SEO Specialist</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
+                                data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span
+                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
+                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Send to Daniel</p><span
+                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -653,6 +860,97 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timelineContainer = document.getElementById('timeline-container');
+            const svg = document.getElementById('timeline-svg-overlay');
+            const taskCards = Array.from(document.querySelectorAll('.task-card'));
+
+            const articles = taskCards.reduce((acc, card) => {
+                const articleId = card.dataset.articleId;
+                if (!articleId) return acc;
+                if (!acc[articleId]) acc[articleId] = [];
+                acc[articleId].push(card);
+                return acc;
+            }, {});
+
+            Object.values(articles).forEach(cards => {
+                cards.sort((a, b) => {
+                    const rectA = a.getBoundingClientRect();
+                    const rectB = b.getBoundingClientRect();
+                    if (rectA.top !== rectB.top) return rectA.top - rectB.top;
+                    return rectA.left - rectB.left;
+                });
+            });
+
+            function drawLines() {
+                svg.innerHTML = '';
+                const containerRect = timelineContainer.getBoundingClientRect();
+
+                for (const articleId in articles) {
+                    const cards = articles[articleId];
+                    if (cards.length < 2) continue;
+
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    let d = '';
+                    for (let i = 0; i < cards.length - 1; i++) {
+                        const startCard = cards[i];
+                        const endCard = cards[i + 1];
+
+                        const startRect = startCard.getBoundingClientRect();
+                        const endRect = endCard.getBoundingClientRect();
+
+                        const startX = startRect.left + startRect.width / 2 - containerRect.left;
+                        const startY = startRect.bottom - containerRect.top;
+                        const endX = endRect.left + endRect.width / 2 - containerRect.left;
+                        const endY = endRect.top - containerRect.top;
+
+                        // Straight line from bottom-center to top-center
+                        d += `M ${startX} ${startY} L ${endX} ${endY}`;
+                    }
+
+                    path.setAttribute('d', d);
+                    path.setAttribute('data-article-id', articleId);
+
+                    let lineClass = 'timeline-line';
+                    if (articleId.startsWith('fs-')) lineClass += ' line-filestack';
+                    else if (articleId.startsWith('fr-')) lineClass += ' line-froala';
+                    path.setAttribute('class', lineClass);
+                    svg.appendChild(path);
+                }
+            }
+
+            function setupHoverListeners() {
+                const timelineGroup = document.getElementById('timeline-container');
+
+                taskCards.forEach(card => {
+                    card.addEventListener('mouseenter', () => {
+                        const articleId = card.dataset.articleId;
+                        if (!articleId) return;
+
+                        timelineGroup.classList.add('group', 'highlight');
+
+                        document.querySelectorAll(`[data-article-id="${articleId}"]`).forEach(el => {
+                            el.classList.add('highlight-active');
+                        });
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        timelineGroup.classList.remove('group', 'highlight');
+                        document.querySelectorAll('.highlight-active').forEach(el => {
+                            el.classList.remove('highlight-active');
+                        });
+                    });
+                });
+            }
+
+            drawLines();
+            setupHoverListeners();
+
+            window.addEventListener('resize', drawLines);
+        });
+    </script>
 </body>
 
 </html>
