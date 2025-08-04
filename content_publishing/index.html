@@ -28,14 +28,13 @@
 
         .line-filestack {
             stroke: #f97316;
+            /* orange-500 */
         }
 
-        /* orange-500 */
         .line-froala {
             stroke: #2563eb;
+            /* blue-600 */
         }
-
-        /* blue-600 */
 
         /* Hover states */
         .task-card {
@@ -99,14 +98,25 @@
                 <div class="w-6 h-6 rounded border-2 border-dashed bg-blue-50 border-blue-600"></div><span>Froala
                     External</span>
             </div>
-            <div class="flex items-center gap-2 text-sm">
-                <div class="w-6 h-6 rounded border-2 bg-green-50 border-green-500"></div><span>Published Article</span>
+             <div class="flex items-center gap-2 text-sm">
+                <div class="w-full h-6 rounded border-2 bg-green-500 border-green-500 px-2 text-white">Published</div>
             </div>
         </div>
 
         <!-- Timeline Container -->
         <div class="relative" id="timeline-container">
             <svg id="timeline-svg-overlay"></svg>
+
+            <!-- Column Headers -->
+            <div class="hidden sm:grid grid-cols-6 gap-3 w-full font-bold text-center text-sm text-slate-500 mb-4" style="padding-left: 8rem;">
+                <div class="p-2">Filestack Int #1</div>
+                <div class="p-2">Filestack Int #2</div>
+                <div class="p-2">Filestack Ext #1</div>
+                <div class="p-2">Froala Int #1</div>
+                <div class="p-2">Froala Int #2</div>
+                <div class="p-2">Froala Ext #1</div>
+            </div>
+
             <!-- Monday -->
             <div class="relative pl-8 mb-12">
                 <div class="absolute left-0 top-12 bottom-0 w-0.5 bg-slate-200 z-0"></div>
@@ -115,115 +125,106 @@
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         9:00 AM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 2: fs-int-2 -->
+                        <div></div>
+                        <!-- Col 3: fs-ext-1 -->
+                        <div></div>
+                        <!-- Col 4: fr-int-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
+                        <!-- Col 5: fr-int-2 -->
                         <div></div>
-                        <div></div>
-                        <div></div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         2:00 PM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Create brief, research competitors, find
-                                    internal links</p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    internal links</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
+                        <!-- Col 2: fs-int-2 -->
+                        <div></div>
+                        <!-- Col 3: fs-ext-1 -->
+                        <div></div>
+                        <!-- Col 4: fr-int-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Create brief, research competitors, find
-                                    internal links</p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    internal links</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
+                        <!-- Col 5: fr-int-2 -->
                         <div></div>
-                        <div></div>
-                        <div></div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         5:00 PM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Write final title, headings & technical
-                                    angle</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    angle</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 2: fs-int-2 -->
+                        <div></div>
+                        <!-- Col 3: fs-ext-1 -->
+                        <div></div>
+                        <!-- Col 4: fr-int-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Write final title, headings & technical
-                                    angle</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    angle</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
+                        <!-- Col 5: fr-int-2 -->
                         <div></div>
-                        <div></div>
-                        <div></div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div></div>
                     </div>
                 </div>
@@ -237,57 +238,46 @@
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         9:00 AM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div></div>
-                        <div></div>
+                        <!-- Col 2: fs-int-2 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     2</span>
                             </div>
                         </div>
+                        <!-- Col 3: fs-ext-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3" data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
+                            </div>
+                        </div>
+                        <!-- Col 4: fr-int-1 -->
+                        <div></div>
+                        <!-- Col 5: fr-int-2 -->
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     4</span>
                             </div>
                         </div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3" data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                    1</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
-                                </div>
-                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Review keyword & define concept</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
@@ -296,35 +286,32 @@
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         2:00 PM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div></div>
+                        <!-- Col 2: fs-int-2 -->
                         <div></div>
-                        <div></div>
-                        <div></div>
+                        <!-- Col 3: fs-ext-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3" data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Create brief & research</p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                <p class="text-sm font-semibold text-slate-700">Create brief & research</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
+                        <!-- Col 4: fr-int-1 -->
+                        <div></div>
+                        <!-- Col 5: fr-int-2 -->
+                        <div></div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3" data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Create brief & research</p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                <p class="text-sm font-semibold text-slate-700">Create brief & research</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
@@ -333,96 +320,82 @@
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         3:00 PM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 2: fs-int-2 -->
+                        <div></div>
+                        <!-- Col 3: fs-ext-1 -->
+                        <div></div>
+                        <!-- Col 4: fr-int-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
+                        <!-- Col 5: fr-int-2 -->
                         <div></div>
-                        <div></div>
-                        <div></div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         5:00 PM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
-                                </p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                </p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
-                        <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                        #1</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
-                                </p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                    Specialist</span>
-                            </div>
-                        </div>
+                        <!-- Col 2: fs-int-2 -->
                         <div></div>
-                        <div></div>
+                        <!-- Col 3: fs-ext-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3" data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Write final title & headings</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Write final title & headings</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 4: fr-int-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
+                                </p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
+                        </div>
+                        <!-- Col 5: fr-int-2 -->
+                        <div></div>
+                        <!-- Col 6: fr-ext-1 -->
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3" data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Write final title & headings</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Write final title & headings</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
@@ -438,120 +411,98 @@
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         11:00 AM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
-                                </p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                </p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 2: fs-int-2 -->
+                        <div></div>
+                        <!-- Col 3: fs-ext-1 -->
+                        <div></div>
+                        <!-- Col 4: fr-int-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
-                                </p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                </p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
+                        <!-- Col 5: fr-int-2 -->
                         <div></div>
-                        <div></div>
-                        <div></div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         3:00 PM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Make final improvements based on
-                                    analysis</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    analysis</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 2: fs-int-2 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                        #1</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Make final improvements based on
-                                    analysis</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                    3</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     2</span>
                             </div>
                         </div>
+                        <!-- Col 3: fs-ext-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                        #2</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                    4</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3" data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 4: fr-int-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Make final improvements based on
+                                    analysis</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
+                            </div>
+                        </div>
+                        <!-- Col 5: fr-int-2 -->
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
+                            </div>
+                        </div>
+                        <!-- Col 6: fr-ext-1 -->
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3" data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Write full article draft</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
@@ -560,59 +511,66 @@
                 <div class="time-block flex items-start gap-4">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         5:00 PM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
-                        <div></div>
-                        <div></div>
+                        <!-- Col 1: fs-int-1 -->
+                         <div>
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="bg-green-500 text-white text-xs font-bold uppercase text-center py-1 px-3 rounded-t-lg -mx-3 -mt-3 mb-3">Published</div>
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Publish final article on website</p>
+                                <span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    1</span>
+                            </div>
+                        </div>
+                        <!-- Col 2: fs-int-2 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
-                                </p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                </p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
+                        <!-- Col 3: fs-ext-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3" data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Review draft & meta tags</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
+                            </div>
+                        </div>
+                        <!-- Col 4: fr-int-1 -->
+                        <div>
+                             <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="bg-green-500 text-white text-xs font-bold uppercase text-center py-1 px-3 rounded-t-lg -mx-3 -mt-3 mb-3">Published</div>
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #1</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Publish final article on website</p>
+                                <span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    3</span>
+                            </div>
+                        </div>
+                        <!-- Col 5: fr-int-2 -->
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Review draft for on-page SEO & meta tags
-                                </p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                </p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3" data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Review draft & meta tags</p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
-                                    Specialist</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
-                                </div>
-                                <p class="text-sm font-semibold text-slate-700">Review draft & meta tags</p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                <p class="text-sm font-semibold text-slate-700">Review draft & meta tags</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
@@ -628,112 +586,84 @@
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         9:00 AM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div>
-                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
-                                data-article-id="fs-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
-                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                        <path
-                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                    1</span>
+                                <p class="text-sm font-semibold text-slate-700">Quality check & add links from older
+                                    content</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
                             </div>
                         </div>
+                        <!-- Col 2: fs-int-2 -->
+                        <div></div>
+                        <!-- Col 3: fs-ext-1 -->
+                        <div></div>
+                        <!-- Col 4: fr-int-1 -->
                         <div>
-                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
-                                data-article-id="fr-int-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #1</span></div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
-                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                        <path
-                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                    3</span>
+                                <p class="text-sm font-semibold text-slate-700">Quality check & add links from older
+                                    content</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    Specialist</span>
                             </div>
                         </div>
+                        <!-- Col 5: fr-int-2 -->
                         <div></div>
-                        <div></div>
-                        <div></div>
+                        <!-- Col 6: fr-ext-1 -->
                         <div></div>
                     </div>
                 </div>
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         11:00 AM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div></div>
-                        <div></div>
+                        <!-- Col 2: fs-int-2 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
-                                </p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                </p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     2</span>
                             </div>
                         </div>
+                        <!-- Col 3: fs-ext-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                        #2</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
-                                </p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                    4</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3" data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Run E-E-A-T analysis</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Run E-E-A-T analysis</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 4: fr-int-1 -->
+                        <div></div>
+                        <!-- Col 5: fr-int-2 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Run draft through E-E-A-T analysis tool
+                                </p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
+                            </div>
+                        </div>
+                        <!-- Col 6: fr-ext-1 -->
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3" data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Run E-E-A-T analysis</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Run E-E-A-T analysis</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
@@ -742,59 +672,48 @@
                 <div class="time-block flex items-start gap-4">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         3:00 PM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div></div>
-                        <div></div>
+                        <!-- Col 2: fs-int-2 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Make final improvements based on
-                                    analysis</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    analysis</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     2</span>
                             </div>
                         </div>
+                        <!-- Col 3: fs-ext-1 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                        #2</span></div>
-                                <p class="text-sm font-semibold text-slate-700">Make final improvements based on
-                                    analysis</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                    4</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3" data-article-id="fs-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Final improvements</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Final improvements</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 4: fr-int-1 -->
+                        <div></div>
+                        <!-- Col 5: fr-int-2 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Make final improvements based on
+                                    analysis</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
+                            </div>
+                        </div>
+                        <!-- Col 6: fr-ext-1 -->
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3" data-article-id="fr-ext-1">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <p class="text-sm font-semibold text-slate-700">Final improvements</p><span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Final improvements</p><span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
@@ -810,89 +729,54 @@
                 <div class="time-block flex items-start gap-4 mb-8">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         9:00 AM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div></div>
-                        <div></div>
+                        <!-- Col 2: fs-int-2 -->
                         <div>
-                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
-                                data-article-id="fs-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-2">
+                                 <div class="bg-green-500 text-white text-xs font-bold uppercase text-center py-1 px-3 rounded-t-lg -mx-3 -mt-3 mb-3">Published</div>
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
-                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                        <path
-                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Publish final article on website</p>
+                                <span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     2</span>
                             </div>
                         </div>
+                        <!-- Col 3: fs-ext-1 -->
                         <div>
-                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
-                                data-article-id="fr-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
-                                        #2</span></div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <p class="text-sm font-bold text-green-800">Publish final article on website</p><svg
-                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                        <path
-                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                        </path>
-                                    </svg>
+                            <div class="task-card bg-orange-50 border-2 border-dashed border-orange-500 rounded-lg p-3" data-article-id="fs-ext-1">
+                                <div class="bg-green-500 text-white text-xs font-bold uppercase text-center py-1 px-3 rounded-t-lg -mx-3 -mt-3 mb-3">Sent to External Partner</div>
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
-                                    4</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
-                                data-article-id="fs-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
-                                </div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <p class="text-sm font-bold text-green-800">Send to Daniel</p><svg
-                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                        <path
-                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Send to Daniel</p>
+                                <span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     1</span>
                             </div>
                         </div>
+                        <!-- Col 4: fr-int-1 -->
+                        <div></div>
+                        <!-- Col 5: fr-int-2 -->
                         <div>
-                            <div class="task-card bg-green-50 border-2 border-green-500 rounded-lg p-3"
-                                data-article-id="fr-ext-1">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-2">
+                                 <div class="bg-green-500 text-white text-xs font-bold uppercase text-center py-1 px-3 rounded-t-lg -mx-3 -mt-3 mb-3">Published</div>
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                                        #2</span></div>
+                                <p class="text-sm font-semibold text-slate-700">Publish final article on website</p>
+                                <span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                    4</span>
+                            </div>
+                        </div>
+                        <!-- Col 6: fr-ext-1 -->
+                        <div>
+                            <div class="task-card bg-blue-50 border-2 border-dashed border-blue-600 rounded-lg p-3" data-article-id="fr-ext-1">
+                                 <div class="bg-green-500 text-white text-xs font-bold uppercase text-center py-1 px-3 rounded-t-lg -mx-3 -mt-3 mb-3">Sent to External Partner</div>
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">EXT</span>
                                 </div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <p class="text-sm font-bold text-green-800">Send to Daniel</p><svg
-                                        class="w-5 h-5 fill-green-600" viewBox="0 0 24 24">
-                                        <path
-                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <span
-                                    class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
+                                <p class="text-sm font-semibold text-slate-700">Send to Daniel</p>
+                                <span class="inline-block bg-sky-500 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">Writer
                                     3</span>
                             </div>
                         </div>
@@ -901,40 +785,37 @@
                 <div class="time-block flex items-start gap-4">
                     <div class="absolute left-[-6px] top-1.5 w-4 h-4 bg-blue-500 rounded-full border-4 border-white">
                     </div>
-                    <div
-                        class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
+                    <div class="time-label bg-blue-500 text-white font-semibold py-1 px-3 rounded-full text-xs w-20 text-center">
                         11:00 AM</div>
                     <div class="tasks-grid grid grid-cols-1 sm:grid-cols-6 gap-3 w-full">
+                        <!-- Col 1: fs-int-1 -->
                         <div></div>
-                        <div></div>
+                        <!-- Col 2: fs-int-2 -->
                         <div>
-                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3"
-                                data-article-id="fs-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-orange-50 border-2 border-orange-500 rounded-lg p-3" data-article-id="fs-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-orange-500 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FILESTACK</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Quality check & add links from older
-                                    content</p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    content</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
+                        <!-- Col 3: fs-ext-1 -->
+                        <div></div>
+                        <!-- Col 4: fr-int-1 -->
+                        <div></div>
+                        <!-- Col 5: fr-int-2 -->
                         <div>
-                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3"
-                                data-article-id="fr-int-2">
-                                <div class="flex justify-between items-center mb-2"><span
-                                        class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span
-                                        class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
+                            <div class="task-card bg-blue-50 border-2 border-blue-600 rounded-lg p-3" data-article-id="fr-int-2">
+                                <div class="flex justify-between items-center mb-2"><span class="bg-blue-600 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">FROALA</span><span class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">INT
                                         #2</span></div>
                                 <p class="text-sm font-semibold text-slate-700">Quality check & add links from older
-                                    content</p><span
-                                    class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
+                                    content</p><span class="inline-block bg-purple-600 text-white text-xs font-semibold mt-2 px-3 py-1 rounded-full">SEO
                                     Specialist</span>
                             </div>
                         </div>
-                      
-                     
+                        <!-- Col 6: fr-ext-1 -->
+                        <div></div>
                     </div>
                 </div>
             </div>
@@ -947,38 +828,32 @@
                 <div class="writer-box bg-white p-4 rounded-lg border-2 border-slate-200 text-center">
                     <div class="font-bold text-slate-800 mb-2">Writer 1</div>
                     <div class="space-y-2 text-sm">
-                        <div class="flex items-center justify-center gap-2"><span
-                                class="bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5 rounded-full">FS</span><span>Filestack
+                        <div class="flex items-center justify-center gap-2"><span class="bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5 rounded-full">FS</span><span>Filestack
                                 Internal #1</span></div>
-                        <div class="flex items-center justify-center gap-2"><span
-                                class="bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5 rounded-full">FS</span><span>Filestack
+                        <div class="flex items-center justify-center gap-2"><span class="bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5 rounded-full">FS</span><span>Filestack
                                 External</span></div>
                     </div>
                 </div>
                 <div class="writer-box bg-white p-4 rounded-lg border-2 border-slate-200 text-center">
                     <div class="font-bold text-slate-800 mb-2">Writer 2</div>
                     <div class="space-y-2 text-sm">
-                        <div class="flex items-center justify-center gap-2"><span
-                                class="bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5 rounded-full">FS</span><span>Filestack
+                        <div class="flex items-center justify-center gap-2"><span class="bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-0.5 rounded-full">FS</span><span>Filestack
                                 Internal #2</span></div>
                     </div>
                 </div>
                 <div class="writer-box bg-white p-4 rounded-lg border-2 border-slate-200 text-center">
                     <div class="font-bold text-slate-800 mb-2">Writer 3</div>
                     <div class="space-y-2 text-sm">
-                        <div class="flex items-center justify-center gap-2"><span
-                                class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">FR</span><span>Froala
+                        <div class="flex items-center justify-center gap-2"><span class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">FR</span><span>Froala
                                 Internal #1</span></div>
-                        <div class="flex items-center justify-center gap-2"><span
-                                class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">FR</span><span>Froala
+                        <div class="flex items-center justify-center gap-2"><span class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">FR</span><span>Froala
                                 External</span></div>
                     </div>
                 </div>
                 <div class="writer-box bg-white p-4 rounded-lg border-2 border-slate-200 text-center">
                     <div class="font-bold text-slate-800 mb-2">Writer 4</div>
                     <div class="space-y-2 text-sm">
-                        <div class="flex items-center justify-center gap-2"><span
-                                class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">FR</span><span>Froala
+                        <div class="flex items-center justify-center gap-2"><span class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">FR</span><span>Froala
                                 Internal #2</span></div>
                     </div>
                 </div>
@@ -992,6 +867,7 @@
             const svg = document.getElementById('timeline-svg-overlay');
             const taskCards = Array.from(document.querySelectorAll('.task-card'));
 
+            // Group cards by article ID
             const articles = taskCards.reduce((acc, card) => {
                 const articleId = card.dataset.articleId;
                 if (!articleId) return acc;
@@ -1000,6 +876,7 @@
                 return acc;
             }, {});
 
+            // Sort cards within each article group by their vertical position
             Object.values(articles).forEach(cards => {
                 cards.sort((a, b) => {
                     const rectA = a.getBoundingClientRect();
@@ -1010,7 +887,7 @@
             });
 
             function drawLines() {
-                svg.innerHTML = '';
+                svg.innerHTML = ''; // Clear previous lines
                 const containerRect = timelineContainer.getBoundingClientRect();
 
                 for (const articleId in articles) {
@@ -1026,18 +903,20 @@
                         const startRect = startCard.getBoundingClientRect();
                         const endRect = endCard.getBoundingClientRect();
 
+                        // Adjust coordinates to be relative to the SVG container
                         const startX = startRect.left + startRect.width / 2 - containerRect.left;
                         const startY = startRect.bottom - containerRect.top;
                         const endX = endRect.left + endRect.width / 2 - containerRect.left;
                         const endY = endRect.top - containerRect.top;
 
-                        // Straight line from bottom-center to top-center
-                        d += `M ${startX} ${startY} L ${endX} ${endY}`;
+                        // Create a path command to draw a line between cards
+                        d += `M ${startX} ${startY} L ${endX} ${endY} `;
                     }
 
                     path.setAttribute('d', d);
                     path.setAttribute('data-article-id', articleId);
 
+                    // Apply styling based on the article type
                     let lineClass = 'timeline-line';
                     if (articleId.startsWith('fs-')) lineClass += ' line-filestack';
                     else if (articleId.startsWith('fr-')) lineClass += ' line-froala';
@@ -1056,6 +935,7 @@
 
                         timelineGroup.classList.add('group', 'highlight');
 
+                        // Highlight all elements related to the hovered article
                         document.querySelectorAll(`[data-article-id="${articleId}"]`).forEach(el => {
                             el.classList.add('highlight-active');
                         });
@@ -1063,6 +943,8 @@
 
                     card.addEventListener('mouseleave', () => {
                         timelineGroup.classList.remove('group', 'highlight');
+                        
+                        // Remove highlight from all elements
                         document.querySelectorAll('.highlight-active').forEach(el => {
                             el.classList.remove('highlight-active');
                         });
@@ -1070,9 +952,11 @@
                 });
             }
 
+            // Initial draw and setup
             drawLines();
             setupHoverListeners();
 
+            // Redraw lines on window resize
             window.addEventListener('resize', drawLines);
         });
     </script>
