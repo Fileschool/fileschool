@@ -45,7 +45,9 @@
         /* Froala Editor container styling */
         .fr-box.fr-basic .fr-element {
             min-height: 300px;
+            max-height: 500px;
             padding: 1rem;
+            overflow-y: auto;
         }
 
         /* Specificity to override Tailwind for results area formatting */
@@ -196,10 +198,10 @@
 <body class="text-gray-800 min-h-screen flex flex-col">
 
     <!-- Main Layout -->
-    <main class="flex-1 w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6 min-h-screen">
+    <main class="flex-1 w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6">
 
         <!-- Input Column -->
-        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col min-h-100">
+        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col">
             <h2 class="text-xl md:text-2xl font-bold text-center text-gray-700 mb-6">Input Content & Analyze</h2>
 
             <!-- API Key Input -->
@@ -256,7 +258,8 @@
         </div>
 
         <!-- Results Column -->
-        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col" style="height: 1300px;">
+        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col"
+            style="height: 1000px; overflow: hidden;">
             <h2 class="text-xl md:text-2xl font-bold text-center text-gray-700 mb-4 flex-shrink-0">Analysis Results</h2>
 
             <!-- Score Summary Table -->
@@ -298,7 +301,7 @@
             </div>
 
             <!-- Tab Content Container -->
-            <div class="flex-1 mt-4" style="height: 950px; overflow: hidden;">
+            <div class="flex-1 mt-4" style="height: 700px; overflow-y: auto;">
                 <!-- Content Analysis Tab -->
                 <div id="contentAnalysisTab" class="tab-content h-full flex flex-col lg:flex-row gap-4 relative">
                     <!-- Nav -->
@@ -311,7 +314,7 @@
                     </nav>
                     <!-- Results -->
                     <div id="contentResultsWrapper" class="w-full lg:w-2/3 flex-1">
-                        <div id="resultsArea" class="overflow-y-auto p-1" style="height: 900px;">
+                        <div id="resultsArea" class="overflow-y-auto p-1" style="height: 900px; max-height: 900px;">
                             <div class="text-center text-gray-500 p-8">
                                 <i class="material-icons text-5xl text-gray-400">assessment</i>
                                 <h3 class="text-lg font-semibold mt-4">Ready to analyze your content</h3>
@@ -334,7 +337,8 @@
                     </nav>
                     <!-- Results -->
                     <div id="chunkabilityResultsWrapper" class="w-full lg:w-2/3 flex-1">
-                        <div id="chunkabilityResults" class="overflow-y-auto p-1" style="height: 700px;">
+                        <div id="chunkabilityResults" class="overflow-y-auto p-1"
+                            style="height: 700px; max-height: 700px;">
                             <div class="text-center text-gray-500 p-8">
                                 <i class="material-icons text-5xl text-gray-400">view_module</i>
                                 <h3 class="text-lg font-semibold mt-4">Ready to check chunkability</h3>
@@ -390,7 +394,7 @@
                 new FroalaEditor('#editor', {
                     placeholderText: 'Paste your article HTML or text content here...',
                     heightMin: 300,
-                    heightMax: 600,
+                    heightMax: 700,
                     toolbarButtons: ['bold', 'italic', 'underline', '|', 'align', 'formatOL', 'formatUL', '|', 'insertLink', 'insertTable', '|', 'undo', 'redo', 'html']
                 });
             } catch (e) {
