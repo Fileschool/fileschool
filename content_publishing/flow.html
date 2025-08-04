@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Content Production Workflow</title>
-        <meta name="robots" content="noindex">
+    <meta name="robots" content="noindex">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9; /* slate-200 */
+            background-color: #f1f5f9;
+            /* slate-200 */
         }
+
         /* Main container for the vertical workflow */
         .workflow-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4rem; /* Increased gap for vertical arrows */
+            gap: 4rem;
+            /* Increased gap for vertical arrows */
             padding: 2rem 1rem;
         }
+
         /* Each phase of the workflow */
         .phase {
             position: relative;
@@ -29,9 +35,11 @@
             padding: 2rem;
             border-radius: 1rem;
             background-color: #ffffff;
-            border: 1px solid #e2e8f0; /* slate-200 */
+            border: 1px solid #e2e8f0;
+            /* slate-200 */
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
+
         /* Arrow connecting the phases vertically */
         .phase:not(:last-child)::after {
             content: '↓';
@@ -40,24 +48,31 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 2.5rem;
-            color: #64748b; /* slate-500 */
+            color: #64748b;
+            /* slate-500 */
             font-weight: bold;
         }
+
         .phase-title {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #1e293b; /* slate-800 */
+            color: #1e293b;
+            /* slate-800 */
             margin-bottom: 2.5rem;
             text-align: center;
         }
+
         /* Wrapper for steps within a phase */
         .steps-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-wrap: wrap; /* Allows steps to wrap on smaller screens */
-            gap: 60px; /* Space for arrows */
+            flex-wrap: wrap;
+            /* Allows steps to wrap on smaller screens */
+            gap: 60px;
+            /* Space for arrows */
         }
+
         .step {
             position: relative;
             width: 180px;
@@ -67,19 +82,23 @@
             text-align: center;
             transition: transform 0.2s, box-shadow 0.2s;
         }
+
         .step:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
+
         .step-task {
             font-weight: 600;
-            color: #334155; /* slate-700 */
+            color: #334155;
+            /* slate-700 */
             font-size: 0.9rem;
             min-height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .step-owner {
             font-weight: 500;
             font-size: 0.8rem;
@@ -88,15 +107,47 @@
             margin-top: 0.75rem;
             display: inline-block;
         }
+
         /* Role-based colors */
-        .writer-task { background-color: #e0f2fe; border-color: #7dd3fc; }
-        .writer-owner { background-color: #0ea5e9; color: white; }
-        .seo-task { background-color: #dcfce7; border-color: #86efac; }
-        .seo-owner { background-color: #22c55e; color: white; }
-        .approval-task { background-color: #fef9c3; border-color: #fde047; }
-        .approval-owner { background-color: #eab308; color: white; }
-        .end-task { background-color: #fee2e2; border-color: #fca5a5; }
-        .end-owner { background-color: #ef4444; color: white; }
+        .writer-task {
+            background-color: #e0f2fe;
+            border-color: #7dd3fc;
+        }
+
+        .writer-owner {
+            background-color: #0ea5e9;
+            color: white;
+        }
+
+        .seo-task {
+            background-color: #dcfce7;
+            border-color: #86efac;
+        }
+
+        .seo-owner {
+            background-color: #22c55e;
+            color: white;
+        }
+
+        .approval-task {
+            background-color: #fef9c3;
+            border-color: #fde047;
+        }
+
+        .approval-owner {
+            background-color: #eab308;
+            color: white;
+        }
+
+        .end-task {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+        .end-owner {
+            background-color: #ef4444;
+            color: white;
+        }
 
         /* Arrows between steps */
         .step:not(:last-child)::after {
@@ -106,44 +157,56 @@
             right: -45px;
             transform: translateY(-50%);
             font-size: 2.5rem;
-            color: #94a3b8; /* slate-400 */
+            color: #94a3b8;
+            /* slate-400 */
         }
+
         /* Hide arrow on the last step of a wrapper */
         .steps-wrapper .step:last-child::after {
             display: none;
         }
+
         /* Decision point styling */
-        .decision::before { /* Rejection arrow */
+        .decision::before {
+            /* Rejection arrow */
             content: '⟲';
             position: absolute;
             top: 50%;
             left: -40px;
             transform: translateY(-50%);
             font-size: 2.5rem;
-            color: #ef4444; /* red-500 */
+            color: #ef4444;
+            /* red-500 */
         }
+
         .decision-label {
             position: absolute;
             font-size: 0.8rem;
             font-weight: 600;
         }
+
         .yes-label {
             top: 15%;
             right: -55px;
-            color: #16a34a; /* green-600 */
+            color: #16a34a;
+            /* green-600 */
         }
+
         .no-label {
             top: 15%;
             left: -55px;
-            color: #ef4444; /* red-500 */
+            color: #ef4444;
+            /* red-500 */
         }
 
         /* Responsive adjustments for smaller screens */
         @media (max-width: 768px) {
             .steps-wrapper {
                 flex-direction: column;
-                gap: 80px; /* Increase gap for vertical stacking */
+                gap: 80px;
+                /* Increase gap for vertical stacking */
             }
+
             .step:not(:last-child)::after {
                 top: 100%;
                 left: 50%;
@@ -151,18 +214,21 @@
                 transform: translateX(-50%);
                 content: '↓';
             }
+
             .decision::before {
                 top: auto;
                 bottom: 100%;
                 left: 50%;
                 transform: translateX(-50%) rotate(90deg);
             }
+
             .yes-label {
                 top: 100%;
                 left: 55%;
                 margin-top: 5px;
                 right: auto;
             }
+
             .no-label {
                 top: auto;
                 bottom: 100%;
@@ -173,11 +239,13 @@
         }
     </style>
 </head>
+
 <body class="bg-slate-100">
 
     <div class="max-w-7xl mx-auto p-4 sm:p-8">
         <h1 class="text-3xl sm:text-4xl font-bold text-center text-slate-900 mb-4">Content Production Workflow</h1>
-        <p class="text-center text-slate-500 text-lg mb-10">A visual guide to the article creation and publication process.</p>
+        <p class="text-center text-slate-500 text-lg mb-10">A visual guide to the article creation and publication
+            process.</p>
 
         <div class="workflow-container">
             <!-- Phase 1: Pre-Production -->
@@ -189,7 +257,7 @@
                         <div class="step-owner writer-owner">Writer</div>
                     </div>
                     <div class="step approval-task decision">
-                        <div class="step-task">Approve Keywords</div>
+                        <div class="step-task">Approve Concept</div>
                         <div class="step-owner approval-owner">Carl</div>
                         <div class="decision-label yes-label">Approved</div>
                         <div class="decision-label no-label">Revisions</div>
@@ -246,7 +314,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Phase 4: Publication -->
             <div class="phase">
                 <h2 class="phase-title">Phase 4: Publication</h2>
@@ -259,7 +327,7 @@
                         <div class="step-task">Post-Publish SEO</div>
                         <div class="step-owner seo-owner">SEO Specialist</div>
                     </div>
-                     <div class="step end-task">
+                    <div class="step end-task">
                         <div class="step-task font-bold text-red-800">END</div>
                         <div class="step-owner end-owner">Process</div>
                     </div>
@@ -270,4 +338,5 @@
     </div>
 
 </body>
+
 </html>
