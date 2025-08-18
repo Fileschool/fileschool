@@ -34,6 +34,12 @@
             border-radius: 50%;
             cursor: pointer;
         }
+
+        .plan-btn.active {
+            background-color: #f97316;
+            color: white;
+            border-color: #f97316;
+        }
     </style>
 </head>
 
@@ -108,31 +114,22 @@
                 <!-- Right Column: Results & Savings -->
                 <div class="bg-slate-900 rounded-lg p-6 md:p-8 flex flex-col justify-center">
 
-                    <!-- Scale Plan Details -->
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-4 text-center">Filestack Scale Plan ($379/mo)</h3>
-                        <ul class="space-y-2 text-slate-300">
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-orange-400" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg><span><strong class="font-semibold">400 GB</strong> Bandwidth</span></li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-orange-400" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg><span><strong class="font-semibold">125,000</strong> Uploads</span></li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-orange-400" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg><span><strong class="font-semibold">300,000</strong> Transformations</span></li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-orange-400" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg><span><strong class="font-semibold">350 GB</strong> Storage</span></li>
-                        </ul>
+                    <!-- Plan Selector -->
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-white mb-4 text-center">Choose Your Filestack Plan</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button id="plan-start"
+                                class="plan-btn border-2 border-slate-600 text-slate-300 font-semibold py-2 rounded-lg transition-colors">Start</button>
+                            <button id="plan-grow"
+                                class="plan-btn border-2 border-slate-600 text-slate-300 font-semibold py-2 rounded-lg transition-colors">Grow</button>
+                            <button id="plan-scale"
+                                class="plan-btn border-2 border-slate-600 text-slate-300 font-semibold py-2 rounded-lg transition-colors active">Scale</button>
+                        </div>
+                    </div>
+
+                    <!-- Plan Details -->
+                    <div id="plan-details-container">
+                        <!-- Plan details will be dynamically inserted here -->
                     </div>
                     <div class="my-6 border-t border-slate-700"></div>
 
@@ -182,87 +179,139 @@
     </div>
 
     <script>
-        // --- DOM Element Selection ---
-        const devSalarySlider = document.getElementById('devSalary');
-        const numDevelopersSlider = document.getElementById('numDevelopers');
-        const buildTimeSlider = document.getElementById('buildTime');
-        const maintenanceTimeSlider = document.getElementById('maintenanceTime');
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element Selection ---
+            const devSalarySlider = document.getElementById('devSalary');
+            const numDevelopersSlider = document.getElementById('numDevelopers');
+            const buildTimeSlider = document.getElementById('buildTime');
+            const maintenanceTimeSlider = document.getElementById('maintenanceTime');
 
-        const devSalaryValue = document.getElementById('devSalaryValue');
-        const numDevelopersValue = document.getElementById('numDevelopersValue');
-        const buildTimeValue = document.getElementById('buildTimeValue');
-        const maintenanceTimeValue = document.getElementById('maintenanceTimeValue');
+            const devSalaryValue = document.getElementById('devSalaryValue');
+            const numDevelopersValue = document.getElementById('numDevelopersValue');
+            const buildTimeValue = document.getElementById('buildTimeValue');
+            const maintenanceTimeValue = document.getElementById('maintenanceTimeValue');
 
-        const diyTotalCostEl = document.getElementById('diyTotalCost');
-        const filestackTotalCostEl = document.getElementById('filestackTotalCost');
-        const totalSavingsEl = document.getElementById('totalSavings');
-        const roiPercentageEl = document.getElementById('roiPercentage');
+            const diyTotalCostEl = document.getElementById('diyTotalCost');
+            const filestackTotalCostEl = document.getElementById('filestackTotalCost');
+            const totalSavingsEl = document.getElementById('totalSavings');
+            const roiPercentageEl = document.getElementById('roiPercentage');
 
-        // --- Constants ---
-        // Updated to reflect the Scale plan pricing.
-        const FILESTACK_ESTIMATED_MONTHLY_COST = 379;
+            const planDetailsContainer = document.getElementById('plan-details-container');
+            const planButtons = document.querySelectorAll('.plan-btn');
 
-        // --- Calculation Logic ---
-        function calculateROI() {
-            // 1. Get current values from sliders
-            const salary = parseInt(devSalarySlider.value);
-            const developers = parseInt(numDevelopersSlider.value);
-            const buildWeeks = parseInt(buildTimeSlider.value);
-            const maintenanceHours = parseInt(maintenanceTimeSlider.value);
+            // --- Plan Data ---
+            const plans = {
+                start: {
+                    name: "Start",
+                    price: 69,
+                    features: [
+                        { icon: true, label: "<strong>75 GB</strong> Bandwidth" },
+                        { icon: true, label: "<strong>20,000</strong> Uploads" },
+                        { icon: true, label: "<strong>50,000</strong> Transformations" },
+                        { icon: true, label: "<strong>50 GB</strong> Storage" }
+                    ]
+                },
+                grow: {
+                    name: "Grow",
+                    price: 199,
+                    features: [
+                        { icon: true, label: "<strong>200 GB</strong> Bandwidth" },
+                        { icon: true, label: "<strong>50,000</strong> Uploads" },
+                        { icon: true, label: "<strong>150,000</strong> Transformations" },
+                        { icon: true, label: "<strong>150 GB</strong> Storage" }
+                    ]
+                },
+                scale: {
+                    name: "Scale",
+                    price: 379,
+                    features: [
+                        { icon: true, label: "<strong>400 GB</strong> Bandwidth" },
+                        { icon: true, label: "<strong>125,000</strong> Uploads" },
+                        { icon: true, label: "<strong>300,000</strong> Transformations" },
+                        { icon: true, label: "<strong>350 GB</strong> Storage" }
+                    ]
+                }
+            };
 
-            // 2. Calculate weekly and hourly salary rates
-            const weeklySalaryPerDev = salary / 52;
-            const hourlySalaryPerDev = weeklySalaryPerDev / 40;
+            let selectedPlan = 'scale'; // Default plan
 
-            // 3. Calculate DIY Costs
-            // One-time cost to build the initial infrastructure
-            const initialBuildCost = weeklySalaryPerDev * buildWeeks * developers;
+            // --- Main Calculation Logic ---
+            function calculateROI() {
+                const salary = parseInt(devSalarySlider.value);
+                const developers = parseInt(numDevelopersSlider.value);
+                const buildWeeks = parseInt(buildTimeSlider.value);
+                const maintenanceHours = parseInt(maintenanceTimeSlider.value);
 
-            // Recurring monthly cost for ongoing maintenance
-            const monthlyMaintenanceCost = hourlySalaryPerDev * maintenanceHours * developers;
+                const weeklySalaryPerDev = salary / 52;
+                const hourlySalaryPerDev = weeklySalaryPerDev / 40;
 
-            // Total cost over the first year
-            const totalDiyCost = initialBuildCost + (monthlyMaintenanceCost * 12);
+                const initialBuildCost = weeklySalaryPerDev * buildWeeks * developers;
+                const monthlyMaintenanceCost = hourlySalaryPerDev * maintenanceHours * developers;
+                const totalDiyCost = initialBuildCost + (monthlyMaintenanceCost * 12);
 
-            // 4. Calculate Filestack Costs
-            const totalFilestackCost = FILESTACK_ESTIMATED_MONTHLY_COST * 12;
+                const currentPlanPrice = plans[selectedPlan].price;
+                const totalFilestackCost = currentPlanPrice * 12;
 
-            // 5. Calculate Savings and ROI
-            const savings = totalDiyCost - totalFilestackCost;
-            // Avoid division by zero if cost is 0
-            const roi = totalFilestackCost > 0 ? (savings / totalFilestackCost) * 100 : 0;
+                const savings = totalDiyCost - totalFilestackCost;
+                const roi = totalFilestackCost > 0 ? (savings / totalFilestackCost) * 100 : 0;
 
-            // 6. Update the UI with formatted values
-            updateUI(salary, developers, buildWeeks, maintenanceHours, totalDiyCost, totalFilestackCost, savings, roi);
-        }
+                updateUI(salary, developers, buildWeeks, maintenanceHours, totalDiyCost, totalFilestackCost, savings, roi);
+            }
 
-        // --- UI Update Logic ---
-        function updateUI(salary, developers, buildWeeks, maintenanceHours, diyCost, filestackCost, savings, roi) {
-            // Helper to format numbers as USD currency
-            const toCurrency = (num) => '$' + Math.round(num).toLocaleString('en-US');
+            // --- UI Update Functions ---
+            function updatePlanDetailsUI() {
+                const plan = plans[selectedPlan];
+                let featuresHtml = plan.features.map(feature => `
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>${feature.label}</span>
+                    </li>
+                `).join('');
 
-            // Update slider value displays
-            devSalaryValue.textContent = toCurrency(salary);
-            numDevelopersValue.textContent = `${developers}`;
-            buildTimeValue.textContent = `${buildWeeks} week${buildWeeks > 1 ? 's' : ''}`;
-            maintenanceTimeValue.textContent = `${maintenanceHours} hour${maintenanceHours > 1 ? 's' : ''}`;
+                planDetailsContainer.innerHTML = `
+                    <h3 class="text-xl font-bold text-white mb-4 text-center">
+                        ${plan.name} Plan ($${plan.price}/mo)
+                    </h3>
+                    <ul class="space-y-2 text-slate-300">${featuresHtml}</ul>
+                `;
+            }
 
-            // Update result displays
-            diyTotalCostEl.textContent = toCurrency(diyCost);
-            filestackTotalCostEl.textContent = toCurrency(filestackCost);
-            totalSavingsEl.textContent = toCurrency(savings);
-            roiPercentageEl.textContent = `${Math.round(roi)}%`;
-        }
+            function updateUI(salary, developers, buildWeeks, maintenanceHours, diyCost, filestackCost, savings, roi) {
+                const toCurrency = (num) => '$' + Math.round(num).toLocaleString('en-US');
 
-        // --- Event Listeners ---
-        const allSliders = [devSalarySlider, numDevelopersSlider, buildTimeSlider, maintenanceTimeSlider];
-        allSliders.forEach(slider => {
-            slider.addEventListener('input', calculateROI);
+                devSalaryValue.textContent = toCurrency(salary);
+                numDevelopersValue.textContent = `${developers}`;
+                buildTimeValue.textContent = `${buildWeeks} week${buildWeeks > 1 ? 's' : ''}`;
+                maintenanceTimeValue.textContent = `${maintenanceHours} hour${maintenanceHours > 1 ? 's' : ''}`;
+
+                diyTotalCostEl.textContent = toCurrency(diyCost);
+                filestackTotalCostEl.textContent = toCurrency(filestackCost);
+                totalSavingsEl.textContent = toCurrency(savings);
+                roiPercentageEl.textContent = `${Math.round(roi)}%`;
+            }
+
+            // --- Event Listeners ---
+            const allSliders = [devSalarySlider, numDevelopersSlider, buildTimeSlider, maintenanceTimeSlider];
+            allSliders.forEach(slider => slider.addEventListener('input', calculateROI));
+
+            planButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    planButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    selectedPlan = button.id.split('-')[1];
+                    updatePlanDetailsUI();
+                    calculateROI();
+                });
+            });
+
+            // --- Initial Setup on Page Load ---
+            function initialize() {
+                updatePlanDetailsUI();
+                calculateROI();
+            }
+
+            initialize();
         });
-
-        // --- Initial Calculation on Page Load ---
-        document.addEventListener('DOMContentLoaded', calculateROI);
-
     </script>
 </body>
 
