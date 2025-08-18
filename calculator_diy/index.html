@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filestack ROI Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom styles for slider thumbs */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #f97316;
+            /* orange-500 */
+            border-radius: 50%;
+            cursor: pointer;
+            margin-top: -6px;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #f97316;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white antialiased">
+
+    <div class="container mx-auto px-4 py-8 md:py-16">
+
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-orange-400 mb-2">Calculate Your ROI with Filestack</h1>
+            <p class="text-lg text-slate-300 max-w-3xl mx-auto">Stop wasting engineering hours on file infrastructure.
+                See how much you could save by switching from a DIY solution to Filestack.</p>
+        </div>
+
+        <!-- Calculator Main Body -->
+        <div class="bg-slate-800 rounded-xl shadow-2xl p-6 md:p-10 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+
+                <!-- Left Column: DIY Cost Inputs -->
+                <div class="space-y-8">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-1">Your DIY Infrastructure Costs</h2>
+                        <p class="text-slate-400">Estimate the resources you'd spend building and maintaining it
+                            yourself.</p>
+                    </div>
+
+                    <!-- Input: Developer Salary -->
+                    <div>
+                        <label for="devSalary"
+                            class="flex justify-between items-center text-slate-200 font-medium mb-2">
+                            <span>Average Fully-Loaded Developer Salary</span>
+                            <span id="devSalaryValue" class="text-orange-400 font-semibold">$150,000</span>
+                        </label>
+                        <input type="range" id="devSalary" min="50000" max="300000" step="5000" value="150000"
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-orange-500">
+                    </div>
+
+                    <!-- Input: Number of Developers -->
+                    <div>
+                        <label for="numDevelopers"
+                            class="flex justify-between items-center text-slate-200 font-medium mb-2">
+                            <span>Engineers on File Infrastructure</span>
+                            <span id="numDevelopersValue" class="text-orange-400 font-semibold">2</span>
+                        </label>
+                        <input type="range" id="numDevelopers" min="1" max="10" step="1" value="2"
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-orange-500">
+                    </div>
+
+                    <!-- Input: Build Time -->
+                    <div>
+                        <label for="buildTime"
+                            class="flex justify-between items-center text-slate-200 font-medium mb-2">
+                            <span>Initial Build Time (Weeks)</span>
+                            <span id="buildTimeValue" class="text-orange-400 font-semibold">8 weeks</span>
+                        </label>
+                        <input type="range" id="buildTime" min="1" max="26" step="1" value="8"
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-orange-500">
+                    </div>
+
+                    <!-- Input: Maintenance Time -->
+                    <div>
+                        <label for="maintenanceTime"
+                            class="flex justify-between items-center text-slate-200 font-medium mb-2">
+                            <span>Monthly Maintenance & Bug Fixes (Hours)</span>
+                            <span id="maintenanceTimeValue" class="text-orange-400 font-semibold">20 hours</span>
+                        </label>
+                        <input type="range" id="maintenanceTime" min="0" max="100" step="5" value="20"
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-orange-500">
+                    </div>
+                </div>
+
+                <!-- Right Column: Results & Savings -->
+                <div class="bg-slate-900 rounded-lg p-6 md:p-8 flex flex-col justify-center">
+
+                    <!-- Scale Plan Details -->
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4 text-center">Filestack Scale Plan ($379/mo)</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-orange-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg><span><strong class="font-semibold">400 GB</strong> Bandwidth</span></li>
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-orange-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg><span><strong class="font-semibold">125,000</strong> Uploads</span></li>
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-orange-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg><span><strong class="font-semibold">300,000</strong> Transformations</span></li>
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-orange-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg><span><strong class="font-semibold">350 GB</strong> Storage</span></li>
+                        </ul>
+                    </div>
+                    <div class="my-6 border-t border-slate-700"></div>
+
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center">First-Year Cost Comparison</h2>
+
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <!-- DIY Cost Result -->
+                        <div class="bg-slate-800 p-4 rounded-lg text-center">
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">DIY Cost</p>
+                            <p id="diyTotalCost" class="text-3xl font-bold text-red-400 mt-1">$70,769</p>
+                        </div>
+                        <!-- Filestack Cost Result -->
+                        <div class="bg-slate-800 p-4 rounded-lg text-center">
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">Filestack Cost</p>
+                            <p id="filestackTotalCost" class="text-3xl font-bold text-orange-400 mt-1">$4,548</p>
+                        </div>
+                    </div>
+
+                    <!-- Savings Summary -->
+                    <div class="bg-orange-900/50 border border-orange-700 rounded-lg p-6 text-center">
+                        <p class="text-lg text-orange-300">Total Savings in Year 1</p>
+                        <p id="totalSavings" class="text-5xl font-bold text-orange-400 my-2">$66,221</p>
+                        <p class="text-lg text-orange-300">That's an ROI of <span id="roiPercentage"
+                                class="font-bold">1456%</span></p>
+                    </div>
+
+                    <div class="text-center mt-8">
+                        <a href="#"
+                            class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 text-lg">
+                            Start Saving Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Methodology Section -->
+        <div class="text-center mt-12 max-w-3xl mx-auto">
+            <h3 class="text-xl font-bold text-slate-200">How We Calculate This</h3>
+            <p class="text-slate-400 mt-2 text-sm">
+                The DIY cost includes the one-time engineering salary expense for the initial build, plus the recurring
+                monthly salary cost for maintenance and bug fixes over one year. It does not include infrastructure
+                costs (like S3 egress and storage) which can add thousands more. Filestack replaces this entire expense
+                with a predictable, scalable subscription.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Element Selection ---
+        const devSalarySlider = document.getElementById('devSalary');
+        const numDevelopersSlider = document.getElementById('numDevelopers');
+        const buildTimeSlider = document.getElementById('buildTime');
+        const maintenanceTimeSlider = document.getElementById('maintenanceTime');
+
+        const devSalaryValue = document.getElementById('devSalaryValue');
+        const numDevelopersValue = document.getElementById('numDevelopersValue');
+        const buildTimeValue = document.getElementById('buildTimeValue');
+        const maintenanceTimeValue = document.getElementById('maintenanceTimeValue');
+
+        const diyTotalCostEl = document.getElementById('diyTotalCost');
+        const filestackTotalCostEl = document.getElementById('filestackTotalCost');
+        const totalSavingsEl = document.getElementById('totalSavings');
+        const roiPercentageEl = document.getElementById('roiPercentage');
+
+        // --- Constants ---
+        // Updated to reflect the Scale plan pricing.
+        const FILESTACK_ESTIMATED_MONTHLY_COST = 379;
+
+        // --- Calculation Logic ---
+        function calculateROI() {
+            // 1. Get current values from sliders
+            const salary = parseInt(devSalarySlider.value);
+            const developers = parseInt(numDevelopersSlider.value);
+            const buildWeeks = parseInt(buildTimeSlider.value);
+            const maintenanceHours = parseInt(maintenanceTimeSlider.value);
+
+            // 2. Calculate weekly and hourly salary rates
+            const weeklySalaryPerDev = salary / 52;
+            const hourlySalaryPerDev = weeklySalaryPerDev / 40;
+
+            // 3. Calculate DIY Costs
+            // One-time cost to build the initial infrastructure
+            const initialBuildCost = weeklySalaryPerDev * buildWeeks * developers;
+
+            // Recurring monthly cost for ongoing maintenance
+            const monthlyMaintenanceCost = hourlySalaryPerDev * maintenanceHours * developers;
+
+            // Total cost over the first year
+            const totalDiyCost = initialBuildCost + (monthlyMaintenanceCost * 12);
+
+            // 4. Calculate Filestack Costs
+            const totalFilestackCost = FILESTACK_ESTIMATED_MONTHLY_COST * 12;
+
+            // 5. Calculate Savings and ROI
+            const savings = totalDiyCost - totalFilestackCost;
+            // Avoid division by zero if cost is 0
+            const roi = totalFilestackCost > 0 ? (savings / totalFilestackCost) * 100 : 0;
+
+            // 6. Update the UI with formatted values
+            updateUI(salary, developers, buildWeeks, maintenanceHours, totalDiyCost, totalFilestackCost, savings, roi);
+        }
+
+        // --- UI Update Logic ---
+        function updateUI(salary, developers, buildWeeks, maintenanceHours, diyCost, filestackCost, savings, roi) {
+            // Helper to format numbers as USD currency
+            const toCurrency = (num) => '$' + Math.round(num).toLocaleString('en-US');
+
+            // Update slider value displays
+            devSalaryValue.textContent = toCurrency(salary);
+            numDevelopersValue.textContent = `${developers}`;
+            buildTimeValue.textContent = `${buildWeeks} week${buildWeeks > 1 ? 's' : ''}`;
+            maintenanceTimeValue.textContent = `${maintenanceHours} hour${maintenanceHours > 1 ? 's' : ''}`;
+
+            // Update result displays
+            diyTotalCostEl.textContent = toCurrency(diyCost);
+            filestackTotalCostEl.textContent = toCurrency(filestackCost);
+            totalSavingsEl.textContent = toCurrency(savings);
+            roiPercentageEl.textContent = `${Math.round(roi)}%`;
+        }
+
+        // --- Event Listeners ---
+        const allSliders = [devSalarySlider, numDevelopersSlider, buildTimeSlider, maintenanceTimeSlider];
+        allSliders.forEach(slider => {
+            slider.addEventListener('input', calculateROI);
+        });
+
+        // --- Initial Calculation on Page Load ---
+        document.addEventListener('DOMContentLoaded', calculateROI);
+
+    </script>
+</body>
+
+</html>
