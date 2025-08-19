@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Angular SDK - Filestack | Enterprise-Ready File Upload Solution</title>
+    <title>Python SDK - Filestack | Powerful Server-Side File Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         /* CSS STYLES */
@@ -16,9 +16,9 @@
             --text-color: #333;
             --text-light: #f0f0f0;
             --border-color: #e0e0e0;
-            --angular-red: #EF4A26;
-            --angular-dark: #432D42;
-            --angular-light: #FDF0ED;
+            --python-blue: #432D42;
+            --python-yellow: #EF4A26;
+            --python-dark: #2B2B2B;
         }
 
         * {
@@ -117,15 +117,15 @@
             color: #fff;
         }
 
-        .btn-angular {
-            background: var(--angular-red);
+        .btn-python {
+            background: var(--python-blue);
             color: #fff;
-            border: 2px solid var(--angular-red);
+            border: 2px solid var(--python-blue);
         }
 
-        .btn-angular:hover {
-            background: var(--angular-dark);
-            border-color: var(--angular-dark);
+        .btn-python:hover {
+            background: #2B5B87;
+            border-color: #2B5B87;
         }
 
         /* Hero Section */
@@ -155,8 +155,8 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(239, 74, 38, 0.2);
-            border: 1px solid var(--angular-red);
+            background: rgba(70, 47, 68, 0.2);
+            border: 1px solid var(--python-blue);
             padding: 8px 16px;
             border-radius: 25px;
             margin-bottom: 2rem;
@@ -188,7 +188,7 @@
         .hero-right {
             background-color: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            border: 2px dashed rgba(239, 74, 38, 0.3);
+            border: 2px dashed rgba(70, 47, 68, 0.3);
             padding: 30px;
         }
 
@@ -199,7 +199,7 @@
             font-family: 'Monaco', monospace;
             font-size: 0.9rem;
             overflow-x: auto;
-            border-left: 4px solid var(--angular-red);
+            border-left: 4px solid var(--python-yellow);
         }
 
         .code-preview .comment {
@@ -218,13 +218,13 @@
             color: #DCDCAA;
         }
 
-        .code-preview .angular {
-            color: var(--angular-red);
+        .code-preview .python {
+            color: var(--python-blue);
             filter: brightness(1.3);
         }
 
-        .code-preview .decorator {
-            color: #4FC1FF;
+        .code-preview .number {
+            color: #B5CEA8;
         }
 
         /* Features Section */
@@ -263,7 +263,7 @@
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease;
-            border-top: 4px solid var(--angular-red);
+            border-top: 4px solid var(--python-blue);
         }
 
         .feature-item:hover {
@@ -278,8 +278,8 @@
             height: 70px;
             border-radius: 50%;
             margin-bottom: 1.5rem;
-            background-color: var(--angular-light);
-            color: var(--angular-red);
+            background-color: #F8F6F7;
+            color: var(--python-blue);
         }
 
         .feature-item .icon svg {
@@ -298,74 +298,82 @@
             line-height: 1.6;
         }
 
-        /* Architecture Section */
-        .architecture {
+        /* Use Cases Section */
+        .use-cases {
             padding: 80px 0;
             background: #fff;
         }
 
-        .arch-grid {
+        .cases-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 60px;
             align-items: center;
         }
 
-        .arch-content h2 {
+        .cases-content h2 {
             font-size: 2.5rem;
             font-weight: 900;
             margin-bottom: 1rem;
             color: var(--dark-purple);
         }
 
-        .arch-content p {
+        .cases-content p {
             font-size: 1.1rem;
             color: #666;
             margin-bottom: 2rem;
         }
 
-        .feature-list {
+        .case-list {
             list-style: none;
             margin-bottom: 2rem;
         }
 
-        .feature-list li {
+        .case-list li {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             font-size: 1rem;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--python-yellow);
         }
 
-        .feature-list li:last-child {
-            border-bottom: none;
-        }
-
-        .feature-icon {
-            background: var(--angular-red);
+        .case-icon {
+            background: var(--python-yellow);
             color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-right: 12px;
+            font-size: 1rem;
+            margin-right: 15px;
             flex-shrink: 0;
         }
 
+        .case-content h4 {
+            color: var(--dark-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .case-content p {
+            color: #666;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
         .code-example {
-            background-color: #1e1e1e;
+            background-color: var(--python-dark);
             border-radius: 12px;
             padding: 25px;
             color: #f8f8f2;
             font-family: 'Monaco', monospace;
             font-size: 0.95rem;
             overflow-x: auto;
-            border-left: 4px solid var(--angular-red);
+            border-left: 4px solid var(--python-yellow);
             max-height: 500px;
             overflow-y: auto;
         }
@@ -419,12 +427,12 @@
         }
 
         .install-tab button.active {
-            background: var(--angular-red);
+            background: var(--python-blue);
             color: white;
         }
 
         .install-code {
-            background-color: #1e1e1e;
+            background-color: var(--python-dark);
             border-radius: 8px;
             padding: 15px;
             color: #f8f8f2;
@@ -433,45 +441,34 @@
             margin-bottom: 1rem;
         }
 
-        .cli-steps {
+        .framework-list {
             background: #f8f9fa;
             border-radius: 8px;
             padding: 20px;
             margin-top: 1rem;
         }
 
-        .cli-steps h4 {
-            color: var(--angular-red);
+        .framework-list h4 {
+            color: var(--python-blue);
             margin-bottom: 1rem;
-        }
-
-        .cli-steps ol {
-            list-style: none;
-            counter-reset: step-counter;
-        }
-
-        .cli-steps li {
-            counter-increment: step-counter;
-            margin-bottom: 0.5rem;
-            padding-left: 30px;
-            position: relative;
-        }
-
-        .cli-steps li::before {
-            content: counter(step-counter);
-            position: absolute;
-            left: 0;
-            top: 0;
-            background: var(--angular-red);
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: bold;
+            gap: 8px;
+        }
+
+        .framework-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .framework-tag {
+            background: var(--python-blue);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         /* CTA Section */
@@ -520,7 +517,7 @@
         @media (max-width: 768px) {
 
             .hero-content,
-            .arch-grid,
+            .cases-grid,
             .install-grid {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -542,6 +539,16 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .case-list li {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .case-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -555,39 +562,35 @@
                 <div class="hero-content">
                     <div class="hero-left">
                         <div class="sdk-badge">
-                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/angular.svg" alt="Angular"
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/python.svg" alt="Python"
                                 style="filter: invert(1) brightness(1.5);">
-                            Angular SDK
+                            Python SDK
                         </div>
-                        <h1>Enterprise-Ready File Management for Angular</h1>
-                        <p>Build robust, scalable file upload solutions with our comprehensive Angular SDK. Designed for
-                            modern enterprise applications with full TypeScript support.</p>
+                        <h1>Powerful Server-Side File Management with Python</h1>
+                        <p>Build robust file processing pipelines, automated workflows, and scalable backend services
+                            with our comprehensive Python SDK for popular web frameworks and applications.</p>
                         <div class="hero-buttons">
-                            <a href="#" class="btn btn-angular">Install via CLI</a>
-                            <a href="#" class="btn btn-secondary">View Angular Docs</a>
+                            <a href="#" class="btn btn-python">pip install filestack</a>
+                            <a href="#" class="btn btn-secondary">View Python Docs</a>
                         </div>
                     </div>
                     <div class="hero-right">
                         <div class="code-preview">
-                            <pre><span class="comment">// app.component.ts</span>
-<span class="decorator">@Component</span>({
-  <span class="angular">selector</span>: <span class="string">'app-upload'</span>,
-  <span class="angular">template</span>: <span class="string">`
-    &lt;button 
-      filestack
-      [options]="pickerOptions"
-      (uploadSuccess)="onUploadSuccess($event)"
-      apikey="YOUR_API_KEY"&gt;
-      Upload Files
-    &lt;/button&gt;
-  `</span>
-})
-<span class="keyword">export class</span> <span class="function">UploadComponent</span> {
-  <span class="angular">pickerOptions</span> = {
-    <span class="angular">accept</span>: <span class="string">'image/*'</span>,
-    <span class="angular">maxFiles</span>: 5
-  };
-}</pre>
+                            <pre><span class="comment"># Simple file upload and transformation</span>
+<span class="keyword">from</span> filestack <span class="keyword">import</span> Client
+
+client = <span class="function">Client</span>(<span class="string">'YOUR_API_KEY'</span>)
+
+<span class="comment"># Upload a file</span>
+filelink = client.<span class="function">upload</span>(<span class="string">'/path/to/image.jpg'</span>)
+<span class="function">print</span>(f<span class="string">'Uploaded: {filelink.url}'</span>)
+
+<span class="comment"># Apply transformations</span>
+transformed = client.<span class="function">transform</span>(
+    filelink.handle,
+    {<span class="string">'resize'</span>: {<span class="string">'width'</span>: <span class="number">300</span>, <span class="string">'height'</span>: <span class="number">300</span>}}
+)
+<span class="function">print</span>(f<span class="string">'Transformed: {transformed.url}'</span>)</pre>
                         </div>
                     </div>
                 </div>
@@ -596,9 +599,9 @@
 
         <section class="features">
             <div class="container">
-                <h2 class="section-title">Built for Angular Developers</h2>
-                <p class="section-subtitle">Our Angular SDK integrates seamlessly with the Angular ecosystem, providing
-                    directives, services, and components that follow Angular best practices.</p>
+                <h2 class="section-title">Built for Python Developers</h2>
+                <p class="section-subtitle">Our Python SDK integrates seamlessly with your existing Python stack,
+                    providing Pythonic APIs and comprehensive framework support.</p>
 
                 <div class="features-grid">
                     <div class="feature-item">
@@ -609,9 +612,22 @@
                                     d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
                             </svg>
                         </div>
-                        <h3>Angular Directives</h3>
-                        <p>Easy-to-use directives that integrate directly into your templates with full event binding
-                            and lifecycle support.</p>
+                        <h3>Pythonic API Design</h3>
+                        <p>Clean, intuitive APIs that follow Python conventions and PEP standards for a familiar
+                            development experience.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                            </svg>
+                        </div>
+                        <h3>Framework Integration</h3>
+                        <p>Native support for popular Python web frameworks with comprehensive middleware and utilities
+                            for seamless integration.</p>
                     </div>
 
                     <div class="feature-item">
@@ -622,9 +638,9 @@
                                     d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.611L5 14.5" />
                             </svg>
                         </div>
-                        <h3>Injectable Services</h3>
-                        <p>Powerful services for dependency injection, making file operations accessible throughout your
-                            application architecture.</p>
+                        <h3>Async/Await Support</h3>
+                        <p>Full asyncio support for modern Python applications with async upload, transformation, and
+                            processing capabilities.</p>
                     </div>
 
                     <div class="feature-item">
@@ -632,12 +648,12 @@
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+                                    d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                             </svg>
                         </div>
-                        <h3>Full TypeScript Support</h3>
-                        <p>Complete type definitions and IntelliSense support for a superior development experience with
-                            compile-time type checking.</p>
+                        <h3>Batch Processing</h3>
+                        <p>Efficiently process thousands of files with batch upload, transformation, and delivery
+                            operations optimized for high-volume workflows.</p>
                     </div>
 
                     <div class="feature-item">
@@ -648,9 +664,9 @@
                                     d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                             </svg>
                         </div>
-                        <h3>Reactive Forms Integration</h3>
-                        <p>Seamless integration with Angular Reactive Forms including validators, form controls, and
-                            error handling.</p>
+                        <h3>Type Hints & Validation</h3>
+                        <p>Complete type annotations, Pydantic model support, and runtime validation for safer, more
+                            maintainable code.</p>
                     </div>
 
                     <div class="feature-item">
@@ -661,69 +677,53 @@
                                     d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                             </svg>
                         </div>
-                        <h3>RxJS Observables</h3>
-                        <p>Built on RxJS observables for reactive programming patterns, perfect for handling async file
-                            operations and progress tracking.</p>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9h2.25A2.25 2.25 0 0010.5 17.25v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25v2.25A2.25 2.25 0 006 19.5zm10.125-11.25h-2.25a2.25 2.25 0 00-2.25 2.25v2.25a2.25 2.25 0 002.25 2.25h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25z" />
-                            </svg>
-                        </div>
-                        <h3>Tree-Shakable Modules</h3>
-                        <p>Modular architecture with tree-shaking support to keep your bundle size optimized and only
-                            include what you need.</p>
+                        <h3>Webhook Integration</h3>
+                        <p>Built-in webhook handling with signature verification, automatic retries, and
+                            framework-specific middleware.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="architecture">
+        <section class="use-cases">
             <div class="container">
-                <div class="arch-grid">
-                    <div class="arch-content">
-                        <h2>Angular-Native Architecture</h2>
-                        <p>Our Angular SDK follows Angular conventions and patterns, providing a familiar developer
-                            experience that integrates seamlessly with your existing Angular projects.</p>
+                <div class="cases-grid">
+                    <div class="cases-content">
+                        <h2>Perfect for Server-Side Workflows</h2>
+                        <p>From simple file uploads to complex media processing pipelines, our Python SDK handles your
+                            most demanding server-side file management needs.</p>
 
-                        <ul class="feature-list">
+                        <ul class="case-list">
                             <li>
-                                <span class="feature-icon">📦</span>
-                                <div>
-                                    <strong>NgModule Integration</strong><br>
-                                    Easy module imports with forRoot() configuration
+                                <span class="case-icon">🚀</span>
+                                <div class="case-content">
+                                    <h4>API Development</h4>
+                                    <p>Build REST APIs with popular Python frameworks that handle file uploads,
+                                        transformations, and delivery.</p>
                                 </div>
                             </li>
                             <li>
-                                <span class="feature-icon">🎯</span>
-                                <div>
-                                    <strong>Directive-Based Usage</strong><br>
-                                    Simple template directives for common use cases
+                                <span class="case-icon">⚙️</span>
+                                <div class="case-content">
+                                    <h4>Background Processing</h4>
+                                    <p>Create Celery tasks, RQ jobs, or asyncio workers for processing large volumes of
+                                        files asynchronously.</p>
                                 </div>
                             </li>
                             <li>
-                                <span class="feature-icon">💉</span>
-                                <div>
-                                    <strong>Dependency Injection</strong><br>
-                                    Injectable services for programmatic file operations
+                                <span class="case-icon">🔄</span>
+                                <div class="case-content">
+                                    <h4>Data Pipelines</h4>
+                                    <p>Integrate with data processing libraries and workflow orchestration tools for
+                                        comprehensive file transformation workflows.</p>
                                 </div>
                             </li>
                             <li>
-                                <span class="feature-icon">🔄</span>
-                                <div>
-                                    <strong>Observable Streams</strong><br>
-                                    RxJS-based reactive programming patterns
-                                </div>
-                            </li>
-                            <li>
-                                <span class="feature-icon">🏗️</span>
-                                <div>
-                                    <strong>Component Lifecycle</strong><br>
-                                    Proper cleanup and memory management
+                                <span class="case-icon">🤖</span>
+                                <div class="case-content">
+                                    <h4>ML/AI Workflows</h4>
+                                    <p>Process training data, transform images for computer vision, or handle model
+                                        artifacts with ease.</p>
                                 </div>
                             </li>
                         </ul>
@@ -732,37 +732,51 @@
                     </div>
 
                     <div class="code-example">
-                        <pre><span class="comment">// filestack.module.ts</span>
-<span class="keyword">import</span> { <span class="function">NgModule</span> } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;
-<span class="keyword">import</span> { <span class="function">FilestackModule</span> } <span class="keyword">from</span> <span class="string">'filestack-angular'</span>;
+                        <pre><span class="comment"># Django integration example</span>
+<span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse
+<span class="keyword">from</span> django.views.decorators.csrf <span class="keyword">import</span> csrf_exempt
+<span class="keyword">from</span> filestack <span class="keyword">import</span> Client
+<span class="keyword">import</span> json
 
-<span class="decorator">@NgModule</span>({
-  <span class="angular">imports</span>: [
-    <span class="function">FilestackModule</span>.<span class="function">forRoot</span>({
-      <span class="angular">apikey</span>: <span class="string">'YOUR_API_KEY'</span>,
-      <span class="angular">defaultOptions</span>: {
-        <span class="angular">accept</span>: [<span class="string">'image/*'</span>, <span class="string">'video/*'</span>],
-        <span class="angular">maxFiles</span>: 10
-      }
-    })
-  ],
-  <span class="comment">// ...</span>
-})
-<span class="keyword">export class</span> <span class="function">AppModule</span> { }
+client = <span class="function">Client</span>(<span class="string">'YOUR_API_KEY'</span>)
 
-<span class="comment">// upload.service.ts</span>
-<span class="keyword">import</span> { <span class="function">Injectable</span> } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;
-<span class="keyword">import</span> { <span class="function">FilestackService</span> } <span class="keyword">from</span> <span class="string">'filestack-angular'</span>;
-<span class="keyword">import</span> { <span class="function">Observable</span> } <span class="keyword">from</span> <span class="string">'rxjs'</span>;
+<span class="decorator">@csrf_exempt</span>
+<span class="keyword">def</span> <span class="function">upload_and_transform</span>(request):
+    <span class="keyword">if</span> request.method == <span class="string">'POST'</span>:
+        uploaded_file = request.FILES[<span class="string">'file'</span>]
+        
+        <span class="comment"># Upload to Filestack</span>
+        filelink = client.<span class="function">upload</span>(uploaded_file)
+        
+        <span class="comment"># Apply transformations</span>
+        transforms = {
+            <span class="string">'resize'</span>: {<span class="string">'width'</span>: <span class="number">800</span>, <span class="string">'height'</span>: <span class="number">600</span>},
+            <span class="string">'quality'</span>: <span class="number">85</span>,
+            <span class="string">'format'</span>: <span class="string">'webp'</span>
+        }
+        
+        transformed = client.<span class="function">transform</span>(
+            filelink.handle, 
+            transforms
+        )
+        
+        <span class="keyword">return</span> <span class="function">JsonResponse</span>({
+            <span class="string">'original'</span>: filelink.url,
+            <span class="string">'transformed'</span>: transformed.url,
+            <span class="string">'handle'</span>: filelink.handle
+        })
 
-<span class="decorator">@Injectable</span>({ <span class="angular">providedIn</span>: <span class="string">'root'</span> })
-<span class="keyword">export class</span> <span class="function">UploadService</span> {
-  <span class="keyword">constructor</span>(<span class="keyword">private</span> <span class="angular">filestack</span>: <span class="function">FilestackService</span>) {}
+<span class="comment"># FastAPI async example</span>
+<span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI, UploadFile
+<span class="keyword">from</span> filestack.async_client <span class="keyword">import</span> AsyncClient
 
-  <span class="function">uploadFiles</span>(): <span class="function">Observable</span>&lt;<span class="angular">any</span>&gt; {
-    <span class="keyword">return</span> <span class="keyword">this</span>.<span class="angular">filestack</span>.<span class="function">picker</span>().<span class="function">open</span>();
-  }
-}</pre>
+app = <span class="function">FastAPI</span>()
+async_client = <span class="function">AsyncClient</span>(<span class="string">'YOUR_API_KEY'</span>)
+
+<span class="decorator">@app.post</span>(<span class="string">"/upload"</span>)
+<span class="keyword">async def</span> <span class="function">upload</span>(file: UploadFile):
+    result = <span class="keyword">await</span> async_client.<span class="function">upload</span>(file.file)
+    <span class="keyword">return</span> {<span class="string">"url"</span>: result.url, <span class="string">"handle"</span>: result.handle}</pre>
                     </div>
                 </div>
             </div>
@@ -770,9 +784,9 @@
 
         <section class="installation">
             <div class="container">
-                <h2 class="section-title">Angular CLI Integration</h2>
-                <p class="section-subtitle">Install and configure our Angular SDK using familiar Angular CLI commands
-                    and patterns.</p>
+                <h2 class="section-title">Quick Installation & Setup</h2>
+                <p class="section-subtitle">Get started with our Python SDK using pip or your preferred package manager.
+                    Compatible with Python 3.7+ and all major frameworks.</p>
 
                 <div class="install-grid">
                     <div class="install-methods">
@@ -782,101 +796,85 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                             </svg>
-                            Package Installation
+                            Install Package
                         </h3>
 
                         <div class="install-tab">
-                            <button class="active">npm</button>
-                            <button>yarn</button>
-                            <button>ng add</button>
+                            <button class="active">pip</button>
+                            <button>poetry</button>
+                            <button>conda</button>
                         </div>
 
                         <div class="install-code">
-                            npm install filestack-angular
+                            pip install filestack-python
                         </div>
 
-                        <div class="cli-steps">
-                            <h4>Angular CLI Integration</h4>
-                            <ol>
-                                <li>Install the package</li>
-                                <li>Import FilestackModule</li>
-                                <li>Configure with API key</li>
-                                <li>Use directives in templates</li>
-                            </ol>
-                        </div>
 
-                        <h4 style="margin: 2rem 0 1rem 0; font-size: 1.2rem; color: var(--dark-purple);">Module Setup
+                        <h4 style="margin: 2rem 0 1rem 0; font-size: 1.2rem; color: var(--dark-purple);">Basic Usage
                         </h4>
-                        <p style="color: #666; margin-bottom: 1rem;">Configure the module in your app.module.ts:</p>
+                        <p style="color: #666; margin-bottom: 1rem;">Import and initialize the client:</p>
 
                         <div class="install-code">
-                            <span class="keyword">import</span> { <span class="function">FilestackModule</span> } <span
-                                class="keyword">from</span> <span class="string">'filestack-angular'</span>;
+                            <span class="keyword">from</span> filestack <span class="keyword">import</span> Client
 
-                            <span class="decorator">@NgModule</span>({
-                            <span class="angular">imports</span>: [<span class="function">FilestackModule</span>.<span
-                                class="function">forRoot</span>()]
-                            })
+                            client = <span class="function">Client</span>(<span class="string">'YOUR_API_KEY'</span>)
+                            filelink = client.<span class="function">upload</span>(<span
+                                class="string">'/path/to/file.jpg'</span>)
                         </div>
                     </div>
 
                     <div class="code-example">
-                        <pre><span class="comment">// Complete working example</span>
-<span class="comment">// app.component.ts</span>
-<span class="keyword">import</span> { <span class="function">Component</span> } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;
+                        <pre><span class="comment"># Complete working example</span>
+<span class="keyword">import</span> os
+<span class="keyword">from</span> filestack <span class="keyword">import</span> Client
 
-<span class="decorator">@Component</span>({
-  <span class="angular">selector</span>: <span class="string">'app-root'</span>,
-  <span class="angular">template</span>: <span class="string">`
-    &lt;div class="upload-container"&gt;
-      &lt;h2&gt;Upload Your Files&lt;/h2&gt;
-      
-      &lt;button 
-        filestack
-        [options]="pickerOptions"
-        (uploadSuccess)="onUploadSuccess($event)"
-        (uploadError)="onUploadError($event)"
-        apikey="YOUR_API_KEY"
-        class="upload-btn"&gt;
-        Choose Files
-      &lt;/button&gt;
+<span class="comment"># Initialize client</span>
+client = <span class="function">Client</span>(os.<span class="function">getenv</span>(<span class="string">'FILESTACK_API_KEY'</span>))
 
-      &lt;div *ngIf="uploadedFiles.length &gt; 0" 
-           class="file-list"&gt;
-        &lt;h3&gt;Uploaded Files:&lt;/h3&gt;
-        &lt;ul&gt;
-          &lt;li *ngFor="let file of uploadedFiles"&gt;
-            {{ file.filename }} - {{ file.size | fileSize }}
-            &lt;img [src]="file.url" *ngIf="file.mimetype.startsWith('image')" 
-                 style="max-width: 100px; margin-left: 10px;"&gt;
-          &lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  `</span>
-})
-<span class="keyword">export class</span> <span class="function">AppComponent</span> {
-  <span class="angular">uploadedFiles</span>: <span class="angular">any</span>[] = [];
-  
-  <span class="angular">pickerOptions</span> = {
-    <span class="angular">accept</span>: [<span class="string">'image/*'</span>, <span class="string">'video/*'</span>, <span class="string">'.pdf'</span>],
-    <span class="angular">maxFiles</span>: 5,
-    <span class="angular">fromSources</span>: [
-      <span class="string">'local_file_system'</span>,
-      <span class="string">'url'</span>,
-      <span class="string">'googledrive'</span>
-    ]
-  };
+<span class="comment"># Upload a file</span>
+<span class="keyword">def</span> <span class="function">upload</span>(file_path):
+    <span class="keyword">try</span>:
+        filelink = client.<span class="function">upload</span>(file_path)
+        <span class="function">print</span>(f<span class="string">'Upload successful: {filelink.url}'</span>)
+        <span class="keyword">return</span> filelink
+    <span class="keyword">except</span> <span class="function">Exception</span> <span class="keyword">as</span> e:
+        <span class="function">print</span>(f<span class="string">'Upload failed: {e}'</span>)
+        <span class="keyword">return</span> <span class="keyword">None</span>
 
-  <span class="function">onUploadSuccess</span>(<span class="angular">result</span>: <span class="angular">any</span>) {
-    console.<span class="function">log</span>(<span class="string">'Upload successful!'</span>, result);
-    <span class="keyword">this</span>.<span class="angular">uploadedFiles</span> = result.filesUploaded;
-  }
+<span class="comment"># Transform an image</span>
+<span class="keyword">def</span> <span class="function">create_thumbnail</span>(handle):
+    transforms = {
+        <span class="string">'resize'</span>: {
+            <span class="string">'width'</span>: <span class="number">200</span>,
+            <span class="string">'height'</span>: <span class="number">200</span>,
+            <span class="string">'fit'</span>: <span class="string">'crop'</span>
+        },
+        <span class="string">'quality'</span>: <span class="number">80</span>,
+        <span class="string">'format'</span>: <span class="string">'webp'</span>
+    }
+    
+    transformed = client.<span class="function">transform</span>(handle, transforms)
+    <span class="keyword">return</span> transformed.url
 
-  <span class="function">onUploadError</span>(<span class="angular">error</span>: <span class="angular">any</span>) {
-    console.<span class="function">error</span>(<span class="string">'Upload failed:'</span>, error);
-  }
-}</pre>
+<span class="comment"># Batch processing</span>
+<span class="keyword">def</span> <span class="function">process_images</span>(image_paths):
+    results = []
+    <span class="keyword">for</span> path <span class="keyword">in</span> image_paths:
+        filelink = <span class="function">upload</span>(path)
+        <span class="keyword">if</span> filelink:
+            thumbnail_url = <span class="function">create_thumbnail</span>(filelink.handle)
+            results.<span class="function">append</span>({
+                <span class="string">'original'</span>: filelink.url,
+                <span class="string">'thumbnail'</span>: thumbnail_url,
+                <span class="string">'filename'</span>: os.<span class="function">basename</span>(path)
+            })
+    <span class="keyword">return</span> results
+
+<span class="comment"># Example usage</span>
+<span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:
+    images = [<span class="string">'photo1.jpg'</span>, <span class="string">'photo2.png'</span>, <span class="string">'photo3.gif'</span>]
+    processed = <span class="function">process_images</span>(images)
+    <span class="function">print</span>(f<span class="string">'Processed {len(processed)} images'</span>)</pre>
                     </div>
                 </div>
             </div>
@@ -884,12 +882,12 @@
 
         <section class="cta-section">
             <div class="container">
-                <h2>Deploy Angular File Components</h2>
-                <p>Join enterprise teams worldwide who trust Filestack's Angular SDK for mission-critical file
-                    management. Get started with our comprehensive Angular integration today.</p>
+                <h2>Start Building with Python</h2>
+                <p>Join thousands of Python developers who trust Filestack for their server-side file management needs.
+                    From startups to enterprise, our Python SDK scales with your applications.</p>
                 <div class="cta-buttons">
                     <a href="#" class="btn btn-white">Sign Up Free</a>
-                    <a href="#" class="btn btn-secondary">View Angular Docs</a>
+                    <a href="#" class="btn btn-secondary">View Python Docs</a>
                     <a href="#" class="btn btn-secondary">Enterprise Solutions</a>
                 </div>
             </div>
@@ -903,9 +901,9 @@
             const installCode = document.querySelector('.install-code');
 
             const commands = {
-                npm: 'npm install filestack-angular',
-                yarn: 'yarn add filestack-angular',
-                'ng add': 'ng add filestack-angular'
+                pip: 'pip install filestack-python',
+                poetry: 'poetry add filestack-python',
+                conda: 'conda install -c conda-forge filestack-python'
             };
 
             installTabs.forEach(tab => {

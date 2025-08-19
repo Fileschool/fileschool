@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java SDK - Filestack | Enterprise File Management for Java Applications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS STYLES */
+        :root {
+            --dark-purple: #2c2c3e;
+            --light-purple: #4a4a68;
+            --primary-orange: #EF4A26;
+            --light-gray: #f4f5f7;
+            --text-color: #333;
+            --text-light: #f0f0f0;
+            --border-color: #e0e0e0;
+            --java-orange: #432D42;
+            --java-blue: #EF4A26;
+            --java-red: #C74634;
+            --java-light: #F8F6F7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            background-color: #fff;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 60px;
+        }
+
+        /* Header Navigation */
+        .main-header {
+            background: #fff;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--dark-purple);
+        }
+
+        .main-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .main-nav a:hover {
+            color: var(--primary-orange);
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-orange);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            color: var(--dark-purple);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-orange);
+            border: 2px solid var(--primary-orange);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-orange);
+            color: #fff;
+        }
+
+        .btn-java {
+            background: var(--java-orange);
+            color: #fff;
+            border: 2px solid var(--java-orange);
+        }
+
+        .btn-java:hover {
+            background: #d97a00;
+            border-color: #d97a00;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #432D42 0%, #221A2C 100%);
+            color: var(--text-light);
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-left {
+            text-align: left;
+        }
+
+        .sdk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(70, 47, 68, 0.2);
+            border: 1px solid var(--java-orange);
+            padding: 8px 16px;
+            border-radius: 25px;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .sdk-badge img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .hero-left h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .hero-left p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons .btn {
+            margin: 0 10px 0 0;
+        }
+
+        .hero-right {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 2px dashed rgba(70, 47, 68, 0.3);
+            padding: 30px;
+        }
+
+        .code-preview {
+            border-radius: 8px;
+            padding: 20px;
+            color: #f8f8f2;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border-left: 4px solid var(--java-orange);
+        }
+
+        .code-preview .comment {
+            color: #6A9955;
+        }
+
+        .code-preview .string {
+            color: #CE9178;
+        }
+
+        .code-preview .keyword {
+            color: #569CD6;
+        }
+
+        .code-preview .function {
+            color: #DCDCAA;
+        }
+
+        .code-preview .class {
+            color: #4EC9B0;
+        }
+
+        .code-preview .annotation {
+            color: #DCDCAA;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 900;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 4rem;
+        }
+
+        .feature-item {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--java-orange);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-item .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            background-color: var(--java-light);
+            color: var(--java-orange);
+        }
+
+        .feature-item .icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .feature-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-purple);
+        }
+
+        .feature-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Enterprise Section */
+        .enterprise {
+            padding: 80px 0;
+            background: #fff;
+        }
+
+        .enterprise-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .enterprise-content h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: var(--dark-purple);
+        }
+
+        .enterprise-content p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .enterprise-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .enterprise-features li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--java-orange);
+        }
+
+        .enterprise-icon {
+            background: var(--java-orange);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .enterprise-text h4 {
+            color: var(--dark-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .enterprise-text p {
+            color: #666;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .code-example {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 25px;
+            color: #f8f8f2;
+            font-family: 'Monaco', monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            border-left: 4px solid var(--java-orange);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* Build Tools Section */
+        .build-tools {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .tools-methods {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .tools-methods h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-tab {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            padding: 4px;
+        }
+
+        .tool-tab button {
+            flex: 1;
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tool-tab button.active {
+            background: var(--java-orange);
+            color: white;
+        }
+
+        .tool-code {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 15px;
+            color: #f8f8f2;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .java-versions {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 1rem;
+        }
+
+        .java-versions h4 {
+            color: var(--java-orange);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .version-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .version-tag {
+            background: var(--java-blue);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .version-tag.recommended {
+            background: var(--java-orange);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #432D42 0%, #221A2C 100%);
+            color: #fff;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-white {
+            background: #fff;
+            color: var(--primary-orange);
+            border: 2px solid #fff;
+        }
+
+        .btn-white:hover {
+            background: transparent;
+            color: #fff;
+            border-color: #fff;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+
+            .hero-content,
+            .enterprise-grid,
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-left {
+                text-align: center;
+            }
+
+            .hero-left h1 {
+                font-size: 2.5rem;
+            }
+
+            .main-nav {
+                display: none;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .enterprise-features li {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .enterprise-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-left">
+                        <div class="sdk-badge">
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/coffeescript.svg" alt="Java"
+                                style="filter: invert(1) brightness(1.5);">
+                            Java SDK
+                        </div>
+                        <h1>Enterprise-Grade File Management for Java</h1>
+                        <p>Build robust, scalable file processing systems with our comprehensive Java SDK. Perfect for
+                            Spring Boot, Quarkus, enterprise applications, and microservices architectures.</p>
+                        <div class="hero-buttons">
+                            <a href="#" class="btn btn-java">Add to Maven</a>
+                            <a href="#" class="btn btn-secondary">View Java Docs</a>
+                        </div>
+                    </div>
+                    <div class="hero-right">
+                        <div class="code-preview">
+                            <pre><span class="comment">// Simple file upload and transformation</span>
+<span class="keyword">import</span> io.filestack.FilestackClient;
+<span class="keyword">import</span> io.filestack.FileLink;
+
+<span class="class">Config</span> config = <span class="keyword">new</span> <span class="class">Config</span>(<span class="string">"YOUR_API_KEY"</span>);
+<span class="class">FilestackClient</span> client = <span class="keyword">new</span> <span class="class">FilestackClient</span>(config);
+
+<span class="comment">// Upload a file</span>
+<span class="class">String</span> path = <span class="string">"/path/to/image.jpg"</span>;
+<span class="class">UploadResponse</span> response = client.<span class="function">upload</span>(path, <span class="keyword">false</span>);
+<span class="class">FileLink</span> fileLink = response.<span class="function">getFileLink</span>();
+
+<span class="comment">// Transform the image</span>
+<span class="class">Transform</span> transform = client.<span class="function">imageTransform</span>(fileLink)
+    .<span class="function">resize</span>(<span class="number">300</span>, <span class="number">300</span>)
+    .<span class="function">quality</span>(<span class="number">80</span>);
+    
+<span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Transformed: "</span> + transform.<span class="function">url</span>());</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Built for Java Enterprise</h2>
+                <p class="section-subtitle">Our Java SDK follows enterprise Java conventions and integrates seamlessly
+                    with popular frameworks and build tools.</p>
+
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                            </svg>
+                        </div>
+                        <h3>Thread-Safe Design</h3>
+                        <p>Fully thread-safe implementation designed for high-concurrency enterprise applications with
+                            proper synchronization and connection pooling.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                            </svg>
+                        </div>
+                        <h3>Spring Boot Integration</h3>
+                        <p>Auto-configuration support, starter dependencies, and annotations for seamless integration
+                            with Spring Boot applications.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+                        </div>
+                        <h3>Reactive Support</h3>
+                        <p>Full support for reactive programming with Project Reactor, including non-blocking I/O
+                            operations and backpressure handling.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3>Observability</h3>
+                        <p>Built-in metrics, tracing, and health checks with Micrometer integration for comprehensive
+                            application monitoring.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                        </div>
+                        <h3>High Performance</h3>
+                        <p>Optimized for throughput with connection pooling, HTTP/2 support, and efficient memory
+                            management for large file operations.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.611L5 14.5" />
+                            </svg>
+                        </div>
+                        <h3>Error Resilience</h3>
+                        <p>Robust error handling with circuit breakers, retry policies, and graceful degradation for
+                            production-ready applications.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="enterprise">
+            <div class="container">
+                <div class="enterprise-grid">
+                    <div class="enterprise-content">
+                        <h2>Enterprise-Ready Architecture</h2>
+                        <p>Designed for mission-critical applications with enterprise-grade features, security, and
+                            scalability. Perfect for microservices, batch processing, and high-throughput systems.</p>
+
+                        <ul class="enterprise-features">
+                            <li>
+                                <span class="enterprise-icon">🏗️</span>
+                                <div class="enterprise-text">
+                                    <h4>Microservices Ready</h4>
+                                    <p>Lightweight, cloud-native design with service discovery and configuration
+                                        management support</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="enterprise-icon">⚡</span>
+                                <div class="enterprise-text">
+                                    <h4>Async Processing</h4>
+                                    <p>CompletableFuture support with configurable thread pools for non-blocking
+                                        operations</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="enterprise-icon">🔍</span>
+                                <div class="enterprise-text">
+                                    <h4>Monitoring & Metrics</h4>
+                                    <p>Integration with Prometheus, Grafana, and APM tools for comprehensive
+                                        observability</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="enterprise-icon">🛡️</span>
+                                <div class="enterprise-text">
+                                    <h4>Security First</h4>
+                                    <p>OAuth 2.0, JWT tokens, and configurable security policies for enterprise
+                                        compliance</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="enterprise-icon">📊</span>
+                                <div class="enterprise-text">
+                                    <h4>Batch Processing</h4>
+                                    <p>Spring Batch integration for processing large volumes of files with job
+                                        scheduling</p>
+                                </div>
+                            </li>
+                        </ul>
+
+
+                    </div>
+
+                    <div class="code-example">
+                        <pre><span class="comment">// Spring Boot integration example</span>
+<span class="annotation">@RestController</span>
+<span class="annotation">@RequestMapping</span>(<span class="string">"/api/files"</span>)
+<span class="keyword">public class</span> <span class="class">FileController</span> {
+
+    <span class="annotation">@Autowired</span>
+    <span class="keyword">private</span> <span class="class">FilestackService</span> filestackService;
+
+    <span class="annotation">@PostMapping</span>(<span class="string">"/upload"</span>)
+    <span class="keyword">public</span> <span class="class">Mono</span>&lt;<span class="class">ResponseEntity</span>&lt;<span class="class">FileResponse</span>&gt;&gt; 
+           <span class="function">uploadFile</span>(<span class="annotation">@RequestParam</span> <span class="class">MultipartFile</span> file) {
+        
+        <span class="keyword">return</span> filestackService.<span class="function">uploadAsync</span>(file)
+            .<span class="function">map</span>(fileLink -> {
+                <span class="class">FileResponse</span> response = <span class="keyword">new</span> <span class="class">FileResponse</span>();
+                response.<span class="function">setUrl</span>(fileLink.<span class="function">getUrl</span>());
+                response.<span class="function">setHandle</span>(fileLink.<span class="function">getHandle</span>());
+                <span class="keyword">return</span> <span class="class">ResponseEntity</span>.<span class="function">ok</span>(response);
+            })
+            .<span class="function">onErrorMap</span>(throwable -> 
+                <span class="keyword">new</span> <span class="class">FileUploadException</span>(<span class="string">"Upload failed"</span>, throwable)
+            );
+    }
+
+    <span class="annotation">@GetMapping</span>(<span class="string">"/transform/{handle}"</span>)
+    <span class="keyword">public</span> <span class="class">ResponseEntity</span>&lt;<span class="class">String</span>&gt; 
+           <span class="function">transformImage</span>(<span class="annotation">@PathVariable</span> <span class="class">String</span> handle) {
+        
+        <span class="class">Transform</span> transform = filestackService
+            .<span class="function">getClient</span>()
+            .<span class="function">imageTransform</span>(<span class="keyword">new</span> <span class="class">FileLink</span>(handle))
+            .<span class="function">resize</span>(<span class="number">800</span>, <span class="number">600</span>)
+            .<span class="function">quality</span>(<span class="number">85</span>)
+            .<span class="function">format</span>(<span class="class">ImageFormat</span>.WEBP);
+            
+        <span class="keyword">return</span> <span class="class">ResponseEntity</span>.<span class="function">ok</span>(transform.<span class="function">url</span>());
+    }
+}
+
+<span class="annotation">@Service</span>
+<span class="keyword">public class</span> <span class="class">FilestackService</span> {
+    
+    <span class="keyword">private final</span> <span class="class">FilestackClient</span> client;
+    
+    <span class="keyword">public</span> <span class="function">FilestackService</span>(<span class="annotation">@Value</span>(<span class="string">"${filestack.api-key}"</span>) 
+                              <span class="class">String</span> apiKey) {
+        <span class="class">Config</span> config = <span class="keyword">new</span> <span class="class">Config</span>(apiKey);
+        <span class="keyword">this</span>.client = <span class="keyword">new</span> <span class="class">FilestackClient</span>(config);
+    }
+    
+    <span class="keyword">public</span> <span class="class">Mono</span>&lt;<span class="class">FileLink</span>&gt; <span class="function">uploadAsync</span>(<span class="class">MultipartFile</span> file) {
+        <span class="keyword">return</span> <span class="class">Mono</span>.<span class="function">fromCallable</span>(() -> 
+            client.<span class="function">upload</span>(file.<span class="function">getInputStream</span>(), 
+                          file.<span class="function">getOriginalFilename</span>())
+        ).<span class="function">subscribeOn</span>(<span class="class">Schedulers</span>.<span class="function">boundedElastic</span>());
+    }
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="build-tools">
+            <div class="container">
+                <h2 class="section-title">Build Tool Integration</h2>
+                <p class="section-subtitle">Easy integration with Maven, Gradle, and SBT. Compatible with Java 8+ and
+                    all modern Java frameworks.</p>
+
+                <div class="tools-grid">
+                    <div class="tools-methods">
+                        <h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" style="width: 24px; height: 24px;">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            Add Dependency
+                        </h3>
+
+                        <div class="tool-tab">
+                            <button class="active">Maven</button>
+                            <button>Gradle</button>
+                            <button>SBT</button>
+                        </div>
+
+                        <div class="tool-code">
+                            <span class="keyword">&lt;dependency&gt;</span>
+                            <span class="keyword">&lt;groupId&gt;</span>com.filestack<span
+                                class="keyword">&lt;/groupId&gt;</span>
+                            <span class="keyword">&lt;artifactId&gt;</span>filestack-java<span
+                                class="keyword">&lt;/artifactId&gt;</span>
+                            <span class="keyword">&lt;version&gt;</span>1.10.1<span
+                                class="keyword">&lt;/version&gt;</span>
+                            <span class="keyword">&lt;/dependency&gt;</span>
+                        </div>
+
+
+
+                        <h4 style="margin: 2rem 0 1rem 0; font-size: 1.2rem; color: var(--dark-purple);">Basic Usage
+                        </h4>
+                        <p style="color: #666; margin-bottom: 1rem;">Initialize and use the client:</p>
+
+                        <div class="tool-code">
+                            <span class="class">Config</span> config = <span class="keyword">new</span> <span
+                                class="class">Config</span>(<span class="string">"YOUR_API_KEY"</span>);
+                            <span class="class">FilestackClient</span> client = <span class="keyword">new</span> <span
+                                class="class">FilestackClient</span>(config);
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <pre><span class="comment">// Complete working example</span>
+<span class="keyword">import</span> io.filestack.FilestackClient;
+<span class="keyword">import</span> io.filestack.FileLink;
+<span class="keyword">import</span> io.filestack.Config;
+<span class="keyword">import</span> io.filestack.responses.UploadResponse;
+<span class="keyword">import</span> io.filestack.transforms.Transform;
+
+<span class="keyword">public class</span> <span class="class">FilestackExample</span> {
+
+    <span class="keyword">private static final</span> <span class="class">String</span> API_KEY = <span class="string">"YOUR_API_KEY"</span>;
+    
+    <span class="keyword">public static void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Initialize client</span>
+        <span class="class">Config</span> config = <span class="keyword">new</span> <span class="class">Config</span>(API_KEY);
+        <span class="class">FilestackClient</span> client = <span class="keyword">new</span> <span class="class">FilestackClient</span>(config);
+        
+        <span class="keyword">try</span> {
+            <span class="comment">// Upload a file</span>
+            <span class="class">String</span> filePath = <span class="string">"/path/to/image.jpg"</span>;
+            <span class="class">UploadResponse</span> response = client.<span class="function">upload</span>(filePath, <span class="keyword">false</span>);
+            <span class="class">FileLink</span> fileLink = response.<span class="function">getFileLink</span>();
+            
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Upload successful: "</span> + fileLink.<span class="function">getUrl</span>());
+            
+            <span class="comment">// Create a thumbnail</span>
+            <span class="class">Transform</span> thumbnail = client.<span class="function">imageTransform</span>(fileLink)
+                .<span class="function">resize</span>(<span class="number">200</span>, <span class="number">200</span>)
+                .<span class="function">crop</span>(<span class="number">200</span>, <span class="number">200</span>)
+                .<span class="function">quality</span>(<span class="number">80</span>)
+                .<span class="function">format</span>(<span class="class">ImageFormat</span>.WEBP);
+            
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Thumbnail: "</span> + thumbnail.<span class="function">url</span>());
+            
+            <span class="comment">// Batch process multiple files</span>
+            <span class="class">String</span>[] imagePaths = {<span class="string">"image1.jpg"</span>, <span class="string">"image2.png"</span>, <span class="string">"image3.gif"</span>};
+            <span class="function">processImages</span>(client, imagePaths);
+            
+        } <span class="keyword">catch</span> (<span class="class">Exception</span> e) {
+            <span class="class">System</span>.err.<span class="function">println</span>(<span class="string">"Error: "</span> + e.<span class="function">getMessage</span>());
+            e.<span class="function">printStackTrace</span>();
+        }
+    }
+    
+    <span class="keyword">private static void</span> <span class="function">processImages</span>(<span class="class">FilestackClient</span> client, 
+                                        <span class="class">String</span>[] imagePaths) {
+        <span class="keyword">for</span> (<span class="class">String</span> path : imagePaths) {
+            <span class="keyword">try</span> {
+                <span class="comment">// Upload original</span>
+                <span class="class">UploadResponse</span> response = client.<span class="function">upload</span>(path, <span class="keyword">false</span>);
+                <span class="class">FileLink</span> original = response.<span class="function">getFileLink</span>();
+                
+                <span class="comment">// Create multiple sizes</span>
+                <span class="class">Transform</span> small = client.<span class="function">imageTransform</span>(original)
+                    .<span class="function">resize</span>(<span class="number">300</span>, <span class="number">300</span>).<span class="function">quality</span>(<span class="number">85</span>);
+                    
+                <span class="class">Transform</span> medium = client.<span class="function">imageTransform</span>(original)
+                    .<span class="function">resize</span>(<span class="number">600</span>, <span class="number">600</span>).<span class="function">quality</span>(<span class="number">90</span>);
+                
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Processed "</span> + path + <span class="string">":"</span>);
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"  Small: "</span> + small.<span class="function">url</span>());
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"  Medium: "</span> + medium.<span class="function">url</span>());
+                
+            } <span class="keyword">catch</span> (<span class="class">Exception</span> e) {
+                <span class="class">System</span>.err.<span class="function">println</span>(<span class="string">"Failed to process "</span> + path + <span class="string">": "</span> + e.<span class="function">getMessage</span>());
+            }
+        }
+    }
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <h2>Implement Java File Management</h2>
+                <p>Join enterprise teams worldwide who trust Filestack's Java SDK for mission-critical file management.
+                    Scale with confidence using our battle-tested, enterprise-ready solution.</p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-white">Sign Up Free</a>
+                    <a href="#" class="btn btn-secondary">View Java Docs</a>
+                    <a href="#" class="btn btn-secondary">Enterprise Solutions</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Simple tab switching for build tools
+        document.addEventListener('DOMContentLoaded', function () {
+            const toolTabs = document.querySelectorAll('.tool-tab button');
+            const toolCode = document.querySelector('.tool-code');
+
+            const dependencies = {
+                Maven: `<dependency>
+  <groupId>com.filestack</groupId>
+  <artifactId>filestack-java</artifactId>
+  <version>1.10.1</version>
+</dependency>`,
+                Gradle: `implementation 'com.filestack:filestack-java:1.10.1'`,
+                SBT: `libraryDependencies += "com.filestack" % "filestack-java" % "1.10.1"`
+            };
+
+            toolTabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    toolTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    toolCode.innerHTML = dependencies[this.textContent];
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

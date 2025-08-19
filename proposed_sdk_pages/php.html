@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>React SDK - Filestack | Component-Based File Upload Solution</title>
+    <title>PHP SDK - Filestack | Reliable Server-Side File Management for PHP</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         /* CSS STYLES */
@@ -16,8 +16,9 @@
             --text-color: #333;
             --text-light: #f0f0f0;
             --border-color: #e0e0e0;
-            --react-blue: #EF4A26;
-            --react-dark: #432D42;
+            --php-purple: #EF4A26;
+            --php-dark: #432D42;
+            --php-light: #FDF0ED;
         }
 
         * {
@@ -116,15 +117,15 @@
             color: #fff;
         }
 
-        .btn-react {
-            background: var(--react-blue);
-            color: white;
-            border: 2px solid var(--react-blue);
+        .btn-php {
+            background: var(--php-purple);
+            color: #fff;
+            border: 2px solid var(--php-purple);
         }
 
-        .btn-react:hover {
-            background: transparent;
-            color: var(--react-blue);
+        .btn-php:hover {
+            background: var(--php-dark);
+            border-color: var(--php-dark);
         }
 
         /* Hero Section */
@@ -136,6 +137,29 @@
             overflow: hidden;
         }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: var(--php-purple);
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            background: var(--php-purple);
+            opacity: 0.05;
+            transform: rotate(45deg);
+        }
 
         .hero-content {
             display: grid;
@@ -155,7 +179,7 @@
             align-items: center;
             gap: 10px;
             background: rgba(239, 74, 38, 0.2);
-            border: 1px solid var(--react-blue);
+            border: 1px solid var(--php-purple);
             padding: 8px 16px;
             border-radius: 25px;
             margin-bottom: 2rem;
@@ -198,27 +222,36 @@
             font-family: 'Monaco', monospace;
             font-size: 0.9rem;
             overflow-x: auto;
-            border-left: 4px solid var(--react-blue);
+            border-left: 4px solid var(--php-purple);
         }
 
         .code-preview .comment {
-            color: #75715e;
+            color: #6A9955;
         }
 
         .code-preview .string {
-            color: #e6db74;
+            color: #CE9178;
         }
 
         .code-preview .keyword {
-            color: #66d9ef;
+            color: #569CD6;
         }
 
         .code-preview .function {
-            color: #a6e22e;
+            color: #DCDCAA;
         }
 
-        .code-preview .jsx {
-            color: var(--react-blue);
+        .code-preview .php {
+            color: var(--php-purple);
+            filter: brightness(1.3);
+        }
+
+        .code-preview .variable {
+            color: #9CDCFE;
+        }
+
+        .code-preview .operator {
+            color: #D4D4D4;
         }
 
         /* Features Section */
@@ -257,7 +290,7 @@
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease;
-            border-top: 4px solid var(--react-blue);
+            border-top: 4px solid var(--php-purple);
         }
 
         .feature-item:hover {
@@ -272,8 +305,8 @@
             height: 70px;
             border-radius: 50%;
             margin-bottom: 1.5rem;
-            background-color: #FDF0ED;
-            color: var(--react-blue);
+            background-color: var(--php-light);
+            color: var(--php-purple);
         }
 
         .feature-item .icon svg {
@@ -292,82 +325,22 @@
             line-height: 1.6;
         }
 
-        /* Component Showcase */
-        .component-showcase {
-            padding: 80px 0;
-            background: #fff;
-        }
-
-        .showcase-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .showcase-content h2 {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            color: var(--dark-purple);
-        }
-
-        .showcase-content p {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 2rem;
-        }
-
-        .component-list {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .component-list li {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .component-list li:last-child {
-            border-bottom: none;
-        }
-
-        .component-icon {
-            background: var(--react-blue);
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
 
         .code-example {
-            background-color: var(--react-dark);
+            background-color: #1e1e1e;
             border-radius: 12px;
             padding: 25px;
             color: #f8f8f2;
             font-family: 'Monaco', monospace;
             font-size: 0.95rem;
             overflow-x: auto;
-            border-left: 4px solid var(--react-blue);
-            max-height: 500px;
-            overflow-y: auto;
+            border-left: 4px solid var(--php-purple);
         }
 
         /* Installation Section */
         .installation {
             padding: 80px 0;
-            background-color: var(--light-gray);
+            background: #fff;
         }
 
         .install-grid {
@@ -413,18 +386,50 @@
         }
 
         .install-tab button.active {
-            background: var(--react-blue);
+            background: var(--php-purple);
             color: white;
         }
 
         .install-code {
-            background-color: var(--react-dark);
+            background-color: #1e1e1e;
             border-radius: 8px;
             padding: 15px;
             color: #f8f8f2;
             font-family: 'Monaco', monospace;
             font-size: 0.9rem;
             margin-bottom: 1rem;
+        }
+
+        .requirements {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 1rem;
+        }
+
+        .requirements h4 {
+            color: var(--php-purple);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .requirements ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .requirements li {
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .requirements .check {
+            color: #28a745;
+            font-weight: bold;
         }
 
         /* CTA Section */
@@ -470,18 +475,10 @@
         }
 
         /* Responsive */
-        @media (max-width: 1024px) and (min-width: 769px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         @media (max-width: 768px) {
 
             .hero-content,
-            .showcase-grid,
-            .install-grid,
-            .features-grid {
+            .install-grid {
                 grid-template-columns: 1fr;
                 gap: 40px;
             }
@@ -502,11 +499,16 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .framework-cards {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
+
 
     <main>
         <section class="hero">
@@ -514,35 +516,36 @@
                 <div class="hero-content">
                     <div class="hero-left">
                         <div class="sdk-badge">
-                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/react.svg" alt="React"
+                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/php.svg" alt="PHP"
                                 style="filter: invert(1) brightness(1.5);">
-                            React SDK
+                            PHP SDK
                         </div>
-                        <h1>React Components for Powerful File Management</h1>
-                        <p>Integrate file uploading, image editing, and transformations seamlessly into your React
-                            applications with our purpose-built components.</p>
+                        <h1>Reliable File Management for PHP Applications</h1>
+                        <p>Build robust file handling systems with our mature PHP SDK. Perfect for Laravel, Symfony,
+                            CodeIgniter, and any PHP application requiring professional file management.</p>
                         <div class="hero-buttons">
-                            <a href="#" class="btn btn-react">Install via npm</a>
-                            <a href="#" class="btn btn-secondary">View React Docs</a>
+                            <a href="#" class="btn btn-php">composer install</a>
+                            <a href="#" class="btn btn-secondary">View PHP Docs</a>
                         </div>
                     </div>
                     <div class="hero-right">
                         <div class="code-preview">
-                            <pre><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;
-<span class="keyword">import</span> { <span class="jsx">PickerOverlay</span> } <span class="keyword">from</span> <span class="string">'filestack-react'</span>;
+                            <pre><span class="php">&lt;?php</span>
+<span class="comment">// Simple file upload and transformation</span>
+<span class="keyword">use</span> <span class="function">Filestack\FilestackClient</span>;
 
-<span class="keyword">const</span> <span class="function">FileUploader</span> = () => {
-  <span class="keyword">return</span> (
-    &lt;<span class="jsx">PickerOverlay</span>
-      <span class="jsx">apikey</span>={<span class="string">'YOUR_API_KEY'</span>}
-      <span class="jsx">onUploadDone</span>={(result) => console.<span class="function">log</span>(result)}
-      <span class="jsx">pickerOptions</span>={{
-        <span class="jsx">maxFiles</span>: 5,
-        <span class="jsx">accept</span>: <span class="string">'image/*'</span>
-      }}
-    /&gt;
-  );
-};</pre>
+<span class="variable">$client</span> = <span class="keyword">new</span> <span class="function">FilestackClient</span>(<span class="string">'YOUR_API_KEY'</span>);
+
+<span class="comment">// Upload a file</span>
+<span class="variable">$filelink</span> = <span class="variable">$client</span><span class="operator">-></span><span class="function">upload</span>(<span class="string">'/path/to/image.jpg'</span>);
+<span class="function">echo</span> <span class="string">"Uploaded: "</span> <span class="operator">.</span> <span class="variable">$filelink</span><span class="operator">-></span><span class="function">url</span>() <span class="operator">.</span> <span class="string">"\n"</span>;
+
+<span class="comment">// Transform the image</span>
+<span class="variable">$transformation</span> = <span class="variable">$client</span><span class="operator">-></span><span class="function">transform</span>(
+    <span class="variable">$filelink</span><span class="operator">-></span>handle,
+    [<span class="string">'resize'</span> <span class="operator">=></span> [<span class="string">'width'</span> <span class="operator">=></span> <span class="number">300</span>, <span class="string">'height'</span> <span class="operator">=></span> <span class="number">300</span>]]
+);
+<span class="function">echo</span> <span class="string">"Transformed: "</span> <span class="operator">.</span> <span class="variable">$transformation</span><span class="operator">-></span><span class="function">url</span>();</pre>
                         </div>
                     </div>
                 </div>
@@ -551,11 +554,24 @@
 
         <section class="features">
             <div class="container">
-                <h2 class="section-title">Built for Modern React Development</h2>
-                <p class="section-subtitle">Our React SDK provides ready-to-use components that integrate perfectly with
-                    your React ecosystem and development workflow.</p>
+                <h2 class="section-title">Built for PHP Developers</h2>
+                <p class="section-subtitle">Our PHP SDK follows PHP-FIG standards and best practices, providing a
+                    reliable, well-documented solution for all your file management needs.</p>
 
                 <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                            </svg>
+                        </div>
+                        <h3>PSR Compliant</h3>
+                        <p>Follows PHP-FIG standards including PSR-4 autoloading, PSR-3 logging, and PSR-7 HTTP messages
+                            for seamless integration.</p>
+                    </div>
+
                     <div class="feature-item">
                         <div class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -564,9 +580,9 @@
                                     d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
                             </svg>
                         </div>
-                        <h3>Ready-to-Use Components</h3>
-                        <p>Drop-in React components that work out of the box. No complex setup or configuration required
-                            to get started.</p>
+                        <h3>Composer Ready</h3>
+                        <p>Easy installation via Composer with proper dependency management and semantic versioning
+                            support.</p>
                     </div>
 
                     <div class="feature-item">
@@ -574,14 +590,25 @@
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                             </svg>
                         </div>
-                        <h3>Fully Customizable</h3>
-                        <p>Extensive props and styling options to match your design system. Override styles, themes, and
-                            behaviors.</p>
+                        <h3>Framework Integration</h3>
+                        <p>Native support for Laravel, Symfony, CodeIgniter, and CakePHP with dedicated packages and
+                            service providers.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3>Error Handling</h3>
+                        <p>Comprehensive exception handling with detailed error messages, retry logic, and graceful
+                            failure recovery.</p>
                     </div>
 
                     <div class="feature-item">
@@ -592,9 +619,9 @@
                                     d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                             </svg>
                         </div>
-                        <h3>React Hooks Integration</h3>
-                        <p>Built-in hooks for managing upload state, progress, and file metadata that integrate with
-                            your React state management.</p>
+                        <h3>Memory Efficient</h3>
+                        <p>Optimized for handling large files with streaming uploads, chunked processing, and minimal
+                            memory footprint.</p>
                     </div>
 
                     <div class="feature-item">
@@ -602,118 +629,23 @@
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
                         </div>
-                        <h3>TypeScript Support</h3>
-                        <p>Full TypeScript definitions included for better developer experience and type safety in your
-                            projects.</p>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
-                            </svg>
-                        </div>
-                        <h3>Performance Optimized</h3>
-                        <p>Lazy loading, code splitting, and optimized rendering to keep your React app fast and
-                            responsive.</p>
-                    </div>
-
-                    <div class="feature-item">
-                        <div class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                            </svg>
-                        </div>
-                        <h3>Server-Side Rendering</h3>
-                        <p>Full SSR compatibility with Next.js, Gatsby, and other React frameworks for better SEO and
-                            performance.</p>
+                        <h3>Legacy Support</h3>
+                        <p>Backward compatibility with PHP 5.6+ while supporting modern PHP 8.x features like typed
+                            properties and attributes.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="component-showcase">
-            <div class="container">
-                <div class="showcase-grid">
-                    <div class="showcase-content">
-                        <h2>Powerful React Components</h2>
-                        <p>Our React SDK includes multiple components designed for different use cases, from simple file
-                            uploads to complex transformation workflows.</p>
-
-                        <ul class="component-list">
-                            <li>
-                                <span class="component-icon">📁</span>
-                                <strong>PickerOverlay</strong> - Modal file picker with drag & drop
-                            </li>
-                            <li>
-                                <span class="component-icon">📎</span>
-                                <strong>PickerInline</strong> - Embedded picker for seamless UX
-                            </li>
-                            <li>
-                                <span class="component-icon">🎨</span>
-                                <strong>Transform</strong> - Image transformation component
-                            </li>
-                            <li>
-                                <span class="component-icon">📊</span>
-                                <strong>UploadProgress</strong> - Real-time upload progress tracking
-                            </li>
-                            <li>
-                                <span class="component-icon">🖼️</span>
-                                <strong>ImagePreview</strong> - Responsive image display with transformations
-                            </li>
-                        </ul>
-
-
-                    </div>
-
-                    <div class="code-example">
-                        <pre><span class="keyword">import</span> React, { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
-<span class="keyword">import</span> {
-  <span class="jsx">PickerInline</span>,
-  <span class="jsx">Transform</span>,
-  <span class="jsx">ImagePreview</span>
-} <span class="keyword">from</span> <span class="string">'filestack-react'</span>;
-
-<span class="keyword">const</span> <span class="function">FileManager</span> = () => {
-  <span class="keyword">const</span> [handle, setHandle] = <span class="function">useState</span>(<span class="keyword">null</span>);
-
-  <span class="keyword">return</span> (
-    &lt;<span class="jsx">div</span>&gt;
-      &lt;<span class="jsx">PickerInline</span>
-        <span class="jsx">apikey</span>={<span class="string">'YOUR_API_KEY'</span>}
-        <span class="jsx">onSuccess</span>={(result) => {
-          setHandle(result.filesUploaded[0].handle);
-        }}
-      /&gt;
-      
-      {handle && (
-        &lt;<span class="jsx">ImagePreview</span>
-          <span class="jsx">handle</span>={handle}
-          <span class="jsx">transforms</span>={{
-            <span class="jsx">resize</span>: { width: 300, height: 300 }
-          }}
-        /&gt;
-      )}
-    &lt;/<span class="jsx">div</span>&gt;
-  );
-};</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <section class="installation">
             <div class="container">
-                <h2 class="section-title">Quick Installation</h2>
-                <p class="section-subtitle">Get started with our React SDK in seconds using your preferred package
-                    manager.</p>
+                <h2 class="section-title">Installation & Setup</h2>
+                <p class="section-subtitle">Get started with our PHP SDK using Composer. Compatible with PHP 5.6+ and
+                    all major frameworks.</p>
 
                 <div class="install-grid">
                     <div class="install-methods">
@@ -723,76 +655,72 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                             </svg>
-                            Install Package
+                            Composer Installation
                         </h3>
 
                         <div class="install-tab">
-                            <button class="active">npm</button>
-                            <button>yarn</button>
-                            <button>pnpm</button>
+                            <button class="active">composer</button>
+                            <button>manual</button>
+                            <button>docker</button>
                         </div>
 
                         <div class="install-code">
-                            npm install filestack-react
+                            composer require filestack/filestack-php
+                        </div>
+
+                        <div class="requirements">
+                            <h4>
+                                📋 Requirements
+                            </h4>
+                            <ul>
+                                <li><span class="check">✓</span> PHP 5.6+ (PHP 8.x recommended)</li>
+                                <li><span class="check">✓</span> cURL extension</li>
+                                <li><span class="check">✓</span> JSON extension</li>
+                                <li><span class="check">✓</span> OpenSSL support</li>
+                                <li><span class="check">✓</span> mbstring extension</li>
+                            </ul>
                         </div>
 
                         <h4 style="margin: 2rem 0 1rem 0; font-size: 1.2rem; color: var(--dark-purple);">Basic Usage
                         </h4>
-                        <p style="color: #666; margin-bottom: 1rem;">Import and use components in your React
-                            application:</p>
+                        <p style="color: #666; margin-bottom: 1rem;">Include via Composer autoloader:</p>
 
                         <div class="install-code">
-                            <span class="keyword">import</span> { <span class="jsx">PickerOverlay</span> } <span
-                                class="keyword">from</span> <span class="string">'filestack-react'</span>;
+                            <span class="php">&lt;?php</span>
+                            <span class="keyword">require</span> <span class="string">'vendor/autoload.php'</span>;
+                            <span class="keyword">use</span> <span class="function">Filestack\FilestackClient</span>;
 
-                            <span class="comment">// Use in your component</span>
-                            &lt;<span class="jsx">PickerOverlay</span> <span class="jsx">apikey</span>="YOUR_API_KEY"
-                            /&gt;
+                            <span class="variable">$client</span> = <span class="keyword">new</span> <span
+                                class="function">FilestackClient</span>(<span class="string">'YOUR_API_KEY'</span>);
                         </div>
                     </div>
 
                     <div class="code-example">
                         <pre><span class="comment">// Complete working example</span>
-<span class="keyword">import</span> React, { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
-<span class="keyword">import</span> { <span class="jsx">PickerOverlay</span> } <span class="keyword">from</span> <span class="string">'filestack-react'</span>;
+<span class="php">&lt;?php</span>
+<span class="keyword">require_once</span> <span class="string">'vendor/autoload.php'</span>;
 
-<span class="keyword">function</span> <span class="function">App</span>() {
-  <span class="keyword">const</span> [isOpen, setIsOpen] = <span class="function">useState</span>(<span class="keyword">false</span>);
-  <span class="keyword">const</span> [files, setFiles] = <span class="function">useState</span>([]);
+<span class="keyword">use</span> <span class="function">Filestack\FilestackClient</span>;
 
-  <span class="keyword">const</span> <span class="function">handleSuccess</span> = (result) => {
-    setFiles(result.filesUploaded);
-    setIsOpen(<span class="keyword">false</span>);
-    console.<span class="function">log</span>(<span class="string">'Files uploaded:'</span>, result);
-  };
+<span class="comment">// Initialize the client</span>
+<span class="variable">$client</span> = <span class="keyword">new</span> <span class="function">FilestackClient</span>(<span class="string">'YOUR_API_KEY'</span>);
 
-  <span class="keyword">return</span> (
-    &lt;<span class="jsx">div</span>&gt;
-      &lt;<span class="jsx">button</span> <span class="jsx">onClick</span>={() => setIsOpen(<span class="keyword">true</span>)}&gt;
-        Upload Files
-      &lt;/<span class="jsx">button</span>&gt;
-      
-      {isOpen && (
-        &lt;<span class="jsx">PickerOverlay</span>
-          <span class="jsx">apikey</span>={<span class="string">'YOUR_API_KEY'</span>}
-          <span class="jsx">onSuccess</span>={handleSuccess}
-          <span class="jsx">onCancel</span>={() => setIsOpen(<span class="keyword">false</span>)}
-          <span class="jsx">pickerOptions</span>={{
-            <span class="jsx">accept</span>: [<span class="string">'image/*'</span>, <span class="string">'video/*'</span>],
-            <span class="jsx">maxFiles</span>: 10,
-            <span class="jsx">fromSources</span>: [
-              <span class="string">'local_file_system'</span>,
-              <span class="string">'url'</span>,
-              <span class="string">'imagesearch'</span>
-            ]
-          }}
-        /&gt;
-      )}
-    &lt;/<span class="jsx">div</span>&gt;
-  );
-}
+<span class="keyword">try</span> {
+    <span class="comment">// Upload a file</span>
+    <span class="variable">$filelink</span> = <span class="variable">$client</span><span class="operator">-></span><span class="function">upload</span>(<span class="string">'/path/to/image.jpg'</span>);
+    <span class="function">echo</span> <span class="string">"Uploaded: "</span> <span class="operator">.</span> <span class="variable">$filelink</span><span class="operator">-></span><span class="function">url</span>() <span class="operator">.</span> <span class="string">"\n"</span>;
 
-<span class="keyword">export default</span> App;</pre>
+    <span class="comment">// Transform the image</span>
+    <span class="variable">$transformation</span> = <span class="variable">$client</span><span class="operator">-></span><span class="function">transform</span>(<span class="variable">$filelink</span><span class="operator">-></span>handle, [
+        <span class="string">'resize'</span> <span class="operator">=></span> [<span class="string">'width'</span> <span class="operator">=></span> <span class="number">300</span>, <span class="string">'height'</span> <span class="operator">=></span> <span class="number">300</span>],
+        <span class="string">'quality'</span> <span class="operator">=></span> <span class="number">80</span>
+    ]);
+    
+    <span class="function">echo</span> <span class="string">"Transformed: "</span> <span class="operator">.</span> <span class="variable">$transformation</span><span class="operator">-></span><span class="function">url</span>();
+    
+} <span class="keyword">catch</span> (<span class="function">Exception</span> <span class="variable">$e</span>) {
+    <span class="function">echo</span> <span class="string">"Error: "</span> <span class="operator">.</span> <span class="variable">$e</span><span class="operator">-></span><span class="function">getMessage</span>();
+}</pre>
                     </div>
                 </div>
             </div>
@@ -800,13 +728,13 @@
 
         <section class="cta-section">
             <div class="container">
-                <h2>Get Started with React File Management</h2>
-                <p>Join thousands of React developers who trust Filestack for their file management needs. Get started
-                    today with our comprehensive React SDK.</p>
+                <h2>Integrate PHP File Processing</h2>
+                <p>Join thousands of PHP developers who trust Filestack for reliable, scalable file management. From
+                    simple uploads to complex processing workflows, we've got you covered.</p>
                 <div class="cta-buttons">
                     <a href="#" class="btn btn-white">Sign Up Free</a>
-                    <a href="#" class="btn btn-secondary">View React Docs</a>
-                    <a href="#" class="btn btn-secondary">See Pricing</a>
+                    <a href="#" class="btn btn-secondary">View PHP Docs</a>
+                    <a href="#" class="btn btn-secondary">Enterprise Solutions</a>
                 </div>
             </div>
         </section>
@@ -819,9 +747,9 @@
             const installCode = document.querySelector('.install-code');
 
             const commands = {
-                npm: 'npm install filestack-react',
-                yarn: 'yarn add filestack-react',
-                pnpm: 'pnpm add filestack-react'
+                composer: 'composer require filestack/filestack-php',
+                manual: 'wget https://github.com/filestack/filestack-php/archive/master.zip',
+                docker: 'docker run --rm -v $(pwd):/app composer require filestack/filestack-php'
             };
 
             installTabs.forEach(tab => {
