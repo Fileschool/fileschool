@@ -423,6 +423,45 @@
             display: block;
         }
 
+        /* SDK CTA Section */
+        .sdk-cta {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #4C3348 0%, #231A2C 100%);
+            color: #fff;
+            text-align: center;
+        }
+
+        .sdk-cta h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .sdk-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .sdk-cta .btn {
+            margin: 0 15px 15px 0;
+        }
+
+        .btn-white {
+            background: #fff;
+            color: var(--primary-orange);
+            border: 2px solid #fff;
+        }
+
+        .btn-white:hover {
+            background: transparent;
+            color: #fff;
+            border-color: #fff;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero-content {
@@ -511,6 +550,18 @@
 // Loading initial code...
                         </code></pre>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="sdk-cta">
+            <div class="container">
+                <h2>Ready to Build Something Amazing?</h2>
+                <p>We support 15+ programming languages and frameworks. From mobile apps to enterprise backends, we have
+                    the tools you need to handle files like a pro.</p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-white">View All Documentation</a>
+                    <a href="#" class="btn btn-secondary">Browse All SDKs</a>
                 </div>
             </div>
         </section>
@@ -789,7 +840,13 @@ echo $transformation->url();`
                 const sdk = sdkData[key];
                 const button = document.createElement('button');
                 button.dataset.sdk = key;
-                const logoUrl = `https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${key}.svg`;
+
+                // Handle different icon names for consistency
+                let iconName = key;
+                if (key === 'java') iconName = 'openjdk';
+                if (key === 'javascript') iconName = 'javascript';
+
+                const logoUrl = `https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${iconName}.svg`;
                 const img = document.createElement('img');
                 img.src = logoUrl;
                 img.alt = `${sdk.title} logo`;
