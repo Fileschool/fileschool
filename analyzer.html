@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-E-A-T & Helpful Content Analyzer</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Froala Editor CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@4.6.0/css/froala_editor.pkgd.min.css" rel="stylesheet"
+        type="text/css" />
+
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            /* Light gray background */
+        }
+
+        /* Custom class for active tab */
+        .tab-active {
+            border-bottom-color: #0098f7 !important;
+            color: #0098f7 !important;
+            font-weight: 600;
+        }
+
+        /* Custom class for active nav link */
+        .nav-link-active {
+            background-color: #0098f7 !important;
+            color: white !important;
+            transform: translateX(2px);
+            border-left-color: #005c94;
+        }
+
+        /* Froala Editor container styling */
+        .fr-box.fr-basic .fr-element {
+            min-height: 300px;
+            max-height: 500px;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        /* Specificity to override Tailwind for results area formatting */
+        #resultsArea h2,
+        #chunkabilityResults h2 {
+            font-size: 1.8rem;
+            color: #15b69b;
+            margin: 3em 0 1.5em 0;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #15b69b;
+            position: relative;
+        }
+
+        #resultsArea h2:before,
+        #chunkabilityResults h2:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 60px;
+            height: 3px;
+            background: #0098f7;
+        }
+
+        #resultsArea h3,
+        #chunkabilityResults h3 {
+            font-size: 1.4rem;
+            color: #13a38a;
+            margin: 2em 0 1em 0;
+            font-weight: 600;
+        }
+
+        #resultsArea h4,
+        #chunkabilityResults h4 {
+            font-size: 1.2rem;
+            color: #0f8b75;
+            margin: 1.5em 0 0.8em 0;
+            font-weight: 500;
+        }
+
+        #resultsArea p,
+        #chunkabilityResults p {
+            margin: 1.2em 0;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        #resultsArea ul,
+        #chunkabilityResults ul,
+        #resultsArea ol,
+        #chunkabilityResults ol {
+            margin: 1.5em 0;
+            padding-left: 2em;
+        }
+
+        #resultsArea li,
+        #chunkabilityResults li {
+            margin: 0.8em 0;
+            line-height: 1.8;
+        }
+
+        #resultsArea strong,
+        #chunkabilityResults strong {
+            color: #0077c2;
+            font-weight: 600;
+        }
+
+        /* Score and Priority Styling */
+        .score-info {
+            background: #f0f9ff;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 1.5em 0;
+            border-left: 4px solid #0098f7;
+            font-size: 1.1rem;
+        }
+
+        .priority-info {
+            background: #e8f5f2;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 1em 0;
+            border-left: 4px solid #15b69b;
+        }
+
+        /* Warning Note Styling */
+        .warning-note {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%) !important;
+            padding: 16px 20px 16px 50px !important;
+            border-radius: 8px !important;
+            margin: 2em 0 !important;
+            border: 2px solid #f39c12 !important;
+            border-left: 6px solid #e67e22 !important;
+            font-style: italic !important;
+            color: #8b4513 !important;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.15) !important;
+            position: relative !important;
+        }
+
+        .warning-note::before {
+            content: "⚠️";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4em;
+            background: #f39c12;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .warning-note strong {
+            color: #d68910 !important;
+            font-weight: 700 !important;
+        }
+
+        /* Skeleton Loading Animation */
+        @keyframes pulse {
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .skeleton-loading.active {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .animated-bg {
+            animation: shimmer 2s infinite;
+            background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            background-size: 200% 100%;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Main Layout -->
+    <main class="flex-1 w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6">
+
+        <!-- Input Column -->
+        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col">
+            <h2 class="text-xl md:text-2xl font-bold text-center text-gray-700 mb-6">Input Content & Analyze</h2>
+
+            <!-- API Key Input -->
+            <div class="mb-4">
+                <label for="apiKey" class="block text-sm font-medium text-gray-600 mb-1">DeepSeek API Key *</label>
+                <input id="apiKey" type="password"
+                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+            </div>
+
+            <p class="text-sm text-gray-500 mb-2">Optional Metadata:</p>
+
+            <!-- Meta Inputs -->
+            <div class="space-y-4 mb-4">
+                <div>
+                    <label for="metaTitle" class="block text-sm font-medium text-gray-600 mb-1">Title Tag</label>
+                    <input id="metaTitle" type="text" placeholder="Complete Guide to Digital Marketing"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                </div>
+                <div>
+                    <label for="metaDescription" class="block text-sm font-medium text-gray-600 mb-1">Meta
+                        Description</label>
+                    <input id="metaDescription" type="text"
+                        placeholder="Discover proven digital marketing strategies..."
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                </div>
+                <div>
+                    <label for="metaSlug" class="block text-sm font-medium text-gray-600 mb-1">URL Slug</label>
+                    <input id="metaSlug" type="text" placeholder="complete-guide-digital-marketing"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                </div>
+            </div>
+
+            <!-- Editor -->
+            <div class="flex-1 flex flex-col min-h-100">
+                <label class="block text-sm font-medium text-gray-600 mb-2">Article Content *</label>
+                <div id="editor" class="flex-1 border border-gray-300 rounded-md min-h-100"></div>
+            </div>
+
+            <!-- Controls Area -->
+            <div class="mt-6 flex-shrink-0">
+                <button id="analyzeButton"
+                    class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400">
+                    <i class="material-icons">play_arrow</i>
+                    <span>Analyze & Check Chunkability</span>
+                </button>
+                <div id="progressContainer" class="w-full bg-gray-200 rounded-full h-2.5 mt-4" style="display: none;">
+                    <div id="progressBar" class="bg-green-500 h-2.5 rounded-full transition-all duration-300"
+                        style="width: 0%"></div>
+                </div>
+                <div id="errorMessage"
+                    class="hidden mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-center"></div>
+                <div id="statusText" class="text-center text-gray-500 mt-2 h-6"></div>
+            </div>
+        </div>
+
+        <!-- Results Column -->
+        <div class="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md flex flex-col"
+            style="height: 1000px; overflow: hidden;">
+            <h2 class="text-xl md:text-2xl font-bold text-center text-gray-700 mb-4 flex-shrink-0">Analysis Results</h2>
+
+            <!-- Score Summary Table -->
+            <div id="scoreTable" class="hidden mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 class="font-bold text-blue-800 mb-3 text-center">📊 Score Summary</h3>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-blue-200">
+                            <th class="text-left py-2 text-blue-700">Category</th>
+                            <th class="text-center py-2 text-blue-700">Score</th>
+                            <th class="text-center py-2 text-blue-700">Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreTableBody">
+                        <!-- Scores will be populated here -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="border-t-2 border-blue-300 font-bold">
+                            <td class="py-2 text-blue-800">Average Score</td>
+                            <td class="text-center py-2">
+                                <span id="averageScoreValue"
+                                    class="bg-blue-600 text-white px-3 py-1 rounded-full text-lg">--/10</span>
+                            </td>
+                            <td class="text-center py-2" id="overallPriority">--</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 flex-shrink-0">
+                <nav id="tabs" class="flex space-x-4" aria-label="Tabs">
+                    <a href="#" data-tab="contentAnalysisTab"
+                        class="tab-link tab-active text-gray-500 hover:text-blue-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors">Content
+                        Analysis</a>
+                    <a href="#" data-tab="chunkabilityTab"
+                        class="tab-link text-gray-500 hover:text-blue-600 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent transition-colors">Chunkability</a>
+                </nav>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="flex-1 mt-4" style="height: 700px; overflow-y: auto;">
+                <!-- Content Analysis Tab -->
+                <div id="contentAnalysisTab" class="tab-content h-full flex flex-col lg:flex-row gap-4 relative">
+                    <!-- Nav -->
+                    <nav id="contentNav" class="lg:block w-full lg:w-1/3 flex-shrink-0" style="height: 900px;">
+                        <div class="bg-gray-50 p-3 rounded-lg border sticky top-4 z-10"
+                            style="height: 600px; overflow-y: auto;">
+                            <h3 class="font-bold text-blue-800 mb-3">Quick Navigation</h3>
+                            <ul id="contentNavLinks" class="space-y-2"></ul>
+                        </div>
+                    </nav>
+                    <!-- Results -->
+                    <div id="contentResultsWrapper" class="w-full lg:w-2/3 flex-1">
+                        <div id="resultsArea" class="overflow-y-auto p-1" style="height: 900px; max-height: 900px;">
+                            <div class="text-center text-gray-500 p-8">
+                                <i class="material-icons text-5xl text-gray-400">assessment</i>
+                                <h3 class="text-lg font-semibold mt-4">Ready to analyze your content</h3>
+                                <p class="mt-2 text-sm">Paste your content and click "Analyze" to get detailed
+                                    E-E-A-T feedback and recommendations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chunkability Tab -->
+                <div id="chunkabilityTab" class="tab-content hidden h-full flex flex-col lg:flex-row gap-4 relative">
+                    <!-- Nav -->
+                    <nav id="chunkNav" class="lg:block w-full lg:w-1/3 flex-shrink-0" style="height: 700px;">
+                        <div class="bg-gray-50 p-3 rounded-lg border sticky top-4 z-10"
+                            style="height: 600px; overflow-y: auto;">
+                            <h3 class="font-bold text-blue-800 mb-3">Quick Navigation</h3>
+                            <ul id="chunkNavLinks" class="space-y-2"></ul>
+                        </div>
+                    </nav>
+                    <!-- Results -->
+                    <div id="chunkabilityResultsWrapper" class="w-full lg:w-2/3 flex-1">
+                        <div id="chunkabilityResults" class="overflow-y-auto p-1"
+                            style="height: 700px; max-height: 700px;">
+                            <div class="text-center text-gray-500 p-8">
+                                <i class="material-icons text-5xl text-gray-400">view_module</i>
+                                <h3 class="text-lg font-semibold mt-4">Ready to check chunkability</h3>
+                                <p class="mt-2 text-sm">Chunkability analysis will assess how well your content can
+                                    be processed by AI systems.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section with Criteria -->
+    <footer class="w-full p-4 md:p-6 mt-6 flex-shrink-0">
+        <h1
+            class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-4 flex items-center justify-center gap-3">
+            <i class="material-icons text-blue-500" style="font-size: 1.2em;">assessment</i>
+            <span>E-E-A-T & Helpful Content Analyzer</span>
+        </h1>
+        <div
+            class="requirements bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md text-gray-700 text-sm md:text-base">
+            <strong class="text-base text-blue-800">Analysis Criteria (based on Google's E-E-A-T & Helpful
+                Content):</strong>
+            <ul class="list-disc list-inside mt-2 space-y-1">
+                <li><strong>Content Quality & Depth</strong>: Assess detail, completeness, and evidence of first-hand
+                    experience.</li>
+                <li><strong>Expertise & Credibility</strong>: Look for author credentials, cited sources, and expert
+                    quotes.</li>
+                <li><strong>Engagement & Presentation</strong>: Evaluate readability, structure, visuals, and
+                    calls-to-action.</li>
+                <li><strong>Originality & Insight</strong>: Identify unique perspectives, data, or analysis.</li>
+                <li><strong>Trustworthiness & Transparency</strong>: Check for clear authorship, contact info, and
+                    disclosures.</li>
+                <li><strong>Metadata Relevance (Optional)</strong>: Assess alignment of title, description, and URL with
+                    content.</li>
+            </ul>
+            <p class="mt-3"><strong>Important Note:</strong> <em>Due to API limitations, this analysis focuses
+                    exclusively on textual content. Images, graphics, and visual elements are automatically excluded
+                    from all scoring and recommendations.</em></p>
+        </div>
+    </footer>
+
+
+    <!-- Scripts -->
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/froala-editor@4.6.0/js/froala_editor.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Froala Editor
+            try {
+                new FroalaEditor('#editor', {
+                    placeholderText: 'Paste your article HTML or text content here...',
+                    heightMin: 300,
+                    heightMax: 700,
+                    toolbarButtons: ['bold', 'italic', 'underline', '|', 'align', 'formatOL', 'formatUL', '|', 'insertLink', 'insertTable', '|', 'undo', 'redo', 'html']
+                });
+            } catch (e) {
+                console.error("Froala Editor initialization failed:", e);
+                document.getElementById('editor').innerText = "Failed to load rich text editor. Please paste plain text.";
+            }
+
+            // Initialize Marked.js
+            if (window.marked) {
+                marked.setOptions({ breaks: true, gfm: true, headerIds: false, mangle: false });
+            }
+
+            // --- Element References ---
+            const apiKeyInput = document.getElementById('apiKey');
+            const metaTitleInput = document.getElementById('metaTitle');
+            const metaDescriptionInput = document.getElementById('metaDescription');
+            const metaSlugInput = document.getElementById('metaSlug');
+            const analyzeButton = document.getElementById('analyzeButton');
+            const resultsArea = document.getElementById('resultsArea');
+            const chunkabilityResults = document.getElementById('chunkabilityResults');
+            const errorMessageDiv = document.getElementById('errorMessage');
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressContainer');
+            const statusText = document.getElementById('statusText');
+            const contentNav = document.getElementById('contentNav');
+            const contentNavLinks = document.getElementById('contentNavLinks');
+            const chunkNav = document.getElementById('chunkNav');
+            const chunkNavLinks = document.getElementById('chunkNavLinks');
+            const scoreTable = document.getElementById('scoreTable');
+            const scoreTableBody = document.getElementById('scoreTableBody');
+            const averageScoreValue = document.getElementById('averageScoreValue');
+            const overallPriority = document.getElementById('overallPriority');
+
+            const apiUrl = 'https://api.deepseek.com/chat/completions';
+            const modelName = 'deepseek-chat';
+            let loadingIntervalId = null;
+            const loadingMessages = [
+                "Analyzing content structure...", "Evaluating E-E-A-T signals...", "Processing expertise indicators...",
+                "Checking trustworthiness factors...", "Assessing content depth...", "Analyzing engagement elements...",
+                "Reviewing originality markers...", "Examining authoritativeness...", "Evaluating user experience...",
+                "Processing content quality...", "Analyzing readability patterns...", "Checking source credibility...",
+                "Assessing content completeness...", "Reviewing metadata alignment...", "Analyzing chunkability factors...",
+                "Processing final recommendations..."
+            ];
+
+            // --- Tab Functionality ---
+            const tabsContainer = document.getElementById('tabs');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabsContainer.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabLink = e.target.closest('.tab-link');
+                if (!tabLink) return;
+
+                // Deactivate all tabs
+                tabsContainer.querySelectorAll('.tab-link').forEach(link => link.classList.remove('tab-active'));
+                tabContents.forEach(content => content.classList.add('hidden'));
+
+                // Activate clicked tab
+                tabLink.classList.add('tab-active');
+                const tabId = tabLink.getAttribute('data-tab');
+                document.getElementById(tabId).classList.remove('hidden');
+            });
+
+            // --- Analysis Logic ---
+            analyzeButton.addEventListener('click', handleCombinedAnalysis);
+
+            function generateNavigation(content, navContainer, prefix = '') {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = content;
+                const headings = tempDiv.querySelectorAll('h2, h3');
+                navContainer.innerHTML = ''; // Clear previous links
+                const fragment = document.createDocumentFragment();
+
+                headings.forEach((heading, index) => {
+                    const text = heading.textContent.trim();
+                    if (!text) return;
+
+                    const id = `${prefix}heading-${index}`;
+                    heading.id = id;
+
+                    let scoreText = '';
+                    const nextEl = heading.nextElementSibling;
+                    if (nextEl) {
+                        const scoreMatch = nextEl.textContent?.match(/Score:\s*(\d+)\/10/);
+                        if (scoreMatch) {
+                            scoreText = `<span class="ml-auto text-xs font-semibold bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full">${scoreMatch[1]}/10</span>`;
+                        }
+                    }
+
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = `#${id}`;
+                    a.className = 'nav-link text-gray-600 hover:text-blue-600 text-sm p-2 rounded-md flex items-center transition-colors duration-200 border-l-4 border-transparent hover:bg-blue-100 hover:border-blue-500';
+                    a.innerHTML = `<span>${text}</span>${scoreText}`;
+
+                    if (heading.tagName === 'H3') {
+                        a.classList.add('pl-5');
+                    }
+
+                    li.appendChild(a);
+                    fragment.appendChild(li);
+                });
+
+                navContainer.appendChild(fragment);
+
+                // Event delegation for nav links
+                navContainer.addEventListener('click', e => {
+                    const link = e.target.closest('.nav-link');
+                    if (link) {
+                        e.preventDefault();
+                        navContainer.querySelectorAll('.nav-link').forEach(l => l.classList.remove('nav-link-active'));
+                        link.classList.add('nav-link-active');
+                        const targetId = link.getAttribute('href');
+                        document.querySelector(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+
+                return tempDiv.innerHTML;
+            }
+
+            function applyStylingToResults(container) {
+                // Apply score and priority styling
+                container.querySelectorAll('p').forEach(p => {
+                    const pHtml = p.innerHTML || '';
+                    if (pHtml.includes('<strong>Score:') && !p.classList.contains('warning-note')) {
+                        p.classList.add('score-info');
+                    }
+                    if (pHtml.includes('<strong>Priority:') && !p.classList.contains('warning-note')) {
+                        p.classList.add('priority-info');
+                    }
+                });
+
+                // Apply specific warning styling
+                container.querySelectorAll('p').forEach(p => {
+                    const pText = p.textContent || '';
+                    if (pText.includes('Note:') && pText.includes('analysis focuses exclusively on textual content')) {
+                        p.classList.add('warning-note');
+                    }
+                });
+            }
+
+            function calculateAndDisplayScores() {
+                // Find all score elements in the results area
+                const scoreElements = resultsArea.querySelectorAll('p.score-info');
+                const scores = [];
+                const categories = [];
+
+                // Clear existing table
+                scoreTableBody.innerHTML = '';
+
+                scoreElements.forEach(element => {
+                    const scoreMatch = element.textContent.match(/Score:\s*(\d+)\/10/);
+                    const priorityMatch = element.textContent.match(/Priority:\s*(High|Medium|Low)/);
+
+                    if (scoreMatch) {
+                        const score = parseInt(scoreMatch[1]);
+                        scores.push(score);
+
+                        // Find the category name (look for the nearest heading)
+                        let categoryElement = element.previousElementSibling;
+                        while (categoryElement && !['H2', 'H3'].includes(categoryElement.tagName)) {
+                            categoryElement = categoryElement.previousElementSibling;
+                        }
+
+                        const category = categoryElement ? categoryElement.textContent.trim() : 'Unknown Category';
+                        const priority = priorityMatch ? priorityMatch[1] : 'Unknown';
+
+                        categories.push({ category, score, priority });
+
+                        // Add row to table
+                        const row = document.createElement('tr');
+                        row.className = 'border-b border-blue-100';
+                        row.innerHTML = `
+                            <td class="py-2 text-gray-700">${category}</td>
+                            <td class="text-center py-2">
+                                <span class="px-2 py-1 rounded-full text-xs ${score >= 8 ? 'bg-green-100 text-green-800' : score >= 6 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">${score}/10</span>
+                            </td>
+                            <td class="text-center py-2">
+                                <span class="px-2 py-1 rounded-full text-xs ${priority === 'High' ? 'bg-red-100 text-red-700' : priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}">${priority}</span>
+                            </td>
+                        `;
+                        scoreTableBody.appendChild(row);
+                    }
+                });
+
+                if (scores.length > 0) {
+                    const average = (scores.reduce((sum, score) => sum + score, 0) / scores.length).toFixed(1);
+                    averageScoreValue.textContent = `${average}/10`;
+
+                    // Determine overall priority
+                    const highPriorityCount = categories.filter(c => c.priority === 'High').length;
+                    const mediumPriorityCount = categories.filter(c => c.priority === 'Medium').length;
+                    let priority = 'Low';
+                    if (highPriorityCount > 0) priority = 'High';
+                    else if (mediumPriorityCount > 0) priority = 'Medium';
+
+                    overallPriority.innerHTML = `<span class="px-2 py-1 rounded-full text-xs ${priority === 'High' ? 'bg-red-100 text-red-700' : priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}">${priority}</span>`;
+
+                    scoreTable.classList.remove('hidden');
+                } else {
+                    scoreTable.classList.add('hidden');
+                }
+            }
+
+            function createSkeletonLoading(isChunkability = false) {
+                const title = isChunkability ? "Analyzing chunkability..." : "Analyzing your content...";
+                const icon = isChunkability ? "view_module" : "sync";
+                return `
+                    <div class="skeleton-loading active p-4">
+                        <div class="analyzing-text text-center text-blue-600 font-semibold mb-6 flex items-center justify-center gap-2">
+                            <i class="material-icons animate-spin">${icon}</i>
+                            <span>${title}</span>
+                        </div>
+                        <div class="space-y-8">
+                            <div>
+                                <div class="h-6 w-3/4 bg-gray-300 rounded-md mb-4 relative overflow-hidden"><div class="animated-bg absolute inset-0"></div></div>
+                                <div class="space-y-3">
+                                    <div class="h-4 w-full bg-gray-200 rounded-md relative overflow-hidden"><div class="animated-bg absolute inset-0"></div></div>
+                                    <div class="h-4 w-5/6 bg-gray-200 rounded-md relative overflow-hidden"><div class="animated-bg absolute inset-0"></div></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="h-6 w-1/2 bg-gray-300 rounded-md mb-4 relative overflow-hidden"><div class="animated-bg absolute inset-0"></div></div>
+                                <div class="space-y-3">
+                                    <div class="h-4 w-full bg-gray-200 rounded-md relative overflow-hidden"><div class="animated-bg absolute inset-0"></div></div>
+                                    <div class="h-4 w-full bg-gray-200 rounded-md relative overflow-hidden"><div class="animated-bg absolute inset-0"></div></div>
+                                    <div class="h-4 w-3/4 bg-gray-200 rounded-md relative overflow-hidden"><div class="animated-bg absolute inset-0"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async function handleCombinedAnalysis() {
+                const apiStartTime = performance.now();
+                document.title = 'Analyzing...';
+                console.log('Starting analysis process...');
+                const apiKey = apiKeyInput.value.trim();
+                let content = '';
+                if (typeof FroalaEditor !== 'undefined' && FroalaEditor.INSTANCES && FroalaEditor.INSTANCES[0]) {
+                    content = FroalaEditor.INSTANCES[0].html.get();
+                } else {
+                    content = document.getElementById('editor').innerHTML;
+                }
+
+                // --- UI Reset and Validation ---
+                errorMessageDiv.classList.add('hidden');
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+                analyzeButton.disabled = true;
+                analyzeButton.querySelector('span').textContent = 'Analyzing...';
+                // Navigation sidebars are now always visible
+                scoreTable.classList.add('hidden');
+                resultsArea.innerHTML = createSkeletonLoading(false);
+                chunkabilityResults.innerHTML = createSkeletonLoading(true);
+
+                if (!apiKey) {
+                    showError('API Key is required.');
+                    resetState();
+                    return;
+                }
+                if (!content || content.trim().length < 100) {
+                    showError('Article content is required (minimum 100 characters).');
+                    resetState();
+                    return;
+                }
+
+                // --- Start Analysis ---
+                try {
+                    statusText.textContent = 'Preparing analysis prompt...';
+                    progressBar.style.width = '15%';
+
+                    const prompt = buildPrompt(content);
+
+                    statusText.textContent = 'Sending request to API...';
+                    progressBar.style.width = '30%';
+
+                    console.time('Deepseek API Request');
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: modelName,
+                            messages: [
+                                { role: 'system', content: "You are an expert content analyst. Provide detailed E-E-A-T evaluation and chunkability assessment. Use the exact section headers requested and format clearly with markdown. CRITICAL: Completely ignore all images, graphics, and visual elements. Focus exclusively on textual content. Only add the API limitations note at the end of the Content Analysis Summary and Chunkability Analysis sections." },
+                                { role: 'user', content: prompt }
+                            ],
+                            temperature: 0.5,
+                            max_tokens: 8000
+                        })
+                    });
+
+                    statusText.textContent = 'Processing response...';
+                    progressBar.style.width = '60%';
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(`API Error ${response.status}: ${errorData.error?.message || response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    console.timeEnd('Deepseek API Request');
+                    console.log('Deepseek API responded with data');
+
+                    if (!data.choices?.[0]?.message?.content) {
+                        throw new Error('API response did not contain analysis content.');
+                    }
+
+                    const parseStartTime = performance.now();
+                    console.time('Parsing API Response');
+                    statusText.textContent = 'Parsing and displaying results...';
+                    progressBar.style.width = '80%';
+
+                    const markdown = data.choices[0].message.content;
+                    const { contentAnalysis, chunkabilityAnalysis } = extractContentAndChunkability(markdown);
+
+                    // Display Content Analysis
+                    if (contentAnalysis && contentAnalysis.trim()) {
+                        const htmlContent = marked.parse(contentAnalysis);
+                        const processedContent = generateNavigation(htmlContent, contentNavLinks, 'content');
+                        resultsArea.innerHTML = processedContent;
+                        applyStylingToResults(resultsArea);
+                        calculateAndDisplayScores();
+                    } else {
+                        resultsArea.innerHTML = '<p class="text-center text-gray-500 p-4">Could not extract Content Analysis.</p>';
+                    }
+
+                    // Display Chunkability Analysis
+                    if (chunkabilityAnalysis && chunkabilityAnalysis.trim()) {
+                        const chunkHtml = marked.parse(chunkabilityAnalysis);
+                        const processedChunk = generateNavigation(chunkHtml, chunkNavLinks, 'chunk');
+                        chunkabilityResults.innerHTML = processedChunk;
+                        applyStylingToResults(chunkabilityResults);
+                    } else {
+                        chunkabilityResults.innerHTML = '<p class="text-center text-gray-500 p-4">No chunkability analysis found.</p>';
+                    }
+
+                    console.timeEnd('Parsing API Response');
+                    statusText.textContent = 'Analysis complete!';
+                    progressBar.style.width = '100%';
+                    document.title = 'Analysis Complete';
+                    console.log('Total analysis time:', {
+                        apiRequest: performance.now() - apiStartTime,
+                        parsing: performance.now() - parseStartTime
+                    });
+
+                } catch (err) {
+                    console.error("Analysis Error:", err);
+                    showError(`Error: ${err.message}`);
+                    document.title = 'E-E-A-T & Helpful Content Analyzer';
+                } finally {
+                    resetState();
+                    setTimeout(() => {
+                        if (errorMessageDiv.classList.contains('hidden')) {
+                            progressContainer.style.display = 'none';
+                        }
+                    }, 500);
+                }
+            }
+
+            function buildPrompt(content) {
+                const metaTitle = metaTitleInput.value.trim();
+                const metaDescription = metaDescriptionInput.value.trim();
+                const metaSlug = metaSlugInput.value.trim();
+                const metadataSection = metaTitle || metaDescription || metaSlug ? '## Metadata Relevance' : '';
+                const metadataContent = `${metaTitle ? '\nTitle: ' + metaTitle : ''}${metaDescription ? '\nDescription: ' + metaDescription : ''}${metaSlug ? '\nSlug: ' + metaSlug : ''}`;
+
+                return `You are an expert content analyst specializing in Google's E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) and Helpful Content guidelines. Please provide a comprehensive analysis with clear section headers.
+
+**CRITICAL INSTRUCTION: EXCLUDE ALL IMAGES FROM ANALYSIS**
+- Do NOT evaluate, score, or comment on any images, graphics, visual elements, or image tags.
+- Focus EXCLUSIVELY on textual content, structure, and written information.
+
+**IMPORTANT: Use these EXACT section headers:**
+## Content Quality & Depth
+## Expertise & Credibility
+## Engagement & Presentation
+## Originality & Insight
+## Trustworthiness & Transparency
+${metadataSection}
+## Content Analysis Summary
+## Chunkability Analysis
+
+For each E-E-A-T category:
+- Assess strengths and weaknesses (TEXT ONLY).
+- Provide specific, actionable recommendations for textual improvements.
+- Include: **Score: [X]/10**
+- Include: **Priority: [High/Medium/Low]**
+
+For Content Analysis Summary:
+- Provide a comprehensive overview.
+- List the top 3-5 most critical improvements needed.
+- End with: **Note: This analysis focuses exclusively on textual content and excludes all visual elements due to API limitations.**
+
+For Chunkability Analysis:
+### 1. Heading Alignment Assessment
+**Status:** ✅/❌ - Do text headings clearly organize topics?
+**Details:** [Detailed explanation]
+
+### 2. Entity Coverage Assessment
+**Status:** ✅/❌ - Are key entities/concepts well-defined in text?
+**Details:** [Detailed explanation]
+
+### 3. Topical Focus Assessment
+**Status:** ✅/❌ - Does each text section stay on topic?
+**Details:** [Detailed explanation]
+
+### 4. LLM Retrievability Assessment
+**Status:** ✅/❌ - Can AI easily extract information from text?
+**Details:** [Detailed explanation]
+
+### 5. Overall Chunkability Rating
+**Rating:** [X]/10 (text-based assessment only)
+**Justification:** [Detailed explanation]
+
+### 6. Specific Chunkability Recommendations
+- **High Priority:** [List items]
+- **Medium Priority:** [List items]
+- **Low Priority:** [List items]
+
+**Note: This analysis focuses exclusively on textual content and excludes all visual elements due to API limitations.**
+
+--- CONTENT TO ANALYZE ---
+${content}
+${metadataContent}
+--- END CONTENT ---`;
+            }
+
+            function showError(message) {
+                errorMessageDiv.textContent = message;
+                errorMessageDiv.classList.remove('hidden');
+                progressContainer.style.display = 'none';
+                statusText.textContent = '';
+                resultsArea.innerHTML = `<p class="text-center text-red-600 font-bold p-4">Analysis failed. Check the error message.</p>`;
+                chunkabilityResults.innerHTML = `<p class="text-center text-red-600 font-bold p-4">Analysis failed.</p>`;
+            }
+
+            function resetState() {
+                analyzeButton.disabled = false;
+                analyzeButton.querySelector('span').textContent = 'Analyze & Check Chunkability';
+                if (document.title === 'Analyzing...') {
+                    document.title = 'E-E-A-T & Helpful Content Analyzer';
+                }
+            }
+
+            function extractContentAndChunkability(markdown) {
+                const separator = '## Chunkability Analysis';
+                const separatorIndex = markdown.indexOf(separator);
+
+                if (separatorIndex !== -1) {
+                    const contentAnalysis = markdown.substring(0, separatorIndex).trim();
+                    const chunkabilityAnalysis = markdown.substring(separatorIndex).trim();
+                    return { contentAnalysis, chunkabilityAnalysis };
+                } else {
+                    return { contentAnalysis: markdown, chunkabilityAnalysis: '' };
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
