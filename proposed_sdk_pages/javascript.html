@@ -77,6 +77,7 @@
             border-radius: 5px;
             text-decoration: none;
             font-weight: 700;
+            font-size: 18px;
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
@@ -157,13 +158,13 @@
         }
 
         .hero-left h1 {
-            font-size: 3rem;
+            font-size: 36px;
             font-weight: 900;
             margin-bottom: 1rem;
         }
 
         .hero-left p {
-            font-size: 1.2rem;
+            font-size: 17px;
             margin-bottom: 2rem;
             opacity: 0.9;
         }
@@ -212,14 +213,14 @@
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 30px;
             margin-bottom: 1rem;
             font-weight: 900;
         }
 
         .section-subtitle {
             text-align: center;
-            font-size: 1.1rem;
+            font-size: 17px;
             color: #666;
             margin-bottom: 4rem;
             max-width: 700px;
@@ -264,7 +265,7 @@
         }
 
         .feature-item h3 {
-            font-size: 1.5rem;
+            font-size: 24px;
             margin-bottom: 1rem;
             color: var(--dark-purple);
         }
@@ -272,6 +273,7 @@
         .feature-item p {
             color: #666;
             line-height: 1.6;
+            font-size: 17px;
         }
 
         /* Quick Start Section */
@@ -288,14 +290,14 @@
         }
 
         .quick-start-content h2 {
-            font-size: 2.5rem;
+            font-size: 30px;
             font-weight: 900;
             margin-bottom: 1rem;
             color: var(--dark-purple);
         }
 
         .quick-start-content p {
-            font-size: 1.1rem;
+            font-size: 17px;
             color: #666;
             margin-bottom: 2rem;
         }
@@ -309,7 +311,7 @@
             display: flex;
             align-items: flex-start;
             margin-bottom: 1rem;
-            font-size: 1.1rem;
+            font-size: 17px;
         }
 
         .step-number {
@@ -349,13 +351,13 @@
         }
 
         .cta-section h2 {
-            font-size: 2.5rem;
+            font-size: 30px;
             font-weight: 900;
             margin-bottom: 1rem;
         }
 
         .cta-section p {
-            font-size: 1.2rem;
+            font-size: 17px;
             margin-bottom: 2rem;
             opacity: 0.9;
             max-width: 700px;
@@ -382,6 +384,44 @@
             border-color: #fff;
         }
 
+        /* Trusted By Section */
+        .trusted-by {
+            padding: 60px 0;
+            background-color: #fff;
+        }
+
+        .trusted-by-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logos-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .logos-container img {
+            height: 40px;
+            max-width: 150px;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .logos-container img:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero-content,
@@ -395,7 +435,7 @@
             }
 
             .hero-left h1 {
-                font-size: 2.5rem;
+                font-size: 36px;
             }
 
             .main-nav {
@@ -405,6 +445,11 @@
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
+            }
+        }
+
+            .logos-container img {
+                height: 30px;
             }
         }
     </style>
@@ -442,7 +487,10 @@
                     </div>
                     <div class="hero-right">
                         <div class="code-preview">
+                            <div style="background: rgba(0,0,0,0.8); color: #fff; padding: 8px 15px; font-size: 0.85rem; font-weight: 600; border-radius: 8px 8px 0 0; margin: -20px -20px 15px -20px;">Quick Start Example</div>
 <pre><span class="comment">// Quick start example</span>
+<span class="keyword">import</span> * <span class="keyword">as</span> filestack <span class="keyword">from</span> <span class="string">'filestack-js'</span>;
+
 <span class="keyword">const</span> client = <span class="function">filestack</span>.<span class="function">init</span>(<span class="string">'YOUR_API_KEY'</span>);
 <span class="keyword">const</span> options = {
   <span class="function">onUploadDone</span>: (res) => {
@@ -529,6 +577,18 @@ client.<span class="function">picker</span>(options).<span class="function">open
             </div>
         </section>
 
+        <section class="trusted-by">
+            <div class="container">
+                <h3 class="trusted-by-title">Trusted by innovative companies worldwide</h3>
+                <div class="logos-container">
+                    <img src="https://www.vectorlogo.zone/logos/sendgrid/sendgrid-ar21.svg" alt="SendGrid Logo">
+                    <img src="https://www.vectorlogo.zone/logos/slideshare/slideshare-ar21.svg" alt="SlideShare Logo">
+                    <img src="https://www.vectorlogo.zone/logos/teachable/teachable-ar21.svg" alt="Teachable Logo">
+                    <img src="https://www.vectorlogo.zone/logos/airtable/airtable-ar21.svg" alt="Airtable Logo">
+                </div>
+            </div>
+        </section>
+
         <section class="quick-start">
             <div class="container">
                 <div class="quick-start-grid">
@@ -536,14 +596,19 @@ client.<span class="function">picker</span>(options).<span class="function">open
                         <h2>Get Started in Minutes</h2>
                         <p>Our JavaScript SDK is designed for developers who want to get file uploading working quickly without sacrificing customization options.</p>
                         
+                        <div style="background: #e8f4fd; border: 2px solid #1976d2; border-radius: 8px; padding: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 20px;">💡</span>
+                            <span style="color: #1976d2; font-weight: 600;">Quick CDN option: Want to try it immediately? <a href="#cdn-example" style="color: #1976d2; text-decoration: underline;">Skip to CDN example below</a></span>
+                        </div>
+
                         <ol class="step-list">
                             <li>
                                 <span class="step-number">1</span>
-                                Include the Filestack JavaScript library in your HTML
+                                Install filestack-js via npm
                             </li>
                             <li>
                                 <span class="step-number">2</span>
-                                Initialize the client with your API key
+                                Import and initialize the client with your API key
                             </li>
                             <li>
                                 <span class="step-number">3</span>
@@ -562,10 +627,12 @@ client.<span class="function">picker</span>(options).<span class="function">open
                     </div>
                     
                     <div class="code-example">
-<pre><span class="comment">// 1. Add to your HTML head</span>
-&lt;script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"&gt;&lt;/script&gt;
+                        <div style="background: rgba(0,0,0,0.2); color: #fff; padding: 8px 15px; font-size: 0.85rem; font-weight: 600; border-radius: 8px 8px 0 0; margin: -25px -25px 15px -25px;">Complete Implementation</div>
+<pre><span class="comment">// 1. Install filestack-js</span>
+npm install filestack-js
 
-<span class="comment">// 2. Initialize client</span>
+<span class="comment">// 2. Import and initialize client</span>
+<span class="keyword">import</span> * <span class="keyword">as</span> filestack <span class="keyword">from</span> <span class="string">'filestack-js'</span>;
 <span class="keyword">const</span> client = filestack.<span class="function">init</span>(<span class="string">'YOUR_API_KEY'</span>);
 
 <span class="comment">// 3. Configure options</span>
@@ -583,6 +650,54 @@ client.<span class="function">picker</span>(options).<span class="function">open
 };
 
 <span class="comment">// 4. Open picker</span>
+client.<span class="function">picker</span>(options).<span class="function">open</span>();</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cdn-example" class="quick-start" style="background-color: var(--light-gray);">
+            <div class="container">
+                <div class="quick-start-grid">
+                    <div class="quick-start-content">
+                        <h2>CDN Alternative</h2>
+                        <p>Prefer to get started quickly without a build step? Use our CDN version for rapid prototyping and simple integrations.</p>
+                        
+                        <ol class="step-list">
+                            <li>
+                                <span class="step-number">1</span>
+                                Add the script tag to your HTML
+                            </li>
+                            <li>
+                                <span class="step-number">2</span>
+                                Initialize and use filestack globally
+                            </li>
+                        </ol>
+                        
+                        <div class="hero-buttons">
+                            <a href="#" class="btn btn-primary">View Full Documentation</a>
+                            <a href="#" class="btn btn-outline">Try Live Demo</a>
+                        </div>
+                    </div>
+                    
+                    <div class="code-example">
+                        <div style="background: rgba(0,0,0,0.2); color: #fff; padding: 8px 15px; font-size: 0.85rem; font-weight: 600; border-radius: 8px 8px 0 0; margin: -25px -25px 15px -25px;">CDN Implementation</div>
+<pre><span class="comment">// Add to your HTML head</span>
+&lt;script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"&gt;&lt;/script&gt;
+
+<span class="comment">// Use filestack globally</span>
+<span class="keyword">const</span> client = filestack.<span class="function">init</span>(<span class="string">'YOUR_API_KEY'</span>);
+<span class="keyword">const</span> options = {
+  <span class="function">maxFiles</span>: 10,
+  <span class="function">accept</span>: [<span class="string">'image/*'</span>, <span class="string">'video/*'</span>],
+  <span class="function">onUploadDone</span>: (result) => {
+    console.<span class="function">log</span>(<span class="string">'Upload completed!'</span>, result);
+    result.filesUploaded.<span class="function">forEach</span>(file => {
+      console.<span class="function">log</span>(file.url);
+    });
+  }
+};
+
 client.<span class="function">picker</span>(options).<span class="function">open</span>();</pre>
                     </div>
                 </div>

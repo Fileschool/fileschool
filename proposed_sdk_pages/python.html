@@ -58,7 +58,7 @@
 
         .logo {
             font-weight: 900;
-            font-size: 1.5rem;
+            font-size: 24px;
             color: var(--dark-purple);
         }
 
@@ -79,6 +79,7 @@
             border-radius: 5px;
             text-decoration: none;
             font-weight: 700;
+            font-size: 18px;
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
@@ -161,7 +162,7 @@
             border-radius: 25px;
             margin-bottom: 2rem;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 18px;
         }
 
         .sdk-badge img {
@@ -170,13 +171,13 @@
         }
 
         .hero-left h1 {
-            font-size: 3rem;
+            font-size: 36px;
             font-weight: 900;
             margin-bottom: 1rem;
         }
 
         .hero-left p {
-            font-size: 1.2rem;
+            font-size: 17px;
             margin-bottom: 2rem;
             opacity: 0.9;
         }
@@ -197,7 +198,7 @@
             padding: 20px;
             color: #f8f8f2;
             font-family: 'Monaco', monospace;
-            font-size: 0.9rem;
+            font-size: 18px;
             overflow-x: auto;
             border-left: 4px solid var(--python-yellow);
         }
@@ -235,14 +236,14 @@
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 30px;
             margin-bottom: 1rem;
             font-weight: 900;
         }
 
         .section-subtitle {
             text-align: center;
-            font-size: 1.1rem;
+            font-size: 17px;
             color: #666;
             margin-bottom: 4rem;
             max-width: 700px;
@@ -288,7 +289,7 @@
         }
 
         .feature-item h3 {
-            font-size: 1.5rem;
+            font-size: 24px;
             margin-bottom: 1rem;
             color: var(--dark-purple);
         }
@@ -296,6 +297,7 @@
         .feature-item p {
             color: #666;
             line-height: 1.6;
+            font-size: 17px;
         }
 
         /* Use Cases Section */
@@ -312,14 +314,14 @@
         }
 
         .cases-content h2 {
-            font-size: 2.5rem;
+            font-size: 30px;
             font-weight: 900;
             margin-bottom: 1rem;
             color: var(--dark-purple);
         }
 
         .cases-content p {
-            font-size: 1.1rem;
+            font-size: 17px;
             color: #666;
             margin-bottom: 2rem;
         }
@@ -333,7 +335,7 @@
             display: flex;
             align-items: flex-start;
             margin-bottom: 1.5rem;
-            font-size: 1rem;
+            font-size: 17px;
             padding: 15px;
             background: #f8f9fa;
             border-radius: 8px;
@@ -349,7 +351,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 17px;
             margin-right: 15px;
             flex-shrink: 0;
         }
@@ -362,7 +364,7 @@
         .case-content p {
             color: #666;
             margin: 0;
-            font-size: 0.95rem;
+            font-size: 17px;
         }
 
         .code-example {
@@ -371,7 +373,7 @@
             padding: 25px;
             color: #f8f8f2;
             font-family: 'Monaco', monospace;
-            font-size: 0.95rem;
+            font-size: 17px;
             overflow-x: auto;
             border-left: 4px solid var(--python-yellow);
             max-height: 500px;
@@ -399,7 +401,7 @@
         }
 
         .install-methods h3 {
-            font-size: 1.5rem;
+            font-size: 24px;
             margin-bottom: 1.5rem;
             color: var(--dark-purple);
             display: flex;
@@ -437,7 +439,7 @@
             padding: 15px;
             color: #f8f8f2;
             font-family: 'Monaco', monospace;
-            font-size: 0.9rem;
+            font-size: 18px;
             margin-bottom: 1rem;
         }
 
@@ -467,7 +469,7 @@
             color: white;
             padding: 4px 12px;
             border-radius: 16px;
-            font-size: 0.85rem;
+            font-size: 17px;
             font-weight: 500;
         }
 
@@ -480,13 +482,13 @@
         }
 
         .cta-section h2 {
-            font-size: 2.5rem;
+            font-size: 30px;
             font-weight: 900;
             margin-bottom: 1rem;
         }
 
         .cta-section p {
-            font-size: 1.2rem;
+            font-size: 17px;
             margin-bottom: 2rem;
             opacity: 0.9;
             max-width: 700px;
@@ -513,6 +515,44 @@
             border-color: #fff;
         }
 
+        /* Trusted By Section */
+        .trusted-by {
+            padding: 60px 0;
+            background-color: #fff;
+        }
+
+        .trusted-by-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logos-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .logos-container img {
+            height: 40px;
+            max-width: 150px;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .logos-container img:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
 
@@ -528,7 +568,7 @@
             }
 
             .hero-left h1 {
-                font-size: 2.5rem;
+                font-size: 30px;
             }
 
             .main-nav {
@@ -548,6 +588,10 @@
             .case-icon {
                 margin-right: 0;
                 margin-bottom: 10px;
+            }
+
+            .logos-container img {
+                height: 30px;
             }
         }
     </style>
@@ -576,6 +620,7 @@
                     </div>
                     <div class="hero-right">
                         <div class="code-preview">
+                            <div style="background: rgba(0,0,0,0.8); color: #fff; padding: 8px 15px; font-size: 0.85rem; font-weight: 600; border-radius: 8px 8px 0 0; margin: -20px -20px 15px -20px;">Basic Python Upload</div>
                             <pre><span class="comment"># Simple file upload and transformation</span>
 <span class="keyword">from</span> filestack <span class="keyword">import</span> Client
 
@@ -685,6 +730,18 @@ transformed = client.<span class="function">transform</span>(
             </div>
         </section>
 
+        <section class="trusted-by">
+            <div class="container">
+                <h3 class="trusted-by-title">Trusted by innovative companies worldwide</h3>
+                <div class="logos-container">
+                    <img src="https://www.vectorlogo.zone/logos/sendgrid/sendgrid-ar21.svg" alt="SendGrid Logo">
+                    <img src="https://www.vectorlogo.zone/logos/slideshare/slideshare-ar21.svg" alt="SlideShare Logo">
+                    <img src="https://www.vectorlogo.zone/logos/teachable/teachable-ar21.svg" alt="Teachable Logo">
+                    <img src="https://www.vectorlogo.zone/logos/airtable/airtable-ar21.svg" alt="Airtable Logo">
+                </div>
+            </div>
+        </section>
+
         <section class="use-cases">
             <div class="container">
                 <div class="cases-grid">
@@ -732,6 +789,7 @@ transformed = client.<span class="function">transform</span>(
                     </div>
 
                     <div class="code-example">
+                        <div style="background: rgba(0,0,0,0.2); color: #fff; padding: 8px 15px; font-size: 0.85rem; font-weight: 600; border-radius: 8px 8px 0 0; margin: -25px -25px 15px -25px;">Django Integration Example</div>
                         <pre><span class="comment"># Django integration example</span>
 <span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse
 <span class="keyword">from</span> django.views.decorators.csrf <span class="keyword">import</span> csrf_exempt
@@ -810,9 +868,9 @@ async_client = <span class="function">AsyncClient</span>(<span class="string">'Y
                         </div>
 
 
-                        <h4 style="margin: 2rem 0 1rem 0; font-size: 1.2rem; color: var(--dark-purple);">Basic Usage
+                        <h4 style="margin: 2rem 0 1rem 0; font-size: 24px; color: var(--dark-purple);">Basic Usage
                         </h4>
-                        <p style="color: #666; margin-bottom: 1rem;">Import and initialize the client:</p>
+                        <p style="color: #666; margin-bottom: 1rem; font-size: 17px;">Import and initialize the client:</p>
 
                         <div class="install-code">
                             <span class="keyword">from</span> filestack <span class="keyword">import</span> Client
@@ -824,6 +882,7 @@ async_client = <span class="function">AsyncClient</span>(<span class="string">'Y
                     </div>
 
                     <div class="code-example">
+                        <div style="background: rgba(0,0,0,0.2); color: #fff; padding: 8px 15px; font-size: 0.85rem; font-weight: 600; border-radius: 8px 8px 0 0; margin: -25px -25px 15px -25px;">Complete Python Implementation</div>
                         <pre><span class="comment"># Complete working example</span>
 <span class="keyword">import</span> os
 <span class="keyword">from</span> filestack <span class="keyword">import</span> Client
