@@ -6,50 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filestack Features</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
         :root {
-            --primary: #EF4B25;
-            --primary-light: #ff6b4a;
-            --primary-dark: #d03a18;
-            --text-dark: #1a1a1a;
-            --text-light: #ffffff;
-            --bg-light: #ffffff;
-            --bg-gray: #f5f5f7;
-            --bg-dark: #111111;
-            --transition-speed: 0.3s ease;
+            --primary-orange: #EF4B25;
+            --primary-hover: #d03a18;
+            --text-dark: #333;
+            --text-medium: #666;
+            --text-light: #999;
+            --bg-white: #ffffff;
+            --bg-light: #f8f9fa;
+            --bg-gray: #e9ecef;
+            --border-light: #dee2e6;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
+            --border-radius: 3px;
+            --transition: all 0.3s ease;
         }
 
-        /* Global Styles & Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
         }
 
         body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.7em;
             color: var(--text-dark);
-            background-color: var(--bg-light);
-            overflow-x: hidden;
-            line-height: 1.6;
+            background-color: var(--bg-white);
         }
 
         /* Header */
-        header {
-            height: 70px;
+        .header {
+            background: var(--bg-white);
+            box-shadow: var(--shadow);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             z-index: 1000;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            transition: background-color var(--transition-speed);
+            height: 70px;
         }
 
         .header-content {
@@ -57,20 +56,18 @@
             justify-content: space-between;
             align-items: center;
             height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            color: var(--primary);
-            transition: transform var(--transition-speed);
+            color: var(--primary-orange);
         }
 
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .main-nav {
+        .nav {
             display: flex;
             gap: 2rem;
         }
@@ -79,293 +76,845 @@
             color: var(--text-dark);
             text-decoration: none;
             font-weight: 500;
-            transition: color var(--transition-speed);
+            transition: var(--transition);
         }
 
         .nav-link:hover {
-            color: var(--primary);
+            color: var(--primary-orange);
         }
 
         /* Hero Section */
         .hero {
-            padding-top: 170px;
-            padding-bottom: 100px;
-            text-align: center;
-            background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-gray) 100%);
-            animation: fadeIn 1s ease-out;
+            padding: 80px 2rem;
+            background: linear-gradient(135deg, #483045 0%, #342438 100%);
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            text-align: left;
         }
 
         .hero h1 {
             font-size: 36px;
-            font-weight: 800;
+            font-weight: 700;
+            line-height: 1.2;
             margin-bottom: 1.5rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            color: white;
+        }
+
+        .hero .highlight {
+            color: var(--primary-orange);
         }
 
         .hero p {
             font-size: 17px;
-            max-width: 600px;
-            margin: 0 auto 2.5rem;
-            color: rgba(0, 0, 0, 0.7);
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
         }
 
-        .highlight {
-            color: var(--primary);
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
-            border-radius: 100px;
-            background-color: var(--primary);
-            color: var(--text-light);
-            font-weight: 500;
-            text-decoration: none;
-            transition: background-color var(--transition-speed), transform var(--transition-speed);
-            font-size: 18px;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-dark);
-            transform: scale(1.03);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary);
-            color: var(--text-light);
-        }
-
-        /* Containers */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        /* Features Grid with Subtle Background & Separation */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            margin: 5rem 0 3rem 0;
-            background-color: #fafafa;
-            padding: 3rem;
+        .picker-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .feature-card {
-            background: var(--bg-light);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all var(--transition-speed);
-            height: 100%;
+            padding: 3rem 2rem;
+            text-align: center;
+            min-height: 300px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
         }
 
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-        }
 
-        .feature-icon {
+        .picker-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-orange);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100px;
-            background-color: rgba(239, 75, 37, 0.1);
-            transition: background-color var(--transition-speed);
-        }
-
-        .feature-card:hover .feature-icon {
-            background-color: rgba(239, 75, 37, 0.15);
-        }
-
-        .feature-icon svg {
-            width: 40px;
-            height: 40px;
-            fill: var(--primary);
-        }
-
-        .feature-content {
-            padding: 1.8rem;
-            flex: 1;
-        }
-
-        .feature-content h3 {
-            font-size: 24px;
-            margin-bottom: 0.75rem;
-        }
-
-        .feature-content p {
-            color: rgba(0, 0, 0, 0.6);
-            font-size: 17px;
-            line-height: 1.5;
-        }
-
-        /* Sticky Navigation (Categories) */
-        .sticky-nav {
-            position: sticky;
-            top: 70px;
-            background-color: var(--bg-gray);
-            z-index: 100;
-            padding: 1rem 0;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            transition: background-color var(--transition-speed);
-        }
-
-        .categories {
-            display: flex;
-            overflow-x: auto;
-            gap: 1.5rem;
-            padding-bottom: 0.5rem;
-            scrollbar-width: none;
-        }
-
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-button {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            background-color: var(--bg-light);
-            border-radius: 100px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background-color var(--transition-speed), transform var(--transition-speed);
-            color: var(--text-dark);
-        }
-
-        .category-button:hover:not(.active),
-        .category-button:focus {
-            background-color: rgba(0, 0, 0, 0.05);
-            outline: none;
-            transform: scale(1.03);
-        }
-
-        .category-button.active {
-            background-color: var(--primary);
-            color: var(--text-light);
-        }
-
-        /* Category Groups */
-        .category-group {
-            padding: 4rem 0;
-            animation: fadeInUp 0.8s ease-out;
-            scroll-margin-top: 130px;
-        }
-
-        .category-header {
-            margin-bottom: 2.5rem;
-            text-align: center;
-        }
-
-        .category-header h2 {
-            font-size: 30px;
             margin-bottom: 1rem;
         }
 
-        .category-header p {
-            max-width: 600px;
-            margin: 0 auto;
-            color: rgba(0, 0, 0, 0.6);
-            font-size: 17px;
+        .picker-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
         }
 
-        /* Showcase Items */
-        .showcase-item {
-            display: flex;
-            align-items: center;
-            gap: 4rem;
-            margin-bottom: 6rem;
-            padding: 2rem;
-            border-radius: 16px;
-            transition: all var(--transition-speed);
+        .picker-placeholder h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
         }
 
-        .showcase-item:hover {
-            transform: translateY(-5px);
-            background-color: rgba(239, 75, 37, 0.03);
+        .picker-placeholder p {
+            color: var(--text-medium);
+            font-size: 1rem;
         }
 
-        .showcase-item.reverse {
-            flex-direction: row-reverse;
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
         }
 
-        .showcase-content {
-            flex: 1;
+        .btn-primary {
+            background-color: var(--primary-orange);
+            color: white;
+            border: 2px solid var(--primary-orange);
         }
 
-        .showcase-content h3 {
-            font-size: 24px;
-            margin-bottom: 1.25rem;
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
             color: var(--text-dark);
         }
 
-        .showcase-content p {
-            color: rgba(0, 0, 0, 0.6);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-            font-size: 17px;
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-orange);
+            border: 2px solid var(--primary-orange);
         }
 
-        .showcase-image {
-            flex: 1;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-            transition: all var(--transition-speed);
+        .btn-outline:hover {
+            background: var(--primary-orange);
+            color: white;
         }
 
-        .showcase-image:hover {
-            transform: scale(1.03);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        .btn-white {
+            background: white;
+            color: var(--primary-orange);
+            border: 2px solid white;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 14px 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .showcase-image img {
-            width: 100%;
-            height: auto;
+        .btn-white:hover {
+            background: var(--primary-orange);
+            color: white;
+            border-color: var(--primary-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 75, 37, 0.3);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg-white);
+            padding: 0 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            margin-bottom: 0;
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #fafbfc;
+            border-right: 1px solid rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem 0;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding: 0 2rem 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .sidebar-nav-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding: 0 2rem 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav-item {
+            margin: 0;
+        }
+
+        .sidebar-nav-link {
             display: block;
+            padding: 0.75rem 2rem;
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
         }
 
-        /* Code Blocks */
-        .code-block {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            padding: 1rem;
+
+        .sidebar-nav-link.active {
+            background: rgba(239, 75, 37, 0.1);
+            color: var(--primary-orange);
+            border-left-color: var(--primary-orange);
+            font-weight: 500;
+        }
+
+        .search-container {
+            padding: 0 2rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 8px;
-            font-family: monospace;
-            margin: 1.5rem 0;
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--bg-white);
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 2px rgba(239, 75, 37, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .search-results-info {
+            padding: 0 2rem 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-medium);
+            font-style: italic;
+        }
+
+        .tab-list {
+            list-style: none;
+        }
+
+        .tab-item {
+            margin: 0;
+        }
+
+        .tab-button {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            text-align: left;
+            color: var(--text-medium);
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+
+        .tab-button.active {
+            background: rgba(239, 75, 37, 0.1);
+            color: var(--primary-orange);
+            border-left-color: var(--primary-orange);
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+        }
+
+        .content {
+            flex: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+            max-height: 100vh;
+            max-width: none;
+        }
+
+        /* Right Navigation */
+        .right-nav {
+            width: 280px;
+            background: #fafbfc;
+            border-left: 1px solid rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            padding: 2rem 0;
+            flex-shrink: 0;
+        }
+
+        .right-nav-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding: 0 1.5rem 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            margin-bottom: 1rem;
+        }
+
+        .feature-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-nav-item {
+            margin: 0;
+        }
+
+        .feature-nav-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+
+        .feature-nav-link.active {
+            background: rgba(239, 75, 37, 0.1);
+            color: var(--primary-orange);
+            border-left-color: var(--primary-orange);
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .content-description {
+            font-size: 0.95rem;
+            color: var(--text-medium);
+        }
+
+        /* Feature Item */
+        .feature-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: var(--bg-white);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: var(--transition);
+            position: relative;
+        }
+
+
+        .feature-content {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--text-medium);
+            font-size: 0.95rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
             overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .feature-image {
+            flex: 0 0 350px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+        }
+
+        .feature-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Overview Grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .overview-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+
+        .overview-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(239, 75, 37, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .overview-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--primary-orange);
+        }
+
+        .overview-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .overview-card p {
+            color: var(--text-medium);
             font-size: 0.9rem;
         }
 
+        /* Features Hero Section */
+        .features-hero {
+            background: var(--bg-white);
+            padding: 4rem 0 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+
+        .features-hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .features-hero-title {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .features-hero-description {
+            font-size: 17px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .features-nav-item {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            background: var(--bg-white);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .features-nav-item.active {
+            background: var(--primary-orange);
+            color: white;
+            border-color: var(--primary-orange);
+            box-shadow: 0 4px 12px rgba(239, 75, 37, 0.2);
+        }
+
+        /* Platform Overview Section */
+        .platform-overview {
+            background: #F4F5F7;
+            padding: 80px 0;
+            margin-top: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .overview-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .overview-header h2 {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .overview-header p {
+            font-size: 17px;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 4rem auto;
+        }
+
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .capability-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-top: 4px solid var(--primary-orange);
+        }
+
+        .capability-card:hover {
+            transform: translateY(-5px);
+        }
+
+
+        .capability-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(239, 74, 38, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+            color: var(--primary-orange);
+        }
+
+        .capability-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: currentColor;
+        }
+
+        .capability-content h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .capability-content p {
+            color: #666;
+            font-size: 17px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+
+        /* CTA Hero Section */
+        .cta-hero {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(135deg, #483045 0%, #342438 100%);
+            color: white;
+            margin-top: 0;
+        }
+
+        .cta-hero h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .cta-hero p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #483045 0%, #342438 100%);
+            color: white;
+        }
+
+        .cta-section h3 {
+            font-size: 30px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 17px;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-orange);
+            color: white;
+            border: 2px solid var(--primary-orange);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 14px 32px;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: white;
+            color: var(--text-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .features-hero-title {
+                font-size: 2rem;
+            }
+
+            .features-nav {
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .features-nav-item {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            .right-nav {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+                order: -1;
+            }
+
+            .feature-item {
+                flex-direction: column;
+            }
+
+            .feature-image {
+                flex: none;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .capabilities-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .capability-card {
+                padding: 1.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .overview-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .features-nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .section-nav {
+                flex-wrap: wrap;
+            }
+        }
+
         /* Footer */
-        footer {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            padding: 4rem 0;
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            margin-top: 4rem;
         }
 
         .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
         }
@@ -373,7 +922,7 @@
         .footer-logo {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--primary-orange);
         }
 
         .footer-links {
@@ -382,1108 +931,902 @@
         }
 
         .footer-link {
-            color: rgba(255, 255, 255, 0.7);
+            color: #ccc;
             text-decoration: none;
-            transition: color var(--transition-speed);
+            transition: var(--transition);
         }
 
         .footer-link:hover {
-            color: var(--text-light);
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 992px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .showcase-item {
-                flex-direction: column;
-                gap: 2rem;
-            }
-
-            .showcase-item.reverse {
-                flex-direction: column;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 30px;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .main-nav {
-                display: none;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            color: white;
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">Filestack</div>
-                <nav class="main-nav">
-                    <a href="#" class="nav-link">Products</a>
-                    <a href="#" class="nav-link">Solutions</a>
-                    <a href="#" class="nav-link">Documentation</a>
-                    <a href="#" class="nav-link">Pricing</a>
-                    <a href="#" class="nav-link">Contact</a>
-                </nav>
-            </div>
-        </div>
-    </header>
 
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="container">
-            <h1><span class="highlight">Upload, Transform, Deliver</span> — File Management Your Way</h1>
-            <p>Powerful APIs to handle all your file needs with just a few lines of code.</p>
-            <a href="#" class="btn">Get Started</a>
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1><span class="highlight">Upload, Transform, Deliver</span> — File Management Your Way</h1>
+                <p>Powerful APIs to handle all your file needs with just a few lines of code.</p>
+                <a href="#" class="btn btn-primary">Get Started</a>
+            </div>
+            <div class="picker-placeholder">
+                <div class="picker-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                    </svg>
+                </div>
+                <h3>Filestack Picker Widget Placeholder</h3>
+                <p></p>
+            </div>
         </div>
     </section>
 
-    <div class="container">
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
-                    </svg>
+    <!-- Features Hero Section -->
+    <section class="features-hero">
+        <div class="features-hero-container">
+            <h2 class="features-hero-title">Filestack Features</h2>
+            <p class="features-hero-description">Explore our comprehensive suite of file management tools designed to handle every aspect of your file workflow.</p>
+            
+            <nav class="features-nav">
+                <a href="#transformations" class="features-nav-item active" data-tab="transformations">Transformations</a>
+                <a href="#uploads" class="features-nav-item" data-tab="uploads">Upload Solutions</a>
+                <a href="#workflows" class="features-nav-item" data-tab="workflows">Workflows</a>
+                <a href="#intelligence" class="features-nav-item" data-tab="intelligence">AI Intelligence</a>
+                <a href="#security" class="features-nav-item" data-tab="security">Security</a>
+                <a href="#delivery" class="features-nav-item" data-tab="delivery">Content Delivery</a>
+                <a href="#integrations" class="features-nav-item" data-tab="integrations">SDK Integration</a>
+                <a href="#all-features" class="features-nav-item" data-tab="all-features">All Features</a>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Sidebar for Search -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Search Features</div>
+            <div class="search-container">
+                <input type="text" id="feature-search" placeholder="Search features..." class="search-input">
+                <div id="search-results-info" class="search-results-info" style="display: none;"></div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <div class="sidebar-nav-title" id="sidebar-nav-title">In this section</div>
+                <nav id="sidebar-nav-content">
+                    <ul class="sidebar-nav-list" id="sidebar-nav-list">
+                        <!-- Navigation items will be populated by JavaScript -->
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="content-wrapper">
+            <main class="content">
+            <!-- Transformations Tab -->
+            <div id="transformations" class="tab-content active">
+                <div class="content-header">
+                    <h2 class="content-title">Image & Document Transformations</h2>
+                    <p class="content-description">URL-based transformations for images and documents with 100+ supported formats</p>
                 </div>
-                <div class="feature-content">
-                    <h3>Upload</h3>
-                    <p>Quickly upload files from any device with support for 25+ sources including local, cloud
-                        storage, social media, and more.</p>
+
+                <div class="feature-item" id="image-resizing">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Image Resizing</h3>
+                        <p class="feature-description">Resize images to any dimension while maintaining optimal quality with smart cropping and retention of important features.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/resize=width:300,height:200/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Image Resizing Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="smart-crop">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Smart Crop</h3>
+                        <p class="feature-description">Automatically crop images based on content detection (faces/objects) with optional coordinates output.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/smart_crop=width:400,height:400,mode:face/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Smart Crop Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="filters-effects">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Filters & Effects</h3>
+                        <p class="feature-description">Apply professional-grade filters including sepia, blur, sharpen, enhance, and creative effects.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/filter=sepia:50/enhance=brightness:20,contrast:30/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Filters Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="watermark-overlays">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Watermark & Overlays</h3>
+                        <p class="feature-description">Add watermark overlays on your images with customizable position, size, and opacity.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/watermark=position:[middle,center]/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Watermark Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="document-processing">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Document Processing</h3>
+                        <p class="feature-description">Extract PDF info, merge or convert PDFs, and transform documents into images in one call.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/output=f:pdf/pdfinfo=colorinfo:true/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Document Processing Example">
+                    </div>
                 </div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M22 18v-2H8V4h2L7 1 4 4h2v2H2v2h4v8c0 1.1.9 2 2 2h8v2h-2l3 3 3-3h-2v-2h4zM10 8h6v6h2V8c0-1.1-.9-2-2-2h-6v2z" />
-                    </svg>
+
+            <!-- Upload Solutions Tab -->
+            <div id="uploads" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Upload Solutions</h2>
+                    <p class="content-description">Flexible, fast, and reliable file uploading from multiple sources</p>
                 </div>
-                <div class="feature-content">
-                    <h3>Transform</h3>
-                    <p>Powerful image and document transformations including resize, crop, compress, filter, and convert
-                        between 100+ file formats.</p>
+
+                <div class="feature-item" id="drag-drop-interface">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Drag & Drop Interface</h3>
+                        <p class="feature-description">Intuitive drag & drop interface makes uploading files quick for your users with minimal integration effort.</p>
+                        <div class="code-block">client.pick({
+  accept: ['image/*', 'video/*'],
+  maxFiles: 10,
+  storeTo: {
+    location: 's3'
+  }
+}).then(result => console.log(result));</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Drag & Drop Interface">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="multi-source-upload">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Multi-Source Upload</h3>
+                        <p class="feature-description">Upload from 25+ sources including local files, Google Drive, Dropbox, Instagram, Facebook, and more.</p>
+                        <div class="code-block">const options = {
+  fromSources: [
+    'local_file_system', 
+    'googledrive', 
+    'dropbox',
+    'instagram', 
+    'facebook'
+  ]
+};</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Multi-Source Upload">
+                    </div>
                 </div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z" />
-                    </svg>
+
+            <!-- Workflows Tab -->
+            <div id="workflows" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Automated Workflows</h2>
+                    <p class="content-description">Build powerful automation pipelines for file processing and management</p>
                 </div>
-                <div class="feature-content">
-                    <h3>Deliver</h3>
-                    <p>Optimize media delivery with our global CDN, smart caching, and dynamic transformations to ensure
-                        the fastest loading times worldwide.</p>
+
+                <div class="feature-item" id="custom-workflow-processing">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Custom Workflow Processing</h3>
+                        <p class="feature-description">Run predefined workflows on your files to automate multi-step transformations and processing tasks.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/run_workflow=id:&lt;WORKFLOW_ID&gt;/&lt;FILE_HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Custom Workflow Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="batch-processing">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Batch Processing</h3>
+                        <p class="feature-description">Process multiple files simultaneously with automated workflows for maximum efficiency.</p>
+                        <div class="code-block">const workflow = {
+  tasks: [
+    { name: 'resize', options: { width: 800 } },
+    { name: 'compress', options: { quality: 85 } },
+    { name: 'watermark', options: { text: 'Copyright' } }
+  ]
+};</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Batch Processing Example">
+                    </div>
                 </div>
             </div>
+
+            <!-- Intelligence Tab -->
+            <div id="intelligence" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">AI-Powered Intelligence</h2>
+                    <p class="content-description">Extract insights and automate content analysis with advanced AI features</p>
+                </div>
+
+                <div class="feature-item" id="virus-detection">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Virus Detection</h3>
+                        <p class="feature-description">Ensure your files are secure by scanning for viruses and malware through our dedicated workflow solutions.</p>
+                        <div class="code-block">Virus Detection – Create a workflow</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Virus Detection Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="ocr">
+                    <div class="feature-content">
+                        <h3 class="feature-title">OCR (Optical Character Recognition)</h3>
+                        <p class="feature-description">Extract text from images and documents automatically using advanced OCR technology.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/OCR/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="OCR Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="object-detection">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Object Detection</h3>
+                        <p class="feature-description">Automatically identify and label objects within images using AI-powered object detection.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/detect_objects/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Object Detection Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="content-moderation">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Content Moderation</h3>
+                        <p class="feature-description">Automatically detect and filter inappropriate content to keep your platform safe and compliant.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/sfw/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Content Moderation Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="image-captioning">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Image Captioning</h3>
+                        <p class="feature-description">Automatically generate descriptive captions for your images with advanced AI captioning service.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/caption/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Image Captioning Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="copyright-detection">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Copyright Detection</h3>
+                        <p class="feature-description">Automatically identify copyrighted content in your files using our robust detection service.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/copyright/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Copyright Detection Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="phishing-detection">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Phishing Detection</h3>
+                        <p class="feature-description">Detect potential phishing attempts and secure your platform by utilizing specialized workflows.</p>
+                        <div class="code-block">Phishing Detection – Create a workflow</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Phishing Detection Example">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div id="security" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Security Features</h2>
+                    <p class="content-description">Protect your content and control access with comprehensive security options</p>
+                </div>
+
+                <div class="feature-item" id="security-policies">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Security Policies</h3>
+                        <p class="feature-description">Authenticate and authorize requests with flexible policy-based security to protect your files and account.</p>
+                        <div class="code-block">const policy = {
+  "expiry": Math.floor(Date.now() / 1000) + 3600,
+  "call": ["pick", "read", "store"],
+  "handle": "YOUR_FILE_HANDLE"
+};
+
+const encodedPolicy = btoa(JSON.stringify(policy))
+  .replace(/\+/g, '-')
+  .replace(/\//g, '_')
+  .replace(/=/g, '');</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Security Policies Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="domain-whitelisting">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Domain Whitelisting</h3>
+                        <p class="feature-description">Prevent unauthorized websites from using your API key by restricting File Picker embedding to approved domains.</p>
+                        <div class="code-block">// Domain patterns supported:
+// *.domain.* - subdomains and various TLDs
+// mydomain.{com,org} - multiple specific TLDs
+// [a-n]*domain.com - character ranges
+
+const allowedDomains = [
+  'mydomain.com:8080',
+  '*.mycompany.com',
+  'app.{com,org,net}'
+];</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Domain Whitelisting Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="path-based-security">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Path-Based Security</h3>
+                        <p class="feature-description">Enforce fine-grained access control by restricting file operations to specific storage paths.</p>
+                        <div class="code-block">const policy = {
+  "expiry": Math.floor(Date.now() / 1000) + 3600,
+  "call": ["pick", "store"],
+  "path": "\/uploads\/2024\/.*"
+};
+
+client.pick({
+  storeTo: {
+    location: 's3',
+    path: 'uploads/2024/'
+  },
+  security: {
+    policy: "ENCODED_POLICY",
+    signature: "POLICY_SIGNATURE"
+  }
+});</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Path-Based Security Example">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Delivery Tab -->
+            <div id="delivery" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Global Content Delivery</h2>
+                    <p class="content-description">Deliver content quickly and reliably to users worldwide with our optimized CDN</p>
+                </div>
+
+                <div class="feature-item" id="adaptive-delivery">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Adaptive Delivery</h3>
+                        <p class="feature-description">Automatically optimize file delivery based on the user's device, browser, and connection speed.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/output=format:webp,quality:auto/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Adaptive Delivery Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="global-cdn">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Global CDN</h3>
+                        <p class="feature-description">Deliver content from servers closest to your users with our global Content Delivery Network.</p>
+                        <div class="code-block">https://cdn.filestackcontent.com/cache=expiry:86400/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Global CDN Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="smart-caching">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Smart Caching</h3>
+                        <p class="feature-description">Intelligent caching strategies ensure optimal performance and reduced bandwidth usage.</p>
+                        <div class="code-block">// Cache control headers
+Cache-Control: public, max-age=86400
+ETag: "abc123def456"
+Last-Modified: Wed, 21 Oct 2025 07:28:00 GMT
+
+// URL-based cache control
+https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Smart Caching Example">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SDK Integration Tab -->
+            <div id="integrations" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">SDK Integration</h2>
+                    <p class="content-description">Integrate Filestack into your application with our comprehensive SDK libraries</p>
+                </div>
+
+                <div class="feature-item" id="javascript-sdk">
+                    <div class="feature-content">
+                        <h3 class="feature-title">JavaScript SDK</h3>
+                        <p class="feature-description">Easily add file picking and uploading capabilities to your web applications.</p>
+                        <div class="code-block">const apikey = 'YOUR_APIKEY';
+const client = filestack.init(apikey);
+
+const options = {
+  fromSources: ['local_file_system', 'googledrive', 'unsplash'],
+  maxFiles: 20,
+  onUploadDone: (res) => console.log(res)
+};
+
+client.picker(options).open();</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="JavaScript SDK Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="react-components">
+                    <div class="feature-content">
+                        <h3 class="feature-title">React Components</h3>
+                        <p class="feature-description">Use our official React components for quick integration with React applications.</p>
+                        <div class="code-block">import { PickerOverlay } from 'filestack-react';
+
+function App() {
+  return (
+    &lt;PickerOverlay 
+      apikey={YOUR_API_KEY} 
+      onSuccess={(res) => console.log(res)}
+      pickerOptions={{
+        maxFiles: 5,
+        accept: ['image/*'],
+        fromSources: ['local_file_system', 'googledrive']
+      }}
+    /&gt;
+  );
+}</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="React Components Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="python-sdk">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Python SDK</h3>
+                        <p class="feature-description">Backend integration for Python applications with our official Python client.</p>
+                        <div class="code-block">from filestack import Client
+
+client = Client('YOUR_API_KEY')
+
+# Upload a file
+filelink = client.upload(filepath='path/to/file.jpg')
+print(filelink.url)
+
+# Apply transformations
+from filestack.transforms import resize, flip, enhance
+new_filelink = filelink.transform(
+  resize(width=500), 
+  flip(), 
+  enhance()
+)</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Python SDK Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="mobile-sdks">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Mobile SDKs</h3>
+                        <p class="feature-description">Native mobile SDKs for iOS and Android applications with full feature support.</p>
+                        <div class="code-block">// iOS Swift
+import Filestack
+
+let client = Client(apiKey: "YOUR_API_KEY")
+client.picker { (response) in
+    print(response)
+}
+
+// Android Kotlin
+val client = Client("YOUR_API_KEY")
+client.picker(this) { response ->
+    println(response)
+}</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://placecats.com/600/400" alt="Mobile SDKs Example">
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Features Tab -->
+            <div id="all-features" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">All Filestack Features</h2>
+                    <p class="content-description">Complete overview of all our file management capabilities</p>
+                </div>
+
+                <div id="all-features-content">
+                    <!-- All features will be populated by JavaScript -->
+                </div>
+            </div>
+        </main>
         </div>
     </div>
 
-    <div class="sticky-nav">
+    <!-- Platform Overview Section -->
+    <section class="platform-overview">
         <div class="container">
-            <div class="categories">
-                <button class="category-button active">All Features</button>
-                <button class="category-button">Transformations</button>
-                <button class="category-button">Uploads</button>
-                <button class="category-button">Workflows</button>
-                <button class="category-button">Intelligence</button>
-                <button class="category-button">Security</button>
-                <button class="category-button">Delivery</button>
-                <button class="category-button">Integrations</button>
+            <div class="overview-header">
+                <h2>Complete File Management Platform</h2>
+                <p>Upload, transform, secure, and deliver files at scale</p>
             </div>
+            
+            <div class="capabilities-grid">
+                <div class="capability-card">
+                    <div class="capability-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                        </svg>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Upload</h3>
+                        <p>25+ sources including cloud storage, social media, and local files</p>
+                    </div>
+                </div>
+
+                <div class="capability-card">
+                    <div class="capability-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 18v-2H8V4h2L7 1 4 4h2v2H2v2h4v8c0 1.1.9 2 2 2h8v2h-2l3 3 3-3h-2v-2h4zM10 8h6v6h2V8c0-1.1-.9-2-2-2h-6v2z"/>
+                        </svg>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Transform</h3>
+                        <p>Real-time image and document processing with 100+ formats</p>
+                    </div>
+                </div>
+
+                <div class="capability-card">
+                    <div class="capability-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Intelligence</h3>
+                        <p>AI-powered virus detection, content moderation, and OCR</p>
+                    </div>
+                </div>
+
+                <div class="capability-card">
+                    <div class="capability-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/>
+                        </svg>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Security</h3>
+                        <p>Enterprise-grade protection with flexible access controls</p>
+                    </div>
+                </div>
+
+                <div class="capability-card">
+                    <div class="capability-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/>
+                        </svg>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Delivery</h3>
+                        <p>Global CDN with smart caching and adaptive optimization</p>
+                    </div>
+                </div>
+
+                <div class="capability-card">
+                    <div class="capability-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L19.71,9.71L22,12V6H16Z"/>
+                        </svg>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Workflows</h3>
+                        <p>Automated pipelines for complex file processing tasks</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>
+    </section>
 
-    <div class="container">
-        <div id="transformations" class="category-group">
-            <div class="category-header">
-                <h2>Powerful Image Transformations</h2>
-                <p>Edit, enhance, and manipulate images on-the-fly with URL-based transformations.</p>
-            </div>
-
-            <!-- Original Transformations -->
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Image Resizing</h3>
-                    <p>Resize images to any dimension while maintaining optimal quality with smart cropping and
-                        retention of important features.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/resize=width:300,height:200/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Image Resizing Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Image Filters &amp; Effects</h3>
-                    <p>Apply professional-grade filters and effects to transform your images in countless ways.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/filter=sepia:50/enhance=brightness:20,contrast:30/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Image Filters Example">
-                </div>
-            </div>
-
-            <!-- Additional Transformations -->
-
-            <!-- Image Size -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Image Size</h3>
-                    <p>Retrieve the image dimensions (width and height) as JSON.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/imagesize/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Image Size Example">
-                </div>
-            </div>
-
-            <!-- Crop -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Crop</h3>
-                    <p>Crop your image using specified coordinates and dimensions.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/crop=dim:[x,y,width,height]/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Crop Example">
-                </div>
-            </div>
-
-            <!-- Smart Crop -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Smart Crop</h3>
-                    <p>Automatically crop images based on content detection (faces/objects) with optional coordinates
-                        output.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/smart_crop=width:400,height:400,mode:face/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Smart Crop Example">
-                </div>
-            </div>
-
-            <!-- Rotate -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Rotate</h3>
-                    <p>Rotate your image by a specified degree or auto-detect EXIF orientation.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/rotate=deg:180/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Rotate Example">
-                </div>
-            </div>
-
-            <!-- Flip &amp; Flop -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Flip &amp; Flop</h3>
-                    <p>Mirror your images by flipping vertically or flopping horizontally.</p>
-                    <div class="code-block">
-                        Flip: https://cdn.filestackcontent.com/flip/&lt;HANDLE&gt;<br>
-                        Flop: https://cdn.filestackcontent.com/flop/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Flip and Flop Example">
-                </div>
-            </div>
-
-            <!-- Watermark -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Watermark</h3>
-                    <p>Add a watermark overlay on your image with customizable position and size.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/watermark=position:[middle,center]/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Watermark Example">
-                </div>
-            </div>
-
-            <!-- Compress -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Compress</h3>
-                    <p>Optimize your image’s file size using advanced compression techniques.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/compress/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Compress Example">
-                </div>
-            </div>
-
-            <!-- Progressive JPEG -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Progressive JPEG (pjpg)</h3>
-                    <p>Convert your image to a progressive JPEG for better loading performance on slow connections.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/pjpg/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Progressive JPEG Example">
-                </div>
-            </div>
-
-            <!-- Quality &amp; No Metadata -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Quality &amp; No Metadata</h3>
-                    <p>Set image quality and remove metadata to reduce file size without increasing dimensions.</p>
-                    <div class="code-block">
-                        Quality: https://cdn.filestackcontent.com/quality=value:80/&lt;HANDLE&gt;<br>
-                        No Metadata: https://cdn.filestackcontent.com/no_metadata/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Quality/No Metadata Example">
-                </div>
-            </div>
-
-            <!-- Upscale &amp; Enhance -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Upscale &amp; Enhance</h3>
-                    <p>Improve image resolution and quality with AI-powered upscaling and automatic enhancement.</p>
-                    <div class="code-block">
-                        Upscale: https://cdn.filestackcontent.com/upscale/&lt;HANDLE&gt;<br>
-                        Enhance: https://cdn.filestackcontent.com/enhance/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Upscale/Enhance Example">
-                </div>
-            </div>
-
-            <!-- Red Eye Removal -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Red Eye Removal</h3>
-                    <p>Automatically remove red-eye from portraits with a single transformation.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/redeye/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Red Eye Removal Example">
-                </div>
-            </div>
-
-            <!-- Borders &amp; Effects -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Image Borders &amp; Effects</h3>
-                    <p>Add artistic touches such as rounded corners, vignette, polaroid effects, and torn edges.</p>
-                    <div class="code-block">
-                        Rounded Corners: https://cdn.filestackcontent.com/rounded_corners=blur:0.3/&lt;HANDLE&gt;<br>
-                        Vignette: https://cdn.filestackcontent.com/vignette=amount:20/&lt;HANDLE&gt;<br>
-                        Polaroid: https://cdn.filestackcontent.com/polaroid/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Borders &amp; Effects Example">
-                </div>
-            </div>
-
-            <!-- Additional Filters -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Additional Filters</h3>
-                    <p>Apply creative filters like sharpen, blur, monochrome, sepia, pixelate, oil paint, and negative
-                        effects.</p>
-                    <div class="code-block">
-                        Sharpen: https://cdn.filestackcontent.com/sharpen=amount:2/&lt;HANDLE&gt;<br>
-                        Blur: https://cdn.filestackcontent.com/blur=amount:2/&lt;HANDLE&gt;<br>
-                        Sepia: https://cdn.filestackcontent.com/sepia=tone:80/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Additional Filters Example">
-                </div>
-            </div>
-
-            <!-- Modulate &amp; Partial Effects -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Modulate &amp; Partial Effects</h3>
-                    <p>Adjust brightness, saturation, hue or apply pixelation/blur to specific image regions.</p>
-                    <div class="code-block">
-                        Modulate: https://cdn.filestackcontent.com/modulate=hue:155/&lt;HANDLE&gt;<br>
-                        Partial Pixelate:
-                        https://cdn.filestackcontent.com/partial_pixelate=objects:[[x,y,w,h]]/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Modulate/Partial Effects Example">
-                </div>
-            </div>
-
-            <!-- Facial Transformations -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Facial Transformations</h3>
-                    <p>Detect faces and apply targeted operations like cropping, pixelating, or blurring.</p>
-                    <div class="code-block">
-                        Detect Faces: https://cdn.filestackcontent.com/detect_faces/&lt;HANDLE&gt;<br>
-                        Crop Faces: https://cdn.filestackcontent.com/crop_faces=mode:thumb,w:200,h:200/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Facial Transformations Example">
-                </div>
-            </div>
-
-            <!-- File Conversions &amp; Animations -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>File Conversions &amp; Animations</h3>
-                    <p>Automatically convert images (auto_image), create animated GIFs, collages, or ASCII art.</p>
-                    <div class="code-block">
-                        Auto Image: https://cdn.filestackcontent.com/auto_image/&lt;HANDLE&gt;<br>
-                        Animate: https://cdn.filestackcontent.com/animate=width:200,height:300/[HANDLE1,HANDLE2]<br>
-                        Collage: https://cdn.filestackcontent.com/collage=files:[handle1,handle2]/w:600,h:400<br>
-                        ASCII: https://cdn.filestackcontent.com/ascii=colored:true/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="File Conversions &amp; Animations Example">
-                </div>
-            </div>
-
-            <!-- URL Screenshot, QR Code &amp; ZIP -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>URL Screenshot, QR Code &amp; ZIP</h3>
-                    <p>Capture website screenshots, generate QR codes for URLs, or package files into a ZIP archive.</p>
-                    <div class="code-block">
-                        URL Screenshot: https://cdn.filestackcontent.com/urlscreenshot=width:1024/&lt;FULL_URL&gt;<br>
-                        QR Code: https://cdn.filestackcontent.com/qr/&lt;HANDLE&gt;<br>
-                        ZIP: https://cdn.filestackcontent.com/zip/[HANDLE1,HANDLE2]
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Screenshot/QR/ZIP Example">
-                </div>
-            </div>
-
-            <!-- Document Transformations -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Document Transformations</h3>
-                    <p>Extract PDF info, merge or convert PDFs, and transform documents into images in one call.</p>
-                    <div class="code-block">
-                        PDF Info:
-                        https://cdn.filestackcontent.com/output=f:pdf/pdfinfo=colorinfo:true/&lt;HANDLE&gt;<br>
-                        PDF Convert:
-                        https://cdn.filestackcontent.com/output=f:pdf/pdfconvert=pageorientation:landscape,pageformat:a3/&lt;HANDLE&gt;<br>
-                        Doc to Images: https://cdn.filestackcontent.com/doc_to_images/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Document Transformations Example">
-                </div>
-            </div>
-        </div>
-        <div id="uploads" class="category-group">
-            <div class="category-header">
-                <h2>Quick Upload Solutions</h2>
-                <p>Upload from anywhere with flexible, fast, and reliable file handling.</p>
-            </div>
-
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Drag & Drop Interface</h3>
-                    <p>Our intuitive drag & drop interface makes uploading files quick for your users with minimal
-                        integration effort.</p>
-                    <div class="code-block">
-                        client.pick({
-                        accept: ['image/*', 'video/*'],
-                        maxFiles: 10,
-                        storeTo: {
-                        location: 's3'
-                        }
-                        }).then(result => console.log(result));
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Drag & Drop Interface">
-                </div>
-            </div>
-        </div>
-        <div id="workflows" class="category-group">
-            <div class="category-header">
-                <h2>Automated Workflows</h2>
-                <p>Build powerful automation pipelines to process and manage your files efficiently.</p>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Custom Workflow Processing</h3>
-                    <p>Run predefined workflows on your files to automate multi-step transformations and processing
-                        tasks.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/run_workflow=id:<WORKFLOW_ID>
-                                    /<FILE_HANDLE>
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Custom Workflow Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Advanced Image Captioning</h3>
-                    <p>Automatically generate descriptive captions for your images using AI-powered recognition.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/caption/<HANDLE>
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Image Captioning Example">
-                </div>
-            </div>
-        </div>
-
-
-        <div id="intelligence" class="category-group">
-            <div class="category-header">
-                <h2>AI-Powered Intelligence</h2>
-                <p>Extract insights and automate workflows with our intelligence features.</p>
-            </div>
-
-            <!-- Existing Intelligence Features -->
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>OCR (Optical Character Recognition)</h3>
-                    <p>Extract text from images and documents automatically using advanced OCR technology.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/OCR/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="OCR Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Object Detection</h3>
-                    <p>Automatically identify and label objects within images using AI-powered object detection.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/detect_objects/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Object Detection Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Content Moderation</h3>
-                    <p>Automatically detect and filter inappropriate content to keep your platform safe and compliant.
-                    </p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/sfw/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Content Moderation Example">
-                </div>
-            </div>
-
-            <!-- New Intelligence Features -->
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Image Tagging</h3>
-                    <p>Detect general features in images both synchronously and through workflows using AI-powered image
-                        tagging.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/tags/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Image Tagging Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Image Captioning</h3>
-                    <p>Automatically generate descriptive captions for your images with our advanced captioning service.
-                    </p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/caption/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Image Captioning Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Image Sentiment</h3>
-                    <p>Analyze the emotional context of your images by detecting sentiment using AI-driven analysis.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/image_sentiment/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Image Sentiment Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Text Sentiment</h3>
-                    <p>Determine the sentiment of textual content quickly with our text sentiment analysis service.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/text_sentiment=text:"quick
-                        brown fox"
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Text Sentiment Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Video Tagging</h3>
-                    <p>Automatically tag and analyze video content by leveraging custom workflows.</p>
-                    <div class="code-block">
-                        Video Tagging – Create a workflow
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Video Tagging Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Phishing Detection</h3>
-                    <p>Detect potential phishing attempts and secure your platform by utilizing specialized workflows.
-                    </p>
-                    <div class="code-block">
-                        Phishing Detection – Create a workflow
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Phishing Detection Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Copyright Detection</h3>
-                    <p>Automatically identify copyrighted content in your files using our robust detection service.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/copyright/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Copyright Detection Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Virus Detection</h3>
-                    <p>Ensure your files are secure by scanning for viruses through our dedicated workflow solutions.
-                    </p>
-                    <div class="code-block">
-                        Virus Detection – Create a workflow
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Virus Detection Example">
-                </div>
-            </div>
-        </div>
-
-
-
-
-        <div id="security" class="category-group">
-            <div class="category-header">
-                <h2>Security Features</h2>
-                <p>Protect your content and control access with our comprehensive security options.</p>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Security Policies</h3>
-                    <p>Authenticate and authorize requests with flexible policy-based security to protect your files and
-                        account.</p>
-                    <div class="code-block">
-                        // Creating a security policy with expiration and limited calls
-                        const policy = {
-                        "expiry": Math.floor(Date.now() / 1000) + 3600,
-                        "call": ["pick", "read", "store"],
-                        "handle": "YOUR_FILE_HANDLE"
-                        };
-
-                        // Base64URL encode the policy
-                        const encodedPolicy = btoa(JSON.stringify(policy))
-                        .replace(/\+/g, '-')
-                        .replace(/\//g, '_')
-                        .replace(/=/g, '');
-
-                        // Sign with your secret (backend only)
-                        // const signature = createHmacSha256(encodedPolicy, "YOUR_APP_SECRET");
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Security Policies Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Domain Whitelisting for Upload</h3>
-                    <p>Prevent unauthorized websites from using your API key by restricting File Picker embedding to
-                        approved domains.</p>
-                    <div class="code-block">
-                        // Domain patterns supported:
-                        // * - matches any number of characters (not separators)
-                        // ? - matches a single character (not separators)
-                        // { } - allows for comma-separated "or" expressions
-                        // [ ] - specifies a character range
-
-                        // Examples:
-                        // mydomain.com:8080 - exact match with port
-                        // *.domain.* - subdomains and various TLDs
-                        // mydomain.{com,org} - multiple specific TLDs
-                        // [a-n]*domain.com - range of characters
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Domain Whitelisting Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Domain Whitelisting for Delivery</h3>
-                    <p>Control where your files can be accessed from by limiting file delivery to approved domains.</p>
-                    <div class="code-block">
-                        // Configure in developer portal
-                        // Block requests without Origin/Referer headers
-                        // Maximum 20 patterns per whitelist type
-
-                        // With client.pick configuration:
-                        client.pick({
-                        accept: ['image/*', 'video/*'],
-                        fromSources: ['local_file_system', 'url'],
-                        security: {
-                        policy: "ENCODED_POLICY",
-                        signature: "POLICY_SIGNATURE"
-                        }
-                        });
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Delivery Whitelisting Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Path-Based Security</h3>
-                    <p>Enforce fine-grained access control by restricting file operations to specific storage paths.</p>
-                    <div class="code-block">
-                        // Security policy with path restrictions
-                        const policy = {
-                        "expiry": Math.floor(Date.now() / 1000) + 3600,
-                        "call": ["pick", "store"],
-                        "path": "\/uploads\/2024\/.*" // Regex pattern must escape special characters
-                        };
-
-                        // Upload with path specification
-                        client.pick({
-                        storeTo: {
-                        location: 's3',
-                        path: 'uploads/2024/'
-                        },
-                        security: {
-                        policy: "ENCODED_POLICY",
-                        signature: "POLICY_SIGNATURE"
-                        }
-                        });
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Path-Based Security Example">
-                </div>
-            </div>
-        </div>
-        <div id="delivery" class="category-group">
-            <div class="category-header">
-                <h2>Global Content Delivery</h2>
-                <p>Deliver content quickly and reliably to users worldwide with our optimized CDN.</p>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Adaptive Delivery</h3>
-                    <p>Automatically optimize file delivery based on the user's device, browser, and connection speed.
-                    </p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/output=format:webp,quality:auto/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Adaptive Delivery Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Global CDN</h3>
-                    <p>Deliver content from servers closest to your users with our global Content Delivery Network.</p>
-                    <div class="code-block">
-                        https://cdn.filestackcontent.com/cache=expiry:86400/&lt;HANDLE&gt;
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Global CDN Example">
-                </div>
-            </div>
-        </div>
-        <div id="integrations" class="category-group">
-            <div class="category-header">
-                <h2>Developer SDKs</h2>
-                <p>Integrate Filestack into your application with our comprehensive SDK libraries.</p>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>JavaScript Integration</h3>
-                    <p>Easily add file picking and uploading capabilities to your web applications.</p>
-                    <div class="code-block">
-                        const apikey = YOUR_APIKEY;
-                        const client = filestack.init(apikey);
-                        const options = {
-                        fromSources: ['local_file_system', 'googledrive', 'unsplash', 'facebook', 'instagram'],
-                        maxFiles: 20,
-                        uploadInBackground: false,
-                        onUploadDone: (res) => console.log(res),
-                        };
-                        const picker = client.picker(options);
-                        picker.open();
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="JavaScript SDK Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>React Component</h3>
-                    <p>Use our official React components for quick integration with React applications.</p>
-                    <div class="code-block">
-                        import { PickerOverlay } from 'filestack-react';
-
-                        function App() {
-                        return (
-                        <PickerOverlay apikey={YOUR_API_KEY} onSuccess={(res)=> console.log(res)}
-                            pickerOptions={{
-                            maxFiles: 5,
-                            accept: ['image/*'],
-                            fromSources: ['local_file_system', 'googledrive', 'unsplash']
-                            }}
-                            />
-                            );
-                            }
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="React Integration Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Angular Integration</h3>
-                    <p>quickly integrate Filestack with your Angular applications.</p>
-                    <div class="code-block">
-                        import { Component } from '@angular/core';
-                        import * as filestack from 'filestack-js';
-
-                        @Component({
-                        selector: 'app-upload',
-                        template: `<button (click)="openPicker()">Upload Files</button>`
-                        })
-                        export class UploadComponent {
-                        openPicker() {
-                        const client = filestack.init('YOUR_API_KEY');
-                        const options = {
-                        fromSources: ['local_file_system', 'googledrive'],
-                        onUploadDone: (res) => console.log(res)
-                        };
-                        client.picker(options).open();
-                        }
-                        }
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Angular Integration Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Python SDK</h3>
-                    <p>Backend integration for Python applications with our official Python client.</p>
-                    <div class="code-block">
-                        from filestack import Client
-
-                        client = Client('YOUR_API_KEY')
-
-                        # Upload a file
-                        filelink = client.upload(filepath='path/to/file.jpg')
-                        print(filelink.url)
-
-                        # Apply transformations
-                        from filestack.transforms import resize, flip, enhance
-
-                        new_filelink = filelink.transform(resize(width=500), flip(), enhance())
-                        print(new_filelink.url)
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Python SDK Example">
-                </div>
-            </div>
-
-            <div class="showcase-item">
-                <div class="showcase-content">
-                    <h3>Java Integration</h3>
-                    <p>Robust file handling capabilities for Java applications and Android development.</p>
-                    <div class="code-block">
-                        import com.filestack.Client;
-                        import com.filestack.FileLink;
-
-                        public class Example {
-                        public static void main(String[] args) {
-                        // Initialize the client with your API key
-                        Client client = new Client("YOUR_API_KEY");
-
-                        // Upload a file
-                        FileLink fileLink = client.upload(new java.io.File("path/to/file.jpg"));
-
-                        // Get file metadata
-                        Map<String, Object> metadata = fileLink.getMetadata();
-                            System.out.println(metadata);
-                            }
-                            }
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Java SDK Example">
-                </div>
-            </div>
-
-            <div class="showcase-item reverse">
-                <div class="showcase-content">
-                    <h3>Ruby Integration</h3>
-                    <p>Simple and powerful file handling for Ruby applications with our official Ruby client.</p>
-                    <div class="code-block">
-                        require 'filestack'
-
-                        # Initialize the client with your API key
-                        client = Filestack::Client.new('YOUR_API_KEY')
-
-                        # Upload a file
-                        filelink = client.upload(filepath: 'path/to/file.jpg')
-                        puts filelink.url
-
-                        # Apply transformations
-                        transformed_url = Filestack::FilestackTransform.new(filelink.handle)
-                        .resize(width: 500, height: 500)
-                        .rotate(deg: 90)
-                        .enhance()
-                        .url
-                        puts transformed_url
-                    </div>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-                <div class="showcase-image">
-                    <img src="https://placecats.com/600/400" alt="Ruby SDK Example">
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-
-    <footer>
+    <!-- CTA Hero Section -->
+    <section class="cta-hero">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">Filestack</div>
-                <div class="footer-links">
-                    <a href="#" class="footer-link">Terms</a>
-                    <a href="#" class="footer-link">Privacy</a>
-                    <a href="#" class="footer-link">Security</a>
-                    <a href="#" class="footer-link">Contact</a>
-                </div>
+            <h2>Ready to get started?</h2>
+            <p>Join thousands of developers who trust Filestack for their file management needs</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-white">Start Free Trial</a>
+                <a href="#" class="btn btn-secondary">View Documentation</a>
             </div>
         </div>
-    </footer>
+    </section>
 
     <script>
-        // Sticky navigation highlighting based on scroll position
-        document.addEventListener('DOMContentLoaded', function () {
-            const categoryButtons = document.querySelectorAll('.category-button');
-            const sections = document.querySelectorAll('.category-group');
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.features-nav-item');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const searchInput = document.getElementById('feature-search');
 
-            // Set active category on click
-            categoryButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetTab = this.getAttribute('data-tab');
+
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button and corresponding content
                     this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
 
-                    // Scroll to appropriate section (except for "All Features")
-                    if (this.textContent !== 'All Features') {
-                        const targetSection = document.getElementById(this.textContent.toLowerCase());
-                        if (targetSection) {
-                            targetSection.scrollIntoView({ behavior: 'smooth' });
+                    // Special handling for All Features tab
+                    if (targetTab === 'all-features') {
+                        populateAllFeatures();
+                    }
+
+                    // Scroll content area to top
+                    document.querySelector('.content').scrollTop = 0;
+                    
+                    // Update sidebar navigation
+                    updateSidebarNavigation(targetTab);
+                });
+            });
+
+            // Search functionality
+            const searchResultsInfo = document.getElementById('search-results-info');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                const featureItems = document.querySelectorAll('.feature-item');
+                
+                if (searchTerm === '') {
+                    // Reset all visibility and return to current tab
+                    featureItems.forEach(item => item.style.display = 'flex');
+                    searchResultsInfo.style.display = 'none';
+                    
+                    // Show only current active tab content
+                    const activeTab = document.querySelector('.features-nav-item.active');
+                    if (activeTab) {
+                        const targetTab = activeTab.getAttribute('data-tab');
+                        tabContents.forEach(content => content.classList.remove('active'));
+                        document.getElementById(targetTab).classList.add('active');
+                    }
+                    return;
+                }
+
+                let visibleFeatures = 0;
+                let matchingTabs = new Set();
+
+                // Search through feature items and track which tabs have matches
+                featureItems.forEach(item => {
+                    const title = item.querySelector('.feature-title').textContent.toLowerCase();
+                    const description = item.querySelector('.feature-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                        visibleFeatures++;
+                        
+                        // Find which tab this item belongs to
+                        const parentTab = item.closest('.tab-content');
+                        if (parentTab) {
+                            matchingTabs.add(parentTab.id);
                         }
                     } else {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        item.style.display = 'none';
                     }
                 });
+
+                // Show all tabs that have matching content
+                if (matchingTabs.size > 0) {
+                    tabContents.forEach(content => {
+                        if (matchingTabs.has(content.id)) {
+                            content.classList.add('active');
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                    
+                    // Update tab buttons to show no active state during search
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                }
+
+                // Show search results info
+                if (visibleFeatures === 0) {
+                    searchResultsInfo.textContent = 'No results found';
+                } else {
+                    searchResultsInfo.textContent = `${visibleFeatures} result${visibleFeatures !== 1 ? 's' : ''} found`;
+                }
+                searchResultsInfo.style.display = 'block';
             });
 
-            // Update active category on scroll
-            window.addEventListener('scroll', function () {
-                let currentSection = '';
+            // Function to update sidebar navigation based on active tab
+            function updateSidebarNavigation(tabId) {
+                const sidebarNavTitle = document.getElementById('sidebar-nav-title');
+                const sidebarNavList = document.getElementById('sidebar-nav-list');
+                
+                if (!sidebarNavList) return;
 
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.clientHeight;
-                    if (pageYOffset >= (sectionTop - 200)) {
-                        currentSection = section.getAttribute('id');
+                // Clear current navigation
+                sidebarNavList.innerHTML = '';
+                
+                // Update title based on tab
+                const tabNames = {
+                    'transformations': 'Transformations',
+                    'uploads': 'Upload Solutions', 
+                    'workflows': 'Workflows',
+                    'intelligence': 'AI Intelligence',
+                    'security': 'Security',
+                    'delivery': 'Content Delivery',
+                    'integrations': 'SDK Integration',
+                    'all-features': 'All Features'
+                };
+                
+                if (sidebarNavTitle) {
+                    sidebarNavTitle.textContent = tabNames[tabId] || 'Features';
+                }
+
+                if (tabId === 'all-features') {
+                    // For All Features, show all categories as navigation
+                    Object.keys(tabNames).forEach(key => {
+                        if (key !== 'all-features') {
+                            const li = document.createElement('li');
+                            li.className = 'sidebar-nav-item';
+                            
+                            const link = document.createElement('a');
+                            link.className = 'sidebar-nav-link';
+                            link.href = '#' + key;
+                            link.textContent = tabNames[key];
+                            link.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                
+                                // Switch to that tab
+                                const targetButton = document.querySelector(`[data-tab="${key}"]`);
+                                if (targetButton) {
+                                    targetButton.click();
+                                }
+                            });
+                            
+                            li.appendChild(link);
+                            sidebarNavList.appendChild(li);
+                        }
+                    });
+                    return;
+                }
+                
+                const activeTabContent = document.getElementById(tabId);
+                if (!activeTabContent) return;
+
+                const featureItems = activeTabContent.querySelectorAll('.feature-item');
+                
+                // Add navigation items for each feature
+                featureItems.forEach(item => {
+                    const title = item.querySelector('.feature-title');
+                    if (title && item.id) {
+                        const li = document.createElement('li');
+                        li.className = 'sidebar-nav-item';
+                        
+                        const link = document.createElement('a');
+                        link.className = 'sidebar-nav-link';
+                        link.href = '#' + item.id;
+                        link.textContent = title.textContent;
+                        link.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            
+                            // Remove active class from all nav links
+                            document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
+                            
+                            // Add active class to clicked link
+                            this.classList.add('active');
+                            
+                            // Scroll to feature
+                            item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        });
+                        
+                        li.appendChild(link);
+                        sidebarNavList.appendChild(li);
                     }
                 });
+            }
 
-                categoryButtons.forEach(button => {
-                    button.classList.remove('active');
-                    if (button.textContent.toLowerCase() === currentSection) {
-                        button.classList.add('active');
-                    } else if (currentSection === '' && button.textContent === 'All Features') {
-                        button.classList.add('active');
-                    }
+            // Function to populate All Features tab
+            function populateAllFeatures() {
+                const allFeaturesContent = document.getElementById('all-features-content');
+                if (!allFeaturesContent) return;
+
+                // Clear existing content
+                allFeaturesContent.innerHTML = '';
+
+                // Get all feature items from all tabs
+                const allTabContents = document.querySelectorAll('.tab-content:not(#all-features)');
+                
+                allTabContents.forEach(tabContent => {
+                    const tabId = tabContent.id;
+                    const tabNames = {
+                        'transformations': 'Transformations',
+                        'uploads': 'Upload Solutions', 
+                        'workflows': 'Workflows',
+                        'intelligence': 'AI Intelligence',
+                        'security': 'Security',
+                        'delivery': 'Content Delivery',
+                        'integrations': 'SDK Integration'
+                    };
+
+                    // Create section header
+                    const sectionHeader = document.createElement('div');
+                    sectionHeader.className = 'content-header';
+                    sectionHeader.innerHTML = `
+                        <h3 class="content-title" style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--primary-orange);">${tabNames[tabId]}</h3>
+                    `;
+                    allFeaturesContent.appendChild(sectionHeader);
+
+                    // Clone and append all feature items from this tab
+                    const featureItems = tabContent.querySelectorAll('.feature-item');
+                    featureItems.forEach(item => {
+                        const clonedItem = item.cloneNode(true);
+                        // Update IDs to avoid conflicts
+                        clonedItem.id = 'all-' + item.id;
+                        allFeaturesContent.appendChild(clonedItem);
+                    });
                 });
-            });
+            }
+
+            // Initialize sidebar navigation for the default active tab
+            updateSidebarNavigation('transformations');
         });
     </script>
 </body>
