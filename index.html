@@ -515,13 +515,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 250px;
+            height: 280px;
+            min-height: 280px;
+            max-height: 280px;
         }
 
         .feature-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* SDK Integration specific styling */
+        #integrations .feature-item {
+            justify-content: center;
+            align-items: center;
+        }
+
+        #integrations .feature-content {
+            text-align: center;
+            max-width: 800px;
         }
 
         /* Overview Grid */
@@ -1400,9 +1413,6 @@ const options = {
 client.picker(options).open();</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
-                    <div class="feature-image">
-                        <img src="https://placecats.com/600/400" alt="JavaScript SDK Example">
-                    </div>
                 </div>
 
                 <div class="feature-item" id="react-components">
@@ -1425,9 +1435,6 @@ function App() {
   );
 }</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
-                    </div>
-                    <div class="feature-image">
-                        <img src="https://placecats.com/600/400" alt="React Components Example">
                     </div>
                 </div>
 
@@ -1452,9 +1459,6 @@ new_filelink = filelink.transform(
 )</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
-                    <div class="feature-image">
-                        <img src="https://placecats.com/600/400" alt="Python SDK Example">
-                    </div>
                 </div>
 
                 <div class="feature-item" id="mobile-sdks">
@@ -1475,9 +1479,6 @@ client.picker(this) { response ->
     println(response)
 }</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
-                    </div>
-                    <div class="feature-image">
-                        <img src="https://placecats.com/600/400" alt="Mobile SDKs Example">
                     </div>
                 </div>
             </div>
