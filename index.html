@@ -515,14 +515,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 280px;
-            min-height: 280px;
-            max-height: 280px;
+            align-self: center;
         }
 
         .feature-image img {
             width: 100%;
-            height: 100%;
+            height: 280px;
             object-fit: cover;
         }
 
@@ -1070,7 +1068,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1486312338219-ce68e2c6b7e2?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Watermark Example">
+                        <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Watermark Example">
                     </div>
                 </div>
 
@@ -1214,15 +1212,19 @@
                     </div>
                 </div>
 
-                <div class="feature-item" id="content-moderation">
+                <div class="feature-item" id="sfw-detection">
                     <div class="feature-content">
-                        <h3 class="feature-title">Content Moderation</h3>
-                        <p class="feature-description">Automatically detect and filter inappropriate content to keep your platform safe and compliant.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/sfw/&lt;HANDLE&gt;</div>
+                        <h3 class="feature-title">Image and Video SFW</h3>
+                        <p class="feature-description">Automatically detect and filter inappropriate content in images and videos to keep your platform safe and compliant.</p>
+                        <div class="code-block">// Image SFW (Processing API)
+https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/sfw/&lt;HANDLE&gt;
+
+// Video SFW (Workflows only)
+Video SFW – Create a workflow with Intelligence task</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1471086817966-3e5c5cb7a4d0?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Content Moderation Example">
+                        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Image and Video SFW Example">
                     </div>
                 </div>
 
@@ -1234,7 +1236,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Image Captioning Example">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Image Captioning Example">
                     </div>
                 </div>
 
@@ -1287,7 +1289,7 @@ const encodedPolicy = btoa(JSON.stringify(policy))
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Security Policies Example">
+                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Security Policies Example">
                     </div>
                 </div>
 
@@ -1308,7 +1310,7 @@ const allowedDomains = [
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1564865878688-9a244444042a?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Domain Whitelisting Example">
+                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Domain Whitelisting Example">
                     </div>
                 </div>
 
@@ -1335,7 +1337,7 @@ client.pick({
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Path-Based Security Example">
+                        <img src="https://images.unsplash.com/photo-1633265486064-086b219458ec?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Path-Based Security Example">
                     </div>
                 </div>
             </div>
@@ -1393,92 +1395,27 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
             <!-- SDK Integration Tab -->
             <div id="integrations" class="tab-content">
                 <div class="content-header">
-                    <h2 class="content-title">SDK Integration</h2>
-                    <p class="content-description">Integrate Filestack into your application with our comprehensive SDK libraries</p>
+                    <h2 class="content-title">Developer-Friendly Integration</h2>
+                    <p class="content-description">Get started in minutes with our comprehensive SDKs and libraries</p>
                 </div>
 
-                <div class="feature-item" id="javascript-sdk">
-                    <div class="feature-content">
-                        <h3 class="feature-title">JavaScript SDK</h3>
-                        <p class="feature-description">Easily add file picking and uploading capabilities to your web applications.</p>
-                        <div class="code-block">const apikey = 'YOUR_APIKEY';
-const client = filestack.init(apikey);
-
-const options = {
-  fromSources: ['local_file_system', 'googledrive', 'unsplash'],
-  maxFiles: 20,
-  onUploadDone: (res) => console.log(res)
-};
-
-client.picker(options).open();</div>
-                        <a href="#" class="btn btn-outline">Learn More</a>
-                    </div>
-                </div>
-
-                <div class="feature-item" id="react-components">
-                    <div class="feature-content">
-                        <h3 class="feature-title">React Components</h3>
-                        <p class="feature-description">Use our official React components for quick integration with React applications.</p>
-                        <div class="code-block">import { PickerOverlay } from 'filestack-react';
-
-function App() {
-  return (
-    &lt;PickerOverlay 
-      apikey={YOUR_API_KEY} 
-      onSuccess={(res) => console.log(res)}
-      pickerOptions={{
-        maxFiles: 5,
-        accept: ['image/*'],
-        fromSources: ['local_file_system', 'googledrive']
-      }}
-    /&gt;
-  );
-}</div>
-                        <a href="#" class="btn btn-outline">Learn More</a>
-                    </div>
-                </div>
-
-                <div class="feature-item" id="python-sdk">
-                    <div class="feature-content">
-                        <h3 class="feature-title">Python SDK</h3>
-                        <p class="feature-description">Backend integration for Python applications with our official Python client.</p>
-                        <div class="code-block">from filestack import Client
-
-client = Client('YOUR_API_KEY')
-
-# Upload a file
-filelink = client.upload(filepath='path/to/file.jpg')
-print(filelink.url)
-
-# Apply transformations
-from filestack.transforms import resize, flip, enhance
-new_filelink = filelink.transform(
-  resize(width=500), 
-  flip(), 
-  enhance()
-)</div>
-                        <a href="#" class="btn btn-outline">Learn More</a>
-                    </div>
-                </div>
-
-                <div class="feature-item" id="mobile-sdks">
-                    <div class="feature-content">
-                        <h3 class="feature-title">Mobile SDKs</h3>
-                        <p class="feature-description">Native mobile SDKs for iOS and Android applications with full feature support.</p>
-                        <div class="code-block">// iOS Swift
-import Filestack
-
-let client = Client(apiKey: "YOUR_API_KEY")
-client.picker { (response) in
-    print(response)
-}
-
-// Android Kotlin
-val client = Client("YOUR_API_KEY")
-client.picker(this) { response ->
-    println(response)
-}</div>
-                        <a href="#" class="btn btn-outline">Learn More</a>
+                <div class="feature-item" style="justify-content: center; text-align: center; flex-direction: column; align-items: center; padding: 4rem 2rem;">
+                    <div class="feature-content" style="max-width: 800px;">
+                        <h3 class="feature-title" style="font-size: 2rem; margin-bottom: 1.5rem;">Ready to Build?</h3>
+                        <p class="feature-description" style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">Whether you're working with <strong>React</strong>, <strong>Angular</strong>, <strong>Python</strong>, or vanilla JavaScript, we've got you covered with comprehensive SDKs, detailed documentation, and code examples to get you started quickly.</p>
+                        
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.5rem;">
+                            <span style="background: rgba(239, 75, 37, 0.1); color: var(--primary-orange); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">JavaScript SDK</span>
+                            <span style="background: rgba(239, 75, 37, 0.1); color: var(--primary-orange); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">React Components</span>
+                            <span style="background: rgba(239, 75, 37, 0.1); color: var(--primary-orange); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">Angular Integration</span>
+                            <span style="background: rgba(239, 75, 37, 0.1); color: var(--primary-orange); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">Python SDK</span>
+                            <span style="background: rgba(239, 75, 37, 0.1); color: var(--primary-orange); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">Mobile SDKs</span>
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <a href="#" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">View Full Documentation</a>
+                            <a href="#" class="btn btn-outline" style="padding: 1rem 2rem; font-size: 1.1rem;">Quick Start Guide</a>
+                        </div>
                     </div>
                 </div>
             </div>
