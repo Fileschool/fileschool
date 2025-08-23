@@ -678,8 +678,13 @@
         .capabilities-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
+            gap: 2rem;
             margin-bottom: 4rem;
+        }
+
+        .capability-item {
+            display: flex;
+            flex-direction: column;
         }
 
         .capability-card {
@@ -695,8 +700,8 @@
             border-top: 4px solid var(--primary-orange);
         }
 
-        .capability-card:hover {
-            transform: translateY(-5px);
+        .capability-card {
+            /* Hover effect removed as requested */
         }
 
 
@@ -1032,7 +1037,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Image Resizing Example">
+                        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Image Resizing Example">
                     </div>
                 </div>
 
@@ -1044,7 +1049,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1527219525722-f9767a7f2884?w=600&h=400&fit=crop&crop=faces&auto=format&q=60" alt="Smart Crop Example">
+                        <img src="https://images.unsplash.com/photo-1527219525722-f9767a7f2884?w=350&h=250&fit=crop&crop=faces&auto=format&q=60" alt="Smart Crop Example">
                     </div>
                 </div>
 
@@ -1056,7 +1061,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Filters Example">
+                        <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Filters Example">
                     </div>
                 </div>
 
@@ -1068,7 +1073,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Watermark Example">
+                        <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Watermark Example">
                     </div>
                 </div>
 
@@ -1080,7 +1085,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Document Processing Example">
+                        <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Document Processing Example">
                     </div>
                 </div>
             </div>
@@ -1106,7 +1111,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Drag & Drop Interface">
+                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Drag & Drop Interface">
                     </div>
                 </div>
 
@@ -1126,7 +1131,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Multi-Source Upload">
+                        <img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Multi-Source Upload">
                     </div>
                 </div>
             </div>
@@ -1146,7 +1151,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Custom Workflow Example">
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Custom Workflow Example">
                     </div>
                 </div>
 
@@ -1164,7 +1169,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Batch Processing Example">
+                        <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Batch Processing Example">
                     </div>
                 </div>
             </div>
@@ -1184,7 +1189,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Virus Detection Example">
+                        <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Virus Detection Example">
                     </div>
                 </div>
 
@@ -1196,7 +1201,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="OCR Example">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="OCR Example">
                     </div>
                 </div>
 
@@ -1208,7 +1213,7 @@
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Object Detection Example">
+                        <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Object Detection Example">
                     </div>
                 </div>
 
@@ -1224,7 +1229,7 @@ Video SFW – Create a workflow with Intelligence task</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Image and Video SFW Example">
+                        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Image and Video SFW Example">
                     </div>
                 </div>
 
@@ -1236,7 +1241,7 @@ Video SFW – Create a workflow with Intelligence task</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Image Captioning Example">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Image Captioning Example">
                     </div>
                 </div>
 
@@ -1248,7 +1253,7 @@ Video SFW – Create a workflow with Intelligence task</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Copyright Detection Example">
+                        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Copyright Detection Example">
                     </div>
                 </div>
 
@@ -1260,7 +1265,7 @@ Video SFW – Create a workflow with Intelligence task</div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Phishing Detection Example">
+                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Phishing Detection Example">
                     </div>
                 </div>
             </div>
@@ -1289,7 +1294,7 @@ const encodedPolicy = btoa(JSON.stringify(policy))
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Security Policies Example">
+                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Security Policies Example">
                     </div>
                 </div>
 
@@ -1310,7 +1315,7 @@ const allowedDomains = [
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Domain Whitelisting Example">
+                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Domain Whitelisting Example">
                     </div>
                 </div>
 
@@ -1337,7 +1342,7 @@ client.pick({
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1633265486064-086b219458ec?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Path-Based Security Example">
+                        <img src="https://images.unsplash.com/photo-1633265486064-086b219458ec?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Path-Based Security Example">
                     </div>
                 </div>
             </div>
@@ -1357,7 +1362,7 @@ client.pick({
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Adaptive Delivery Example">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Adaptive Delivery Example">
                     </div>
                 </div>
 
@@ -1369,7 +1374,7 @@ client.pick({
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Global CDN Example">
+                        <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Global CDN Example">
                     </div>
                 </div>
 
@@ -1387,7 +1392,7 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
-                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop&crop=entropy&auto=format&q=60" alt="Smart Caching Example">
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Smart Caching Example">
                     </div>
                 </div>
             </div>
@@ -1416,7 +1421,6 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                             <a href="#" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">View Full Documentation</a>
                             <a href="#" class="btn btn-outline" style="padding: 1rem 2rem; font-size: 1.1rem;">Quick Start Guide</a>
                         </div>
-                    </div>
                 </div>
             </div>
 
@@ -1444,55 +1448,68 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
             </div>
             
             <div class="capabilities-grid">
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-                        </svg>
+                <div class="capability-item">
+                    <div class="capability-card">
+                        <div class="capability-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                            </svg>
+                        </div>
+                        <div class="capability-content">
+                            <h3>Upload</h3>
+                            <p>25+ sources including cloud storage, social media, and local files</p>
+                        </div>
                     </div>
-                    <div class="capability-content">
-                        <h3>Upload</h3>
-                        <p>25+ sources including cloud storage, social media, and local files</p>
-                    </div>
+                        <a href="#uploads" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Upload</a>
                 </div>
 
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M22 18v-2H8V4h2L7 1 4 4h2v2H2v2h4v8c0 1.1.9 2 2 2h8v2h-2l3 3 3-3h-2v-2h4zM10 8h6v6h2V8c0-1.1-.9-2-2-2h-6v2z"/>
-                        </svg>
+                <div class="capability-item">
+                    <div class="capability-card">
+                        <div class="capability-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M22 18v-2H8V4h2L7 1 4 4h2v2H2v2h4v8c0 1.1.9 2 2 2h8v2h-2l3 3 3-3h-2v-2h4zM10 8h6v6h2V8c0-1.1-.9-2-2-2h-6v2z"/>
+                            </svg>
+                        </div>
+                        <div class="capability-content">
+                            <h3>Transform</h3>
+                            <p>Real-time image and document processing with 100+ formats</p>
+                        </div>
                     </div>
-                    <div class="capability-content">
-                        <h3>Transform</h3>
-                        <p>Real-time image and document processing with 100+ formats</p>
-                    </div>
+                    <a href="#transformations" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Transform</a>
                 </div>
 
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
+                <div class="capability-item">
+                    <div class="capability-card">
+                        <div class="capability-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div class="capability-content">
+                            <h3>Intelligence</h3>
+                            <p>AI-powered virus detection, content moderation, and OCR</p>
+                        </div>
                     </div>
-                    <div class="capability-content">
-                        <h3>Intelligence</h3>
-                        <p>AI-powered virus detection, content moderation, and OCR</p>
-                    </div>
+                    <a href="#intelligence" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Intelligence</a>
                 </div>
 
-                <div class="capability-card">
-                    <div class="capability-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/>
-                        </svg>
+                <div class="capability-item">
+                    <div class="capability-card">
+                        <div class="capability-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/>
+                            </svg>
+                        </div>
+                        <div class="capability-content">
+                            <h3>Security</h3>
+                            <p>Enterprise-grade protection with flexible access controls</p>
+                        </div>
                     </div>
-                    <div class="capability-content">
-                        <h3>Security</h3>
-                        <p>Enterprise-grade protection with flexible access controls</p>
-                    </div>
+                    <a href="#security" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Security</a>
                 </div>
 
-                <div class="capability-card">
+                <div class="capability-item">
+                    <div class="capability-card">
                     <div class="capability-icon">
                         <svg viewBox="0 0 24 24">
                             <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/>
@@ -1503,8 +1520,11 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                         <p>Global CDN with smart caching and adaptive optimization</p>
                     </div>
                 </div>
+                    <a href="#delivery" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Delivery</a>
+                </div>
 
-                <div class="capability-card">
+                <div class="capability-item">
+                    <div class="capability-card">
                     <div class="capability-icon">
                         <svg viewBox="0 0 24 24">
                             <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L19.71,9.71L22,12V6H16Z"/>
@@ -1514,6 +1534,8 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                         <h3>Workflows</h3>
                         <p>Automated pipelines for complex file processing tasks</p>
                     </div>
+                </div>
+                    <a href="#workflows" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Workflows</a>
                 </div>
             </div>
 
@@ -1529,6 +1551,9 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                 <a href="#" class="btn btn-white">Start Free Trial</a>
                 <a href="#" class="btn btn-secondary">View Documentation</a>
             </div>
+
+            <!-- FAQ Section -->
+           
         </div>
     </section>
 
