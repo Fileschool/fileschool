@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflows - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Automated processing sequences with multiple operations and conditional logic.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">Workflows</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">Workflows</h1>
+            <div class="term-category">Automation</div>
+            <p class="term-description">Automated processing sequences that can be configured to perform multiple operations on files, such as resizing, format conversion, and delivery to specific destinations.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>Workflow Architecture</h3>
+            <p>The Workflows service functions as the orchestration layer of the Filestack platform, enabling developers to automate complex, multi-step content processing tasks.</p>
+            
+            <h3>Workflow Components</h3>
+            <ul>
+                <li><strong>Tasks:</strong> Individual operations (resize, virus scan, tag)</li>
+                <li><strong>Logic:</strong> Conditional branching (if SFW is false, then delete)</li>
+                <li><strong>Jobs:</strong> Specific workflow instances</li>
+                <li><strong>Webhooks:</strong> Completion notifications</li>
+            </ul>
+            
+            <h3>Execution Model</h3>
+            <ul>
+                <li>Asynchronous processing for scalability</li>
+                <li>Background execution for long-running tasks</li>
+                <li>Webhook-based result delivery</li>
+                <li>Error handling and retry logic</li>
+            </ul>
+            
+            <h3>Trigger Methods</h3>
+            <ul>
+                <li>File Picker upload triggers</li>
+                <li>Programmatic API calls</li>
+                <li>Scheduled executions</li>
+                <li>External system integrations</li>
+            </ul>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="processing-pipeline.html" class="related-item">
+                        <h4>Processing Pipeline</h4>
+                        <p>Automated workflow system that applies sequential operations to files.</p>
+                    </a>
+                
+                    <a href="webhooks.html" class="related-item">
+                        <h4>Webhooks</h4>
+                        <p>Event-driven communication mechanism for asynchronous operations.</p>
+                    </a>
+                
+                    <a href="intelligence-service.html" class="related-item">
+                        <h4>Intelligence (AI) Service</h4>
+                        <p>Machine learning models for content analysis and understanding.</p>
+                    </a>
+                
+                    <a href="file-picker.html" class="related-item">
+                        <h4>File Picker</h4>
+                        <p>Filestack's customizable upload widget with multiple source options.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio & Video Processing - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Specialized component handling media transcoding challenges.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">Audio & Video Processing</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">Audio & Video Processing</h1>
+            <div class="term-category">Processing</div>
+            <p class="term-description">Specialized component of Transformations service designed to handle unique challenges of media transcoding with asynchronous processing.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>Processing Architecture</h3>
+            <p>Explicitly asynchronous due to computationally intensive nature. Jobs initiated via URL tasks return job UUID immediately, with processing in background.</p>
+            
+            <h3>Transformation Capabilities</h3>
+            <ul>
+                <li>Format transcoding with extensive input/output support</li>
+                <li>Dimension and aspect ratio adjustments</li>
+                <li>Bitrate and quality control</li>
+                <li>Watermarking and visual effects</li>
+                <li>Clipping and speed adjustments</li>
+            </ul>
+            
+            <h3>Modern Streaming Support</h3>
+            <ul>
+                <li>HLS adaptive bitrate playlist generation</li>
+                <li>DASH streaming format support</li>
+                <li>Dynamic quality selection based on network conditions</li>
+            </ul>
+            
+            <h3>Webhook Delivery</h3>
+            <p>Results including URLs and metadata delivered via webhook upon completion.</p>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="transformations.html" class="related-item">
+                        <h4>Transformations</h4>
+                        <p>Real-time file processing operations without permanent storage of intermediate versions.</p>
+                    </a>
+                
+                    <a href="webhooks.html" class="related-item">
+                        <h4>Webhooks</h4>
+                        <p>Event-driven communication mechanism for asynchronous operations.</p>
+                    </a>
+                
+                    <a href="processing-engine.html" class="related-item">
+                        <h4>Processing Engine</h4>
+                        <p>Computational heart powering all file transformation and analysis tasks.</p>
+                    </a>
+                
+                    <a href="workflows.html" class="related-item">
+                        <h4>Workflows</h4>
+                        <p>Automated processing sequences with multiple operations and conditional logic.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>

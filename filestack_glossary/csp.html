@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Security Policy (CSP) - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Security mechanism to control which resources can be loaded when using Filestack's services.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">Content Security Policy (CSP)</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">Content Security Policy (CSP)</h1>
+            <div class="term-category">Security</div>
+            <p class="term-description">Security mechanism implemented to control which resources can be loaded on web pages when using Filestack's services, preventing malicious script injection.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>CSP Implementation</h3>
+            <p>Content Security Policy headers help prevent XSS attacks by controlling which resources can be loaded and executed on web pages using Filestack services.</p>
+            
+            <h3>Filestack CSP Considerations</h3>
+            <ul>
+                <li>Allow connections to cdn.Filestackcontent.com</li>
+                <li>Permit script loading from Filestack domains</li>
+                <li>Enable iframe embedding for File Picker</li>
+                <li>Allow image sources from CDN domains</li>
+            </ul>
+            
+            <h3>Best Practices</h3>
+            <p>Configure CSP headers to include necessary Filestack domains while maintaining security posture.</p>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="security-policies.html" class="related-item">
+                        <h4>Security Policies</h4>
+                        <p>Configuration rules that define access permissions and processing limitations.</p>
+                    </a>
+                
+                    <a href="domain-whitelists.html" class="related-item">
+                        <h4>Domain Whitelists</h4>
+                        <p>Network-level security layer controlling service access by domain.</p>
+                    </a>
+                
+                    <a href="file-picker.html" class="related-item">
+                        <h4>File Picker</h4>
+                        <p>Filestack's customizable upload widget with multiple source options.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>

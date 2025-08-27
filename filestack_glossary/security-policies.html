@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Policies - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Configuration rules that define access permissions and processing limitations.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">Security Policies</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">Security Policies</h1>
+            <div class="term-category">Security</div>
+            <p class="term-description">Configuration rules that define access permissions, upload restrictions, and processing limitations for Filestack services.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>Policy Structure</h3>
+            <p>A Security Policy is a JSON object that explicitly defines a set of permissions and must contain an expiry key (Unix timestamp) making all policies inherently short-lived.</p>
+            
+            <h3>Policy Components</h3>
+            <ul>
+                <li><strong>expiry:</strong> Unix timestamp for policy expiration</li>
+                <li><strong>call:</strong> Allowed API actions (read, remove, convert)</li>
+                <li><strong>handle:</strong> Restrict operations to specific files</li>
+                <li><strong>path:</strong> Control upload destinations</li>
+                <li><strong>maxSize:</strong> File size limitations</li>
+            </ul>
+            
+            <h3>Signature Generation</h3>
+            <p>Policies are signed using HMAC-SHA256 with the application's secret key. The signature validates the policy's authenticity and prevents tampering.</p>
+            
+            <h3>Best Practices</h3>
+            <ul>
+                <li>Generate short-lived, narrowly-scoped policies</li>
+                <li>Use server-side signature generation</li>
+                <li>Never expose secret keys in client code</li>
+                <li>Implement proper token refresh mechanisms</li>
+            </ul>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="domain-whitelists.html" class="related-item">
+                        <h4>Domain Whitelists</h4>
+                        <p>Network-level security layer controlling service access by domain.</p>
+                    </a>
+                
+                    <a href="api-key.html" class="related-item">
+                        <h4>API Key</h4>
+                        <p>A unique identifier used to authenticate requests to Filestack's API services.</p>
+                    </a>
+                
+                    <a href="custom-cname.html" class="related-item">
+                        <h4>Custom CNAME</h4>
+                        <p>Premium feature enabling custom domain branding for asset URLs.</p>
+                    </a>
+                
+                    <a href="handles.html" class="related-item">
+                        <h4>Handles</h4>
+                        <p>Unique alphanumeric identifiers assigned to every uploaded file.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>

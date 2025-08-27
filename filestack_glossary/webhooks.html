@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhooks - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Event-driven communication mechanism for asynchronous operations.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">Webhooks</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">Webhooks</h1>
+            <div class="term-category">Integration Tool</div>
+            <p class="term-description">Fundamental mechanism for enabling event-driven communication between Filestack platform and client applications.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>Supported Events</h3>
+            <ul>
+                <li>File uploads and processing completion</li>
+                <li>Workflow job completion</li>
+                <li>Video conversion completion</li>
+                <li>File operations (overwrites, deletions)</li>
+            </ul>
+            
+            <h3>Reliability Features</h3>
+            <ul>
+                <li>Automated retry logic for failed deliveries</li>
+                <li>Secret key signing for authenticity</li>
+                <li>Structured JSON payload delivery</li>
+            </ul>
+            
+            <h3>Architecture Benefits</h3>
+            <p>Reactive architecture is more efficient and scalable than polling-based approaches, essential for asynchronous operations.</p>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="workflows.html" class="related-item">
+                        <h4>Workflows</h4>
+                        <p>Automated processing sequences with multiple operations and conditional logic.</p>
+                    </a>
+                
+                    <a href="video-processing.html" class="related-item">
+                        <h4>Audio & Video Processing</h4>
+                        <p>Specialized component handling media transcoding challenges.</p>
+                    </a>
+                
+                    <a href="event-listeners.html" class="related-item">
+                        <h4>Event Listeners</h4>
+                        <p>JavaScript mechanisms used in Filestack's SDKs to handle user interactions and file operations.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>

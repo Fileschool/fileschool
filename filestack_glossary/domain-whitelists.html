@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Whitelists - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Network-level security layer controlling service access by domain.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">Domain Whitelists</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">Domain Whitelists</h1>
+            <div class="term-category">Security</div>
+            <p class="term-description">Broader, network-level security layer that complements fine-grained policy control by restricting service access to approved domains.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>Operating Modes</h3>
+            <ul>
+                <li><strong>Upload Whitelist:</strong> Restricts File Picker embedding by Origin header</li>
+                <li><strong>Delivery Whitelist:</strong> Restricts asset embedding by Referer header</li>
+            </ul>
+            
+            <h3>Protection Against</h3>
+            <ul>
+                <li>API key theft and unauthorized usage</li>
+                <li>Bandwidth theft through hotlinking</li>
+                <li>Unauthorized content distribution</li>
+            </ul>
+            
+            <h3>Limitations</h3>
+            <p>Headers can be spoofed by non-browser requests, so should be used as first line of defense alongside Security Policies.</p>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="security-policies.html" class="related-item">
+                        <h4>Security Policies</h4>
+                        <p>Configuration rules that define access permissions and processing limitations.</p>
+                    </a>
+                
+                    <a href="file-picker.html" class="related-item">
+                        <h4>File Picker</h4>
+                        <p>Filestack's customizable upload widget with multiple source options.</p>
+                    </a>
+                
+                    <a href="cdn.html" class="related-item">
+                        <h4>CDN (Content Delivery Network)</h4>
+                        <p>A distributed network of servers used by Filestack to deliver files and images with optimized performance.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>

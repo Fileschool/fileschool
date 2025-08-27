@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virus & Malware Detection - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Fundamental security feature scanning uploaded files for malicious content.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">Virus & Malware Detection</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">Virus & Malware Detection</h1>
+            <div class="term-category">Security/AI</div>
+            <p class="term-description">Fundamental security feature that scans uploaded files for malicious content, available exclusively as asynchronous Workflow task.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>Architectural Design</h3>
+            <p>Exclusively asynchronous to avoid impacting user experience during potentially time-consuming scans.</p>
+            
+            <h3>Response Structure</h3>
+            <ul>
+                <li><code class="code">"infected"</code>: Boolean field indicating malware presence</li>
+                <li><code class="code">"infections_list"</code>: Array containing detected malware names</li>
+            </ul>
+            
+            <h3>Workflow Integration</h3>
+            <p>Conditional logic examples: <code class="code">infected eq true</code> triggers quarantine or deletion actions.</p>
+            
+            <h3>Use Cases</h3>
+            <ul>
+                <li>Educational platforms scanning student submissions</li>
+                <li>Enterprise file sharing security</li>
+                <li>User-generated content protection</li>
+            </ul>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="workflows.html" class="related-item">
+                        <h4>Workflows</h4>
+                        <p>Automated processing sequences with multiple operations and conditional logic.</p>
+                    </a>
+                
+                    <a href="intelligence-service.html" class="related-item">
+                        <h4>Intelligence (AI) Service</h4>
+                        <p>Machine learning models for content analysis and understanding.</p>
+                    </a>
+                
+                    <a href="security-policies.html" class="related-item">
+                        <h4>Security Policies</h4>
+                        <p>Configuration rules that define access permissions and processing limitations.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>

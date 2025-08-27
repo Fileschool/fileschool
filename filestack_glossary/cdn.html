@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDN (Content Delivery Network) - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="A distributed network of servers used by Filestack to deliver files and images with optimized performance.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">CDN (Content Delivery Network)</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">CDN (Content Delivery Network)</h1>
+            <div class="term-category">Infrastructure</div>
+            <p class="term-description">A distributed network of servers used by Filestack to deliver files and images with optimized performance across global locations.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>Filestack CDN Architecture</h3>
+            <p>Filestack leverages the Fastly CDN, which utilizes Anycast routing and a global network of points of presence (POPs) to cache content closer to end-users, significantly reducing latency and improving page load times.</p>
+            
+            <h3>Key Features</h3>
+            <ul>
+                <li>Global edge locations for reduced latency</li>
+                <li>Automatic caching of transformed images</li>
+                <li>30-day default cache duration</li>
+                <li>Custom cache control options</li>
+                <li>Integration with Processing Engine</li>
+            </ul>
+            
+            <h3>Base URL</h3>
+            <p>All files are served via: <code class="code">https://cdn.Filestackcontent.com/</code></p>
+            
+            <h3>Cache Control</h3>
+            <ul>
+                <li>Use <code class="code">/cache=false/</code> to bypass cache for testing</li>
+                <li>Set custom cache duration with <code class="code">/cache=expiry:VALUE/</code></li>
+                <li>Automatic cache invalidation for updated content</li>
+            </ul>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="delivery-service.html" class="related-item">
+                        <h4>Delivery Service</h4>
+                        <p>Fast, secure, and reliable global distribution of assets.</p>
+                    </a>
+                
+                    <a href="custom-cname.html" class="related-item">
+                        <h4>Custom CNAME</h4>
+                        <p>Premium feature enabling custom domain branding for asset URLs.</p>
+                    </a>
+                
+                    <a href="transformations.html" class="related-item">
+                        <h4>Transformations</h4>
+                        <p>Real-time file processing operations without permanent storage of intermediate versions.</p>
+                    </a>
+                
+                    <a href="processing-engine.html" class="related-item">
+                        <h4>Processing Engine</h4>
+                        <p>Computational heart powering all file transformation and analysis tasks.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>

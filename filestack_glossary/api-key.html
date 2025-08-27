@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Key - Filestack Glossary</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="A unique identifier used to authenticate requests to Filestack's API services.">
+</head>
+<body>
+    <header class="header">
+        <h1>Filestack Technical Glossary</h1>
+        <p class="subtitle">Comprehensive reference for Filestack platform architecture and services</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav">
+            <a href="index.html" class="nav-brand">FS Glossary</a>
+            <ul class="nav-links">
+                <li><a href="index.html">All Terms</a></li>
+                <li><a href="#" class="active">API Key</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="term-header">
+            <h1 class="term-title">API Key</h1>
+            <div class="term-category">Authentication</div>
+            <p class="term-description">A unique identifier used to authenticate requests to Filestack's API services. Required for accessing upload, transformation, and delivery functionality.</p>
+        </div>
+
+        <div class="term-content">
+            <div class="term-details">
+                
+            <h3>Technical Implementation</h3>
+            <p>The API Key serves as the primary authentication mechanism for all Filestack services. It must be included in every request to identify and authorize the calling application.</p>
+            
+            <h3>Usage Patterns</h3>
+            <ul>
+                <li>Included as a parameter in Processing API URLs</li>
+                <li>Required for File API operations</li>
+                <li>Used in conjunction with Security Policies for enhanced protection</li>
+                <li>Essential for SDK initialization</li>
+            </ul>
+            
+            <h3>Security Considerations</h3>
+            <p>API Keys should be kept confidential and never exposed in client-side code. For production applications, combine with Security Policies and Signatures for additional protection.</p>
+        
+            </div>
+        </div>
+
+        
+        <div class="related-terms">
+            <h3>Related Terms</h3>
+            <div class="related-grid">
+                
+                    <a href="security-policies.html" class="related-item">
+                        <h4>Security Policies</h4>
+                        <p>Configuration rules that define access permissions and processing limitations.</p>
+                    </a>
+                
+                    <a href="file-api.html" class="related-item">
+                        <h4>File API</h4>
+                        <p>Foundational RESTful API providing programmatic control over stored file lifecycle.</p>
+                    </a>
+                
+                    <a href="processing-api.html" class="related-item">
+                        <h4>Processing API</h4>
+                        <p>URL-based API that handles file transformations and processing operations.</p>
+                    </a>
+                
+                    <a href="sdk.html" class="related-item">
+                        <h4>SDK (Software Development Kit)</h4>
+                        <p>Programming libraries and tools for integrating Filestack services.</p>
+                    </a>
+                
+            </div>
+        </div>
+        
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="index.html" class="btn btn-primary">← Back to All Terms</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Filestack Technical Glossary. Built for comprehensive platform understanding.</p>
+    </footer>
+</body>
+</html>
