@@ -119,7 +119,7 @@ class FilestackTransformations {
         this.highlightUrl(url);
     }
 
-    highlightUrl(url) {
+    highlightUrl(url, animate = false) {
         // Parse and highlight the URL components
         const parts = url.split('/');
         const baseUrl = parts.slice(0, 3).join('/'); // https://cdn.filestackcontent.com
@@ -141,7 +141,66 @@ class FilestackTransformations {
             highlighted += `<span style="color: #d73a49; font-weight: 500;">${this.currentHandle}</span>`;
         }
 
-        this.transformationUrl.innerHTML = highlighted;
+        if (animate && transformation && transformation !== this.currentHandle) {
+            this.animateUrlTyping(baseUrl, transformation, handle);
+        } else {
+            this.transformationUrl.innerHTML = highlighted;
+        }
+    }
+
+    animateUrlTyping(baseUrl, transformation, handle) {
+        // Start with base URL only
+        let currentText = `<span style="color: #6e6e73;">${baseUrl}/</span>`;
+        this.transformationUrl.innerHTML = currentText + '<span class="typing-cursor">|</span>';
+        
+        const transformationText = transformation;
+        const handleText = `/${handle}`;
+        
+        let transformationIndex = 0;
+        let handleIndex = 0;
+        let isTypingTransformation = true;
+        
+        const typeNextChar = () => {
+            if (isTypingTransformation && transformationIndex < transformationText.length) {
+                // Type transformation characters only
+                const typedTransformation = transformationText.substring(0, transformationIndex + 1);
+                currentText = `<span style="color: #6e6e73;">${baseUrl}/</span><span style="color: #0969da; font-weight: 500;">${typedTransformation}</span>`;
+                this.transformationUrl.innerHTML = currentText + '<span class="typing-cursor">|</span>';
+                transformationIndex++;
+                setTimeout(typeNextChar, 20 + Math.random() * 30); // Faster typing speed
+            } else if (isTypingTransformation) {
+                // Switch to typing handle
+                isTypingTransformation = false;
+                setTimeout(typeNextChar, 50); // Small pause between transformation and handle
+            } else if (handleIndex < handleText.length) {
+                // Type handle characters
+                const typedHandle = handleText.substring(0, handleIndex + 1);
+                let handleContent;
+                
+                if (handleIndex === 0) {
+                    // Just the slash
+                    handleContent = `<span style="color: #6e6e73;">${typedHandle}</span>`;
+                } else {
+                    // The actual handle - build it properly
+                    const slashPart = '<span style="color: #6e6e73;">/</span>';
+                    const handlePart = `<span style="color: #d73a49; font-weight: 500;">${typedHandle.substring(1)}</span>`;
+                    handleContent = slashPart + handlePart;
+                }
+                
+                // Only show the parts we've typed so far
+                currentText = `<span style="color: #6e6e73;">${baseUrl}/</span><span style="color: #0969da; font-weight: 500;">${transformationText}</span>${handleContent}`;
+                this.transformationUrl.innerHTML = currentText + '<span class="typing-cursor">|</span>';
+                handleIndex++;
+                setTimeout(typeNextChar, 20 + Math.random() * 30); // Faster typing speed
+            } else {
+                // Remove cursor when done - show final result
+                const finalText = `<span style="color: #6e6e73;">${baseUrl}/</span><span style="color: #0969da; font-weight: 500;">${transformationText}</span><span style="color: #6e6e73;">/</span><span style="color: #d73a49; font-weight: 500;">${handle}</span>`;
+                this.transformationUrl.innerHTML = finalText;
+            }
+        };
+        
+        // Start typing after a small delay
+        setTimeout(typeNextChar, 100);
     }
 
     async loadImage() {
@@ -154,6 +213,9 @@ class FilestackTransformations {
 
             img.onload = () => {
                 this.elegantTransition(img.src);
+                // Trigger typing animation for the URL
+                const url = this.getCurrentTransformationUrl();
+                this.highlightUrl(url, true);
             };
 
             img.onerror = () => {
@@ -332,7 +394,7 @@ class FilestackTransformations {
         if (transformation.transform === '') {
             this.transformationLabel.textContent = 'Original Image';
         } else {
-            this.transformationLabel.textContent = `Filestack ${transformation.name} Transformation`;
+            this.transformationLabel.innerHTML = `Filestack <span style="color: #ff6900; font-weight: 600;">${transformation.name}</span> Transformation`;
         }
 
         // Update button states

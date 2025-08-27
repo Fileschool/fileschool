@@ -17,7 +17,7 @@ body {
 .container {
     max-width: 800px;
     width: 800px;
-    padding: 40px 20px;
+    padding: 20px;
     text-align: center;
     height: 100vh;
     display: flex;
@@ -26,15 +26,15 @@ body {
 }
 
 .image-container {
-    margin-bottom: 32px;
+    margin-bottom: 8px;
     background: white;
     border-radius: 12px;
-    padding: 20px;
+    padding: 8px 8px 8px 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 540px;
+    min-height: 500px;
     overflow: hidden;
     position: relative;
 }
@@ -50,7 +50,7 @@ body {
 
 #mainImage, .transition-image {
     max-width: 100%;
-    max-height: 500px;
+    max-height: 100%;
     border-radius: 8px;
     position: absolute;
     top: 50%;
@@ -97,7 +97,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 24px;
-    margin-top: 24px;
+    margin-top: 16px;
     height: 60px;
 }
 
@@ -140,11 +140,12 @@ body {
 
 .transformation-label {
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
+    margin-top: 8px;
 }
 
 #transformationLabel {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     color: #6e6e73;
     text-transform: uppercase;
@@ -152,16 +153,21 @@ body {
 }
 
 .url-container {
-    background: white;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-    margin-bottom: 24px;
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     text-align: center;
-    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 20;
+    width: calc(100% - 24px);
 }
 
 #transformationUrl {
@@ -175,6 +181,17 @@ body {
     word-break: break-all;
     display: inline-block;
     max-width: 100%;
+}
+
+.typing-cursor {
+    color: #007aff;
+    font-weight: 600;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
 }
 
 
