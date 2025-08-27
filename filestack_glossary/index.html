@@ -796,10 +796,23 @@
             });
         });
         
-        // Track current letter while scrolling
+        // Track current letter while scrolling and handle sticky navigation
         window.addEventListener('scroll', function() {
             const letterSections = document.querySelectorAll('.letter-section');
             const alphabetLinks = document.querySelectorAll('.alphabet-nav a');
+            const alphabetNav = document.getElementById('alphabetNav');
+            const navContainer = document.querySelector('.nav-container');
+            
+            // Check if main navigation is out of view
+            const navRect = navContainer.getBoundingClientRect();
+            const shouldBeVertical = navRect.bottom < 0;
+            
+            // Toggle vertical sticky class
+            if (shouldBeVertical) {
+                alphabetNav.classList.add('sticky-vertical');
+            } else {
+                alphabetNav.classList.remove('sticky-vertical');
+            }
             
             let currentLetter = null;
             letterSections.forEach(section => {
