@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Filestack - Let's Get Started!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS STYLES */
+        :root {
+            --dark-purple: #2c2c3e;
+            --light-purple: #4a4a68;
+            --primary-orange: #EF4A26;
+            --light-gray: #f4f5f7;
+            --text-color: #333;
+            --text-light: #f0f0f0;
+            --border-color: #e0e0e0;
+            --success-green: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            background-color: #fff;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 60px;
+        }
+
+        /* Header Navigation */
+        .main-header {
+            background: #fff;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--dark-purple);
+        }
+
+        .main-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .main-nav a:hover {
+            color: var(--primary-orange);
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 18px;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-orange);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success-green);
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #4C3348 0%, #231A2C 100%);
+            color: var(--text-light);
+            padding: 80px 0;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-left {
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons .btn {
+            margin: 0 10px 0 0;
+        }
+
+        .hero-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            background-color: var(--light-gray);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+        }
+
+        .success-icon {
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .success-icon .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--success-green);
+        }
+
+        .success-icon h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-icon p {
+            font-size: 1.1rem;
+            margin: 0;
+            color: #666;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--dark-purple);
+            border: 2px solid var(--dark-purple);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-purple);
+            color: #fff;
+        }
+
+        /* Quick Start Section */
+        .quick-start {
+            padding: 60px 0;
+            background-color: var(--light-gray);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 1rem;
+            font-weight: 900;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 17px;
+            color: #666;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .sdk-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .sdk-tabs button {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sdk-tabs button img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sdk-tabs button:hover,
+        .sdk-tabs button.active:hover {
+            background-color: var(--light-purple);
+            color: #fff;
+            border-color: var(--light-purple);
+        }
+
+        .sdk-tabs button.active {
+            background-color: var(--dark-purple);
+            color: #fff;
+            border-color: var(--dark-purple);
+        }
+
+        .sdk-tabs button.active img {
+            filter: invert(1) brightness(1.5);
+        }
+
+        .sdk-content-area {
+            display: flex;
+            gap: 30px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .sdk-description {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .sdk-description .sdk-category {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .sdk-description h3 {
+            font-size: 24px;
+            margin-bottom: 1rem;
+        }
+
+        .sdk-description p {
+            font-size: 17px;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .sdk-description .docs-link {
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .sdk-code-example {
+            flex: 1;
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        pre {
+            margin: 0;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Next Steps Section */
+        .next-steps {
+            padding: 80px 0;
+        }
+
+        .next-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 4rem;
+        }
+
+        .step-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .step-item .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            background-color: var(--primary-orange);
+            color: white;
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        .step-item h3 {
+            font-size: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .step-item p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-item .btn {
+            font-size: 16px;
+            padding: 8px 18px;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #4C3348 0%, #231A2C 100%);
+            color: #fff;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 30px;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            font-size: 17px;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta .btn {
+            margin: 0 15px 15px 0;
+        }
+
+        .btn-white {
+            background: #fff;
+            color: var(--primary-orange);
+            border: 2px solid #fff;
+        }
+
+        .btn-white:hover {
+            background: transparent;
+            color: #fff;
+            border-color: #fff;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .sdk-content-area {
+                flex-direction: column;
+            }
+
+            .sdk-description,
+            .sdk-code-example {
+                flex: none;
+            }
+
+            .main-nav {
+                display: none;
+            }
+
+            .container {
+                padding: 0 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">Filestack</div>
+            <nav class="main-nav">
+                <a href="#">Documentation</a>
+                <a href="#">SDKs</a>
+                <a href="#">Pricing</a>
+                <a href="#">Support</a>
+            </nav>
+            <a href="#" class="btn btn-primary" id="loginBtn">Login to Dashboard</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Welcome to Filestack!</h1>
+                    <p>You're now ready to integrate powerful file handling into your applications with just a few lines of code.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary" id="dashboardBtn">Go to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quick-start" class="quick-start">
+            <div class="container">
+                <h2 class="section-title">Quick Start Guide</h2>
+                <p class="section-subtitle">Get up and running in minutes! Choose your preferred language or framework below to see a working code example.</p>
+
+                <div class="sdk-tabs" id="sdk-tabs">
+                    <!-- Buttons will be generated by JS -->
+                </div>
+
+                <div class="sdk-content-area">
+                    <div class="sdk-description">
+                        <p class="sdk-category" id="sdk-category">Client-Side</p>
+                        <h3 id="sdk-title">JavaScript</h3>
+                        <p id="sdk-info">The core of our client-side functionality. Embed our beautiful File Picker widget, enable image editing, and handle uploads directly from the browser.</p>
+                        <a href="#" class="docs-link" id="sdk-docs-link">View JavaScript Docs →</a>
+                    </div>
+                    <div class="sdk-code-example">
+                        <pre><code class="language-javascript" id="sdk-code-block">
+// Loading initial code...
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="next-steps">
+            <div class="container">
+                <h2 class="section-title">What's Next?</h2>
+                <p class="section-subtitle">Here's how to make the most of your new Filestack account</p>
+                <div class="next-steps-grid">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <h3>Get Your API Key</h3>
+                        <p>Head to your dashboard to find your unique API key and start making API calls immediately.</p>
+                        <a href="#" class="btn btn-primary">View API Key</a>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <h3>Explore Documentation</h3>
+                        <p>Dive into our comprehensive guides, tutorials, and API reference documentation.</p>
+                        <a href="#" class="btn btn-primary">Browse Docs</a>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <h3>Try Live Examples</h3>
+                        <p>Test our features with interactive demos and see the power of Filestack in action.</p>
+                        <a href="#" class="btn btn-primary">View Demos</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // JAVASCRIPT LOGIC
+        document.addEventListener('DOMContentLoaded', () => {
+            const sdkData = {
+                javascript: {
+                    title: 'JavaScript',
+                    category: 'Client-Side',
+                    info: 'The core of our client-side functionality. Embed our beautiful File Picker widget, enable image editing, and handle uploads directly from the browser.',
+                    docsUrl: 'https://docs.filestack.com/javascript/',
+                    code: `// Add the script to your HTML head
+// <script src="//static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"><\/script>
+
+const client = filestack.init('YOUR_API_KEY');
+const options = {
+  onUploadDone: (res) => console.log(res.filesUploaded),
+};
+client.picker(options).open();`
+                },
+                react: {
+                    title: 'React',
+                    category: 'Client-Side',
+                    info: 'Leverage our component-based library to easily integrate the File Picker into your React applications with minimal boilerplate.',
+                    docsUrl: 'https://docs.filestack.com/react/',
+                    code: `import React from 'react';
+import { PickerOverlay } from 'filestack-react';
+
+const FileUploader = () => {
+  return (
+    <PickerOverlay
+      apikey={'YOUR_API_KEY'}
+      onSuccess={(result) => console.log(result)}
+      pickerOptions={{
+        maxFiles: 5,
+      }}
+    />
+  );
+};`
+                },
+                angular: {
+                    title: 'Angular',
+                    category: 'Client-Side',
+                    info: 'Our Angular SDK provides a simple directive to add the Filestack picker to your templates, fully integrated with the Angular ecosystem.',
+                    docsUrl: 'https://docs.filestack.com/angular/',
+                    code: `// In your component's template
+<button
+  filestack
+  [options]="pickerOptions"
+  (uploadSuccess)="onUploadSuccess($event)"
+  apikey="YOUR_API_KEY">
+  Upload File
+</button>
+
+// In your component's class
+pickerOptions = {
+  fromSources: ['local_file_system'],
+  accept: 'image/*',
+};`
+                },
+                python: {
+                    title: 'Python',
+                    category: 'Server-Side',
+                    info: 'A powerful server-side SDK for uploading files, transforming images, and programmatically interacting with the Filestack API from your Python backend.',
+                    docsUrl: 'https://docs.filestack.com/python/',
+                    code: `# pip install filestack-python
+
+from filestack import Client
+
+client = Client("YOUR_API_KEY")
+
+# Upload a file
+new_filelink = client.upload(filepath='/path/to/file.jpg')
+print(new_filelink.url)
+
+# Transform an image
+transformed_url = client.transform(
+    'RESIZE_HANDLE',
+    {'resize': {'width': 100, 'height': 100}}
+)`
+                },
+                java: {
+                    title: 'Java',
+                    category: 'Server-Side',
+                    info: 'Integrate Filestack with your Java applications for robust, secure server-side file uploads and transformations.',
+                    docsUrl: 'https://docs.filestack.com/java/',
+                    code: `// Add dependency via Maven or Gradle
+
+import io.filestack.FilestackClient;
+import io.filestack.FileLink;
+import io.filestack.responses.UploadResponse;
+
+Config config = new Config("YOUR_API_KEY");
+FilestackClient client = new FilestackClient(config);
+
+String path = "/path/to/file.txt";
+UploadResponse response = client.upload(path, false);
+FileLink fileLink = response.getFileLink();`
+                },
+                php: {
+                    title: 'PHP',
+                    category: 'Server-Side',
+                    info: 'The essential SDK for PHP developers to manage uploads and transformations on the server, perfect for Laravel or Symfony projects.',
+                    docsUrl: 'https://docs.filestack.com/php/',
+                    code: `// composer require filestack/filestack-php
+
+use Filestack\\FilestackClient;
+
+$client = new FilestackClient('YOUR_API_KEY');
+
+// Upload a file
+$filelink = $client->upload('/path/to/some/file.jpg');
+
+// Transform a file
+$transformation = $client->transform(
+    $filelink->handle,
+    ['resize' => ['width' => 200, 'height' => 200]]
+);
+echo $transformation->url();`
+                }
+            };
+
+            const tabsContainer = document.getElementById('sdk-tabs');
+            const sdkTitle = document.getElementById('sdk-title');
+            const sdkCategory = document.getElementById('sdk-category');
+            const sdkInfo = document.getElementById('sdk-info');
+            const sdkDocsLink = document.getElementById('sdk-docs-link');
+            const sdkCodeBlock = document.getElementById('sdk-code-block');
+
+            // Generate Tabs
+            Object.keys(sdkData).forEach(key => {
+                const sdk = sdkData[key];
+                const button = document.createElement('button');
+                button.dataset.sdk = key;
+
+                // Handle different icon names for consistency
+                let iconName = key;
+                if (key === 'java') iconName = 'coffeescript';
+                if (key === 'javascript') iconName = 'javascript';
+
+                const logoUrl = `https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${iconName}.svg`;
+                const img = document.createElement('img');
+                img.src = logoUrl;
+                img.alt = `${sdk.title} logo`;
+
+                button.appendChild(img);
+                button.append(` ${sdk.title}`);
+                tabsContainer.appendChild(button);
+            });
+
+            // Handle Tab Clicks
+            tabsContainer.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                const sdkKey = button.dataset.sdk;
+                updateContent(sdkKey);
+
+                tabsContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+
+            // Function to update content
+            function updateContent(sdkKey) {
+                const sdk = sdkData[sdkKey];
+                sdkTitle.textContent = sdk.title;
+                sdkCategory.textContent = sdk.category;
+                sdkInfo.textContent = sdk.info;
+                sdkDocsLink.textContent = `View ${sdk.title} Docs →`;
+                sdkDocsLink.href = sdk.docsUrl;
+                sdkCodeBlock.textContent = sdk.code;
+            }
+
+            // Initialize with the first SDK
+            const initialSdk = Object.keys(sdkData)[0];
+            tabsContainer.querySelector(`[data-sdk="${initialSdk}"]`).classList.add('active');
+            updateContent(initialSdk);
+
+            // Handle login and dashboard button clicks
+            const loginBtn = document.getElementById('loginBtn');
+            const dashboardBtn = document.getElementById('dashboardBtn');
+            
+            loginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'https://www.filestack.com/login/';
+            });
+
+            dashboardBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'https://www.filestack.com/login/';
+            });
+
+            // Handle all dashboard/API key links
+            document.querySelectorAll('a[href="#"]').forEach(link => {
+                if (link.textContent.includes('Dashboard') || 
+                    link.textContent.includes('API Key') ||
+                    link.textContent.includes('Access Dashboard')) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.location.href = 'https://www.filestack.com/login/';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
