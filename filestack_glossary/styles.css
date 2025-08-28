@@ -543,3 +543,83 @@ body {
     font-size: 0.9rem;
     color: var(--fs-orange-dark);
 }
+
+/* Filestack Reference Section */
+.filestack-reference {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid var(--fs-brand-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.filestack-reference::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--fs-brand-primary), var(--fs-brand-secondary));
+}
+
+.filestack-reference h3 {
+    color: var(--fs-brand-primary);
+    font-size: 1.2rem;
+    margin: 0 0 0.75rem 0;
+    font-weight: 600;
+}
+
+.filestack-reference p {
+    color: var(--fs-gray-dark);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.filestack-link-container {
+    margin-top: 1rem;
+}
+
+.filestack-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--fs-orange);
+    color: var(--fs-white);
+    text-decoration: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filestack-link:hover {
+    background: var(--fs-orange-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+    color: var(--fs-white);
+}
+
+.link-icon {
+    font-size: 1.1em;
+}
+
+.external-indicator {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .filestack-reference {
+        padding: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .filestack-link {
+        padding: 0.625rem 1rem;
+        font-size: 0.9rem;
+    }
+}

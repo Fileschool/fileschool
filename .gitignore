@@ -1,2 +1,7 @@
 .claude/
 .vscode/
+
+# Filestack glossary working files
+filestack_glossary/*.pdf
+filestack_glossary/*.md
+add-backlinks.js
