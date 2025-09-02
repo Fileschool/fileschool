@@ -1542,6 +1542,50 @@ Minimum 50 characters required for analysis."
             result = result.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
             result = result.replace(/`([^`\n]+)`/g, '<code>$1</code>');
             
+            // Process markdown tables
+            result = result.replace(/(\|[^\n]*\|\n\|[-:\s\|]*\|\n(?:\|[^\n]*\|\n?)*)/g, function(match) {
+                const lines = match.trim().split('\n');
+                if (lines.length < 3) return match; // Need header, separator, and at least one row
+                
+                const headerLine = lines[0];
+                const separatorLine = lines[1];
+                const dataLines = lines.slice(2);
+                
+                // Parse header
+                const headers = headerLine.split('|').map(h => h.trim()).filter(h => h);
+                
+                // Parse data rows
+                const rows = dataLines.map(line => 
+                    line.split('|').map(cell => cell.trim()).filter(cell => cell)
+                );
+                
+                // Build HTML table
+                let tableHTML = '<table class="similarity-table" style="width:100%; border-collapse: collapse; margin: 15px 0;">';
+                
+                // Header
+                tableHTML += '<thead><tr>';
+                headers.forEach(header => {
+                    tableHTML += `<th style="border: 1px solid #ddd; padding: 12px; background-color: #f5f5f5; font-weight: bold;">${header}</th>`;
+                });
+                tableHTML += '</tr></thead>';
+                
+                // Body
+                tableHTML += '<tbody>';
+                rows.forEach(row => {
+                    tableHTML += '<tr>';
+                    row.forEach((cell, index) => {
+                        const style = index === 0 || index === 1 ? 
+                            'border: 1px solid #ddd; padding: 12px; font-style: italic; background-color: #fafafa;' : 
+                            'border: 1px solid #ddd; padding: 12px;';
+                        tableHTML += `<td style="${style}">${cell}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                });
+                tableHTML += '</tbody></table>';
+                
+                return tableHTML;
+            });
+            
             // Split into paragraphs based on double line breaks, but be more conservative
             const paragraphs = result.split(/\n\n+/).filter(p => p.trim());
             

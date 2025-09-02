@@ -67,7 +67,7 @@ ${truncatedBlog}
 Provide analysis with:
 1. **OVERALL ASSESSMENT**: Core overlap explanation
 2. **KEY OVERLAPS**: Exact matching phrases/concepts
-3. **SIMILAR SECTIONS**: Create a table showing 2-4 similar section pairs:
+3. **SIMILAR SECTIONS**: Create a table showing 5 similar section pairs:
 
 | Draft Section | Similar Blog Section | Why Similar |
 |---------------|---------------------|-------------|
