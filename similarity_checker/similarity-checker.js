@@ -223,16 +223,19 @@ async function searchSimilarBlogs(embedding, source = 'filestack', topK = 5) {
   const collectionName = source === 'filestack' ? 'filestack_blogs' : 'froala_blogs';
   
   try {
-    const response = await fetch(`${window.CONFIG.QDRANT_URL}/collections/${collectionName}/points/search`, {
+    const response = await fetch(window.CONFIG.QDRANT_URL, {
       method: 'POST',
+      mode: 'cors',
       headers: {
         'api-key': window.CONFIG.QDRANT_API_KEY,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify({
         vector: embedding,
         limit: topK,
-        with_payload: true
+        with_payload: true,
+        collection: collectionName
       })
     });
     

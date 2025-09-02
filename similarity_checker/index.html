@@ -1062,7 +1062,7 @@ Minimum 50 characters required for analysis."
     </div>
 
     <!-- Include similarity checker JavaScript -->
-    <script src="similarity-checker.js"></script>
+    <script src="similarity-checker.js?v=3"></script>
     
     <script>
         // API Key Management - Client-side only for GitHub Pages
@@ -1111,6 +1111,10 @@ Minimum 50 characters required for analysis."
 
         // Make config available globally for similarity-checker.js
         window.CONFIG = CONFIG;
+        
+        // Debug: Check if ApiKeyManager is properly defined
+        console.log('✅ ApiKeyManager defined:', typeof window.ApiKeyManager);
+        console.log('✅ CONFIG defined:', typeof window.CONFIG);
     </script>
     
     <script>
