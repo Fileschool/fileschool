@@ -239,6 +239,64 @@
             line-height: 1.5;
         }
 
+        .changelog-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .changelog-section h2 {
+            color: var(--primary-color);
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .changelog-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .changelog-entry {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .changelog-entry:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .changelog-date {
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            height: fit-content;
+            white-space: nowrap;
+        }
+
+        .changelog-content h3 {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .changelog-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+
 
 
         @media (max-width: 768px) {
@@ -250,12 +308,16 @@
                 font-size: 1.1em;
             }
             
-            .features-grid,
             .tech-grid {
                 grid-template-columns: 1fr;
             }
             
             .process-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .changelog-entry {
                 flex-direction: column;
                 text-align: center;
             }
@@ -381,39 +443,6 @@
             </div>
         </div>
 
-        <!-- Features Section -->
-        <div class="features-section">
-            <h2>🔧 Recent Improvements</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>🔐 Enhanced Stop Words <span class="success-badge">NEW</span></h3>
-                    <p>Expanded stop words list from ~30 to 200+ words. Filters out common articles, prepositions, pronouns, and filler words like "basically", "actually", "literally" that don't contribute to meaningful keyword analysis</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📊 Top Article Focus <span class="success-badge">IMPROVED</span></h3>
-                    <p>Fixed keyword aggregation issue. Now extracts keywords from the single most similar article only, instead of combining all similar articles. This provides cleaner, more accurate keyword insights</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📏 Larger Context <span class="success-badge">ENHANCED</span></h3>
-                    <p>Increased GPT analysis context from 20K to 35K characters. Better analysis quality while maintaining performance due to parallel processing optimizations</p>
-                </div>
-                <div class="feature-card">
-                    <h3>⚡ Performance Optimizations</h3>
-                    <p>Parallel GPT API calls for top 3 articles, reduced token limits, optimized content truncation, and improved error handling for better reliability</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🎯 Better Results Display</h3>
-                    <p>Enhanced UI shows which specific article keywords come from, improved progress tracking, and better error messaging for debugging</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📱 Responsive Design</h3>
-                    <p>Mobile-optimized interface with proper grid layouts, touch-friendly controls, and consistent theming across devices</p>
-                </div>
-            </div>
-        </div>
-
-
-
         <!-- Technology Section -->
         <div class="tech-section">
             <h2>🛠️ Technical Architecture</h2>
@@ -447,6 +476,60 @@
                     <div class="tech-icon">☁️</div>
                     <h3>Google Apps Script</h3>
                     <p>Backend handles API calls, environment variables, and data processing. Deployed as web app with proper CORS handling</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Changelog Section -->
+        <div class="changelog-section">
+            <h2>📝 Development Changelog</h2>
+            <div class="changelog-timeline">
+                <div class="changelog-entry">
+                    <div class="changelog-date">Latest</div>
+                    <div class="changelog-content">
+                        <h3>🔐 Enhanced Stop Words Filtering</h3>
+                        <p>Expanded stop words list from ~30 to 200+ words. Filters out common articles, prepositions, pronouns, and filler words like "basically", "actually", "literally" that don't contribute to meaningful keyword analysis</p>
+                    </div>
+                </div>
+                
+                <div class="changelog-entry">
+                    <div class="changelog-date">Latest</div>
+                    <div class="changelog-content">
+                        <h3>📊 Fixed Keyword Aggregation Issue</h3>
+                        <p>Keywords now extracted from single most similar article only, instead of combining all similar articles. Provides cleaner, more accurate keyword insights</p>
+                    </div>
+                </div>
+                
+                <div class="changelog-entry">
+                    <div class="changelog-date">Latest</div>
+                    <div class="changelog-content">
+                        <h3>📏 Increased Context Size</h3>
+                        <p>GPT analysis context increased from 20K to 35K characters for better analysis quality while maintaining performance</p>
+                    </div>
+                </div>
+                
+                <div class="changelog-entry">
+                    <div class="changelog-date">Previous</div>
+                    <div class="changelog-content">
+                        <h3>⚡ Parallel Processing Implementation</h3>
+                        <p>Implemented UrlFetchApp.fetchAll() for parallel GPT API calls, reducing total processing time significantly</p>
+                    </div>
+                </div>
+                
+                <div class="changelog-entry">
+                    <div class="changelog-date">Previous</div>
+                    <div class="changelog-content">
+                        <h3>🎯 Improved UI/UX</h3>
+                        <p>Enhanced progress tracking, better error messaging, and improved results display with article source identification</p>
+                    </div>
+                </div>
+                
+                <div class="changelog-entry">
+                    <div class="changelog-date">Initial</div>
+                    <div class="changelog-content">
+                        <h3>🚀 Core System Development</h3>
+                        <p>Built initial similarity checker with OpenAI embeddings, Qdrant vector database, and GPT-4o-mini analysis. Basic keyword extraction and similarity scoring</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -499,7 +582,7 @@
         }, observerOptions);
 
         // Observe all cards for animation
-        document.querySelectorAll('.feature-card, .tech-card').forEach(card => {
+        document.querySelectorAll('.tech-card, .changelog-entry').forEach(card => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
             card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
