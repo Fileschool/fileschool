@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How the Blog Similarity Checker Works</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #EF4A25;
+            --primary-light: #ff6b47;
+            --primary-rgba: 239, 74, 37;
+            --secondary-color: #0098F7;
+            --secondary-light: #33aaff;
+            --bg-gradient: linear-gradient(135deg, #ffdbcc 0%, #ffe4dc 100%);
+            --header-gradient: linear-gradient(135deg, #EF4A25 0%, #ff6b47 100%);
+            --card-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: var(--header-gradient);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+
+
+        .process-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .process-section h2 {
+            color: var(--primary-color);
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .step-number {
+            background: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .step-content p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .step-details {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            font-family: monospace;
+            font-size: 1.1em;
+            color: #495057;
+        }
+
+        .features-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .features-section h2 {
+            color: var(--primary-color);
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: var(--card-gradient);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--secondary-color);
+        }
+
+        .feature-card h3 {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+
+
+        .tech-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .tech-section h2 {
+            color: var(--primary-color);
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .tech-card {
+            background: var(--card-gradient);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .tech-card .tech-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .tech-card h3 {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .tech-card p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .header p {
+                font-size: 1.1em;
+            }
+            
+            .features-grid,
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .process-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .demo-tabs {
+                flex-direction: column;
+            }
+            
+            .demo-tab {
+                border-bottom: none;
+                border-right: 3px solid transparent;
+            }
+            
+            .demo-tab.active {
+                border-right-color: var(--primary-color);
+                border-bottom-color: transparent;
+            }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ffdbcc 0%, #ffe4dc 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .success-badge {
+            background: #48bb78;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .warning-badge {
+            background: #ed8936;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>🚀 Blog Similarity Checker</h1>
+                         <p>Internal documentation explaining the technical implementation and architecture of our blog similarity checking system</p>
+        </div>
+
+
+
+        <!-- Process Section -->
+        <div class="process-section">
+            <h2>🔄 How It Works</h2>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Content Analysis</h3>
+                        <p>Your draft content is processed and converted into high-dimensional vector embeddings using OpenAI's advanced language models</p>
+                        <div class="step-details">
+                            Model: text-embedding-3-large<br>
+                            Output: 3072-dimensional vector representation
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Vector Search</h3>
+                        <p>Our system searches through a database of existing blog posts using cosine similarity to find the most semantically similar content</p>
+                        <div class="step-details">
+                            Database: Qdrant Vector Database<br>
+                            Search: Top 10 most similar articles
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>AI Analysis</h3>
+                        <p>GPT-4o-mini analyzes the top 3 most similar articles in parallel, providing detailed insights and recommendations</p>
+                        <div class="step-details">
+                            AI Model: GPT-4o-mini<br>
+                            Analysis: Parallel processing for speed
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Smart Results</h3>
+                        <p>Get comprehensive analysis including similarity scores, keyword overlap, and specific rewrite suggestions</p>
+                        <div class="step-details">
+                            Output: Risk assessment + actionable recommendations<br>
+                            Keywords: Top article only (not aggregated)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2>🔧 Recent Improvements</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🔐 Enhanced Stop Words <span class="success-badge">NEW</span></h3>
+                    <p>Expanded stop words list from ~30 to 200+ words. Filters out common articles, prepositions, pronouns, and filler words like "basically", "actually", "literally" that don't contribute to meaningful keyword analysis</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 Top Article Focus <span class="success-badge">IMPROVED</span></h3>
+                    <p>Fixed keyword aggregation issue. Now extracts keywords from the single most similar article only, instead of combining all similar articles. This provides cleaner, more accurate keyword insights</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📏 Larger Context <span class="success-badge">ENHANCED</span></h3>
+                    <p>Increased GPT analysis context from 20K to 35K characters. Better analysis quality while maintaining performance due to parallel processing optimizations</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ Performance Optimizations</h3>
+                    <p>Parallel GPT API calls for top 3 articles, reduced token limits, optimized content truncation, and improved error handling for better reliability</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎯 Better Results Display</h3>
+                    <p>Enhanced UI shows which specific article keywords come from, improved progress tracking, and better error messaging for debugging</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📱 Responsive Design</h3>
+                    <p>Mobile-optimized interface with proper grid layouts, touch-friendly controls, and consistent theming across devices</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Technology Section -->
+        <div class="tech-section">
+            <h2>🛠️ Technical Architecture</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-icon">🤖</div>
+                    <h3>OpenAI GPT-4o-mini</h3>
+                    <p>AI model for content similarity analysis. Uses 1500 max tokens, 0.1 temperature for consistency. Processes top 3 articles in parallel</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">🧠</div>
+                    <h3>Text Embeddings</h3>
+                    <p>OpenAI text-embedding-3-large model generates 3072-dimensional vectors. Used for semantic similarity search via cosine similarity</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">🗄️</div>
+                    <h3>Qdrant Vector DB</h3>
+                    <p>Vector database stores blog post embeddings. Searches return top 10 most similar articles with payload data for analysis</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">⚡</div>
+                    <h3>Parallel Processing</h3>
+                    <p>UrlFetchApp.fetchAll() executes multiple GPT API calls simultaneously. Reduces total processing time from sequential to parallel</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">🎨</div>
+                    <h3>Frontend Framework</h3>
+                    <p>Vanilla HTML/CSS/JS with CSS Grid, Flexbox, and CSS variables. Responsive design with mobile-first approach</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">☁️</div>
+                    <h3>Google Apps Script</h3>
+                    <p>Backend handles API calls, environment variables, and data processing. Deployed as web app with proper CORS handling</p>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+    <script>
+        function showDemo(tabName) {
+            // Hide all demo content
+            const demoContents = document.querySelectorAll('.demo-content');
+            demoContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const demoTabs = document.querySelectorAll('.demo-tab');
+            demoTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected demo content
+            document.getElementById(tabName + '-demo').classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add some interactive animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards for animation
+        document.querySelectorAll('.feature-card, .tech-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

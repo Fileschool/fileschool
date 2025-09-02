@@ -1,169 +1,152 @@
 /**
- * Browser JavaScript version of the Blog Similarity Checker
- * Converted from Apps Script for GitHub Pages hosting
+ * Apps Script Example for Blog Similarity Checker
+ * This shows how to call OpenAI and Qdrant directly from Apps Script
  */
-
-// API Configuration - loaded from the main HTML file via localStorage
-// Use window.window.CONFIG directly since it's set in the HTML file
 
 /**
- * Performance timing for browser environment
+ * Required function for Google Apps Script web apps
+ * This function is called when the web app is accessed
  */
-const BrowserTimer = {
-  start(label) {
-    const startTime = performance.now();
-    console.log(`⏱️ [BROWSER START] ${label} at ${startTime}`);
-    return startTime;
-  },
-  end(label, startTime) {
-    const endTime = performance.now();
-    const elapsed = endTime - startTime;
-    console.log(`⏱️ [BROWSER END] ${label}: ${elapsed.toFixed(2)}ms`);
-    return elapsed;
-  }
-};
+function doGet() {
+  // Return the HTML content as a web app
+  return HtmlService.createHtmlOutputFromFile('index')
+    .setTitle('Blog Similarity Checker')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
 
 /**
- * Generate comprehensive similarity analysis using GPT-4o-mini
+ * Get API keys from Apps Script environment variables
+ * Set these in Apps Script: Extensions -> Apps Script -> Project Settings -> Script Properties
  */
-async function analyzeSimilarityWithGPT(draftText, similarBlogs) {
-  if (!window.CONFIG.OPENAI_API_KEY || window.CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
-    throw new Error('OpenAI API key not configured');
+function getApiKeys() {
+  const properties = PropertiesService.getScriptProperties();
+  
+  return {
+    openaiKey: properties.getProperty('OPENAI_API_KEY'),
+    qdrantUrl: properties.getProperty('QDRANT_URL'),
+    qdrantKey: properties.getProperty('QDRANT_API_KEY')
+  };
+}
+
+/**
+ * Generate comprehensive similarity analysis using GPT-4o-mini with parallel processing
+ * Optimized version that processes multiple blogs in parallel for better performance
+ */
+function analyzeSimilarityWithGPT(draftText, similarBlogs, apiKeys) {
+  if (!apiKeys.openaiKey) {
+    throw new Error('OpenAI API key not found');
   }
   
   try {
-    // Analyze each similar blog individually for detailed insights
-    const detailedAnalyses = [];
+    console.log(`🚀 Starting parallel GPT analysis for ${Math.min(similarBlogs.length, 3)} blogs`);
     
-    // Process in parallel for better performance
-    const analysisPromises = [];
+    // Process only top 3 blogs in parallel for optimal performance
+    const blogsToAnalyze = similarBlogs.slice(0, 3);
+    const requests = [];
     
-    for (let i = 0; i < Math.min(similarBlogs.length, 3); i++) {
-      const blog = similarBlogs[i];
+    // Create all HTTP requests in parallel
+    blogsToAnalyze.forEach((blog, i) => {
       const similarity = (blog.score * 100).toFixed(1);
-      
-      // Use the full content from the vector search results
       const fullBlogContent = blog.payload.content || 'No content available';
       
-      const prompt = `You are an expert content analyst. Analyze the similarity between this draft content and an existing blog post.
-
-DRAFT CONTENT (${draftText.length} characters):
-${draftText}
-
-EXISTING BLOG:
-Title: ${blog.payload.title || 'Untitled'}
-Similarity Score: ${similarity}%
-Full Content (${fullBlogContent.length} characters):
-${fullBlogContent}
-
-Provide a comprehensive analysis with:
-
-1. **OVERALL ASSESSMENT**: Why are these ${similarity}% similar? What's the core overlap?
-
-2. **SECTION-BY-SECTION BREAKDOWN**: 
-   - Introduction: How similar are the opening paragraphs? Quote specific overlapping text.
-   - Main Content: Which specific sections/paragraphs overlap? Show exact matches.
-   - Conclusion: How similar are the endings? Quote overlapping conclusions.
-
-3. **EXACT OVERLAPS**: 
-   - Copy and paste the exact phrases, sentences, or paragraphs that are too similar
-   - Highlight which parts of your draft match which parts of the existing blog
-   - Be specific about word-for-word matches vs. paraphrased content
-
-4. **UNIQUE ELEMENTS**: What makes the draft different from the existing blog?
-
-5. **ACTIONABLE RECOMMENDATIONS**: 
-   - For each overlapping section, provide specific rewrite suggestions
-   - Suggest alternative approaches, different examples, or unique angles
-
-6. **RISK ASSESSMENT**: High/Medium/Low risk of being flagged as duplicate content
-
-7. **CONTENT LENGTH ANALYSIS**: How does the draft length compare to the existing blog?
-
-IMPORTANT: Since this is ${similarity}% similar, focus on finding and quoting the actual overlapping content. Don't just summarize - show the specific text that's too similar.`;
-
-      // Log what GPT-4o-mini will analyze
-      console.log(`\n🤖 === GPT-4O-MINI ANALYSIS INPUT for Blog ${i + 1} ===`);
-      console.log(`📄 Blog Title: ${blog.payload.title || 'Untitled'}`);
-      console.log(`🎯 Vector Similarity Score: ${similarity}%`);
-      console.log(`📝 Draft Text Length: ${draftText.length} characters`);
-      console.log(`📚 Blog Content Length: ${fullBlogContent.length} characters`);
-      console.log(`\n📋 FULL DRAFT TEXT BEING ANALYZED:`);
-      console.log(`"${draftText}"`);
-      console.log(`\n📋 FULL BLOG CONTENT BEING ANALYZED:`);
-      console.log(`"${fullBlogContent}"`);
-      console.log(`\n🔍 GPT PROMPT BEING SENT (${prompt.length} chars):`);
-      console.log(`"${prompt}"`);
-      console.log('🤖 === END GPT INPUT ===\n');
-
-      console.log(`🚀 Sending GPT request for Blog ${i + 1}...`);
+      // Truncate content if too long - increased context size for better analysis quality
+      const maxContentLength = 35000; // Increased from 20000 for better analysis
+      const truncatedDraft = draftText.length > maxContentLength ? 
+        draftText.substring(0, maxContentLength) + '...[truncated]' : draftText;
+      const truncatedBlog = fullBlogContent.length > maxContentLength ? 
+        fullBlogContent.substring(0, maxContentLength) + '...[truncated]' : fullBlogContent;
       
-      // Create promise for this analysis
-      const analysisPromise = fetch('https://api.openai.com/v1/chat/completions', {
+      const prompt = `Analyze similarity between draft and blog post. Be concise but specific.
+
+DRAFT (${truncatedDraft.length} chars):
+${truncatedDraft}
+
+EXISTING BLOG "${blog.payload.title}" (${truncatedBlog.length} chars):
+${truncatedBlog}
+
+Provide analysis with:
+1. **OVERALL ASSESSMENT**: Core overlap explanation
+2. **KEY OVERLAPS**: Exact matching phrases/concepts
+3. **RISK LEVEL**: High/Medium/Low duplicate content risk
+4. **RECOMMENDATIONS**: Specific rewrite suggestions
+
+Be specific about overlapping content but keep response under 2000 characters.`;
+      
+      const request = {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${window.CONFIG.OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${apiKeys.openaiKey}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        payload: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
             {
               role: 'system',
-              content: 'You are an expert content analyst specializing in detecting content similarity and providing actionable recommendations for content uniqueness. You have access to the full content of both the draft and existing blogs, so provide detailed, specific analysis with concrete examples.'
+              content: 'You are a content similarity analyst. Provide concise, actionable analysis.'
             },
             {
               role: 'user',
               content: prompt
             }
           ],
-          max_tokens: 4000,
-          temperature: 0.2
+          max_tokens: 1500, // Reduced from 4000
+          temperature: 0.1 // Reduced for consistency
         })
-      }).then(async response => {
-        if (response.ok) {
-          const data = await response.json();
-          const analysis = data.choices[0].message.content;
-          
-          // Log GPT response details
-          console.log(`\n✅ === GPT-4O-MINI RESPONSE for Blog ${i + 1} ===`);
-          console.log(`📊 Response Code: ${response.status}`);
-          console.log(`📝 Analysis Length: ${analysis.length} characters`);
-          console.log(`🔍 Token Usage: Input: ${data.usage?.prompt_tokens || 'N/A'}, Output: ${data.usage?.completion_tokens || 'N/A'}, Total: ${data.usage?.total_tokens || 'N/A'}`);
-          console.log(`\n📋 FULL GPT ANALYSIS RESPONSE:`);
-          console.log(`"${analysis}"`);
-          console.log('✅ === END GPT RESPONSE ===\n');
-          
-          return {
-            blogTitle: blog.payload.title || 'Untitled',
-            similarity: similarity,
-            analysis: analysis,
-            contentLength: fullBlogContent.length,
-            draftLength: draftText.length
-          };
-        } else {
-          const errorResponse = await response.text();
-          console.log(`\n❌ === GPT ERROR for Blog ${i + 1} ===`);
-          console.log(`📊 Response Code: ${response.status}`);
-          console.log(`❌ Error Response: ${errorResponse}`);
-          console.log('❌ === END GPT ERROR ===\n');
-          
-          return {
-            blogTitle: blog.payload.title || 'Untitled',
-            similarity: similarity,
-            analysis: `Analysis failed for this blog post. Error: ${response.status} - ${errorResponse}`,
-            contentLength: fullBlogContent.length,
-            draftLength: draftText.length
-          };
-        }
-      });
+      };
       
-      analysisPromises.push(analysisPromise);
-    }
+      requests.push({
+        blog: blog,
+        similarity: similarity,
+        request: request,
+        fullContentLength: fullBlogContent.length,
+        index: i
+      });
+    });
     
-    // Wait for all analyses to complete in parallel
-    const results = await Promise.all(analysisPromises);
-    return results;
+    // Execute all requests in parallel using UrlFetchApp.fetchAll
+    console.log(`📡 Executing ${requests.length} parallel GPT requests`);
+    const responses = UrlFetchApp.fetchAll(
+      requests.map(req => ({
+        url: 'https://api.openai.com/v1/chat/completions',
+        ...req.request
+      }))
+    );
+    
+    // Process responses
+    const detailedAnalyses = [];
+    responses.forEach((response, i) => {
+      const requestData = requests[i];
+      
+      if (response.getResponseCode() === 200) {
+        const data = JSON.parse(response.getContentText());
+        const analysis = data.choices[0].message.content;
+        
+        console.log(`✅ GPT analysis completed for blog ${i + 1}: ${requestData.blog.payload.title}`);
+        
+        detailedAnalyses.push({
+          blogTitle: requestData.blog.payload.title || 'Untitled',
+          similarity: requestData.similarity,
+          analysis: analysis,
+          contentLength: requestData.fullContentLength,
+          draftLength: draftText.length
+        });
+      } else {
+        const errorResponse = response.getContentText();
+        console.warn(`❌ GPT analysis failed for blog ${i + 1}: ${response.getResponseCode()}`);
+        
+        detailedAnalyses.push({
+          blogTitle: requestData.blog.payload.title || 'Untitled',
+          similarity: requestData.similarity,
+          analysis: `Analysis failed. Error: ${response.getResponseCode()}`,
+          contentLength: requestData.fullContentLength,
+          draftLength: draftText.length
+        });
+      }
+    });
+    
+    console.log(`🎉 Parallel GPT analysis completed for ${detailedAnalyses.length} blogs`);
+    return detailedAnalyses;
     
   } catch (error) {
     console.error('Error analyzing with GPT:', error);
@@ -180,30 +163,29 @@ IMPORTANT: Since this is ${similarity}% similar, focus on finding and quoting th
 /**
  * Generate embedding for text using OpenAI
  */
-async function generateEmbedding(text) {
-  if (!window.CONFIG.OPENAI_API_KEY || window.CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
-    throw new Error('OpenAI API key not configured');
+function generateEmbedding(text, apiKeys) {
+  if (!apiKeys.openaiKey) {
+    throw new Error('OpenAI API key not found in script properties');
   }
   
   try {
-    const response = await fetch('https://api.openai.com/v1/embeddings', {
+    const response = UrlFetchApp.fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${window.CONFIG.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${apiKeys.openaiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
+      payload: JSON.stringify({
         model: 'text-embedding-3-large',
         input: text
       })
     });
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+    if (response.getResponseCode() !== 200) {
+      throw new Error(`OpenAI API error: ${response.getResponseCode()} - ${response.getContentText()}`);
     }
     
-    const data = await response.json();
+    const data = JSON.parse(response.getContentText());
     return data.data[0].embedding;
   } catch (error) {
     console.error('Error generating embedding:', error);
@@ -214,37 +196,32 @@ async function generateEmbedding(text) {
 /**
  * Search for similar vectors in Qdrant
  */
-async function searchSimilarBlogs(embedding, source = 'filestack', topK = 5) {
-  if (!window.CONFIG.QDRANT_URL || window.CONFIG.QDRANT_URL === 'your-qdrant-url-here' || 
-      !window.CONFIG.QDRANT_API_KEY || window.CONFIG.QDRANT_API_KEY === 'your-qdrant-api-key-here') {
-    throw new Error('Qdrant credentials not configured');
+function searchSimilarBlogs(embedding, source = 'filestack', topK = 5, apiKeys) {
+  if (!apiKeys.qdrantUrl || !apiKeys.qdrantKey) {
+    throw new Error('Qdrant URL or API key not found in script properties');
   }
   
   const collectionName = source === 'filestack' ? 'filestack_blogs' : 'froala_blogs';
   
   try {
-    const response = await fetch(window.CONFIG.QDRANT_URL, {
+    const response = UrlFetchApp.fetch(`${apiKeys.qdrantUrl}/collections/${collectionName}/points/search`, {
       method: 'POST',
-      mode: 'cors',
       headers: {
-        'api-key': window.CONFIG.QDRANT_API_KEY,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'api-key': apiKeys.qdrantKey,
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
+      payload: JSON.stringify({
         vector: embedding,
         limit: topK,
-        with_payload: true,
-        collection: collectionName
+        with_payload: true
       })
     });
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Qdrant API error: ${response.status} - ${errorText}`);
+    if (response.getResponseCode() !== 200) {
+      throw new Error(`Qdrant API error: ${response.getResponseCode()} - ${response.getContentText()}`);
     }
     
-    const data = await response.json();
+    const data = JSON.parse(response.getContentText());
     return data.result || [];
   } catch (error) {
     console.error('Error searching Qdrant:', error);
@@ -256,8 +233,35 @@ async function searchSimilarBlogs(embedding, source = 'filestack', topK = 5) {
  * Extract keywords from text (simple implementation)
  */
 function extractKeywords(text, topN = 10) {
-  // Simple keyword extraction - remove common words and count frequency
-  const stopWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'a', 'an']);
+  // Enhanced stop words list - more comprehensive filtering
+  const stopWords = new Set([
+    // Articles
+    'the', 'a', 'an',
+    // Conjunctions
+    'and', 'or', 'but', 'nor', 'yet', 'so',
+    // Prepositions
+    'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'down', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'among', 'within', 'without', 'against', 'toward', 'towards', 'upon', 'across', 'behind', 'beneath', 'beside', 'beyond', 'inside', 'outside', 'under', 'over',
+    // Common verbs
+    'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'shall', 'must', 'ought',
+    // Pronouns
+    'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'mine', 'yours', 'hers', 'ours', 'theirs', 'myself', 'yourself', 'himself', 'herself', 'itself', 'ourselves', 'yourselves', 'themselves',
+    // Common words
+    'very', 'really', 'quite', 'rather', 'just', 'only', 'even', 'still', 'also', 'too', 'as', 'well', 'so', 'such', 'much', 'many', 'few', 'little', 'more', 'most', 'less', 'least', 'some', 'any', 'all', 'both', 'each', 'every', 'either', 'neither', 'other', 'another', 'same', 'different', 'similar', 'like', 'unlike',
+    // Time words
+    'now', 'then', 'today', 'yesterday', 'tomorrow', 'always', 'never', 'often', 'sometimes', 'usually', 'rarely', 'ever', 'already', 'yet', 'still', 'soon', 'later', 'early', 'late',
+    // Place words
+    'here', 'there', 'where', 'everywhere', 'anywhere', 'nowhere', 'somewhere', 'away', 'back', 'forward', 'backward', 'upward', 'downward', 'home', 'abroad', 'inside', 'outside',
+    // Common adjectives
+    'good', 'bad', 'big', 'small', 'large', 'little', 'high', 'low', 'long', 'short', 'wide', 'narrow', 'thick', 'thin', 'heavy', 'light', 'strong', 'weak', 'hard', 'soft', 'easy', 'difficult', 'simple', 'complex', 'new', 'old', 'young', 'fresh', 'stale', 'clean', 'dirty', 'hot', 'cold', 'warm', 'cool',
+    // Common adverbs
+    'very', 'really', 'quite', 'rather', 'just', 'only', 'even', 'still', 'also', 'too', 'as', 'well', 'so', 'such', 'much', 'many', 'few', 'little', 'more', 'most', 'less', 'least', 'some', 'any', 'all', 'both', 'each', 'every', 'either', 'neither', 'other', 'another', 'same', 'different', 'similar', 'like', 'unlike',
+    // Numbers and quantities
+    'one', 'two', 'three', 'first', 'second', 'third', 'last', 'next', 'previous', 'current', 'recent', 'old', 'new', 'modern', 'ancient', 'old', 'young', 'fresh', 'stale',
+    // Common tech/business words that don't add value
+    'use', 'using', 'used', 'get', 'gets', 'getting', 'got', 'gotten', 'make', 'makes', 'making', 'made', 'take', 'takes', 'taking', 'took', 'taken', 'go', 'goes', 'going', 'went', 'gone', 'come', 'comes', 'coming', 'came', 'see', 'sees', 'seeing', 'saw', 'seen', 'know', 'knows', 'knowing', 'knew', 'known',
+    // Common filler words
+    'like', 'um', 'uh', 'well', 'you know', 'i mean', 'sort of', 'kind of', 'basically', 'actually', 'literally', 'honestly', 'frankly', 'obviously', 'clearly', 'naturally', 'certainly', 'definitely', 'absolutely', 'completely', 'totally', 'entirely', 'wholly', 'fully', 'partly', 'partially', 'mostly', 'mainly', 'primarily', 'chiefly', 'largely', 'generally', 'usually', 'typically', 'normally', 'commonly', 'frequently', 'often', 'sometimes', 'occasionally', 'rarely', 'seldom', 'hardly', 'scarcely', 'barely', 'almost', 'nearly', 'approximately', 'roughly', 'about', 'around', 'roughly', 'exactly', 'precisely', 'accurately', 'correctly', 'properly', 'appropriately', 'suitably', 'adequately', 'sufficiently', 'enough', 'too', 'also', 'as well', 'in addition', 'additionally', 'furthermore', 'moreover', 'besides', 'likewise', 'similarly', 'equally', 'likewise', 'in the same way', 'in the same manner', 'in the same fashion', 'in the same style', 'in the same form', 'in the same shape', 'in the same size', 'in the same color', 'in the same pattern', 'in the same design', 'in the same layout', 'in the same structure', 'in the same format', 'in the same style', 'in the same way', 'in the same manner', 'in the same fashion', 'in the same style', 'in the same form', 'in the same shape', 'in the same size', 'in the same color', 'in the same pattern', 'in the same design', 'in the same layout', 'in the same structure', 'in the same format'
+  ]);
   
   const words = text.toLowerCase()
     .replace(/[^\w\s]/g, '')
@@ -320,68 +324,83 @@ function generateRecommendations(similarBlogs) {
 }
 
 /**
+ * Performance timing for backend
+ */
+const BackendTimer = {
+  start(label) {
+    const startTime = new Date().getTime();
+    console.log(`⏱️ [BACKEND START] ${label} at ${startTime}`);
+    return startTime;
+  },
+  end(label, startTime) {
+    const endTime = new Date().getTime();
+    const elapsed = endTime - startTime;
+    console.log(`⏱️ [BACKEND END] ${label}: ${elapsed}ms`);
+    return elapsed;
+  }
+};
+
+/**
  * Main function to check blog similarity
  */
-async function checkBlogSimilarity(draftText, source = 'filestack') {
-  const totalStart = BrowserTimer.start('TOTAL_BACKEND');
+function checkBlogSimilarity(draftText, source = 'filestack') {
+  const totalStart = BackendTimer.start('TOTAL_BACKEND');
   
   try {
-    // Validate configuration
-    if (!window.CONFIG.OPENAI_API_KEY || window.CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
-      throw new Error('OpenAI API key not configured. Please set your API key in the window.CONFIG object.');
+    // Get API keys from environment variables
+    const apiKeysStart = BackendTimer.start('GET_API_KEYS');
+    const apiKeys = getApiKeys();
+    BackendTimer.end('GET_API_KEYS', apiKeysStart);
+    
+    // Validate API keys
+    if (!apiKeys.openaiKey) {
+      throw new Error('OpenAI API key not set in script properties. Go to Extensions > Apps Script > Project Settings > Script Properties and add OPENAI_API_KEY');
     }
     
-    if (!window.CONFIG.QDRANT_URL || window.CONFIG.QDRANT_URL === 'your-qdrant-url-here' || 
-        !window.CONFIG.QDRANT_API_KEY || window.CONFIG.QDRANT_API_KEY === 'your-qdrant-api-key-here') {
-      throw new Error('Qdrant credentials not configured. Please set your Qdrant URL and API key in the window.CONFIG object.');
+    if (!apiKeys.qdrantUrl || !apiKeys.qdrantKey) {
+      throw new Error('Qdrant credentials not set in script properties. Add QDRANT_URL and QDRANT_API_KEY');
     }
     
     // Generate embedding for draft
-    const embeddingStart = BrowserTimer.start('GENERATE_EMBEDDING');
-    const draftEmbedding = await generateEmbedding(draftText);
-    BrowserTimer.end('GENERATE_EMBEDDING', embeddingStart);
+    const embeddingStart = BackendTimer.start('GENERATE_EMBEDDING');
+    const draftEmbedding = generateEmbedding(draftText, apiKeys);
+    BackendTimer.end('GENERATE_EMBEDDING', embeddingStart);
     
-    // Search for similar blogs
-    const searchStart = BrowserTimer.start('SEARCH_SIMILAR_BLOGS');
-    const similarBlogs = await searchSimilarBlogs(draftEmbedding, source, 10);
-    BrowserTimer.end('SEARCH_SIMILAR_BLOGS', searchStart);
+    // Search for similar blogs - increased to get more for GPT analysis
+    const searchStart = BackendTimer.start('SEARCH_SIMILAR_BLOGS');
+    const similarBlogs = searchSimilarBlogs(draftEmbedding, source, 10, apiKeys);
+    BackendTimer.end('SEARCH_SIMILAR_BLOGS', searchStart);
     
-    // Log the Qdrant results to see what content we're working with
-    console.log('=== QDRANT SEARCH RESULTS ===');
-    console.log(`Found ${similarBlogs.length} similar blogs`);
-    
+    // Minimal logging for performance
+    console.log(`✅ Found ${similarBlogs.length} similar blogs`);
     if (similarBlogs.length > 0) {
-        const topBlog = similarBlogs[0];
-        console.log('=== TOP SIMILAR BLOG (Most Similar) ===');
-        console.log(`Title: ${topBlog.payload.title || 'Untitled'}`);
-        console.log(`Similarity Score: ${(topBlog.score * 100).toFixed(1)}%`);
-        console.log(`Content Length: ${(topBlog.payload.content || '').length} characters`);
-        console.log(`Full Content: ${topBlog.payload.content || 'No content'}`);
-        console.log('=== END TOP BLOG CONTENT ===');
+      const topSimilarity = (similarBlogs[0].score * 100).toFixed(1);
+      console.log(`🎯 Top similarity: ${topSimilarity}% - ${similarBlogs[0].payload.title}`);
     }
     
     // Extract keywords from draft
-    const keywordStart = BrowserTimer.start('EXTRACT_KEYWORDS');
+    const keywordStart = BackendTimer.start('EXTRACT_KEYWORDS');
     const draftKeywords = extractKeywords(draftText);
     
-    // Extract keywords from similar articles
-    const allSimilarContent = similarBlogs.map(blog => blog.payload.content || '').join(' ');
-    const similarKeywords = extractKeywords(allSimilarContent);
-    BrowserTimer.end('EXTRACT_KEYWORDS', keywordStart);
+    // Extract keywords from TOP similar article only (not aggregated)
+    let similarKeywords = [];
+    if (similarBlogs.length > 0) {
+      const topSimilarContent = similarBlogs[0].payload.content || '';
+      similarKeywords = extractKeywords(topSimilarContent);
+    }
+    BackendTimer.end('EXTRACT_KEYWORDS', keywordStart);
     
     // Generate recommendations
-    const recStart = BrowserTimer.start('GENERATE_RECOMMENDATIONS');
+    const recStart = BackendTimer.start('GENERATE_RECOMMENDATIONS');
     const recommendations = generateRecommendations(similarBlogs);
-    BrowserTimer.end('GENERATE_RECOMMENDATIONS', recStart);
+    BackendTimer.end('GENERATE_RECOMMENDATIONS', recStart);
     
-    // Get comprehensive GPT analysis ONLY for top 3 most similar blogs for performance
+    // Get parallel GPT analysis for top 3 blogs only
     let gptAnalyses = [];
     try {
-      const gptStart = BrowserTimer.start('GPT_ANALYSIS');
-      const topBlogs = similarBlogs.slice(0, 3); // ONLY analyze top 3 highest similarity scores
-      console.log(`🎯 Running GPT analysis on top ${topBlogs.length} blogs only (out of ${similarBlogs.length} total)`);
-      gptAnalyses = await analyzeSimilarityWithGPT(draftText, topBlogs);
-      BrowserTimer.end('GPT_ANALYSIS', gptStart);
+      const gptStart = BackendTimer.start('PARALLEL_GPT_ANALYSIS');
+      gptAnalyses = analyzeSimilarityWithGPT(draftText, similarBlogs, apiKeys);
+      BackendTimer.end('PARALLEL_GPT_ANALYSIS', gptStart);
     } catch (error) {
       console.warn('GPT analysis failed, continuing with basic analysis:', error);
       gptAnalyses = [];
@@ -396,8 +415,8 @@ async function checkBlogSimilarity(draftText, source = 'filestack') {
       similarBlogs: similarBlogs.map(blog => {
         const content = blog.payload.content || '';
         // Keep full content for accurate analysis, truncate only for UI display
-        const displayContent = content.length > 2000 ? 
-          content.substring(0, 2000) + '... (content truncated for display)' : content;
+        const displayContent = content.length > 3000 ? 
+          content.substring(0, 3000) + '... (content truncated for display)' : content;
         
         return {
           title: blog.payload.title || 'Untitled',
@@ -414,12 +433,12 @@ async function checkBlogSimilarity(draftText, source = 'filestack') {
       totalChecked: similarBlogs.length
     };
     
-    BrowserTimer.end('TOTAL_BACKEND', totalStart);
+    BackendTimer.end('TOTAL_BACKEND', totalStart);
     console.log('✅ Similarity check completed successfully:', results);
     return results;
     
   } catch (error) {
-    BrowserTimer.end('TOTAL_BACKEND', totalStart);
+    BackendTimer.end('TOTAL_BACKEND', totalStart);
     console.error('❌ Error checking similarity:', error);
     return {
       error: error.message || 'Unknown error occurred'
@@ -428,8 +447,23 @@ async function checkBlogSimilarity(draftText, source = 'filestack') {
 }
 
 /**
- * Function to be called from HTML (replaces Apps Script processSimilarityCheck)
+ * Example usage - call this from your HTML interface
  */
-window.processSimilarityCheck = async function(draftText, source) {
-  return await checkBlogSimilarity(draftText, source);
-};
+function testSimilarityCheck() {
+  const draftText = `
+    How to build a great rich text editor for modern web applications.
+    Rich text editors are essential components that allow users to format text...
+  `;
+  
+  const results = checkBlogSimilarity(draftText, 'filestack');
+  console.log('Similarity check results:', results);
+  
+  return results;
+}
+
+/**
+ * Function to be called from HTML via google.script.run
+ */
+function processSimilarityCheck(draftText, source) {
+  return checkBlogSimilarity(draftText, source);
+}

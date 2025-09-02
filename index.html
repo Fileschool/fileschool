@@ -1564,6 +1564,13 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
     </section>
 
     <script>
+        // Configuration for Netlify deployment (API keys handled server-side)
+        window.CONFIG = {
+            // Environment variables will be handled by Netlify functions
+            // No API keys stored client-side for security
+            NETLIFY_FUNCTIONS_URL: '/.netlify/functions'
+        };
+
         // Tab switching functionality
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.features-nav-item');
