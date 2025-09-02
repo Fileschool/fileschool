@@ -67,13 +67,17 @@ ${truncatedBlog}
 Provide analysis with:
 1. **OVERALL ASSESSMENT**: Core overlap explanation
 2. **KEY OVERLAPS**: Exact matching phrases/concepts
-3. **SIMILAR SECTIONS**: Quote 2-3 specific section pairs that are similar:
-   - "Draft section text..." vs "Blog section text..."
-   - Explain why each pair is similar
+3. **SIMILAR SECTIONS**: Create a table showing 2-4 similar section pairs:
+
+| Draft Section | Similar Blog Section | Why Similar |
+|---------------|---------------------|-------------|
+| "Exact quote from draft..." | "Corresponding quote from blog..." | Brief explanation |
+| "Another draft quote..." | "Matching blog quote..." | Brief explanation |
+
 4. **RISK LEVEL**: High/Medium/Low duplicate content risk
 5. **RECOMMENDATIONS**: Specific rewrite suggestions
 
-Be specific about overlapping content and include actual text examples.`;
+Be specific about overlapping content and include actual quoted text in the table.`;
       
       const request = {
         method: 'POST',
@@ -391,12 +395,9 @@ function checkBlogSimilarity(draftText, source = 'filestack') {
     
          // Extract keywords from TOP similar article only (not aggregated)
      let similarKeywords = [];
-     let wordComparison = null;
      if (similarBlogs.length > 0) {
        const topSimilarContent = similarBlogs[0].payload.content || '';
        similarKeywords = extractKeywords(topSimilarContent);
-       
-       // Skip separate section comparison - it will be part of the AI analysis
      }
      BackendTimer.end('EXTRACT_KEYWORDS', keywordStart);
     
@@ -421,7 +422,6 @@ function checkBlogSimilarity(draftText, source = 'filestack') {
       recommendations: recommendations || { message: 'Analysis complete', color: 'green' },
       draftKeywords: draftKeywords || [],
       similarKeywords: similarKeywords || [],
-      wordComparison: wordComparison || { sectionMatches: [], metrics: { matchingSections: 0, averageSectionSimilarity: '0.0' } },
       gptAnalyses: gptAnalyses || [],
       similarBlogs: [],
       source: source || 'filestack',
