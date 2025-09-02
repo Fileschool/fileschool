@@ -67,10 +67,13 @@ ${truncatedBlog}
 Provide analysis with:
 1. **OVERALL ASSESSMENT**: Core overlap explanation
 2. **KEY OVERLAPS**: Exact matching phrases/concepts
-3. **RISK LEVEL**: High/Medium/Low duplicate content risk
-4. **RECOMMENDATIONS**: Specific rewrite suggestions
+3. **SIMILAR SECTIONS**: Quote 2-3 specific section pairs that are similar:
+   - "Draft section text..." vs "Blog section text..."
+   - Explain why each pair is similar
+4. **RISK LEVEL**: High/Medium/Low duplicate content risk
+5. **RECOMMENDATIONS**: Specific rewrite suggestions
 
-Be specific about overlapping content but keep response under 2000 characters.`;
+Be specific about overlapping content and include actual text examples.`;
       
       const request = {
         method: 'POST',
@@ -90,7 +93,7 @@ Be specific about overlapping content but keep response under 2000 characters.`;
               content: prompt
             }
           ],
-                     max_tokens: 80000, // Increased to 80K tokens for comprehensive analysis
+                     max_tokens: 16384, // Set to model's maximum supported completion tokens
           temperature: 0.1 // Reduced for consistency
         })
       };
@@ -229,90 +232,9 @@ function searchSimilarBlogs(embedding, source = 'filestack', topK = 5, apiKeys) 
   }
 }
 
-/**
- * Create word-by-word comparison between draft and similar article
- * Highlights exact matches and similar phrases
- */
-function createWordComparison(draftText, similarText) {
-  try {
-    // Clean and normalize both texts
-    const cleanDraft = draftText.toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
-    const cleanSimilar = similarText.toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
-    
-    // Split into words
-    const draftWords = cleanDraft.split(' ');
-    const similarWords = cleanSimilar.split(' ');
-    
-    // Find exact word matches
-    const exactMatches = [];
-    const draftWordSet = new Set(draftWords);
-    
-    similarWords.forEach((word, index) => {
-      if (draftWordSet.has(word) && word.length > 3) {
-        exactMatches.push({
-          word: word,
-          position: index,
-          type: 'exact'
-        });
-      }
-    });
-    
-    // Find phrase matches (3+ consecutive words)
-    const phraseMatches = [];
-    for (let i = 0; i <= draftWords.length - 3; i++) {
-      for (let j = 0; j <= similarWords.length - 3; j++) {
-        const draftPhrase = draftWords.slice(i, i + 3).join(' ');
-        const similarPhrase = similarWords.slice(j, j + 3).join(' ');
-        
-        if (draftPhrase === similarPhrase && draftPhrase.length > 10) {
-          phraseMatches.push({
-            phrase: draftPhrase,
-            draftStart: i,
-            similarStart: j,
-            type: 'phrase'
-          });
-        }
-      }
-    }
-    
-    // Calculate similarity metrics
-    const totalDraftWords = draftWords.length;
-    const totalSimilarWords = similarWords.length;
-    const matchingWords = exactMatches.length;
-    const matchingPhrases = phraseMatches.length;
-    
-    const wordSimilarity = (matchingWords / Math.max(totalDraftWords, totalSimilarWords)) * 100;
-    const phraseSimilarity = (matchingPhrases / Math.max(totalDraftWords, totalSimilarWords)) * 100;
-    
-    return {
-      exactMatches: exactMatches.slice(0, 100), // Limit to first 100 matches
-      phraseMatches: phraseMatches.slice(0, 50), // Limit to first 50 phrases
-      metrics: {
-        totalDraftWords,
-        totalSimilarWords,
-        matchingWords,
-        matchingPhrases,
-        wordSimilarity: wordSimilarity.toFixed(1),
-        phraseSimilarity: phraseSimilarity.toFixed(1)
-      }
-    };
-    
-  } catch (error) {
-    console.error('Error creating word comparison:', error);
-    return {
-      exactMatches: [],
-      phraseMatches: [],
-      metrics: {
-        totalDraftWords: 0,
-        totalSimilarWords: 0,
-        matchingWords: 0,
-        matchingPhrases: 0,
-        wordSimilarity: '0.0',
-        phraseSimilarity: '0.0'
-      }
-    };
-  }
-}
+// Removed separate section comparison - now integrated into AI analysis
+
+// Removed all complex helper functions - keeping only the basic createWordComparison function
 
 /**
  * Extract keywords from text (simple implementation)
@@ -474,10 +396,7 @@ function checkBlogSimilarity(draftText, source = 'filestack') {
        const topSimilarContent = similarBlogs[0].payload.content || '';
        similarKeywords = extractKeywords(topSimilarContent);
        
-       // Create word-by-word comparison for top article
-       const comparisonStart = BackendTimer.start('WORD_COMPARISON');
-       wordComparison = createWordComparison(draftText, topSimilarContent);
-       BackendTimer.end('WORD_COMPARISON', comparisonStart);
+       // Skip separate section comparison - it will be part of the AI analysis
      }
      BackendTimer.end('EXTRACT_KEYWORDS', keywordStart);
     
@@ -497,33 +416,57 @@ function checkBlogSimilarity(draftText, source = 'filestack') {
       gptAnalyses = [];
     }
     
-         // Format results - keep full content for GPT analysis but truncate for display
-     const results = {
-       recommendations: recommendations,
-       draftKeywords: draftKeywords,
-       similarKeywords: similarKeywords,
-       wordComparison: wordComparison, // Add word-by-word comparison
-       gptAnalyses: gptAnalyses,
-      similarBlogs: similarBlogs.map(blog => {
-        const content = blog.payload.content || '';
-        // Keep full content for accurate analysis, truncate only for UI display
-        const displayContent = content.length > 3000 ? 
-          content.substring(0, 3000) + '... (content truncated for display)' : content;
-        
-        return {
-          title: blog.payload.title || 'Untitled',
-          url: blog.payload.url || '',
-          similarity: (blog.score * 100).toFixed(1),
-          description: blog.payload.description || '',
-          categories: blog.payload.categories || [],
-          content: displayContent, // Only UI display is truncated
-          fullContent: content, // Keep full content for potential future analysis
-          keywords: extractKeywords(content, 5)
-        };
-      }),
-      source: source,
-      totalChecked: similarBlogs.length
+    // Format results - ensure everything is properly defined
+    const results = {
+      recommendations: recommendations || { message: 'Analysis complete', color: 'green' },
+      draftKeywords: draftKeywords || [],
+      similarKeywords: similarKeywords || [],
+      wordComparison: wordComparison || { sectionMatches: [], metrics: { matchingSections: 0, averageSectionSimilarity: '0.0' } },
+      gptAnalyses: gptAnalyses || [],
+      similarBlogs: [],
+      source: source || 'filestack',
+      totalChecked: 0
     };
+
+    // Process similarBlogs safely
+    if (similarBlogs && Array.isArray(similarBlogs)) {
+      try {
+        results.similarBlogs = similarBlogs.map(function(blog) {
+          if (!blog || !blog.payload) {
+            return {
+              title: 'Untitled',
+              url: '',
+              similarity: '0.0',
+              description: '',
+              categories: [],
+              content: '',
+              fullContent: '',
+              keywords: []
+            };
+          }
+          
+          const content = blog.payload.content || '';
+          const displayContent = content.length > 3000 ? 
+            content.substring(0, 3000) + '... (content truncated for display)' : content;
+          
+          return {
+            title: blog.payload.title || 'Untitled',
+            url: blog.payload.url || '',
+            similarity: blog.score ? (blog.score * 100).toFixed(1) : '0.0',
+            description: blog.payload.description || '',
+            categories: blog.payload.categories || [],
+            content: displayContent,
+            fullContent: content,
+            keywords: extractKeywords(content, 5)
+          };
+        });
+        results.totalChecked = similarBlogs.length;
+      } catch (e) {
+        console.error('Error processing similar blogs:', e);
+        results.similarBlogs = [];
+        results.totalChecked = 0;
+      }
+    }
     
     BackendTimer.end('TOTAL_BACKEND', totalStart);
     console.log('✅ Similarity check completed successfully:', results);
