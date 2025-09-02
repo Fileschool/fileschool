@@ -1663,15 +1663,17 @@ Minimum 50 characters required for analysis."
             return originalCheckSimilarity.call(this);
         };
         
-        // Initialize
-        updateWordCount();
-        checkApiKeyStatus();
-        
-        // Set initial theme based on default selection
-        updateTheme('filestack');
-        
-        // Focus on textarea when page loads
-        document.getElementById('draftText').focus();
+        // Initialize when DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            updateWordCount();
+            checkApiKeyStatus();
+            
+            // Set initial theme based on default selection
+            updateTheme('filestack');
+            
+            // Focus on textarea when page loads
+            document.getElementById('draftText').focus();
+        });
         
         // Toggle analysis sections
         function toggleAnalysis(index) {

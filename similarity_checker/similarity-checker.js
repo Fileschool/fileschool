@@ -4,7 +4,7 @@
  */
 
 // API Configuration - loaded from the main HTML file via localStorage
-const CONFIG = window.CONFIG;
+// Use window.window.CONFIG directly since it's set in the HTML file
 
 /**
  * Performance timing for browser environment
@@ -27,7 +27,7 @@ const BrowserTimer = {
  * Generate comprehensive similarity analysis using GPT-4o-mini
  */
 async function analyzeSimilarityWithGPT(draftText, similarBlogs) {
-  if (!CONFIG.OPENAI_API_KEY || CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
+  if (!window.CONFIG.OPENAI_API_KEY || window.CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
     throw new Error('OpenAI API key not configured');
   }
   
@@ -102,7 +102,7 @@ IMPORTANT: Since this is ${similarity}% similar, focus on finding and quoting th
       const analysisPromise = fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${CONFIG.OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${window.CONFIG.OPENAI_API_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -181,7 +181,7 @@ IMPORTANT: Since this is ${similarity}% similar, focus on finding and quoting th
  * Generate embedding for text using OpenAI
  */
 async function generateEmbedding(text) {
-  if (!CONFIG.OPENAI_API_KEY || CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
+  if (!window.CONFIG.OPENAI_API_KEY || window.CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
     throw new Error('OpenAI API key not configured');
   }
   
@@ -189,7 +189,7 @@ async function generateEmbedding(text) {
     const response = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${CONFIG.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${window.CONFIG.OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -215,18 +215,18 @@ async function generateEmbedding(text) {
  * Search for similar vectors in Qdrant
  */
 async function searchSimilarBlogs(embedding, source = 'filestack', topK = 5) {
-  if (!CONFIG.QDRANT_URL || CONFIG.QDRANT_URL === 'your-qdrant-url-here' || 
-      !CONFIG.QDRANT_API_KEY || CONFIG.QDRANT_API_KEY === 'your-qdrant-api-key-here') {
+  if (!window.CONFIG.QDRANT_URL || window.CONFIG.QDRANT_URL === 'your-qdrant-url-here' || 
+      !window.CONFIG.QDRANT_API_KEY || window.CONFIG.QDRANT_API_KEY === 'your-qdrant-api-key-here') {
     throw new Error('Qdrant credentials not configured');
   }
   
   const collectionName = source === 'filestack' ? 'filestack_blogs' : 'froala_blogs';
   
   try {
-    const response = await fetch(`${CONFIG.QDRANT_URL}/collections/${collectionName}/points/search`, {
+    const response = await fetch(`${window.CONFIG.QDRANT_URL}/collections/${collectionName}/points/search`, {
       method: 'POST',
       headers: {
-        'api-key': CONFIG.QDRANT_API_KEY,
+        'api-key': window.CONFIG.QDRANT_API_KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -324,13 +324,13 @@ async function checkBlogSimilarity(draftText, source = 'filestack') {
   
   try {
     // Validate configuration
-    if (!CONFIG.OPENAI_API_KEY || CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
-      throw new Error('OpenAI API key not configured. Please set your API key in the CONFIG object.');
+    if (!window.CONFIG.OPENAI_API_KEY || window.CONFIG.OPENAI_API_KEY === 'your-openai-api-key-here') {
+      throw new Error('OpenAI API key not configured. Please set your API key in the window.CONFIG object.');
     }
     
-    if (!CONFIG.QDRANT_URL || CONFIG.QDRANT_URL === 'your-qdrant-url-here' || 
-        !CONFIG.QDRANT_API_KEY || CONFIG.QDRANT_API_KEY === 'your-qdrant-api-key-here') {
-      throw new Error('Qdrant credentials not configured. Please set your Qdrant URL and API key in the CONFIG object.');
+    if (!window.CONFIG.QDRANT_URL || window.CONFIG.QDRANT_URL === 'your-qdrant-url-here' || 
+        !window.CONFIG.QDRANT_API_KEY || window.CONFIG.QDRANT_API_KEY === 'your-qdrant-api-key-here') {
+      throw new Error('Qdrant credentials not configured. Please set your Qdrant URL and API key in the window.CONFIG object.');
     }
     
     // Generate embedding for draft
