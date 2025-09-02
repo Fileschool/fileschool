@@ -3,13 +3,8 @@
  * Converted from Apps Script for GitHub Pages hosting
  */
 
-// API Configuration - loaded from config.js file
-// Make sure to create config.js from config.example.js with your real API keys
-const CONFIG = window.CONFIG || {
-  OPENAI_API_KEY: 'your-openai-api-key-here',
-  QDRANT_URL: 'your-qdrant-url-here', 
-  QDRANT_API_KEY: 'your-qdrant-api-key-here'
-};
+// API Configuration - loaded from the main HTML file via localStorage
+const CONFIG = window.CONFIG;
 
 /**
  * Performance timing for browser environment

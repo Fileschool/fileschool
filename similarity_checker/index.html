@@ -1061,9 +1061,57 @@ Minimum 50 characters required for analysis."
         </div>
     </div>
 
-    <!-- Include configuration and similarity checker JavaScript -->
-    <script src="config.js"></script>
+    <!-- Include similarity checker JavaScript -->
     <script src="similarity-checker.js"></script>
+    
+    <script>
+        // API Key Management - Client-side only for GitHub Pages
+        const CONFIG = {
+            OPENAI_API_KEY: localStorage.getItem('openai_api_key') || '',
+            QDRANT_URL: localStorage.getItem('qdrant_url') || '',
+            QDRANT_API_KEY: localStorage.getItem('qdrant_api_key') || ''
+        };
+
+        // API Key Manager
+        window.ApiKeyManager = {
+            save(openaiKey, qdrantUrl, qdrantKey) {
+                localStorage.setItem('openai_api_key', openaiKey);
+                localStorage.setItem('qdrant_url', qdrantUrl);
+                localStorage.setItem('qdrant_api_key', qdrantKey);
+                
+                // Update global config
+                CONFIG.OPENAI_API_KEY = openaiKey;
+                CONFIG.QDRANT_URL = qdrantUrl;
+                CONFIG.QDRANT_API_KEY = qdrantKey;
+                
+                console.log('✅ API keys saved to localStorage');
+            },
+            
+            clear() {
+                localStorage.removeItem('openai_api_key');
+                localStorage.removeItem('qdrant_url');  
+                localStorage.removeItem('qdrant_api_key');
+                
+                CONFIG.OPENAI_API_KEY = '';
+                CONFIG.QDRANT_URL = '';
+                CONFIG.QDRANT_API_KEY = '';
+                
+                console.log('🗑️ API keys cleared from localStorage');
+            },
+            
+            isConfigured() {
+                return CONFIG.OPENAI_API_KEY && 
+                       CONFIG.QDRANT_URL && 
+                       CONFIG.QDRANT_API_KEY &&
+                       CONFIG.OPENAI_API_KEY !== '' &&
+                       CONFIG.QDRANT_URL !== '' &&
+                       CONFIG.QDRANT_API_KEY !== '';
+            }
+        };
+
+        // Make config available globally for similarity-checker.js
+        window.CONFIG = CONFIG;
+    </script>
     
     <script>
         // Global variables
