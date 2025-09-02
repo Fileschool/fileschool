@@ -317,6 +317,109 @@
             border-left: 3px solid var(--primary-color);
         }
         
+        /* Word Comparison Styles */
+        .comparison-box {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid #e9ecef;
+        }
+        
+        .comparison-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .comparison-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .metric-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .metric-value {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+        
+        .comparison-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .comparison-column h4 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .content-display {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .exact-matches, .phrase-matches {
+            margin-top: 25px;
+        }
+        
+        .exact-matches h4, .phrase-matches h4 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .matches-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .match-item {
+            background: rgba(var(--primary-rgba), 0.1);
+            color: var(--primary-color);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            border: 1px solid rgba(var(--primary-rgba), 0.3);
+        }
+        
+        .phrase-match {
+            background: rgba(var(--secondary-rgba), 0.1);
+            color: var(--secondary-color);
+            border-color: rgba(var(--secondary-rgba), 0.3);
+        }
+        
         .similar-blogs {
             margin-top: 40px;
         }
@@ -832,6 +935,54 @@ Minimum 50 characters required for analysis."
                         <div id="similarArticleTitle" class="similar-article-title"></div>
                         <div id="similarKeywords"></div>
                     </div>
+                    
+                    <!-- Word-by-Word Comparison Section -->
+                    <div class="comparison-box" id="wordComparisonSection" style="display: none;">
+                        <h3>🔍 Word-by-Word Comparison</h3>
+                        <div style="font-size: 12px; color: #666; margin-bottom: 15px; font-style: italic;">
+                            Exact matches and phrase similarities between your draft and the top similar article
+                        </div>
+                        
+                        <div class="comparison-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">Word Similarity:</span>
+                                <span class="metric-value" id="wordSimilarity">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Phrase Similarity:</span>
+                                <span class="metric-value" id="phraseSimilarity">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Matching Words:</span>
+                                <span class="metric-value" id="matchingWords">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Matching Phrases:</span>
+                                <span class="metric-value" id="matchingPhrases">-</span>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison-content">
+                            <div class="comparison-column">
+                                <h4>📝 Your Draft</h4>
+                                <div id="draftContent" class="content-display"></div>
+                            </div>
+                            <div class="comparison-column">
+                                <h4>📄 Similar Article</h4>
+                                <div id="similarContent" class="content-display"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="exact-matches">
+                            <h4>🎯 Exact Word Matches</h4>
+                            <div id="exactMatches" class="matches-list"></div>
+                        </div>
+                        
+                        <div class="phrase-matches">
+                            <h4>🔗 Phrase Matches</h4>
+                            <div id="phraseMatches" class="matches-list"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="similar-blogs">
@@ -1089,6 +1240,11 @@ Minimum 50 characters required for analysis."
             } else {
                 similarArticleTitle.innerHTML = '';
                 similarKeywords.innerHTML = '<span style="color: #666; font-style: italic;">No similar articles found</span>';
+            }
+            
+            // Display word-by-word comparison
+            if (data.wordComparison) {
+                displayWordComparison(data.wordComparison, data.similarBlogs[0]);
             }
                 
             console.log(`⚡ Basic elements rendered: ${(performance.now() - basicStart).toFixed(2)}ms`);
@@ -1372,6 +1528,53 @@ Minimum 50 characters required for analysis."
             } else {
                 contentComparison.style.display = 'none';
                 toggleBtn.textContent = '🔍 Show Content Comparison';
+            }
+        }
+        
+        // Display word-by-word comparison between draft and similar article
+        function displayWordComparison(wordComparison, topArticle) {
+            const comparisonSection = document.getElementById('wordComparisonSection');
+            if (!comparisonSection) return;
+            
+            // Show the comparison section
+            comparisonSection.style.display = 'block';
+            
+            // Update metrics
+            document.getElementById('wordSimilarity').textContent = `${wordComparison.metrics.wordSimilarity}%`;
+            document.getElementById('phraseSimilarity').textContent = `${wordComparison.metrics.phraseSimilarity}%`;
+            document.getElementById('matchingWords').textContent = wordComparison.metrics.matchingWords;
+            document.getElementById('matchingPhrases').textContent = wordComparison.metrics.matchingPhrases;
+            
+            // Display draft content (truncated for readability)
+            const draftContent = document.getElementById('draftText').value.trim();
+            const truncatedDraft = draftContent.length > 2000 ? 
+                draftContent.substring(0, 2000) + '... (truncated for display)' : draftContent;
+            document.getElementById('draftContent').textContent = truncatedDraft;
+            
+            // Display similar article content (truncated for readability)
+            const similarContent = topArticle.fullContent || topArticle.content || 'Content not available';
+            const truncatedSimilar = similarContent.length > 2000 ? 
+                similarContent.substring(0, 2000) + '... (truncated for display)' : similarContent;
+            document.getElementById('similarContent').textContent = truncatedSimilar;
+            
+            // Display exact word matches
+            const exactMatchesDiv = document.getElementById('exactMatches');
+            if (wordComparison.exactMatches.length > 0) {
+                exactMatchesDiv.innerHTML = wordComparison.exactMatches
+                    .map(match => `<span class="match-item">${match.word} (${match.position})</span>`)
+                    .join('');
+            } else {
+                exactMatchesDiv.innerHTML = '<span style="color: #666; font-style: italic;">No exact word matches found</span>';
+            }
+            
+            // Display phrase matches
+            const phraseMatchesDiv = document.getElementById('phraseMatches');
+            if (wordComparison.phraseMatches.length > 0) {
+                phraseMatchesDiv.innerHTML = wordComparison.phraseMatches
+                    .map(match => `<span class="match-item phrase-match">${match.phrase}</span>`)
+                    .join('');
+            } else {
+                phraseMatchesDiv.innerHTML = '<span style="color: #666; font-style: italic;">No phrase matches found</span>';
             }
         }
     </script>

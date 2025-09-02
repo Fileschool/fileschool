@@ -50,7 +50,7 @@ function analyzeSimilarityWithGPT(draftText, similarBlogs, apiKeys) {
       const fullBlogContent = blog.payload.content || 'No content available';
       
       // Truncate content if too long - increased context size for better analysis quality
-      const maxContentLength = 35000; // Increased from 20000 for better analysis
+      const maxContentLength = 80000; // Increased to 80K for comprehensive analysis
       const truncatedDraft = draftText.length > maxContentLength ? 
         draftText.substring(0, maxContentLength) + '...[truncated]' : draftText;
       const truncatedBlog = fullBlogContent.length > maxContentLength ? 
@@ -90,7 +90,7 @@ Be specific about overlapping content but keep response under 2000 characters.`;
               content: prompt
             }
           ],
-          max_tokens: 1500, // Reduced from 4000
+                     max_tokens: 80000, // Increased to 80K tokens for comprehensive analysis
           temperature: 0.1 // Reduced for consistency
         })
       };
@@ -226,6 +226,91 @@ function searchSimilarBlogs(embedding, source = 'filestack', topK = 5, apiKeys) 
   } catch (error) {
     console.error('Error searching Qdrant:', error);
     throw new Error(`Failed to search similar blogs: ${error.message}`);
+  }
+}
+
+/**
+ * Create word-by-word comparison between draft and similar article
+ * Highlights exact matches and similar phrases
+ */
+function createWordComparison(draftText, similarText) {
+  try {
+    // Clean and normalize both texts
+    const cleanDraft = draftText.toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    const cleanSimilar = similarText.toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    
+    // Split into words
+    const draftWords = cleanDraft.split(' ');
+    const similarWords = cleanSimilar.split(' ');
+    
+    // Find exact word matches
+    const exactMatches = [];
+    const draftWordSet = new Set(draftWords);
+    
+    similarWords.forEach((word, index) => {
+      if (draftWordSet.has(word) && word.length > 3) {
+        exactMatches.push({
+          word: word,
+          position: index,
+          type: 'exact'
+        });
+      }
+    });
+    
+    // Find phrase matches (3+ consecutive words)
+    const phraseMatches = [];
+    for (let i = 0; i <= draftWords.length - 3; i++) {
+      for (let j = 0; j <= similarWords.length - 3; j++) {
+        const draftPhrase = draftWords.slice(i, i + 3).join(' ');
+        const similarPhrase = similarWords.slice(j, j + 3).join(' ');
+        
+        if (draftPhrase === similarPhrase && draftPhrase.length > 10) {
+          phraseMatches.push({
+            phrase: draftPhrase,
+            draftStart: i,
+            similarStart: j,
+            type: 'phrase'
+          });
+        }
+      }
+    }
+    
+    // Calculate similarity metrics
+    const totalDraftWords = draftWords.length;
+    const totalSimilarWords = similarWords.length;
+    const matchingWords = exactMatches.length;
+    const matchingPhrases = phraseMatches.length;
+    
+    const wordSimilarity = (matchingWords / Math.max(totalDraftWords, totalSimilarWords)) * 100;
+    const phraseSimilarity = (matchingPhrases / Math.max(totalDraftWords, totalSimilarWords)) * 100;
+    
+    return {
+      exactMatches: exactMatches.slice(0, 100), // Limit to first 100 matches
+      phraseMatches: phraseMatches.slice(0, 50), // Limit to first 50 phrases
+      metrics: {
+        totalDraftWords,
+        totalSimilarWords,
+        matchingWords,
+        matchingPhrases,
+        wordSimilarity: wordSimilarity.toFixed(1),
+        phraseSimilarity: phraseSimilarity.toFixed(1)
+      }
+    };
+    
+  } catch (error) {
+    console.error('Error creating word comparison:', error);
+    return {
+      exactMatches: [],
+      phraseMatches: [],
+      metrics: {
+        totalDraftWords: 0,
+        totalSimilarWords: 0,
+        matchingWords: 0,
+        matchingPhrases: 0,
+        wordSimilarity: '0.0',
+        phraseSimilarity: '0.0'
+      }
+    };
   }
 }
 
@@ -382,13 +467,19 @@ function checkBlogSimilarity(draftText, source = 'filestack') {
     const keywordStart = BackendTimer.start('EXTRACT_KEYWORDS');
     const draftKeywords = extractKeywords(draftText);
     
-    // Extract keywords from TOP similar article only (not aggregated)
-    let similarKeywords = [];
-    if (similarBlogs.length > 0) {
-      const topSimilarContent = similarBlogs[0].payload.content || '';
-      similarKeywords = extractKeywords(topSimilarContent);
-    }
-    BackendTimer.end('EXTRACT_KEYWORDS', keywordStart);
+         // Extract keywords from TOP similar article only (not aggregated)
+     let similarKeywords = [];
+     let wordComparison = null;
+     if (similarBlogs.length > 0) {
+       const topSimilarContent = similarBlogs[0].payload.content || '';
+       similarKeywords = extractKeywords(topSimilarContent);
+       
+       // Create word-by-word comparison for top article
+       const comparisonStart = BackendTimer.start('WORD_COMPARISON');
+       wordComparison = createWordComparison(draftText, topSimilarContent);
+       BackendTimer.end('WORD_COMPARISON', comparisonStart);
+     }
+     BackendTimer.end('EXTRACT_KEYWORDS', keywordStart);
     
     // Generate recommendations
     const recStart = BackendTimer.start('GENERATE_RECOMMENDATIONS');
@@ -406,12 +497,13 @@ function checkBlogSimilarity(draftText, source = 'filestack') {
       gptAnalyses = [];
     }
     
-    // Format results - keep full content for GPT analysis but truncate for display
-    const results = {
-      recommendations: recommendations,
-      draftKeywords: draftKeywords,
-      similarKeywords: similarKeywords,
-      gptAnalyses: gptAnalyses,
+         // Format results - keep full content for GPT analysis but truncate for display
+     const results = {
+       recommendations: recommendations,
+       draftKeywords: draftKeywords,
+       similarKeywords: similarKeywords,
+       wordComparison: wordComparison, // Add word-by-word comparison
+       gptAnalyses: gptAnalyses,
       similarBlogs: similarBlogs.map(blog => {
         const content = blog.payload.content || '';
         // Keep full content for accurate analysis, truncate only for UI display
