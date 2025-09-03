@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Gap Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* Froala Colors */
+            --froala-primary: #1E74E7;
+            --froala-secondary: #0F4C81;
+            --froala-success: #3AC47D;
+            --froala-orange: #F59E0B;
+            
+            /* Filestack Colors */
+            --filestack-blue: #2B5CE6;
+            --filestack-navy: #1A365D;
+            --filestack-purple: #6366F1;
+            --filestack-green: #10B981;
+            
+            /* UI Colors */
+            --bg-light: #F8FAFC;
+            --text-dark: #1A202C;
+            --text-medium: #4A5568;
+            --text-light: #718096;
+            --border: #E2E8F0;
+            --white: #FFFFFF;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--froala-primary) 0%, var(--filestack-purple) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Left Sidebar */
+        .sidebar {
+            width: 400px;
+            background: var(--white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+        
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--froala-primary) 0%, var(--filestack-purple) 100%);
+            color: white;
+            padding: 30px 25px;
+            text-align: center;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .sidebar-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .sidebar-content {
+            padding: 25px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .config-section {
+            margin-bottom: 25px;
+        }
+        
+        .config-section h3 {
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .config-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+        
+        .config-input:focus {
+            outline: none;
+            border-color: var(--froala-primary);
+            box-shadow: 0 0 0 3px rgba(30, 116, 231, 0.1);
+        }
+        
+        .test-btn {
+            background: var(--froala-primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+        }
+        
+        .test-btn:hover {
+            background: var(--froala-secondary);
+            transform: translateY(-1px);
+        }
+        
+        .connection-status {
+            display: flex;
+            gap: 15px;
+            margin-top: 12px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-light);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
+        }
+        
+        .status-item.connected {
+            border-color: var(--froala-success);
+            background: rgba(58, 196, 125, 0.1);
+            color: var(--froala-success);
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+        
+        .status-item.connected .status-dot {
+            background: var(--froala-success);
+        }
+        
+        .source-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .source-btn {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .source-btn.active {
+            background: var(--froala-primary);
+            color: white;
+            border-color: var(--froala-primary);
+        }
+        
+        .input-section {
+            margin-bottom: 20px;
+        }
+        
+        .keyword-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .keyword-input:focus {
+            outline: none;
+            border-color: var(--froala-primary);
+            box-shadow: 0 0 0 3px rgba(30, 116, 231, 0.1);
+        }
+        
+        .analyze-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--froala-primary) 0%, var(--filestack-purple) 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 116, 231, 0.3);
+        }
+        
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Right Content Area */
+        .main-content {
+            flex: 1;
+            background: var(--bg-light);
+            overflow-y: auto;
+        }
+        
+        .content-header {
+            background: var(--white);
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .content-header h2 {
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .content-header p {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+        }
+        
+        .results-container {
+            padding: 30px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 30px;
+            font-size: 1rem;
+            color: var(--froala-primary);
+            line-height: 1.8;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .step-card {
+            background: var(--white);
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+        
+        .step-title {
+            background: linear-gradient(135deg, var(--froala-primary) 0%, var(--filestack-purple) 100%);
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .step-content {
+            padding: 25px;
+        }
+        
+        .coverage-section {
+            margin-bottom: 25px;
+        }
+        
+        .coverage-title {
+            color: var(--froala-success);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .gap-title {
+            color: #dc3545;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .topic-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border-left: 4px solid var(--froala-primary);
+        }
+        
+        .topic-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .supporting-links {
+            margin-left: 15px;
+        }
+        
+        .supporting-links a {
+            color: var(--froala-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: block;
+            margin: 4px 0;
+            transition: color 0.2s ease;
+        }
+        
+        .supporting-links a:hover {
+            color: var(--froala-secondary);
+            text-decoration: underline;
+        }
+        
+        .missing-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fef2f2;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .missing-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .similar-existing {
+            margin-top: 10px;
+            margin-left: 15px;
+        }
+        
+        .similar-label {
+            font-style: italic;
+            color: var(--froala-orange);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        
+        .difference-note {
+            color: var(--text-light);
+            font-size: 0.8rem;
+            margin-top: 3px;
+        }
+        
+        .gap-evidence {
+            background: #fffbeb;
+            border: 1px solid var(--froala-orange);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .evidence-title {
+            color: var(--froala-orange);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .article-item {
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: var(--white);
+            transition: all 0.2s ease;
+        }
+        
+        .article-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .article-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+        
+        .article-title a {
+            color: var(--froala-primary);
+            text-decoration: none;
+        }
+        
+        .article-title a:hover {
+            text-decoration: underline;
+        }
+        
+        .article-similarity {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            color: var(--text-medium);
+            background: var(--white);
+            border-radius: 12px;
+            border: 2px dashed var(--border);
+        }
+        
+        .empty-state h3 {
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 50vh;
+            }
+            
+            .results-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>🔍 Content Gap Analyzer</h1>
+                <p>Analyze existing content to identify what topics and angles are missing</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Configuration -->
+                <div class="config-section">
+                    <h3>🔧 Configuration</h3>
+                    <input type="password" id="openai-key" class="config-input" placeholder="Enter OpenAI API Key (sk-...)" />
+                    <input type="text" id="qdrant-host" class="config-input" placeholder="Qdrant Host (localhost)" value="localhost" />
+                    <input type="number" id="qdrant-port" class="config-input" placeholder="Qdrant Port (6333)" value="6333" />
+                    <button class="test-btn" onclick="testConnections()">🔗 Test Connections</button>
+                    
+                    <div class="connection-status">
+                        <div class="status-item" id="openai-status">
+                            <div class="status-dot"></div>
+                            <span id="openai-text">OpenAI</span>
+                        </div>
+                        <div class="status-item" id="qdrant-status">
+                            <div class="status-dot"></div>
+                            <span id="qdrant-text">Qdrant</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Source Selection -->
+                <div class="config-section">
+                    <h3>📁 Content Source</h3>
+                    <div class="source-selector">
+                        <button class="source-btn active" data-source="filestack">📁 Filestack</button>
+                        <button class="source-btn" data-source="froala">📝 Froala</button>
+                    </div>
+                </div>
+
+                <!-- Gap Analysis Input -->
+                <div class="config-section">
+                    <h3>🔍 Gap Analysis</h3>
+                    <div class="input-section">
+                        <input type="text" id="gap-input" class="keyword-input" 
+                               placeholder="e.g., analyze existing 'quick image upload' content and suggest missing angles" />
+                        <button class="analyze-btn" onclick="analyzeContentGaps()" id="gap-btn">
+                            🧠 Analyze Content Gaps
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Content Area -->
+        <div class="main-content">
+            <div class="content-header">
+                <h2>Content Gap Analysis</h2>
+                <p>Deep analysis of existing content to identify missing opportunities</p>
+            </div>
+            
+            <!-- Results -->
+            <div class="results-container" id="results-container">
+                <div class="empty-state">
+                    <h3>Ready to Analyze</h3>
+                    <p>Enter a topic in the sidebar to start analyzing content gaps in your database</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let analyzing = false;
+        let currentSource = 'filestack';
+
+        // Source selector functionality
+        document.querySelectorAll('.source-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentSource = btn.dataset.source;
+                console.log('Selected source:', currentSource);
+            });
+        });
+
+        // Get configuration
+        function getConfig() {
+            return {
+                openaiKey: document.getElementById('openai-key').value.trim(),
+                qdrantHost: document.getElementById('qdrant-host').value.trim() || 'localhost',
+                qdrantPort: parseInt(document.getElementById('qdrant-port').value) || 6333
+            };
+        }
+
+        // Test connections
+        async function testConnections() {
+            console.log('Testing connections...');
+            
+            const config = getConfig();
+            
+            if (!config.openaiKey) {
+                alert('Please enter your OpenAI API key first');
+                return;
+            }
+
+            // Reset status
+            document.getElementById('openai-status').classList.remove('connected');
+            document.getElementById('qdrant-status').classList.remove('connected');
+            document.getElementById('openai-text').textContent = 'Testing...';
+            document.getElementById('qdrant-text').textContent = 'Testing...';
+
+            // Test OpenAI
+            try {
+                const response = await fetch('https://api.openai.com/v1/embeddings', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${config.openaiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'text-embedding-3-large',
+                        input: 'test connection'
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById('openai-status').classList.add('connected');
+                    document.getElementById('openai-text').textContent = 'Connected ✅';
+                } else {
+                    document.getElementById('openai-text').textContent = 'Error ❌';
+                }
+            } catch (error) {
+                document.getElementById('openai-text').textContent = 'Error ❌';
+            }
+
+            // Test Qdrant
+            try {
+                const qdrantUrl = `http://${config.qdrantHost}:${config.qdrantPort}/collections`;
+                const response = await fetch(qdrantUrl);
+
+                if (response.ok) {
+                    document.getElementById('qdrant-status').classList.add('connected');
+                    document.getElementById('qdrant-text').textContent = 'Connected ✅';
+                } else {
+                    document.getElementById('qdrant-text').textContent = 'Error ❌';
+                }
+            } catch (error) {
+                document.getElementById('qdrant-text').textContent = 'Error ❌';
+            }
+        }
+
+        // Generate embedding
+        async function generateEmbedding(text, apiKey) {
+            const response = await fetch('https://api.openai.com/v1/embeddings', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'text-embedding-3-large',
+                    input: text
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`OpenAI Embeddings API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.data[0].embedding;
+        }
+
+        // Search Qdrant
+        async function searchQdrant(embedding, collection, host, port, limit = 20) {
+            const qdrantUrl = `http://${host}:${port}/collections/${collection}/points/search`;
+            
+            const response = await fetch(qdrantUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    vector: embedding,
+                    limit: limit,
+                    with_payload: true,
+                    with_vector: false
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Qdrant search error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.result || [];
+        }
+
+        // Calculate title similarity using GPT (EXACT SAME as simple_local_interface.html)
+        async function calculateTitleSimilarity(idea, existingTitles, apiKey) {
+            const maxBatchSize = 20;
+            let allSimilarities = [];
+            
+            for (let i = 0; i < existingTitles.length; i += maxBatchSize) {
+                const titleBatch = existingTitles.slice(i, i + maxBatchSize);
+                const batchSimilarities = await calculateTitleSimilarityBatch(idea, titleBatch, apiKey);
+                allSimilarities = allSimilarities.concat(batchSimilarities);
+            }
+            
+            return allSimilarities;
+        }
+
+        // Process a single batch of title similarities (EXACT SAME as simple_local_interface.html)
+        async function calculateTitleSimilarityBatch(idea, titleBatch, apiKey) {
+            const prompt = `You are a content similarity expert. Compare the proposed content idea with existing article titles to determine semantic similarity.
+
+PROPOSED IDEA: "${idea}"
+
+EXISTING TITLES:
+${titleBatch.map((title, i) => `${i + 1}. "${title}"`).join('\n')}
+
+For each existing title, rate how similar it is to the proposed idea on a scale of 0.0 to 1.0, where:
+- 1.0 = Essentially the same topic (duplicate content)
+- 0.8-0.9 = Very similar topic with slight variation
+- 0.6-0.7 = Related topic but different angle
+- 0.4-0.5 = Somewhat related
+- 0.0-0.3 = Different topics
+
+Consider semantic meaning, not just word matching. For example:
+- "How to install X" vs "Integrating X guide" = high similarity (~0.85)
+- "React file upload" vs "File handling in React" = high similarity (~0.8)
+- "Best practices for X" vs "X tutorial" = medium similarity (~0.6)
+
+CRITICAL: Respond with ONLY a valid JSON array of exactly ${titleBatch.length} numbers, no explanations:
+[0.85, 0.23, 0.91, 0.45]`;
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [{ role: 'user', content: prompt }],
+                        temperature: 0.1,
+                        max_tokens: 400
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('GPT title similarity failed, falling back to basic matching');
+                    return titleBatch.map(() => 0.3);
+                }
+
+                const data = await response.json();
+                let responseContent = data.choices[0].message.content.trim();
+                
+                // Clean up response thoroughly (same as simple_local_interface.html)
+                if (responseContent.startsWith('```json')) {
+                    responseContent = responseContent.replace(/```json\s*/g, '').replace(/\s*```/g, '');
+                } else if (responseContent.startsWith('```')) {
+                    responseContent = responseContent.replace(/```\s*/g, '');
+                }
+                
+                // Remove any trailing text after the JSON array
+                const arrayMatch = responseContent.match(/\[[\d\.\,\s]+\]/);
+                if (arrayMatch) {
+                    responseContent = arrayMatch[0];
+                }
+                
+                // Clean up whitespace and fix common JSON issues
+                responseContent = responseContent
+                    .replace(/\s+/g, ' ')
+                    .replace(/,\s*]/g, ']')
+                    .replace(/,\s*,/g, ',')
+                    .trim();
+                
+                console.log('Cleaned JSON for parsing:', responseContent);
+                
+                let similarities = JSON.parse(responseContent);
+                
+                // Ensure we have an array
+                if (!Array.isArray(similarities)) {
+                    console.warn('GPT returned non-array, falling back to default similarities');
+                    return titleBatch.map(() => 0.3);
+                }
+                
+                // Pad or truncate to match expected length
+                while (similarities.length < titleBatch.length) {
+                    similarities.push(0.3);
+                }
+                similarities = similarities.slice(0, titleBatch.length);
+                
+                // Ensure all values are numbers between 0 and 1
+                similarities = similarities.map(score => {
+                    const num = parseFloat(score);
+                    return isNaN(num) ? 0.3 : Math.max(0, Math.min(1, num));
+                });
+                
+                return similarities;
+                
+            } catch (error) {
+                console.error('Error calculating title similarity:', error);
+                return titleBatch.map(() => 0.3);
+            }
+        }
+
+        // Verify a suggested gap against existing content (EXACT SAME logic as simple_local_interface.html)
+        async function verifyGapAgainstExisting(gapTopic, searchResults, apiKey) {
+            try {
+                // Extract titles for GPT-based similarity analysis
+                const existingTitles = searchResults.map(item => item.payload.title || 'Unknown');
+                
+                console.log(`🔍 VERIFYING GAP: "${gapTopic}" against ${existingTitles.length} existing titles...`);
+                
+                // Get semantic title similarities from GPT (SAME function as simple_local_interface.html)
+                const titleSimilarities = await calculateTitleSimilarity(gapTopic, existingTitles, apiKey);
+                
+                // Calculate combined similarities using EXACT SAME logic as simple_local_interface.html
+                let maxCombinedSimilarity = 0;
+                let mostSimilar = '';
+                let maxTitleSimilarity = 0;
+                
+                searchResults.forEach((item, index) => {
+                    const contentSimilarity = item.score || 0.3; // Vector search score
+                    const titleSimilarity = titleSimilarities[index] || 0.3;
+                    
+                    // EXACT SAME weighting as simple_local_interface.html: 70% title + 30% content
+                    const combinedSimilarity = (titleSimilarity * 0.7) + (contentSimilarity * 0.3);
+                    
+                    if (titleSimilarity > maxTitleSimilarity) {
+                        maxTitleSimilarity = titleSimilarity;
+                    }
+                    
+                    if (combinedSimilarity > maxCombinedSimilarity) {
+                        maxCombinedSimilarity = combinedSimilarity;
+                        mostSimilar = item.payload.title || 'Unknown';
+                    }
+                });
+                
+                // Use EXACT SAME logic as simple_local_interface.html: 
+                // - ≥90% title similarity = exact match (skip)
+                // - ≥70% combined similarity = high similarity (skip)
+                // - <70% combined AND <90% title = truly missing (gap)
+                const isTrulyMissing = maxTitleSimilarity < 0.9 && maxCombinedSimilarity < 0.7;
+                
+                console.log(`📊 GAP VERIFICATION: ${gapTopic} - Title: ${(maxTitleSimilarity * 100).toFixed(1)}%, Combined: ${(maxCombinedSimilarity * 100).toFixed(1)}%, Truly Missing: ${isTrulyMissing}`);
+                
+                return {
+                    is_truly_missing: isTrulyMissing,
+                    max_similarity: maxCombinedSimilarity,
+                    max_title_similarity: maxTitleSimilarity,
+                    most_similar: mostSimilar
+                };
+                
+            } catch (error) {
+                console.error('Error verifying gap:', error);
+                return {
+                    is_truly_missing: false,
+                    max_similarity: 1.0,
+                    max_title_similarity: 1.0,
+                    most_similar: 'Verification failed'
+                };
+            }
+        }
+
+        // Main gap analysis function
+        async function analyzeContentGaps() {
+            const gapInput = document.getElementById('gap-input');
+            const topic = gapInput.value.trim();
+            
+            if (!topic) {
+                alert('Please enter a topic to analyze for content gaps');
+                return;
+            }
+
+            const config = getConfig();
+            if (!config.openaiKey) {
+                alert('Please enter your OpenAI API key');
+                return;
+            }
+
+            if (analyzing) return;
+            analyzing = true;
+
+            const gapBtn = document.getElementById('gap-btn');
+            gapBtn.disabled = true;
+            gapBtn.textContent = '🧠 Analyzing...';
+
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = `
+                <div class="loading">
+                    🧠 Finding existing content about "${topic}"...<br/>
+                    📖 Sending FULL CONTENT of 30 similar articles to GPT-4o...<br/>
+                    🔍 GPT-4o analyzing: what angles/topics ARE covered...<br/>
+                    ❓ GPT-4o identifying: what angles are MISSING from existing content...<br/>
+                    💡 GPT-4o suggesting content gaps based on comprehensive analysis...<br/>
+                    ⏱️ GPT-4o deep content analysis in progress...
+                </div>
+            `;
+
+            try {
+                console.log('Gap Analysis for:', topic);
+                
+                // Generate embedding for the topic
+                const embedding = await generateEmbedding(topic, config.openaiKey);
+                
+                // Search for similar content
+                const collectionName = currentSource.toLowerCase();
+                const searchResults = await searchQdrant(
+                    embedding, 
+                    collectionName, 
+                    config.qdrantHost, 
+                    config.qdrantPort, 
+                    30  // Get more content for comprehensive gap analysis
+                );
+
+                // Step 2: Analyze existing content for gaps - GPT-4o does the complete analysis
+                const gapAnalysis = await analyzeExistingContentForGaps(topic, searchResults, currentSource, config.openaiKey);
+
+                // Display gap analysis results directly from GPT-4o
+                displayGapAnalysis(topic, searchResults, gapAnalysis);
+
+            } catch (error) {
+                console.error('Gap analysis failed:', error);
+                resultsContainer.innerHTML = `
+                    <div style="text-align: center; color: #dc3545; padding: 40px;">
+                        <h3>❌ Analysis Failed</h3>
+                        <p>Error: ${error.message}</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">Check console for details</p>
+                    </div>
+                `;
+            } finally {
+                analyzing = false;
+                gapBtn.disabled = false;
+                gapBtn.textContent = '🧠 Analyze Content Gaps';
+            }
+        }
+
+        // Analyze existing content for gaps using SAME criteria as simple_local_interface.html
+        async function analyzeExistingContentForGaps(topic, searchResults, source, apiKey) {
+            const serviceContext = source.toLowerCase() === 'froala' 
+                ? 'Froala is a WYSIWYG rich text editor for web applications'
+                : 'Filestack is a file upload, processing, and delivery service';
+            
+            // Prepare existing content summary with similarity scores
+            const existingContent = searchResults.slice(0, 15).map((article, i) => {
+                const fullContent = article.payload.content || 'No content available';
+                const contentToAnalyze = fullContent.length > 800 ? 
+                    fullContent.substring(0, 800) + '...' : fullContent;
+                
+                return `${i + 1}. "${article.payload.title}" (vector similarity: ${(article.score * 100).toFixed(1)}%)\n   URL: ${article.payload.url || 'No URL'}\n   Content: ${contentToAnalyze}`;
+            }).join('\n\n');
+            
+            const prompt = `${serviceContext}
+
+CRITICAL TASK: Find TRUE Content Gaps for "${topic}" using EXACT same criteria as Content Gap Analysis
+
+EXISTING ARTICLES WITH VECTOR SIMILARITY SCORES:
+${existingContent}
+
+CRITICAL SIMILARITY RULES (SAME AS CONTENT GAP ANALYSIS):
+1. 🛑 If ≥90% title similarity exists → TOPIC IS COVERED (duplicate content)
+2. 🚨 If ≥70% title similarity exists → TOPIC IS COVERED (very similar topics)  
+3. 🔴 If ≥70% combined similarity exists → TOPIC IS COVERED (topic well-covered)
+4. 🟢 Only suggest topics where BOTH title AND combined similarity would be <70%
+
+ANALYSIS PROCESS:
+1. For each potential gap topic, imagine if someone searched for it
+2. Would they find an existing article with ≥70% title similarity? If YES → NOT A GAP
+3. Would the combined similarity (70% title + 30% content) be ≥70%? If YES → NOT A GAP
+4. Only suggest topics that would have <70% similarity on BOTH metrics
+
+WHAT QUALIFIES AS TRUE GAPS:
+- Completely different industries/use cases not mentioned at all
+- Different user personas with no similar content  
+- Technical approaches with no related articles
+- Content formats completely absent
+- Topics where existing articles would score <70% title AND <70% combined similarity
+
+BE EXTREMELY CONSERVATIVE: When in doubt, assume it's already covered.
+
+RESPOND with this EXACT JSON format:
+{
+  "total_articles_analyzed": ${existingContent.split('\n\n').length},
+  "coverage_summary": {
+    "covered_topics_with_links": [
+      {
+        "topic": "Main topic name",
+        "supporting_articles": [
+          {"title": "Article title", "url": "article URL"}
+        ]
+      }
+    ],
+    "target_audiences_with_links": [
+      {
+        "audience": "Audience name",
+        "supporting_articles": [
+          {"title": "Article title", "url": "article URL"}
+        ]
+      }
+    ],
+    "content_types_with_links": [
+      {
+        "type": "Content type",
+        "supporting_articles": [
+          {"title": "Article title", "url": "article URL"}
+        ]
+      }
+    ],
+    "technical_depth_with_links": [
+      {
+        "level": "Technical level",
+        "supporting_articles": [
+          {"title": "Article title", "url": "article URL"}
+        ]
+      }
+    ]
+  },
+  "missing_aspects": {
+    "uncovered_topics_with_similar": [
+      {
+        "missing_topic": "What's missing",
+        "closest_existing": [
+          {"title": "Most similar existing article", "url": "URL", "why_different": "How the missing topic differs"}
+        ]
+      }
+    ],
+    "missing_audiences_with_similar": [
+      {
+        "missing_audience": "Audience not addressed",
+        "closest_existing": [
+          {"title": "Most similar existing article", "url": "URL", "why_different": "How this audience differs"}
+        ]
+      }
+    ],
+    "missing_content_types_with_similar": [
+      {
+        "missing_type": "Content type missing",
+        "closest_existing": [
+          {"title": "Most similar existing article", "url": "URL", "why_different": "How this type differs"}
+        ]
+      }
+    ],
+    "missing_technical_levels_with_similar": [
+      {
+        "missing_level": "Technical level missing",
+        "closest_existing": [
+          {"title": "Most similar existing article", "url": "URL", "why_different": "How this level differs"}
+        ]
+      }
+    ],
+    "missing_perspectives_with_similar": [
+      {
+        "missing_perspective": "Perspective missing",
+        "closest_existing": [
+          {"title": "Most similar existing article", "url": "URL", "why_different": "How this perspective differs"}
+        ]
+      }
+    ]
+  },
+  "gap_evidence": [
+    "Evidence statement 1 (e.g., 'No articles cover mobile implementation')",
+    "Evidence statement 2", 
+    "Evidence statement 3"
+  ]
+}`;
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [{ role: 'user', content: prompt }],
+                        temperature: 0.3,
+                        max_tokens: 2000
+                    })
+                });
+
+                if (!response.ok) throw new Error(`GPT API error: ${response.status}`);
+
+                const data = await response.json();
+                let responseContent = data.choices[0].message.content.trim();
+                
+                // Clean JSON
+                if (responseContent.startsWith('```json')) {
+                    responseContent = responseContent.replace('```json', '').replace('```', '');
+                } else if (responseContent.startsWith('```')) {
+                    responseContent = responseContent.replace(/```/g, '');
+                }
+                
+                const analysis = JSON.parse(responseContent);
+                return analysis;
+                
+            } catch (error) {
+                console.error('Error analyzing content gaps:', error);
+                return {
+                    total_articles_analyzed: 0,
+                    coverage_summary: { 
+                        covered_topics_with_links: [], 
+                        target_audiences_with_links: [], 
+                        content_types_with_links: [], 
+                        technical_depth_with_links: [] 
+                    },
+                    missing_aspects: { 
+                        uncovered_topics_with_similar: [], 
+                        missing_audiences_with_similar: [], 
+                        missing_content_types_with_similar: [], 
+                        missing_technical_levels_with_similar: [], 
+                        missing_perspectives_with_similar: [] 
+                    },
+                    gap_evidence: []
+                };
+            }
+        }
+
+        // Display gap analysis results
+        function displayGapAnalysis(topic, existingContent, analysis) {
+            const resultsContainer = document.getElementById('results-container');
+            
+            // Check if we have any gaps
+            const hasGaps = analysis.missing_aspects && (
+                analysis.missing_aspects.uncovered_topics_with_similar?.length > 0 ||
+                analysis.missing_aspects.missing_audiences_with_similar?.length > 0 ||
+                analysis.missing_aspects.missing_content_types_with_similar?.length > 0 ||
+                analysis.missing_aspects.missing_technical_levels_with_similar?.length > 0 ||
+                analysis.missing_aspects.missing_perspectives_with_similar?.length > 0
+            );
+            
+            let html = `
+                <div class="step-card">
+                    <div class="step-title">📊 Content Coverage Analysis for "${topic}"</div>
+                    <div class="step-content">
+                        <p style="margin-bottom: 25px; color: var(--text-medium);">
+                            Analyzed ${analysis.total_articles_analyzed || existingContent.length} existing articles to understand what's covered and what's missing.
+                        </p>
+                        
+                        ${analysis.coverage_summary ? `
+                            <div class="coverage-section">
+                                <h4 class="coverage-title">✅ What IS Currently Covered</h4>
+                                
+                                ${analysis.coverage_summary.covered_topics_with_links?.length > 0 ? `
+                                    <div style="margin-bottom: 25px;">
+                                        <strong style="color: var(--text-dark); display: block; margin-bottom: 15px;">📋 Topics Covered:</strong>
+                                        ${analysis.coverage_summary.covered_topics_with_links.map(topicGroup => `
+                                            <div class="topic-group">
+                                                <div class="topic-title">• ${topicGroup.topic}</div>
+                                                <div class="supporting-links">
+                                                    ${topicGroup.supporting_articles?.map(article => 
+                                                        `<a href="${article.url}" target="_blank">📄 ${article.title}</a>`
+                                                    ).join('') || '<span style="color: var(--text-light); font-style: italic;">No supporting links available</span>'}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                                
+                                ${analysis.coverage_summary.target_audiences_with_links?.length > 0 ? `
+                                    <div style="margin-bottom: 25px;">
+                                        <strong style="color: var(--text-dark); display: block; margin-bottom: 15px;">👥 Audiences Addressed:</strong>
+                                        ${analysis.coverage_summary.target_audiences_with_links.map(audienceGroup => `
+                                            <div class="topic-group">
+                                                <div class="topic-title">• ${audienceGroup.audience}</div>
+                                                <div class="supporting-links">
+                                                    ${audienceGroup.supporting_articles?.map(article => 
+                                                        `<a href="${article.url}" target="_blank">📄 ${article.title}</a>`
+                                                    ).join('') || '<span style="color: var(--text-light); font-style: italic;">No supporting links available</span>'}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                                
+                                ${analysis.coverage_summary.content_types_with_links?.length > 0 ? `
+                                    <div style="margin-bottom: 25px;">
+                                        <strong style="color: var(--text-dark); display: block; margin-bottom: 15px;">📝 Content Types Available:</strong>
+                                        ${analysis.coverage_summary.content_types_with_links.map(typeGroup => `
+                                            <div class="topic-group">
+                                                <div class="topic-title">• ${typeGroup.type}</div>
+                                                <div class="supporting-links">
+                                                    ${typeGroup.supporting_articles?.map(article => 
+                                                        `<a href="${article.url}" target="_blank">📄 ${article.title}</a>`
+                                                    ).join('') || '<span style="color: var(--text-light); font-style: italic;">No supporting links available</span>'}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                                
+                                ${analysis.coverage_summary.technical_depth_with_links?.length > 0 ? `
+                                    <div style="margin-bottom: 25px;">
+                                        <strong style="color: var(--text-dark); display: block; margin-bottom: 15px;">🎯 Technical Depth Levels:</strong>
+                                        ${analysis.coverage_summary.technical_depth_with_links.map(levelGroup => `
+                                            <div class="topic-group">
+                                                <div class="topic-title">• ${levelGroup.level}</div>
+                                                <div class="supporting-links">
+                                                    ${levelGroup.supporting_articles?.map(article => 
+                                                        `<a href="${article.url}" target="_blank">📄 ${article.title}</a>`
+                                                    ).join('') || '<span style="color: var(--text-light); font-style: italic;">No supporting links available</span>'}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                ${hasGaps ? `
+                    <div class="step-card">
+                        <div class="step-title">❌ What IS Missing</div>
+                        <div class="step-content">
+                            <p style="margin-bottom: 25px; color: var(--text-medium);">
+                                Gaps identified in the current content coverage:
+                            </p>
+                            
+                            ${analysis.missing_aspects.uncovered_topics_with_similar?.length > 0 ? `
+                                <div style="margin-bottom: 25px;">
+                                    <h4 class="gap-title">📋 Missing Topics</h4>
+                                    ${analysis.missing_aspects.uncovered_topics_with_similar.map(topicGroup => `
+                                        <div class="missing-item">
+                                            <div class="missing-title">• ${topicGroup.missing_topic}</div>
+                                            ${topicGroup.closest_existing?.length > 0 ? `
+                                                <div class="similar-existing">
+                                                    <div class="similar-label">Most similar existing:</div>
+                                                    ${topicGroup.closest_existing.map(similar => `
+                                                        <a href="${similar.url}" target="_blank" style="color: var(--froala-primary); text-decoration: none;">📄 ${similar.title}</a>
+                                                        ${similar.why_different ? `<div class="difference-note">└ Different because: ${similar.why_different}</div>` : ''}
+                                                    `).join('')}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            
+                            ${analysis.missing_aspects.missing_audiences_with_similar?.length > 0 ? `
+                                <div style="margin-bottom: 25px;">
+                                    <h4 class="gap-title">👥 Missing Audiences</h4>
+                                    ${analysis.missing_aspects.missing_audiences_with_similar.map(audienceGroup => `
+                                        <div class="missing-item">
+                                            <div class="missing-title">• ${audienceGroup.missing_audience}</div>
+                                            ${audienceGroup.closest_existing?.length > 0 ? `
+                                                <div class="similar-existing">
+                                                    <div class="similar-label">Most similar existing:</div>
+                                                    ${audienceGroup.closest_existing.map(similar => `
+                                                        <a href="${similar.url}" target="_blank" style="color: var(--froala-primary); text-decoration: none;">📄 ${similar.title}</a>
+                                                        ${similar.why_different ? `<div class="difference-note">└ Different because: ${similar.why_different}</div>` : ''}
+                                                    `).join('')}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            
+                            ${analysis.missing_aspects.missing_content_types_with_similar?.length > 0 ? `
+                                <div style="margin-bottom: 25px;">
+                                    <h4 class="gap-title">📝 Missing Content Types</h4>
+                                    ${analysis.missing_aspects.missing_content_types_with_similar.map(typeGroup => `
+                                        <div class="missing-item">
+                                            <div class="missing-title">• ${typeGroup.missing_type}</div>
+                                            ${typeGroup.closest_existing?.length > 0 ? `
+                                                <div class="similar-existing">
+                                                    <div class="similar-label">Most similar existing:</div>
+                                                    ${typeGroup.closest_existing.map(similar => `
+                                                        <a href="${similar.url}" target="_blank" style="color: var(--froala-primary); text-decoration: none;">📄 ${similar.title}</a>
+                                                        ${similar.why_different ? `<div class="difference-note">└ Different because: ${similar.why_different}</div>` : ''}
+                                                    `).join('')}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            
+                            ${analysis.missing_aspects.missing_technical_levels_with_similar?.length > 0 ? `
+                                <div style="margin-bottom: 25px;">
+                                    <h4 class="gap-title">🎯 Missing Technical Levels</h4>
+                                    ${analysis.missing_aspects.missing_technical_levels_with_similar.map(levelGroup => `
+                                        <div class="missing-item">
+                                            <div class="missing-title">• ${levelGroup.missing_level}</div>
+                                            ${levelGroup.closest_existing?.length > 0 ? `
+                                                <div class="similar-existing">
+                                                    <div class="similar-label">Most similar existing:</div>
+                                                    ${levelGroup.closest_existing.map(similar => `
+                                                        <a href="${similar.url}" target="_blank" style="color: var(--froala-primary); text-decoration: none;">📄 ${similar.title}</a>
+                                                        ${similar.why_different ? `<div class="difference-note">└ Different because: ${similar.why_different}</div>` : ''}
+                                                    `).join('')}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            
+                            ${analysis.missing_aspects.missing_perspectives_with_similar?.length > 0 ? `
+                                <div style="margin-bottom: 25px;">
+                                    <h4 class="gap-title">👁️ Missing Perspectives</h4>
+                                    ${analysis.missing_aspects.missing_perspectives_with_similar.map(perspectiveGroup => `
+                                        <div class="missing-item">
+                                            <div class="missing-title">• ${perspectiveGroup.missing_perspective}</div>
+                                            ${perspectiveGroup.closest_existing?.length > 0 ? `
+                                                <div class="similar-existing">
+                                                    <div class="similar-label">Most similar existing:</div>
+                                                    ${perspectiveGroup.closest_existing.map(similar => `
+                                                        <a href="${similar.url}" target="_blank" style="color: var(--froala-primary); text-decoration: none;">📄 ${similar.title}</a>
+                                                        ${similar.why_different ? `<div class="difference-note">└ Different because: ${similar.why_different}</div>` : ''}
+                                                    `).join('')}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            
+                            ${analysis.gap_evidence?.length > 0 ? `
+                                <div class="gap-evidence">
+                                    <div class="evidence-title">📊 Gap Evidence</div>
+                                    ${analysis.gap_evidence.map(evidence => `<div>• ${evidence}</div>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                ` : `
+                    <div class="step-card">
+                        <div class="step-title">✅ Comprehensive Coverage</div>
+                        <div class="step-content">
+                            <div style="text-align: center; color: var(--froala-success); padding: 40px 20px;">
+                                <h3 style="margin-bottom: 15px;">🎯 Topic Well Covered</h3>
+                                <p style="color: var(--text-medium);">This topic appears to be comprehensively covered across different angles and audiences. The existing content addresses most key aspects, leaving few clear gaps to fill.</p>
+                            </div>
+                        </div>
+                    </div>
+                `}
+                
+                <div class="step-card">
+                    <div class="step-title">📚 Source Articles Analyzed</div>
+                    <div class="step-content">
+                        <div style="display: grid; gap: 10px;">
+                            ${existingContent.slice(0, 12).map(article => `
+                                <div class="article-item">
+                                    <div class="article-title">
+                                        ${article.payload.url ? `<a href="${article.payload.url}" target="_blank">${article.payload.title}</a>` : article.payload.title}
+                                    </div>
+                                    <div class="article-similarity">
+                                        📄 Vector: ${(article.score * 100).toFixed(1)}% relevance
+                                    </div>
+                                </div>
+                            `).join('')}
+                            ${existingContent.length > 12 ? `<p style="text-align: center; color: var(--text-light); margin-top: 15px;">... and ${existingContent.length - 12} more articles analyzed</p>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            resultsContainer.innerHTML = html;
+        }
+
+        // Enter key handler for gap analysis
+        document.getElementById('gap-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzeContentGaps();
+            }
+        });
+    </script>
+</body>
+</html>

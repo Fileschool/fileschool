@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Gap Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #EF4A25;
+            --primary-light: #ff6b47;
+            --primary-rgba: 239, 74, 37;
+            --bg-gradient: linear-gradient(135deg, #ffdbcc 0%, #ffe4dc 100%);
+            --header-gradient: linear-gradient(135deg, #EF4A25 0%, #ff6b47 100%);
+            --button-gradient: linear-gradient(135deg, #EF4A25 0%, #ff6b47 100%);
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.15);
+            --secondary-color: #6c757d;
+            --secondary-rgba: 108, 117, 125;
+        }
+        
+        .froala-theme {
+            --primary-color: #0098F7;
+            --primary-light: #33aaff;
+            --primary-rgba: 0, 152, 247;
+            --bg-gradient: linear-gradient(135deg, #cce7ff 0%, #e6f3ff 100%);
+            --header-gradient: linear-gradient(135deg, #0098F7 0%, #33aaff 100%);
+            --button-gradient: linear-gradient(135deg, #0098F7 0%, #33aaff 100%);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            transition: background 0.3s ease;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            background: white;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: var(--header-gradient);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            transition: background 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 0;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 120px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .search-section {
+            position: sticky;
+            top: 0;
+            height: calc(100vh - 120px);
+            background: white;
+            backdrop-filter: none;
+            border-radius: 0;
+            padding: 40px 30px;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-right: 1px solid #e1e8ed;
+            overflow-y: auto;
+            grid-column: 1;
+            z-index: 10;
+        }
+        
+        .results-section {
+            overflow-y: auto;
+            height: calc(100vh - 120px);
+            padding: 40px;
+            background: #f8f9fa;
+            grid-column: 2;
+        }
+        
+        .results-section::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .results-section::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .results-section::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .results-section::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgba), 0.2);
+        }
+        
+        .source-selection {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border: 3px solid #e1e8ed;
+            border-radius: 15px;
+            cursor: pointer;
+            background: white;
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-group:hover {
+            border-color: var(--primary-color);
+            background: rgba(var(--primary-rgba), 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(var(--primary-rgba), 0.15);
+        }
+        
+        .radio-group.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(var(--primary-rgba), 0.15) 0%, rgba(var(--primary-rgba), 0.08) 100%);
+            box-shadow: 0 4px 15px rgba(var(--primary-rgba), 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .radio-group input[type="radio"] {
+            margin: 0;
+            transform: scale(1.2);
+            accent-color: var(--primary-color);
+        }
+        
+        .radio-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: var(--button-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgba), 0.3);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(var(--primary-rgba), 0.5);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: var(--primary-color);
+        }
+        
+        .loading.show { display: block; }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results { display: none; }
+        .results.show { display: block; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .gap-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .gap-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .gap-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .gap-description {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .similarity-score {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .similarity-reasoning {
+            background: rgba(var(--primary-rgba), 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .similarity-reasoning h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .alternatives-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .alternatives-section h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .alternative-topic {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .alternative-topic:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .alternative-topic h5 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .alternative-topic p {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .content-suggestions-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border: 2px solid #2196f3;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-suggestions-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2196f3, #9c27b0, #2196f3);
+            background-size: 200% 100%;
+            animation: gradient-shift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .content-suggestions-section h4 {
+            color: #1565c0;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .content-suggestion {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2196f3;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+        }
+        
+        .content-suggestion:hover {
+            transform: translateX(8px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.2);
+            border-left-width: 6px;
+        }
+        
+        .content-suggestion h5 {
+            color: #1565c0;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .content-suggestion p {
+            color: #424242;
+            font-size: 1rem;
+            margin: 0;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .gap-tabs {
+            margin-top: 30px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(var(--primary-rgba), 0.1);
+            color: var(--primary-color);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: rgba(var(--primary-rgba), 0.1);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .no-gaps {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f1f8f1 100%);
+            border-radius: 15px;
+            border: 2px solid #4caf50;
+        }
+        
+        .no-gaps h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .no-gaps p {
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+        
+        .no-gaps ul {
+            text-align: left;
+            display: inline-block;
+            color: #2e7d32;
+        }
+        
+        .no-gaps li {
+            margin-bottom: 8px;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #ffcdd2;
+            display: none;
+        }
+        
+        .error.show { display: block; }
+        
+        .existing-content-header {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #4caf50;
+        }
+        
+        .existing-content-header h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+        
+        .existing-content-header p {
+            color: #2e7d32;
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-section {
+                position: static;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e1e8ed;
+                grid-column: 1;
+            }
+            
+            .results-section {
+                height: auto;
+                overflow-y: visible;
+                padding: 20px;
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Content Gap Checker</h1>
+            <p>Check if specific topics already exist in your content</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="search-section">
+                <div class="form-group">
+                    <label for="manualSearchQuery">📝 Enter a topic to check:</label>
+                    <input type="text" id="manualSearchQuery" placeholder="e.g., Top 5 Ways to Add Quick Image Upload to Your Website in Minutes" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label>🎯 Check against:</label>
+                    <div class="source-selection">
+                        <div class="radio-group selected" onclick="selectSource('filestack')">
+                            <input type="radio" id="filestack" name="source" value="filestack" checked>
+                            <label for="filestack">📚 Filestack Blogs</label>
+                        </div>
+                        <div class="radio-group" onclick="selectSource('froala')">
+                            <input type="radio" id="froala" name="source" value="froala">
+                            <label for="froala">✨ Froala Blogs</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="manualSearchBtn" class="btn btn-primary" onclick="searchManualTopic()">
+                    🔍 Check for Existing Content
+                </button>
+                
+                <div id="error" class="error"></div>
+                
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <h3>Checking for existing content...</h3>
+                    <p id="loadingStatus">Searching your content...</p>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div id="results" class="results">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-number" id="totalGaps">0</span>
+                            <span class="stat-label">Results Found</span>
+                        </div>
+                    </div>
+                    
+                    <div class="gap-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" onclick="showTab('existing')">📄 Existing Content</button>
+                            <button class="tab-btn" onclick="showTab('gaps')">🚀 Content Gaps</button>
+                        </div>
+                        
+                        <div id="existing-tab" class="tab-content active">
+                            <div id="existingContent">
+                                <!-- Existing content will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <div id="gaps-tab" class="tab-content">
+                            <div id="gapSuggestions">
+                                <!-- Gap suggestions will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="gap-grid" id="gapResults">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple content type detection
+        function determineContentType(query) {
+            const lowerQuery = query.toLowerCase();
+            if (lowerQuery.includes('vs') || lowerQuery.includes('comparison')) return 'comparison';
+            if (lowerQuery.includes('guide') || lowerQuery.includes('how to')) return 'guide';
+            if (lowerQuery.includes('what is') || lowerQuery.includes('explained')) return 'explanation';
+            if (lowerQuery.includes('best') || lowerQuery.includes('top') || lowerQuery.includes('ways')) return 'list';
+            return 'guide';
+        }
+
+        // Calculate priority score
+        function calculateManualSearchPriority(query) {
+            let priority = 70;
+            const lowerQuery = query.toLowerCase();
+            
+            const keywords = ['upload', 'image', 'file', 'website', 'quick', 'ways', 'top', 'best', 'guide'];
+            keywords.forEach(keyword => {
+                if (lowerQuery.includes(keyword)) priority += 5;
+            });
+            
+            return Math.min(priority, 100);
+        }
+
+        // Handle source selection
+        function selectSource(source) {
+            document.getElementById('filestack').checked = (source === 'filestack');
+            document.getElementById('froala').checked = (source === 'froala');
+            
+            document.querySelectorAll('.radio-group').forEach(group => {
+                group.classList.remove('selected');
+            });
+            event.target.closest('.radio-group').classList.add('selected');
+        }
+
+        // Show/hide loading state
+        function showLoadingState() {
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('manualSearchBtn').disabled = true;
+            document.getElementById('results').classList.remove('show');
+        }
+
+        function hideLoadingState() {
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('manualSearchBtn').disabled = false;
+        }
+
+        function updateLoadingStatus(message) {
+            document.getElementById('loadingStatus').textContent = message;
+        }
+
+        // Main search function
+        async function searchManualTopic() {
+            const query = document.getElementById('manualSearchQuery').value.trim();
+            if (!query) {
+                alert('Please enter a topic to search for.');
+                return;
+            }
+            
+            const config = {
+                source: document.querySelector('input[name="source"]:checked').value,
+                collection: document.querySelector('input[name="source"]:checked').value === 'froala' ? 'froala_blogs' : 'filestack_blogs',
+                minSimilarity: 0.3
+            };
+            
+            showLoadingState();
+            updateLoadingStatus(`Analyzing "${query}" for content gaps...`);
+            
+            try {
+                // Search using Apps Script
+                const searchResults = await new Promise((resolve, reject) => {
+                    google.script.run
+                        .withSuccessHandler(resolve)
+                        .withFailureHandler(reject)
+                        .searchManualTopic(query, config);
+                });
+                
+                // Process results
+                if (searchResults && searchResults.length > 0) {
+                    displayResults(query, searchResults, false);
+                } else {
+                    // No content found - it's a gap
+                    const gapResult = {
+                        searchQuery: query,
+                        contentType: determineContentType(query),
+                        priority: calculateManualSearchPriority(query),
+                        recommendation: `Content gap found: "${query}". This represents a specific content opportunity.`
+                    };
+                    
+                    // Add GPT analysis
+                    try {
+                        const gptAnalysis = await new Promise((resolve, reject) => {
+                            google.script.run
+                                .withSuccessHandler(resolve)
+                                .withFailureHandler(reject)
+                                .generateManualGapAnalysis(query, config);
+                        });
+                        gapResult.gptAnalysis = gptAnalysis;
+                    } catch (error) {
+                        console.warn('GPT analysis failed:', error);
+                    }
+                    
+                    displayResults(query, [gapResult], true);
+                }
+                
+            } catch (error) {
+                console.error('Search failed:', error);
+                hideLoadingState();
+                showError(`Search failed: ${error.message}`);
+            }
+        }
+
+        // Display results
+        function displayResults(query, results, isGap) {
+            hideLoadingState();
+            document.getElementById('results').classList.add('show');
+            document.getElementById('totalGaps').textContent = results.length;
+            
+            if (isGap) {
+                // Show gap opportunity
+                const container = document.getElementById('gapResults');
+                container.innerHTML = '';
+                const gapCard = createGapCard(results[0]);
+                container.appendChild(gapCard);
+            } else {
+                // Show existing content in existing tab
+                const existingContainer = document.getElementById('existingContent');
+                existingContainer.innerHTML = '';
+                
+                const header = document.createElement('div');
+                header.className = 'existing-content-header';
+                header.innerHTML = `
+                    <h3>✅ Content Already Exists</h3>
+                    <p><strong>"${query}"</strong> appears to be covered in your existing content.</p>
+                    <p>Found ${results.length} similar pieces. Consider creating complementary content.</p>
+                `;
+                existingContainer.appendChild(header);
+                
+                results.forEach(result => {
+                    const contentCard = createContentCard(result, query);
+                    existingContainer.appendChild(contentCard);
+                });
+                
+                // Generate gap suggestions based on existing content
+                generateGapSuggestions(query, results);
+            }
+        }
+
+        // Create gap card
+        function createGapCard(gap) {
+            const card = document.createElement('div');
+            card.className = 'gap-card';
+            
+            card.innerHTML = `
+                <div class="gap-title">🎯 Content Gap Found: ${gap.searchQuery}</div>
+                <div class="gap-description">
+                    <strong>Content Type:</strong> ${gap.contentType}<br>
+                    <strong>Priority Score:</strong> ${gap.priority}/100<br>
+                    <strong>Recommendation:</strong> ${gap.recommendation}
+                </div>
+                ${gap.gptAnalysis ? `
+                <div class="gap-description">
+                    <strong>AI Analysis:</strong><br>
+                    ${gap.gptAnalysis.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+                </div>
+                ` : ''}
+            `;
+            
+            return card;
+        }
+
+        // Create content card with similarity reasoning and alternatives
+        function createContentCard(content, originalQuery) {
+            const card = document.createElement('div');
+            card.className = 'gap-card';
+            card.style.borderLeftColor = '#4caf50';
+            
+            const similarityPercentage = (content.score * 100).toFixed(1);
+            
+            card.innerHTML = `
+                <div class="similarity-score">${similarityPercentage}%</div>
+                <div class="gap-title">📄 Similar Content Found</div>
+                <div class="gap-description">
+                    <strong>Similarity Score:</strong> ${similarityPercentage}%<br>
+                    ${content.payload?.title ? `<strong>Title:</strong> ${content.payload.title}<br>` : ''}
+                    ${content.payload?.url ? `<strong>URL:</strong> <a href="${content.payload.url}" target="_blank">View Content</a>` : ''}
+                </div>
+                
+                <div class="similarity-reasoning">
+                    <h4>🔍 Why This Content is Similar</h4>
+                    <p>This content appears similar because it likely covers related concepts, keywords, or themes that overlap with your search query. The ${similarityPercentage}% similarity score indicates significant content overlap.</p>
+                </div>
+                
+                <div class="alternatives-section">
+                    <h4>💡 Alternative Angles to Consider</h4>
+                    <div class="alternative-topic">
+                        <h5>🔄 Different Perspective</h5>
+                        <p>Try approaching "${originalQuery}" from a different angle or industry perspective that hasn't been covered.</p>
+                    </div>
+                    <div class="alternative-topic">
+                        <h5>📊 Updated Information</h5>
+                        <p>Consider creating content with more recent data, case studies, or examples that build upon existing content.</p>
+                    </div>
+                    <div class="alternative-topic">
+                        <h5>🎯 Specific Use Case</h5>
+                        <p>Focus on a specific use case, industry, or technical implementation that provides unique value.</p>
+                    </div>
+                    <div class="alternative-topic">
+                        <h5>🔧 How-To Guide</h5>
+                        <p>Create a practical, step-by-step guide that complements the existing overview content.</p>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+            `;
+            
+            return card;
+        }
+
+        // Generate intelligent gap suggestions based on existing content
+        function generateGapSuggestions(query, existingResults) {
+            const suggestionsContainer = document.getElementById('gapSuggestions');
+            suggestionsContainer.innerHTML = '';
+            
+            // Analyze the query to understand the topic
+            const topic = analyzeQueryTopic(query);
+            
+            // Generate suggestions based on what's missing
+            const suggestions = generateMissingContentIdeas(topic, existingResults);
+            
+            suggestions.forEach(suggestion => {
+                const suggestionElement = createSuggestionElement(suggestion);
+                suggestionsContainer.appendChild(suggestionElement);
+            });
+        }
+        
+        // Analyze query to extract main topic and intent
+        function analyzeQueryTopic(query) {
+            const lowerQuery = query.toLowerCase();
+            
+            // Extract key concepts
+            const concepts = {
+                topic: '',
+                format: '',
+                industry: '',
+                intent: ''
+            };
+            
+            // Detect content format
+            if (lowerQuery.includes('how to') || lowerQuery.includes('guide')) {
+                concepts.format = 'how-to';
+            } else if (lowerQuery.includes('vs') || lowerQuery.includes('comparison')) {
+                concepts.format = 'comparison';
+            } else if (lowerQuery.includes('best') || lowerQuery.includes('top') || lowerQuery.includes('ways')) {
+                concepts.format = 'listicle';
+            } else if (lowerQuery.includes('what is') || lowerQuery.includes('explained')) {
+                concepts.format = 'explanation';
+            }
+            
+            // Detect industry/domain
+            if (lowerQuery.includes('image') || lowerQuery.includes('photo') || lowerQuery.includes('upload')) {
+                concepts.topic = 'file-management';
+            } else if (lowerQuery.includes('text') || lowerQuery.includes('editor') || lowerQuery.includes('wysiwyg')) {
+                concepts.topic = 'content-creation';
+            } else if (lowerQuery.includes('website') || lowerQuery.includes('web')) {
+                concepts.topic = 'web-development';
+            }
+            
+            // Detect user intent
+            if (lowerQuery.includes('quick') || lowerQuery.includes('fast') || lowerQuery.includes('easy')) {
+                concepts.intent = 'efficiency';
+            } else if (lowerQuery.includes('secure') || lowerQuery.includes('safe') || lowerQuery.includes('protect')) {
+                concepts.intent = 'security';
+            } else if (lowerQuery.includes('mobile') || lowerQuery.includes('app')) {
+                concepts.intent = 'mobile';
+            }
+            
+            return concepts;
+        }
+        
+        // Generate missing content ideas based on gaps
+        function generateMissingContentIdeas(topic, existingResults) {
+            const suggestions = [];
+            
+            // Generate complementary content based on topic and format
+            if (topic.topic === 'file-management') {
+                if (topic.intent === 'efficiency') {
+                    suggestions.push({
+                        icon: '🔒',
+                        title: 'Security-Focused Content',
+                        description: 'Secure File Upload Best Practices for Enterprise Users',
+                        reason: 'While you cover efficiency, security aspects may be missing'
+                    });
+                    suggestions.push({
+                        icon: '📱',
+                        title: 'Mobile Experience',
+                        description: 'Mobile File Upload Optimization Strategies',
+                        reason: 'Mobile-specific optimization not covered in existing content'
+                    });
+                } else if (topic.intent === 'security') {
+                    suggestions.push({
+                        icon: '⚡',
+                        title: 'Performance Optimization',
+                        description: 'Fast File Upload Without Compromising Security',
+                        reason: 'Performance aspects when security is prioritized'
+                    });
+                }
+            } else if (topic.topic === 'content-creation') {
+                if (topic.format === 'how-to') {
+                    suggestions.push({
+                        icon: '📊',
+                        title: 'Advanced Features',
+                        description: 'Advanced Text Editor Features for Power Users',
+                        reason: 'Building on basic how-to with advanced techniques'
+                    });
+                    suggestions.push({
+                        icon: '🎨',
+                        title: 'Design Integration',
+                        description: 'Integrating Rich Text Editors with Design Systems',
+                        reason: 'Cross-functional integration not covered'
+                    });
+                }
+            }
+            
+            // Add universal suggestions
+            suggestions.push({
+                icon: '🌍',
+                title: 'Industry-Specific Applications',
+                description: `${topic.topic === 'file-management' ? 'File Management' : 'Content Creation'} Solutions for Healthcare Industry`,
+                reason: 'Industry-specific use cases often overlooked'
+            });
+            
+            suggestions.push({
+                icon: '📈',
+                title: 'ROI and Metrics',
+                description: `Measuring the Impact of ${topic.topic === 'file-management' ? 'File Management' : 'Content Creation'} Improvements`,
+                reason: 'Quantifiable benefits and measurement strategies'
+            });
+            
+            return suggestions.slice(0, 4); // Limit to 4 suggestions
+        }
+        
+        // Create suggestion element
+        function createSuggestionElement(suggestion) {
+            const element = document.createElement('div');
+            element.className = 'content-suggestion';
+            
+            element.innerHTML = `
+                <h5>${suggestion.icon} ${suggestion.title}</h5>
+                <p>${suggestion.description}</p>
+                <small style="color: #666; font-style: normal;">${suggestion.reason}</small>
+            `;
+            
+            return element;
+        }
+        
+        // Tab switching function
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        // Generate intelligent gap suggestions based on existing content
+        async function generateGapSuggestions(query, existingResults) {
+            const suggestionsContainer = document.getElementById('gapSuggestions');
+            suggestionsContainer.innerHTML = '';
+            
+            // Show loading state for gap suggestions
+            suggestionsContainer.innerHTML = '<div class="loading">Analyzing content gaps...</div>';
+            
+            // Analyze the query to understand the topic
+            const topic = analyzeQueryTopic(query);
+            
+            // Generate initial suggestions
+            const initialSuggestions = generateMissingContentIdeas(topic, existingResults);
+            
+            // Validate each suggestion using vector search
+            const validatedSuggestions = [];
+            
+            for (const suggestion of initialSuggestions) {
+                try {
+                    // Search for each suggestion to see if it already exists
+                    const searchResults = await new Promise((resolve, reject) => {
+                        google.script.run
+                            .withSuccessHandler(resolve)
+                            .withFailureHandler(reject)
+                            .searchManualTopic(suggestion.description, {
+                                source: document.querySelector('input[name="source"]:checked').value,
+                                collection: document.querySelector('input[name="source"]:checked').value === 'froala' ? 'froala_blogs' : 'filestack_blogs',
+                                minSimilarity: 0.4
+                            });
+                    });
+                    
+                    // If no results or very low similarity, it's a real gap
+                    if (!searchResults || searchResults.length === 0 || searchResults[0].score < 0.4) {
+                        validatedSuggestions.push({
+                            ...suggestion,
+                            isVerified: true
+                        });
+                    }
+                    
+                    // Limit to 3 verified gaps to avoid overwhelming
+                    if (validatedSuggestions.length >= 3) break;
+                    
+                } catch (error) {
+                    console.warn('Error validating suggestion:', error);
+                    // If validation fails, still show the suggestion but mark as unverified
+                    validatedSuggestions.push({
+                        ...suggestion,
+                        isVerified: false
+                    });
+                }
+            }
+            
+            // Display validated suggestions
+            suggestionsContainer.innerHTML = '';
+            
+            if (validatedSuggestions.length === 0) {
+                suggestionsContainer.innerHTML = `
+                    <div class="no-gaps">
+                        <h4>🎯 No Major Content Gaps Found</h4>
+                        <p>Your existing content appears to cover this topic well. Consider:</p>
+                        <ul>
+                            <li>Updating existing content with new information</li>
+                            <li>Creating complementary content for different audiences</li>
+                            <li>Focusing on emerging trends in this area</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                validatedSuggestions.forEach(suggestion => {
+                    const suggestionElement = createSuggestionElement(suggestion);
+                    suggestionsContainer.appendChild(suggestionElement);
+                });
+            }
+        }
+        
+        // Error handling
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+    </script>
+</body>
+</html>

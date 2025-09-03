@@ -502,3 +502,565 @@ function testSimilarityCheck() {
 function processSimilarityCheck(draftText, source) {
   return checkBlogSimilarity(draftText, source);
 }
+
+/**
+ * Top-Funnel Content Gap Analysis Functions
+ * Uses the same API keys from environment variables
+ */
+
+/**
+ * Analyze a batch of top-funnel content combinations for gaps
+ */
+function analyzeTopFunnelBatch(combinations, config) {
+  const totalStart = BackendTimer.start('TOP_FUNNEL_BATCH');
+  
+  try {
+    // Get API keys from environment variables (same as similarity checker)
+    const apiKeysStart = BackendTimer.start('GET_API_KEYS');
+    const apiKeys = getApiKeys();
+    BackendTimer.end('GET_API_KEYS', apiKeysStart);
+    
+    // Validate API keys
+    if (!apiKeys.openaiKey || !apiKeys.qdrantUrl || !apiKeys.qdrantKey) {
+      throw new Error('API credentials not set in script properties');
+    }
+    
+    const results = [];
+    
+    combinations.forEach((combination, index) => {
+      try {
+        const gapAnalysis = analyzeTopFunnelGap(combination, config, apiKeys);
+        if (gapAnalysis) {
+          results.push(gapAnalysis);
+        }
+      } catch (error) {
+        console.warn(`Failed to analyze combination ${index}:`, error);
+        // Continue with other combinations
+      }
+    });
+    
+    BackendTimer.end('TOP_FUNNEL_BATCH', totalStart);
+    console.log(`✅ Top-funnel batch analysis completed: ${results.length} gaps found`);
+    return results;
+    
+  } catch (error) {
+    BackendTimer.end('TOP_FUNNEL_BATCH', totalStart);
+    console.error('❌ Error in top-funnel batch analysis:', error);
+    return [];
+  }
+}
+
+/**
+ * Analyze a single topic-funnel combination for content gaps
+ */
+function analyzeTopFunnelGap(combination, config, apiKeys) {
+  try {
+    // Generate embedding for the search query
+    const embedding = generateEmbedding(combination.searchQuery, apiKeys);
+    
+    // Search for similar existing content
+    const collectionName = config.collection || 'filestack_blogs';
+    const similarContent = searchTopFunnelContent(embedding, collectionName, apiKeys, config);
+    
+    // Determine if this is a gap based on top-funnel criteria
+    const isGap = evaluateTopFunnelGap(combination, similarContent, config);
+    
+    if (isGap) {
+      // Generate GPT analysis for the top-funnel gap
+      const gptAnalysis = generateTopFunnelGapAnalysis(combination, similarContent, apiKeys);
+      
+      return {
+        ...combination,
+        isGap: true,
+        existingContent: similarContent,
+        gapReason: generateGapReason(combination, similarContent),
+        opportunityScore: calculateTopFunnelOpportunity(combination, similarContent, config),
+        gptAnalysis: gptAnalysis
+      };
+    }
+    
+    return null; // Not a gap
+  } catch (error) {
+    console.error(`Error analyzing gap for ${combination.searchQuery}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Search for similar top-funnel content in Qdrant
+ */
+function searchTopFunnelContent(embedding, collectionName, apiKeys, config) {
+  try {
+    const response = UrlFetchApp.fetch(`${apiKeys.qdrantUrl}/collections/${collectionName}/points/search`, {
+      method: 'POST',
+      headers: {
+        'api-key': apiKeys.qdrantKey,
+        'Content-Type': 'application/json'
+      },
+      payload: JSON.stringify({
+        vector: embedding,
+        limit: 3, // Fewer results for top-funnel analysis
+        with_payload: true,
+        score_threshold: parseFloat(config.minSimilarity || '0.3')
+      })
+    });
+    
+    if (response.getResponseCode() !== 200) {
+      throw new Error(`Qdrant API error: ${response.getResponseCode()}`);
+    }
+    
+    const data = JSON.parse(response.getContentText());
+    return data.result || [];
+  } catch (error) {
+    console.error('Error searching top-funnel content:', error);
+    return [];
+  }
+}
+
+/**
+ * Evaluate if a combination represents a content gap for top-funnel
+ */
+function evaluateTopFunnelGap(combination, similarContent, config) {
+  // If no similar content found, it's definitely a gap
+  if (!similarContent || similarContent.length === 0) {
+    return true;
+  }
+  
+  // For top-funnel content, we're more lenient about gaps
+  const threshold = parseFloat(config.minSimilarity || '0.3');
+  const highestSimilarity = similarContent[0].score;
+  
+  // If highest similarity is below threshold, it's a gap
+  if (highestSimilarity < threshold) {
+    return true;
+  }
+  
+  // Additional top-funnel specific criteria
+  const topFunnelKeywords = [
+    'what is', 'introduction', 'basics', 'explained', 'overview', 
+    'beginners', 'guide', 'fundamentals', 'definition'
+  ];
+  
+  const hasTopFunnelIntent = topFunnelKeywords.some(keyword => 
+    combination.searchQuery.toLowerCase().includes(keyword)
+  );
+  
+  // If this is clearly top-funnel content and similarity is moderate, still consider it a gap
+  if (hasTopFunnelIntent && highestSimilarity < 0.5) {
+    return true;
+  }
+  
+  return false;
+}
+
+/**
+ * Generate gap reason explanation
+ */
+function generateGapReason(combination, similarContent) {
+  if (!similarContent || similarContent.length === 0) {
+    return `No existing content found for "${combination.searchQuery}" - clear content gap`;
+  }
+  
+  const highestSimilarity = (similarContent[0].score * 100).toFixed(1);
+  return `Low similarity (${highestSimilarity}%) to existing content for "${combination.searchQuery}" - opportunity for better coverage`;
+}
+
+/**
+ * Calculate opportunity score for top-funnel content gaps
+ */
+function calculateTopFunnelOpportunity(combination, similarContent, config) {
+  let score = combination.priority || 50;
+  
+  // Boost score if no existing content at all
+  if (!similarContent || similarContent.length === 0) {
+    score += 25;
+  }
+  
+  // Boost score for high-intent top-funnel keywords
+  const highIntentKeywords = ['what is', 'how to', 'guide', 'explained', 'overview'];
+  if (highIntentKeywords.some(keyword => combination.searchQuery.includes(keyword))) {
+    score += 20;
+  }
+  
+  // Boost awareness-stage content (highest value for top-funnel)
+  if (combination.funnelStage === 'awareness') {
+    score += 15;
+  }
+  
+  // Boost educational content types
+  if (['guide', 'explanation'].includes(combination.contentType)) {
+    score += 10;
+  }
+  
+  // Boost industry-specific content if focused
+  if (config.industryFocus && config.industryFocus !== 'all') {
+    score += 10;
+  }
+  
+  return Math.min(score, 100);
+}
+
+/**
+ * Generate GPT analysis for top-funnel content gaps
+ */
+function generateTopFunnelGapAnalysis(combination, similarContent, apiKeys) {
+  if (!apiKeys.openaiKey) {
+    return 'GPT analysis unavailable - API key not found';
+  }
+  
+  try {
+    const funnelStage = combination.funnelStage || 'awareness';
+    const existingContentSummary = similarContent.length > 0 ? 
+      `Existing content: "${similarContent[0].payload.title}" (${(similarContent[0].score * 100).toFixed(1)}% similar)` :
+      'No similar existing content found';
+    
+    const prompt = `Analyze this top-funnel content gap opportunity:
+
+CONTENT OPPORTUNITY: "${combination.searchQuery}"
+FUNNEL STAGE: ${funnelStage}
+CONTENT TYPE: ${combination.contentType}
+${existingContentSummary}
+
+Provide top-funnel content strategy analysis:
+
+1. **AWARENESS VALUE**: Why this content attracts new visitors
+2. **SEARCH INTENT**: What users are looking for when searching this
+3. **BEGINNER-FRIENDLY APPROACH**: How to explain complex topics simply
+4. **CONTENT STRUCTURE**: 
+   - Hook and introduction
+   - Core educational elements
+   - Visual aids and examples
+   - Clear next steps
+5. **SEO OPPORTUNITY**: Primary and long-tail keywords to target
+6. **TRAFFIC POTENTIAL**: Expected search volume and competition level
+7. **CONVERSION PATH**: How this connects to your product/service
+8. **COMPETITOR GAPS**: What existing content is missing
+
+Focus on awareness-stage content that educates and builds trust.`;
+
+    const response = UrlFetchApp.fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKeys.openaiKey}`,
+        'Content-Type': 'application/json'
+      },
+      payload: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a content marketing expert specializing in top-funnel awareness content. Focus on educational content that attracts and informs new visitors.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        max_tokens: 1500,
+        temperature: 0.3
+      })
+    });
+    
+    if (response.getResponseCode() === 200) {
+      const data = JSON.parse(response.getContentText());
+      return data.choices[0].message.content;
+    } else {
+      return `GPT analysis failed: ${response.getResponseCode()}`;
+    }
+    
+  } catch (error) {
+    console.error('Error generating top-funnel gap analysis:', error);
+    return `GPT analysis error: ${error.message}`;
+  }
+}
+
+/**
+ * Main top-funnel analysis function (called from HTML)
+ */
+function processTopFunnelAnalysis(combinations, config) {
+  return analyzeTopFunnelBatch(combinations, config);
+}
+
+/**
+ * Content Gap Analysis Functions
+ * For the general content gap analyzer (not top-funnel specific)
+ */
+
+/**
+ * Analyze a batch of content combinations for gaps (general purpose)
+ */
+function analyzeContentGapBatch(combinations, config) {
+  const totalStart = BackendTimer.start('CONTENT_GAP_BATCH');
+  
+  try {
+    // Get API keys from environment variables (same as similarity checker)
+    const apiKeysStart = BackendTimer.start('GET_API_KEYS');
+    const apiKeys = getApiKeys();
+    BackendTimer.end('GET_API_KEYS', apiKeysStart);
+    
+    // Validate API keys
+    if (!apiKeys.openaiKey || !apiKeys.qdrantUrl || !apiKeys.qdrantKey) {
+      throw new Error('API credentials not set in script properties');
+    }
+    
+    const results = [];
+    
+    combinations.forEach((combination, index) => {
+      try {
+        const gapAnalysis = analyzeContentGap(combination, config, apiKeys);
+        if (gapAnalysis) {
+          results.push(gapAnalysis);
+        }
+      } catch (error) {
+        console.warn(`Failed to analyze combination ${index}:`, error);
+        // Continue with other combinations
+      }
+    });
+    
+    BackendTimer.end('CONTENT_GAP_BATCH', totalStart);
+    console.log(`✅ Content gap batch analysis completed: ${results.length} gaps found`);
+    return results;
+    
+  } catch (error) {
+    BackendTimer.end('CONTENT_GAP_BATCH', totalStart);
+    console.error('❌ Error in content gap batch analysis:', error);
+    return [];
+  }
+}
+
+/**
+ * Analyze a single content combination for gaps (general purpose)
+ */
+function analyzeContentGap(combination, config, apiKeys) {
+  try {
+    // Generate embedding for the search query
+    const embedding = generateEmbedding(combination.searchQuery, apiKeys);
+    
+    // Search for similar existing content
+    const collectionName = config.collection || 'filestack_blogs';
+    const similarContent = searchContentGap(embedding, collectionName, apiKeys, config);
+    
+    // Determine if this is a gap
+    const isGap = evaluateContentGap(combination, similarContent, config);
+    
+    if (isGap) {
+      // Generate GPT analysis for the content gap
+      const gptAnalysis = generateContentGapAnalysis(combination, similarContent, apiKeys);
+      
+      return {
+        ...combination,
+        isGap: true,
+        existingContent: similarContent,
+        gapReason: generateContentGapReason(combination, similarContent),
+        opportunityScore: calculateContentGapOpportunity(combination, similarContent, config),
+        gptAnalysis: gptAnalysis
+      };
+    }
+    
+    return null; // Not a gap
+  } catch (error) {
+    console.error(`Error analyzing content gap for ${combination.searchQuery}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Search for similar content in Qdrant (general purpose)
+ */
+function searchContentGap(embedding, collectionName, apiKeys, config) {
+  try {
+    const response = UrlFetchApp.fetch(`${apiKeys.qdrantUrl}/collections/${collectionName}/points/search`, {
+      method: 'POST',
+      headers: {
+        'api-key': apiKeys.qdrantKey,
+        'Content-Type': 'application/json'
+      },
+      payload: JSON.stringify({
+        vector: embedding,
+        limit: 5,
+        with_payload: true,
+        score_threshold: parseFloat(config.minSimilarity || '0.4')
+      })
+    });
+    
+    if (response.getResponseCode() !== 200) {
+      throw new Error(`Qdrant API error: ${response.getResponseCode()}`);
+    }
+    
+    const data = JSON.parse(response.getContentText());
+    return data.result || [];
+  } catch (error) {
+    console.error('Error searching content gap:', error);
+    return [];
+  }
+}
+
+/**
+ * Evaluate if a combination represents a content gap (general purpose)
+ */
+function evaluateContentGap(combination, similarContent, config) {
+  // If no similar content found, it's definitely a gap
+  if (!similarContent || similarContent.length === 0) {
+    return true;
+  }
+  
+  // Check similarity threshold
+  const threshold = parseFloat(config.minSimilarity || '0.4');
+  const highestSimilarity = similarContent[0].score;
+  
+  // If highest similarity is below threshold, it's a gap
+  return highestSimilarity < threshold;
+}
+
+/**
+ * Generate gap reason explanation (general purpose)
+ */
+function generateContentGapReason(combination, similarContent) {
+  if (!similarContent || similarContent.length === 0) {
+    return `No existing content found for "${combination.searchQuery}" - clear content gap`;
+  }
+  
+  const highestSimilarity = (similarContent[0].score * 100).toFixed(1);
+  return `Low similarity (${highestSimilarity}%) to existing content for "${combination.searchQuery}" - opportunity for specialized coverage`;
+}
+
+/**
+ * Calculate opportunity score for content gaps (general purpose)
+ */
+function calculateContentGapOpportunity(combination, similarContent, config) {
+  let score = combination.priority || 50;
+  
+  // Boost score if no existing content at all
+  if (!similarContent || similarContent.length === 0) {
+    score += 30;
+  }
+  
+  // Boost score for high-demand combinations
+  const highDemandKeywords = ['beginner', 'tutorial', 'guide', 'vs', 'best', 'optimization'];
+  if (highDemandKeywords.some(keyword => combination.aspect.includes(keyword))) {
+    score += 20;
+  }
+  
+  // Boost score for trending topics
+  const trendingTopics = ['React', 'Next.js', 'TypeScript', 'Docker', 'Kubernetes', 'AWS'];
+  if (trendingTopics.includes(combination.topic)) {
+    score += 15;
+  }
+  
+  // Boost for technical implementation content
+  if (['performance optimization', 'security best practices', 'deployment'].includes(combination.aspect)) {
+    score += 15;
+  }
+  
+  return Math.min(score, 100);
+}
+
+/**
+ * Generate GPT analysis for content gaps
+ */
+function generateContentGapAnalysis(combination, similarContent, apiKeys) {
+  if (!apiKeys.openaiKey) {
+    return 'GPT analysis unavailable - API key not found';
+  }
+  
+  try {
+    const topic = combination.topic || combination.searchQuery;
+    const aspect = combination.aspect || 'general content';
+    const existingContentSummary = similarContent.length > 0 ? 
+      `Existing content: "${similarContent[0].payload.title}" (${(similarContent[0].score * 100).toFixed(1)}% similar)` :
+      'No similar existing content found';
+    
+    const prompt = `Analyze this content gap opportunity for ${combination.topicCategory || 'technical'} content:
+
+CONTENT OPPORTUNITY: "${combination.searchQuery}"
+TOPIC: ${topic}
+ASPECT: ${aspect}
+${existingContentSummary}
+
+Provide actionable content strategy analysis:
+
+1. **CONTENT OPPORTUNITY**: Why this is a valuable gap to fill
+2. **TARGET AUDIENCE**: Who would benefit from this content  
+3. **CONTENT ANGLE**: Unique approach to differentiate from existing content
+4. **KEY TOPICS TO COVER**: 
+   - Main concept explanations
+   - Practical implementation details
+   - Common use cases and examples
+   - Best practices and tips
+5. **CONTENT FORMAT**: Recommended format (tutorial, guide, comparison, etc.)
+6. **COMPETITIVE ADVANTAGE**: How this content positions you vs competitors
+7. **SEO POTENTIAL**: Search intent and keyword opportunities
+
+Be specific and actionable for content creators.`;
+
+    const response = UrlFetchApp.fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKeys.openaiKey}`,
+        'Content-Type': 'application/json'
+      },
+      payload: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a content strategy expert specializing in technical content for developers and businesses. Provide concise, actionable analysis.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        max_tokens: 1500,
+        temperature: 0.3
+      })
+    });
+    
+    if (response.getResponseCode() === 200) {
+      const data = JSON.parse(response.getContentText());
+      return data.choices[0].message.content;
+    } else {
+      return `GPT analysis failed: ${response.getResponseCode()}`;
+    }
+    
+  } catch (error) {
+    console.error('Error generating content gap analysis:', error);
+    return `GPT analysis error: ${error.message}`;
+  }
+}
+
+/**
+ * Main content gap analysis function (called from HTML)
+ */
+function processContentGapAnalysis(combinations, config) {
+  return analyzeContentGapBatch(combinations, config);
+}
+
+/**
+ * HTML Service functions for navigation between tools
+ * These functions allow the frontend to switch between different analysis tools
+ */
+
+/**
+ * Returns the main similarity checker HTML
+ */
+function getSimilarityCheckerHtml() {
+  const htmlTemplate = HtmlService.createTemplateFromFile('index');
+  return htmlTemplate.evaluate().getContent();
+}
+
+/**
+ * Returns the content gap analyzer HTML
+ */
+function getContentGapAnalyzerHtml() {
+  const htmlTemplate = HtmlService.createTemplateFromFile('content-gap-analyzer');
+  return htmlTemplate.evaluate().getContent();
+}
+
+/**
+ * Returns the top-funnel analyzer HTML
+ */
+function getTopFunnelAnalyzerHtml() {
+  const htmlTemplate = HtmlService.createTemplateFromFile('top-funnel-analyzer');
+  return htmlTemplate.evaluate().getContent();
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Gap Checker Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .demo-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .code-block {
+            background: #f1f3f4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Content Gap Checker Demo</h1>
+    
+    <div class="demo-section">
+        <h2>What This Tool Does</h2>
+        <p>The Content Gap Checker is a simple, focused tool that allows you to input specific topics and check if they already exist in your content. Perfect for avoiding duplication and finding content opportunities.</p>
+        
+        <div class="highlight">
+            <strong>Example Use Case:</strong> You want to write about "Top 5 Ways to Add Quick Image Upload to Your Website in Minutes" but first want to check if you've already covered similar topics in your Filestack blog.
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>How It Works</h2>
+        <ol>
+            <li><strong>Input Topic:</strong> Enter your specific topic in the search box</li>
+            <li><strong>Select Source:</strong> Choose between Filestack or Froala blogs</li>
+            <li><strong>Search:</strong> Click "Check for Existing Content"</li>
+            <li><strong>Get Results:</strong> See if content exists or if it's a gap</li>
+        </ol>
+    </div>
+
+    <div class="demo-section">
+        <h2>Example Search Queries</h2>
+        <div class="code-block">
+• "Top 5 Ways to Add Quick Image Upload to Your Website in Minutes"
+• "What is WYSIWYG Editor and Why You Need One"
+• "File Upload vs Cloud Storage: Which is Better?"
+• "Complete Guide to Image Processing APIs"
+• "Best Rich Text Editors for React Applications"
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>What You'll See</h2>
+        
+        <h3>✅ If Content Exists:</h3>
+        <ul>
+            <li>Green header showing "Content Already Exists"</li>
+            <li>List of similar content pieces found</li>
+            <li>Similarity scores for each piece</li>
+            <li>Links to existing content (if available)</li>
+            <li>Gap analysis to see if there's still opportunity</li>
+        </ul>
+        
+        <h3>❌ If It's a Gap:</h3>
+        <ul>
+            <li>Content gap card with priority score</li>
+            <li>AI-generated analysis using GPT-4o</li>
+            <li>Content recommendations and structure</li>
+            <li>Action buttons for content planning</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h2>Key Benefits</h2>
+        <ul>
+            <li><strong>Simple & Focused:</strong> No complex configurations - just search and get results</li>
+            <li><strong>Avoid Duplication:</strong> Don't write about topics you've already covered</li>
+            <li><strong>Find Opportunities:</strong> Identify specific content gaps worth writing about</li>
+            <li><strong>AI-Powered Analysis:</strong> Get intelligent insights using GPT-4o</li>
+            <li><strong>Quick Results:</strong> Instant feedback on content gaps</li>
+        </ul>
+    </div>
+
+    <div class="demo-section">
+        <h2>Technical Features</h2>
+        <p>The system uses:</p>
+        <ul>
+            <li><strong>Vector Search:</strong> OpenAI embeddings to find semantic similarity</li>
+            <li><strong>Qdrant Database:</strong> Stores your existing content as vectors</li>
+            <li><strong>GPT-4o Analysis:</strong> Latest AI model for gap analysis</li>
+            <li><strong>Real-time Results:</strong> Instant feedback on content gaps</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Ready to Try?</strong> Open the main application and use the Content Gap Checker to see if your topics already exist in your content!
+    </div>
+</body>
+</html>

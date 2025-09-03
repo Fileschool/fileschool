@@ -299,6 +299,26 @@
             left: 100%;
         }
         
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 4px 15px rgba(var(--secondary-rgba), 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+            border-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(var(--secondary-rgba), 0.4);
+        }
+        
+        .btn-secondary:active:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(var(--secondary-rgba), 0.4);
+        }
+        
         .loading {
             display: none;
             color: var(--primary-color);
@@ -1386,6 +1406,25 @@ Minimum 50 characters required for analysis."
                     <button id="checkSimilarity" class="btn-primary" onclick="checkSimilarity()">
                         🔍 Check Similarity
                     </button>
+                </div>
+                
+                <!-- Content Tools Navigation -->
+                <div class="form-group" style="margin-top: 30px;">
+                    <label>🧰 Content Analysis Tools</label>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <button class="btn-secondary" onclick="loadContentGapAnalyzer()" style="text-align: left; justify-content: flex-start;">
+                            📊 Content Gap Analyzer
+                            <div style="font-size: 12px; font-weight: 400; opacity: 0.8; margin-top: 5px; text-transform: none;">
+                                Find missing content opportunities in your blog portfolio
+                            </div>
+                        </button>
+                        <button class="btn-secondary" onclick="loadTopFunnelAnalyzer()" style="text-align: left; justify-content: flex-start;">
+                            🎯 Top-Funnel Content Analyzer  
+                            <div style="font-size: 12px; font-weight: 400; opacity: 0.8; margin-top: 5px; text-transform: none;">
+                                Discover awareness-stage content gaps and opportunities
+                            </div>
+                        </button>
+                    </div>
                                          <div id="loading" class="loading">
                          <div class="spinner"></div>
                          <span>Analyzing similarity with AI...</span>
@@ -2150,6 +2189,49 @@ Minimum 50 characters required for analysis."
 
                 // Update text
                 expandText.textContent = '🔍 Section-by-Section Comparison ▲';
+            }
+        }
+        
+        // Navigation functions for content analysis tools
+        function loadContentGapAnalyzer() {
+            // Check if we're in Apps Script environment
+            if (typeof google !== 'undefined' && google.script) {
+                // Use Apps Script HTML service to load the other tool
+                google.script.run
+                    .withSuccessHandler((html) => {
+                        // Replace current page content with the new tool
+                        document.open();
+                        document.write(html);
+                        document.close();
+                    })
+                    .withFailureHandler((error) => {
+                        showError('Failed to load Content Gap Analyzer: ' + error.message);
+                    })
+                    .getContentGapAnalyzerHtml();
+            } else {
+                // For local testing/development
+                window.location.href = 'content-gap-analyzer.html';
+            }
+        }
+        
+        function loadTopFunnelAnalyzer() {
+            // Check if we're in Apps Script environment
+            if (typeof google !== 'undefined' && google.script) {
+                // Use Apps Script HTML service to load the other tool
+                google.script.run
+                    .withSuccessHandler((html) => {
+                        // Replace current page content with the new tool
+                        document.open();
+                        document.write(html);
+                        document.close();
+                    })
+                    .withFailureHandler((error) => {
+                        showError('Failed to load Top-Funnel Analyzer: ' + error.message);
+                    })
+                    .getTopFunnelAnalyzerHtml();
+            } else {
+                // For local testing/development
+                window.location.href = 'top-funnel-analyzer.html';
             }
         }
     </script>
