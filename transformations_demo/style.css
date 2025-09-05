@@ -48,7 +48,8 @@ body {
     justify-content: center;
 }
 
-#mainImage, .transition-image {
+#mainImage,
+.transition-image {
     max-width: 100%;
     max-height: 100%;
     border-radius: 8px;
@@ -190,8 +191,16 @@ body {
 }
 
 @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
 }
 
 
@@ -199,26 +208,26 @@ body {
     .container {
         padding: 20px 16px;
     }
-    
+
     .image-container {
         padding: 16px;
         min-height: 300px;
     }
-    
+
     #mainImage {
         max-height: 350px;
     }
-    
+
     .url-container {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     #transformationUrl {
         text-align: center;
         padding: 12px 0;
     }
-    
+
     #copyUrl {
         align-self: stretch;
         padding: 12px;
