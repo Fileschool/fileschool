@@ -5,3 +5,5 @@
 filestack_glossary/*.pdf
 filestack_glossary/*.md
 add-backlinks.js
+README_froala_analyzer.md
+requirements.txt
