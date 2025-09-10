@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Strategy - Article Triage Decision Tree</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+        .decision-node {
+            background-color: #FEF3C7; /* amber-100 */
+            border: 2px solid #FBBF24; /* amber-400 */
+            color: #92400E; /* amber-800 */
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            position: relative;
+            width: 90%;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        .outcome-node {
+            background-color: #FFF7ED; /* orange-50 */
+            border: 2px solid #FB923C; /* orange-400 */
+            color: #431407; /* orange-950 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: left;
+            position: relative;
+            width: 100%;
+        }
+        .outcome-node h4 {
+            color: #C2410C; /* orange-600 */
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Pillar Project Article Triage</h1>
+            <p class="text-xl text-orange-500 mt-2">Decision Tree</p>
+        </header>
+
+        <div class="flex flex-col items-center">
+            
+            <!-- Start Node -->
+            <div class="decision-node bg-white border-gray-400 text-gray-800 shadow">
+                <p class="font-bold">START: Select an article from a Topic Cluster</p>
+            </div>
+            <div class="h-12 w-0.5 bg-gray-300 mx-auto"></div>
+
+            <!-- Decision 1 -->
+            <div class="decision-node">
+                <p class="font-semibold">Is the content factually incorrect, outdated, or offers no value?</p>
+            </div>
+            
+            <div class="h-8 w-0.5 bg-gray-300 mx-auto"></div>
+
+            <!-- Branches -->
+            <div class="w-full flex flex-col md:flex-row justify-center gap-8 md:gap-16 relative max-w-4xl">
+                <!-- HORIZONTAL LINE -->
+                <div class="absolute top-0 left-1/4 right-1/4 h-0.5 bg-gray-300"></div>
+
+                <!-- YES Branch (Obsolete) -->
+                <div class="flex-1 relative pt-8">
+                    <!-- Vertical Connector -->
+                    <div class="absolute left-1/2 -translate-x-1/2 top-0 h-8 w-0.5 bg-gray-300"></div>
+                     <span class="absolute top-0 left-1/2 -translate-x-8 -translate-y-1/2 bg-gray-50 px-2 py-0.5 rounded text-sm font-semibold text-green-600">YES</span>
+                    <div class="outcome-node border-red-400 bg-red-50 text-red-950">
+                        <h4 class="font-bold text-lg text-red-600">Category: OBSOLETE</h4>
+                        <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
+                            <li>Do not use its content.</li>
+                            <li>Implement a permanent <strong>301 redirect</strong> from its URL to the new Pillar Page URL.</li>
+                            <li>Update all internal links pointing to this old URL.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- NO Branch -->
+                <div class="flex-1 relative pt-8">
+                     <!-- Vertical Connector -->
+                     <div class="absolute left-1/2 -translate-x-1/2 top-0 h-8 w-0.5 bg-gray-300"></div>
+                     <span class="absolute top-0 left-1/2 translate-x-8 -translate-y-1/2 bg-gray-50 px-2 py-0.5 rounded text-sm font-semibold text-red-600">NO</span>
+
+                    <!-- Decision 2 -->
+                    <div class="decision-node">
+                        <p class="font-semibold">Does it have significant content overlap with other articles?</p>
+                    </div>
+                    
+                    <div class="h-8 w-0.5 bg-gray-300 mx-auto"></div>
+
+                    <!-- Branches for Decision 2 -->
+                    <div class="w-full flex flex-col md:flex-row justify-center gap-8 md:gap-8 relative">
+                        <!-- HORIZONTAL LINE -->
+                        <div class="absolute top-0 left-1/4 right-1/4 h-0.5 bg-gray-300"></div>
+                        
+                        <!-- YES Branch (Merge) -->
+                        <div class="flex-1 relative pt-8">
+                             <!-- Vertical Connector -->
+                            <div class="absolute left-1/2 -translate-x-1/2 top-0 h-8 w-0.5 bg-gray-300"></div>
+                            <span class="absolute top-0 left-1/2 -translate-x-8 -translate-y-1/2 bg-gray-50 px-2 py-0.5 rounded text-sm font-semibold text-green-600">YES</span>
+                            <div class="outcome-node border-blue-400 bg-blue-50 text-blue-950">
+                                <h4 class="font-bold text-lg text-blue-600">Category: MERGE</h4>
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
+                                    <li>Combine its best sections into the new Pillar Page draft.</li>
+                                    <li>Implement a permanent <strong>301 redirect</strong> from its URL to the new Pillar Page URL.</li>
+                                    <li>Update all internal links pointing to this old URL.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- NO Branch (Support) -->
+                        <div class="flex-1 relative pt-8">
+                            <!-- Vertical Connector -->
+                             <div class="absolute left-1/2 -translate-x-1/2 top-0 h-8 w-0.5 bg-gray-300"></div>
+                             <span class="absolute top-0 left-1/2 translate-x-8 -translate-y-1/2 bg-gray-50 px-2 py-0.5 rounded text-sm font-semibold text-red-600">NO</span>
+                            <div class="outcome-node border-green-400 bg-green-50 text-green-950">
+                                <h4 class="font-bold text-lg text-green-600">Category: SUPPORT</h4>
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
+                                    <li>This is a standalone article. Do not merge its content.</li>
+                                    <li>Apply the full <strong>"Supporting Article Optimization Checklist"</strong> to it.</li>
+                                    <li>Ensure it links up to the Pillar Page with the correct anchor text.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
