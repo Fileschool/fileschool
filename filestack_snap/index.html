@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snap Filestack - Advanced File Management & Transformations</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Snap Filestack</span>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link">Documentation</a>
+                <a href="#" class="nav-link">API Reference</a>
+                <button class="btn btn-primary">Sign Up Free</button>
+                <button class="btn btn-secondary">Login</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Features</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4>Core Features</h4>
+                    <div class="api-key-section">
+                        <div class="form-group">
+                            <label for="globalApikey">API Key</label>
+                            <div class="input-group">
+                                <input type="text" id="globalApikey" placeholder="Enter your Filestack API key">
+                                <button class="btn btn-secondary" onclick="generateApiKey()">
+                                    <i class="fas fa-key"></i> Generate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#picker" class="nav-item active" data-section="picker">
+                        <i class="fas fa-folder-open"></i>
+                        <span>File Picker</span>
+                    </a>
+                    <a href="#transform" class="nav-item" data-section="transform">
+                        <i class="fas fa-magic"></i>
+                        <span>Image Transform</span>
+                    </a>
+                    <a href="#upload" class="nav-item" data-section="upload">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload</span>
+                    </a>
+                    <a href="#download" class="nav-item" data-section="download">
+                        <i class="fas fa-download"></i>
+                        <span>Download</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <h4>Intelligence</h4>
+                    <a href="#sfw" class="nav-item" data-section="sfw">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Safe for Work</span>
+                    </a>
+                    <a href="#tagging" class="nav-item" data-section="tagging">
+                        <i class="fas fa-tags"></i>
+                        <span>Image Tagging</span>
+                    </a>
+                    <a href="#ocr" class="nav-item" data-section="ocr">
+                        <i class="fas fa-file-text"></i>
+                        <span>OCR</span>
+                    </a>
+                    <a href="#faces" class="nav-item" data-section="faces">
+                        <i class="fas fa-user"></i>
+                        <span>Face Detection</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Advanced</h4>
+                    <a href="#metadata" class="nav-item" data-section="metadata">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Metadata</span>
+                    </a>
+                    <a href="#security" class="nav-item" data-section="security">
+                        <i class="fas fa-lock"></i>
+                        <span>Security</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h4>AI Tools</h4>
+                    <a href="#ai-generator" class="nav-item" data-section="ai-generator">
+                        <i class="fas fa-robot"></i>
+                        <span>AI Code Generator</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- File Picker Section -->
+            <section id="picker" class="content-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-folder-open"></i> File Picker Configuration</h2>
+                    <p>Configure your Filestack picker with advanced options for file selection, sources, and transformations.</p>
+                </div>
+
+                <div class="config-grid">
+                    <!-- Basic Configuration -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
+
+                        <div class="form-group">
+                            <label>Display Mode</label>
+                            <div class="radio-group">
+                                <label class="radio-item">
+                                    <input type="radio" name="displayMode" value="modal" checked>
+                                    <span>Modal</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="displayMode" value="inline">
+                                    <span>Inline</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="displayMode" value="dropPane">
+                                    <span>Drop Pane</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Language</label>
+                            <select id="language">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="it">Italian</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="ru">Russian</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ko">Korean</option>
+                                <option value="zh">Chinese</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- File Acceptance -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-file-alt"></i> File Acceptance</h3>
+                        <p class="card-description">Select which file types are allowed. If none selected, all types are enabled.</p>
+                        
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value=".pdf">
+                                <span>PDF Files</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="image/*">
+                                <span>All Images</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="image/jpeg">
+                                <span>JPEG Images</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="image/png">
+                                <span>PNG Images</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="image/gif">
+                                <span>GIF Images</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="image/webp">
+                                <span>WebP Images</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="video/*">
+                                <span>All Videos</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="audio/*">
+                                <span>All Audio</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="application/*">
+                                <span>All Applications</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="text/*">
+                                <span>All Text Files</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value=".doc,.docx">
+                                <span>Word Documents</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value=".xls,.xlsx">
+                                <span>Excel Files</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sources -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-cloud"></i> Sources</h3>
+                        <p class="card-description">Select which sources users can upload from. If none selected, all sources are enabled.</p>
+                        
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="local" checked>
+                                <span>Local Device</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="url">
+                                <span>URL</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="imagesearch">
+                                <span>Image Search</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="facebook">
+                                <span>Facebook</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="instagram">
+                                <span>Instagram</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="dropbox">
+                                <span>Dropbox</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="googledrive">
+                                <span>Google Drive</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="onedrive">
+                                <span>OneDrive</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="box">
+                                <span>Box</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="webcam">
+                                <span>Webcam</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="audio">
+                                <span>Audio Recording</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="video">
+                                <span>Video Recording</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- File Limits -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-chart-bar"></i> File Limits</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="maxFiles">Max Files</label>
+                                <input type="number" id="maxFiles" min="1" max="100" placeholder="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="minFiles">Min Files</label>
+                                <input type="number" id="minFiles" min="1" max="50" placeholder="1">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxSize">Max File Size (MB)</label>
+                            <input type="number" id="maxSize" min="1" max="1000" placeholder="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="concurrency">Upload Concurrency</label>
+                            <input type="number" id="concurrency" min="1" max="10" placeholder="4">
+                        </div>
+                    </div>
+
+                    <!-- Image Dimensions -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-expand-arrows-alt"></i> Image Dimensions</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="imageWidth">Width (px)</label>
+                                <input type="number" id="imageWidth" min="1" placeholder="800">
+                            </div>
+                            <div class="form-group">
+                                <label for="imageHeight">Height (px)</label>
+                                <input type="number" id="imageHeight" min="1" placeholder="600">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="imageMaxWidth">Max Width (px)</label>
+                                <input type="number" id="imageMaxWidth" min="1" placeholder="1920">
+                            </div>
+                            <div class="form-group">
+                                <label for="imageMaxHeight">Max Height (px)</label>
+                                <input type="number" id="imageMaxHeight" min="1" placeholder="1080">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="imageMinWidth">Min Width (px)</label>
+                                <input type="number" id="imageMinWidth" min="1" placeholder="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="imageMinHeight">Min Height (px)</label>
+                                <input type="number" id="imageMinHeight" min="1" placeholder="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Options -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-sliders-h"></i> Advanced Options</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="multipleFileUpload">
+                                <span>Multiple File Upload</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="disableThumbnails">
+                                <span>Disable Thumbnails</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="disableTransformer">
+                                <span>Disable Transform Options</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="hideModalWhenUploading">
+                                <span>Hide Modal When Uploading</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="allowManualRetry">
+                                <span>Allow Manual Retry</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="uploadInBackground">
+                                <span>Upload in Background</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-primary btn-large" onclick="generatePickerCode()">
+                        <i class="fas fa-code"></i> Generate Code
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="testPicker()">
+                        <i class="fas fa-play"></i> Test Picker
+                    </button>
+                </div>
+            </section>
+
+            <!-- Image Transform Section -->
+            <section id="transform" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-magic"></i> Image Transformations</h2>
+                    <p>Apply advanced image transformations and filters to your uploaded images.</p>
+                </div>
+
+                <div class="transform-grid">
+                    <!-- Basic Transformations -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-crop"></i> Basic Transformations</h3>
+                        
+                        <div class="form-group">
+                            <label for="transformHandle">File Handle</label>
+                            <input type="text" id="transformHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="transform-options">
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableResize">
+                                    <span>Resize</span>
+                                </label>
+                                <div class="transform-inputs" id="resizeInputs" style="display: none;">
+                                    <input type="number" placeholder="Width" id="resizeWidth">
+                                    <input type="number" placeholder="Height" id="resizeHeight">
+                                    <select id="resizeFit">
+                                        <option value="clip">Clip</option>
+                                        <option value="crop">Crop</option>
+                                        <option value="max">Max</option>
+                                        <option value="scale">Scale</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableCrop">
+                                    <span>Crop</span>
+                                </label>
+                                <div class="transform-inputs" id="cropInputs" style="display: none;">
+                                    <input type="number" placeholder="X" id="cropX">
+                                    <input type="number" placeholder="Y" id="cropY">
+                                    <input type="number" placeholder="Width" id="cropWidth">
+                                    <input type="number" placeholder="Height" id="cropHeight">
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableRotate">
+                                    <span>Rotate</span>
+                                </label>
+                                <div class="transform-inputs" id="rotateInputs" style="display: none;">
+                                    <input type="number" placeholder="Degrees" id="rotateDegrees" min="0" max="360">
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableFlip">
+                                    <span>Flip</span>
+                                </label>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableFlop">
+                                    <span>Flop</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-filter"></i> Filters & Effects</h3>
+                        
+                        <div class="transform-options">
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableBlur">
+                                    <span>Blur</span>
+                                </label>
+                                <div class="transform-inputs" id="blurInputs" style="display: none;">
+                                    <input type="number" placeholder="Amount" id="blurAmount" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableSharpen">
+                                    <span>Sharpen</span>
+                                </label>
+                                <div class="transform-inputs" id="sharpenInputs" style="display: none;">
+                                    <input type="number" placeholder="Amount" id="sharpenAmount" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableSepia">
+                                    <span>Sepia</span>
+                                </label>
+                                <div class="transform-inputs" id="sepiaInputs" style="display: none;">
+                                    <input type="number" placeholder="Amount" id="sepiaAmount" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableBlackWhite">
+                                    <span>Black & White</span>
+                                </label>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableNegative">
+                                    <span>Negative</span>
+                                </label>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableCircle">
+                                    <span>Circle</span>
+                                </label>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableRoundedCorners">
+                                    <span>Rounded Corners</span>
+                                </label>
+                                <div class="transform-inputs" id="roundedCornersInputs" style="display: none;">
+                                    <input type="number" placeholder="Radius" id="roundedCornersRadius" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Effects -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-palette"></i> Advanced Effects</h3>
+                        
+                        <div class="transform-options">
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableVignette">
+                                    <span>Vignette</span>
+                                </label>
+                                <div class="transform-inputs" id="vignetteInputs" style="display: none;">
+                                    <input type="number" placeholder="Amount" id="vignetteAmount" min="0" max="100">
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableShadow">
+                                    <span>Shadow</span>
+                                </label>
+                                <div class="transform-inputs" id="shadowInputs" style="display: none;">
+                                    <input type="number" placeholder="Blur" id="shadowBlur" min="0">
+                                    <input type="number" placeholder="Opacity" id="shadowOpacity" min="0" max="100">
+                                    <input type="number" placeholder="X Offset" id="shadowX">
+                                    <input type="number" placeholder="Y Offset" id="shadowY">
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableBorder">
+                                    <span>Border</span>
+                                </label>
+                                <div class="transform-inputs" id="borderInputs" style="display: none;">
+                                    <input type="number" placeholder="Width" id="borderWidth" min="0">
+                                    <input type="text" placeholder="Color" id="borderColor" value="#000000">
+                                </div>
+                            </div>
+
+                            <div class="transform-option">
+                                <label>
+                                    <input type="checkbox" id="enableWatermark">
+                                    <span>Watermark</span>
+                                </label>
+                                <div class="transform-inputs" id="watermarkInputs" style="display: none;">
+                                    <input type="text" placeholder="Text" id="watermarkText">
+                                    <input type="text" placeholder="Color" id="watermarkColor" value="#ffffff">
+                                    <input type="number" placeholder="Size" id="watermarkSize" min="10" max="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Output Settings -->
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Output Settings</h3>
+                        
+                        <div class="form-group">
+                            <label for="outputFormat">Output Format</label>
+                            <select id="outputFormat">
+                                <option value="auto">Auto</option>
+                                <option value="jpg">JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                                <option value="gif">GIF</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="outputQuality">Quality</label>
+                            <input type="range" id="outputQuality" min="1" max="100" value="80">
+                            <span id="qualityValue">80%</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="outputCompress">Compression</label>
+                            <input type="range" id="outputCompress" min="1" max="100" value="80">
+                            <span id="compressValue">80%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-primary btn-large" onclick="generateTransformCode()">
+                        <i class="fas fa-code"></i> Generate Transform Code
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="previewTransform()">
+                        <i class="fas fa-eye"></i> Preview Transform
+                    </button>
+                </div>
+            </section>
+
+            <!-- Intelligence Section -->
+            <section id="sfw" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shield-alt"></i> Safe for Work Detection</h2>
+                    <p>Check if images are suitable for workplace environments using AI-powered content analysis.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="sfwHandle">File Handle or URL</label>
+                            <input type="text" id="sfwHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sfwPolicy">Security Policy</label>
+                            <input type="text" id="sfwPolicy" placeholder="Enter security policy">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sfwSignature">Security Signature</label>
+                            <input type="text" id="sfwSignature" placeholder="Enter security signature">
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateSfwCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testSfw()">
+                                <i class="fas fa-play"></i> Test SFW
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Safe for Work</h3>
+                        <p>The Safe for Work (SFW) feature uses advanced AI to analyze images and determine if they are appropriate for workplace environments. It can detect:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Adult content</li>
+                            <li><i class="fas fa-check"></i> Violence</li>
+                            <li><i class="fas fa-check"></i> Drugs and alcohol</li>
+                            <li><i class="fas fa-check"></i> Hate symbols</li>
+                            <li><i class="fas fa-check"></i> Inappropriate text</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> How it works</h4>
+                            <p>The SFW API returns a confidence score indicating how likely the image is to be inappropriate for work environments. Lower scores indicate safer content.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Image Tagging Section -->
+            <section id="tagging" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-tags"></i> Image Tagging</h2>
+                    <p>Automatically detect and tag objects, scenes, and concepts in your images using AI.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="taggingHandle">File Handle or URL</label>
+                            <input type="text" id="taggingHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tag Categories</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="taggingObjects" checked>
+                                    <span>Objects</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="taggingScenes" checked>
+                                    <span>Scenes</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="taggingConcepts" checked>
+                                    <span>Concepts</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="taggingFaces">
+                                    <span>Faces</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="taggingThreshold">Confidence Threshold</label>
+                            <input type="range" id="taggingThreshold" min="0" max="100" value="70">
+                            <span id="thresholdValue">70%</span>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateTaggingCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testTagging()">
+                                <i class="fas fa-play"></i> Test Tagging
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Image Tagging</h3>
+                        <p>Image tagging uses machine learning to automatically identify and categorize content in your images. It can detect:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Common objects (cars, buildings, animals)</li>
+                            <li><i class="fas fa-check"></i> Scene types (indoor, outdoor, urban, nature)</li>
+                            <li><i class="fas fa-check"></i> Abstract concepts (beauty, danger, happiness)</li>
+                            <li><i class="fas fa-check"></i> Face attributes (age, gender, emotion)</li>
+                            <li><i class="fas fa-check"></i> Brand logos and text</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Perfect for content moderation, image organization, search functionality, and automated content categorization.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- OCR Section -->
+            <section id="ocr" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-text"></i> OCR (Optical Character Recognition)</h2>
+                    <p>Extract text from images, PDFs, and documents using advanced OCR technology.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="ocrHandle">File Handle or URL</label>
+                            <input type="text" id="ocrHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label>OCR Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="ocrText" checked>
+                                    <span>Extract Text</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="ocrCoordinates">
+                                    <span>Include Coordinates</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="ocrConfidence">
+                                    <span>Include Confidence Scores</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ocrLanguage">Language</label>
+                            <select id="ocrLanguage">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="it">Italian</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="ru">Russian</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ko">Korean</option>
+                                <option value="zh">Chinese</option>
+                            </select>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateOcrCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testOcr()">
+                                <i class="fas fa-play"></i> Test OCR
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About OCR</h3>
+                        <p>OCR technology can extract text from various document types and image formats. It supports:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Printed text recognition</li>
+                            <li><i class="fas fa-check"></i> Handwritten text (limited)</li>
+                            <li><i class="fas fa-check"></i> Multiple languages</li>
+                            <li><i class="fas fa-check"></i> PDF documents</li>
+                            <li><i class="fas fa-check"></i> Image files (JPG, PNG, etc.)</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Ideal for digitizing documents, extracting data from forms, making images searchable, and automating text processing workflows.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Face Detection Section -->
+            <section id="faces" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-user"></i> Face Detection</h2>
+                    <p>Detect and analyze faces in images with detailed attributes and characteristics.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="facesHandle">File Handle or URL</label>
+                            <input type="text" id="facesHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Detection Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesDetect" checked>
+                                    <span>Detect Faces</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesAttributes">
+                                    <span>Face Attributes</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesLandmarks">
+                                    <span>Facial Landmarks</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesEmotion">
+                                    <span>Emotion Detection</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="facesMinSize">Minimum Face Size</label>
+                            <input type="number" id="facesMinSize" min="10" max="1000" placeholder="20">
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateFacesCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testFaces()">
+                                <i class="fas fa-play"></i> Test Face Detection
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Face Detection</h3>
+                        <p>Advanced face detection can identify and analyze human faces in images with detailed information:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Face location and bounding boxes</li>
+                            <li><i class="fas fa-check"></i> Age and gender estimation</li>
+                            <li><i class="fas fa-check"></i> Facial landmarks (eyes, nose, mouth)</li>
+                            <li><i class="fas fa-check"></i> Emotion recognition</li>
+                            <li><i class="fas fa-check"></i> Face quality assessment</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Perfect for photo organization, user authentication, content moderation, demographic analysis, and social media applications.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload Section -->
+            <section id="upload" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-upload"></i> File Upload</h2>
+                    <p>Configure direct file upload options and settings for your Filestack implementation.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Upload Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="uploadFile">Select File</label>
+                            <input type="file" id="uploadFile" accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="uploadPath">Upload Path</label>
+                            <input type="text" id="uploadPath" placeholder="e.g., /uploads/">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="uploadAccess">Access Control</label>
+                            <select id="uploadAccess">
+                                <option value="public">Public</option>
+                                <option value="private">Private</option>
+                                <option value="authenticated">Authenticated</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Upload Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="uploadMetadata">
+                                    <span>Include Metadata</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="uploadWorkflows">
+                                    <span>Enable Workflows</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="uploadIntelligence">
+                                    <span>Enable Intelligence</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateUploadCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testUpload()">
+                                <i class="fas fa-play"></i> Test Upload
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Upload</h3>
+                        <p>Direct file upload provides programmatic control over file uploads:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Direct file upload to Filestack</li>
+                            <li><i class="fas fa-check"></i> Custom upload paths and naming</li>
+                            <li><i class="fas fa-check"></i> Access control and permissions</li>
+                            <li><i class="fas fa-check"></i> Progress tracking and callbacks</li>
+                            <li><i class="fas fa-check"></i> Integration with workflows</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Perfect for custom upload interfaces, batch processing, server-side uploads, and applications requiring fine-grained upload control.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Download Section -->
+            <section id="download" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-download"></i> File Download</h2>
+                    <p>Configure file download options and settings for retrieving files from Filestack.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Download Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="downloadHandle">File Handle or URL</label>
+                            <input type="text" id="downloadHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="downloadFilename">Download Filename</label>
+                            <input type="text" id="downloadFilename" placeholder="Custom filename (optional)">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="downloadFormat">Download Format</label>
+                            <select id="downloadFormat">
+                                <option value="original">Original Format</option>
+                                <option value="jpg">JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                                <option value="pdf">PDF</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Download Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="downloadTransform">
+                                    <span>Apply Transforms</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="downloadMetadata">
+                                    <span>Include Metadata</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="downloadSecure">
+                                    <span>Secure Download</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateDownloadCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testDownload()">
+                                <i class="fas fa-play"></i> Test Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Download</h3>
+                        <p>File download provides programmatic access to files stored in Filestack:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Direct file download from Filestack</li>
+                            <li><i class="fas fa-check"></i> Custom filename and format options</li>
+                            <li><i class="fas fa-check"></i> Transform integration for processed files</li>
+                            <li><i class="fas fa-check"></i> Secure download with authentication</li>
+                            <li><i class="fas fa-check"></i> Progress tracking and error handling</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Ideal for file management systems, content delivery, backup solutions, and applications requiring programmatic file access.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Intelligence Sections -->
+            <section id="sfw" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shield-alt"></i> Safe for Work Detection</h2>
+                    <p>Configure content moderation and safe for work detection for your uploaded images.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> SFW Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="sfwHandle">File Handle or URL</label>
+                            <input type="text" id="sfwHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sfwThreshold">Detection Threshold</label>
+                            <input type="range" id="sfwThreshold" min="0" max="100" value="50">
+                            <span id="sfwThresholdValue">50%</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Detection Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="sfwNudity" checked>
+                                    <span>Nudity Detection</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="sfwViolence" checked>
+                                    <span>Violence Detection</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="sfwDrugs">
+                                    <span>Drug Content Detection</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="sfwHate">
+                                    <span>Hate Content Detection</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateSfwCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testSfw()">
+                                <i class="fas fa-play"></i> Test SFW
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About SFW Detection</h3>
+                        <p>Safe for Work detection helps moderate content automatically:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> AI-powered content moderation</li>
+                            <li><i class="fas fa-check"></i> Multiple content type detection</li>
+                            <li><i class="fas fa-check"></i> Configurable sensitivity thresholds</li>
+                            <li><i class="fas fa-check"></i> Real-time content analysis</li>
+                            <li><i class="fas fa-check"></i> Compliance and safety features</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Essential for social media platforms, content management systems, user-generated content, and applications requiring content moderation.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tagging" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-tags"></i> Image Tagging</h2>
+                    <p>Automatically generate tags and labels for your images using AI-powered recognition.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Tagging Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="taggingHandle">File Handle or URL</label>
+                            <input type="text" id="taggingHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="taggingLimit">Tag Limit</label>
+                            <input type="number" id="taggingLimit" min="1" max="50" value="10" placeholder="10">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tagging Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="taggingObjects" checked>
+                                    <span>Object Detection</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="taggingScenes" checked>
+                                    <span>Scene Recognition</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="taggingFaces">
+                                    <span>Face Recognition</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="taggingText">
+                                    <span>Text Recognition</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateTaggingCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testTagging()">
+                                <i class="fas fa-play"></i> Test Tagging
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Image Tagging</h3>
+                        <p>AI-powered image tagging provides automatic content recognition:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Object and scene recognition</li>
+                            <li><i class="fas fa-check"></i> Face and person detection</li>
+                            <li><i class="fas fa-check"></i> Text and logo recognition</li>
+                            <li><i class="fas fa-check"></i> Customizable tag limits</li>
+                            <li><i class="fas fa-check"></i> High-accuracy AI models</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Perfect for content organization, search functionality, accessibility features, and applications requiring automatic content categorization.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ocr" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-text"></i> OCR (Optical Character Recognition)</h2>
+                    <p>Extract text from images and documents using advanced OCR technology.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> OCR Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="ocrHandle">File Handle or URL</label>
+                            <input type="text" id="ocrHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ocrLanguage">Language</label>
+                            <select id="ocrLanguage">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="it">Italian</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="auto">Auto-detect</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>OCR Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="ocrCoordinates" checked>
+                                    <span>Include Coordinates</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="ocrConfidence">
+                                    <span>Include Confidence Scores</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="ocrWords">
+                                    <span>Word-level Detection</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="ocrLines">
+                                    <span>Line-level Detection</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateOcrCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testOcr()">
+                                <i class="fas fa-play"></i> Test OCR
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About OCR</h3>
+                        <p>OCR technology extracts text from images and documents:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Multi-language text recognition</li>
+                            <li><i class="fas fa-check"></i> Handwritten and printed text</li>
+                            <li><i class="fas fa-check"></i> Document and image processing</li>
+                            <li><i class="fas fa-check"></i> Coordinate and confidence data</li>
+                            <li><i class="fas fa-check"></i> High-accuracy recognition</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Essential for document processing, data extraction, accessibility features, and applications requiring text recognition from images.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="faces" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-user"></i> Face Detection</h2>
+                    <p>Detect and analyze faces in images with advanced facial recognition technology.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Face Detection Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="facesHandle">File Handle or URL</label>
+                            <input type="text" id="facesHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="facesLimit">Face Limit</label>
+                            <input type="number" id="facesLimit" min="1" max="100" value="10" placeholder="10">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Detection Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesAttributes" checked>
+                                    <span>Face Attributes</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesLandmarks" checked>
+                                    <span>Facial Landmarks</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesAge">
+                                    <span>Age Estimation</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesGender">
+                                    <span>Gender Detection</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="facesEmotion">
+                                    <span>Emotion Recognition</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateFacesCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testFaces()">
+                                <i class="fas fa-play"></i> Test Face Detection
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Face Detection</h3>
+                        <p>Advanced facial recognition and analysis capabilities:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Face detection and counting</li>
+                            <li><i class="fas fa-check"></i> Facial attribute analysis</li>
+                            <li><i class="fas fa-check"></i> Age and gender estimation</li>
+                            <li><i class="fas fa-check"></i> Emotion recognition</li>
+                            <li><i class="fas fa-check"></i> Facial landmark detection</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Ideal for photo management, social media applications, security systems, and applications requiring facial analysis and recognition.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Metadata Section -->
+            <section id="metadata" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> Metadata Extraction</h2>
+                    <p>Extract comprehensive metadata from your files including EXIF data, file information, and more.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="metadataHandle">File Handle or URL</label>
+                            <input type="text" id="metadataHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Metadata Types</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="metadataBasic" checked>
+                                    <span>Basic Information</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="metadataExif" checked>
+                                    <span>EXIF Data</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="metadataColor">
+                                    <span>Color Information</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="metadataGeolocation">
+                                    <span>Geolocation</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateMetadataCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testMetadata()">
+                                <i class="fas fa-play"></i> Test Metadata
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Metadata</h3>
+                        <p>Metadata extraction provides detailed information about your files:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> File size, type, and dimensions</li>
+                            <li><i class="fas fa-check"></i> Camera settings (aperture, shutter speed, ISO)</li>
+                            <li><i class="fas fa-check"></i> Date and time information</li>
+                            <li><i class="fas fa-check"></i> GPS coordinates and location</li>
+                            <li><i class="fas fa-check"></i> Color profiles and histograms</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Essential for photo management, content organization, digital asset management, and compliance requirements.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="security" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-lock"></i> Security Configuration</h2>
+                    <p>Configure security policies and signatures to protect your Filestack implementation.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Security Settings</h3>
+                        
+                        <div class="form-group">
+                            <label for="securityPolicy">Security Policy</label>
+                            <textarea id="securityPolicy" placeholder="Enter your security policy JSON" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="securitySignature">Security Signature</label>
+                            <input type="text" id="securitySignature" placeholder="Enter your security signature">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="securityExpiry">Expiry Time (seconds)</label>
+                            <input type="number" id="securityExpiry" min="60" max="86400" placeholder="3600">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Security Features</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="securityCall">
+                                    <span>Call Limits</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="securityPath">
+                                    <span>Path Restrictions</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="securityTransform">
+                                    <span>Transform Restrictions</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateSecurityCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testSecurity()">
+                                <i class="fas fa-play"></i> Test Security
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Security</h3>
+                        <p>Filestack security features help protect your application and data:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Policy-based access control</li>
+                            <li><i class="fas fa-check"></i> Time-limited signatures</li>
+                            <li><i class="fas fa-check"></i> Call rate limiting</li>
+                            <li><i class="fas fa-check"></i> Path and transform restrictions</li>
+                            <li><i class="fas fa-check"></i> Secure URL generation</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Best Practices</h4>
+                            <p>Always use security policies in production environments. Generate policies server-side and keep signatures secure.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Store Section -->
+            <section id="store" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-database"></i> File Storage</h2>
+                    <p>Configure file storage options and locations for your uploaded files.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Storage Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="storeLocation">Storage Location</label>
+                            <select id="storeLocation">
+                                <option value="s3">Amazon S3</option>
+                                <option value="gcs">Google Cloud Storage</option>
+                                <option value="azure">Microsoft Azure</option>
+                                <option value="rackspace">Rackspace Cloud Files</option>
+                                <option value="dropbox">Dropbox</option>
+                                <option value="gdrive">Google Drive</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="storePath">Storage Path</label>
+                            <input type="text" id="storePath" placeholder="e.g., /uploads/images/">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="storeAccess">Access Control</label>
+                            <select id="storeAccess">
+                                <option value="public">Public</option>
+                                <option value="private">Private</option>
+                                <option value="authenticated">Authenticated</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Storage Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="storeMetadata">
+                                    <span>Store Metadata</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="storeWorkflows">
+                                    <span>Enable Workflows</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="storeVersioning">
+                                    <span>Enable Versioning</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="btn btn-primary btn-large" onclick="generateStoreCode()">
+                                <i class="fas fa-code"></i> Generate Code
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="testStore()">
+                                <i class="fas fa-play"></i> Test Storage
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Storage</h3>
+                        <p>Filestack supports multiple cloud storage providers for flexible file management:</p>
+                        
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Amazon S3 and S3-compatible</li>
+                            <li><i class="fas fa-check"></i> Google Cloud Storage</li>
+                            <li><i class="fas fa-check"></i> Microsoft Azure Blob Storage</li>
+                            <li><i class="fas fa-check"></i> Rackspace Cloud Files</li>
+                            <li><i class="fas fa-check"></i> Dropbox and Google Drive</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Benefits</h4>
+                            <p>Centralized file management, automatic backups, global CDN distribution, and seamless integration with your existing cloud infrastructure.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Code Generator Section -->
+            <section id="ai-generator" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-robot"></i> AI Code Generator</h2>
+                    <p>Generate modern Filestack code using AI powered by vector database search</p>
+                </div>
+
+                <div class="section-content">
+                    <div class="config-section">
+                        <h3>AI Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="openaiApiKey">OpenAI API Key</label>
+                            <div class="input-group">
+                                <input type="password" id="openaiApiKey" placeholder="sk-proj-..." class="form-control">
+                                <div class="input-group-text">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                            </div>
+                            <small class="form-text">Your API key is stored locally and used directly with OpenAI</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="aiQuery">What do you want to build?</label>
+                            <textarea id="aiQuery" rows="4" class="form-control" 
+                                placeholder="Example: Create a file picker that accepts images and PDFs, with drag and drop support, authentication, and image previews for a CMS"></textarea>
+                        </div>
+
+                        <div id="aiStatus" class="alert" style="display: none;"></div>
+
+                        <button class="btn btn-primary" onclick="generateAICode()" id="aiGenerateBtn">
+                            <i class="fas fa-magic"></i> Generate Code with AI
+                        </button>
+                    </div>
+
+                    <div class="results-section">
+                        <div class="ai-loading" id="aiLoading" style="display: none;">
+                            <div class="spinner"></div>
+                            <p>Searching documentation and generating code...</p>
+                        </div>
+
+                        <div class="output-container" id="aiOutputContainer" style="display: none;">
+                            <div class="code-badge ai-badge">🤖 AI Generated Code</div>
+                            <div class="code-output" id="aiCodeOutput"></div>
+                            <button class="btn btn-secondary" onclick="copyAICode()">
+                                <i class="fas fa-copy"></i> Copy Code
+                            </button>
+                            
+                            <div class="sources-container" id="aiSourcesContainer" style="display: none;">
+                                <div class="sources-section" id="aiSources"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Code Panel -->
+        <aside class="code-panel">
+            <div class="code-badge snap-badge">⚙️ Snap Filestack Generated Code</div>
+            <div class="code-header">
+                <h3><i class="fas fa-code"></i> Generated Code</h3>
+                <div class="code-tabs">
+                    <button class="tab-btn active" data-tab="javascript">JavaScript</button>
+                    <button class="tab-btn" data-tab="react">React</button>
+                    <button class="tab-btn" data-tab="vue">Vue</button>
+                    <button class="tab-btn" data-tab="url">URL</button>
+                </div>
+                <button class="btn btn-secondary btn-small" onclick="copyCode()">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+            
+            <div class="code-content">
+                <pre><code class="language-javascript" id="generatedCode">
+// Your generated code will appear here
+// Select options and click "Generate Code" to see the result
+                </code></pre>
+            </div>
+
+            <div class="code-footer">
+                <button class="btn btn-primary btn-large" onclick="runCode()">
+                    <i class="fas fa-play"></i> Run Code
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Transform Preview</h3>
+                <button class="modal-close" onclick="closePreviewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-container">
+                    <div class="preview-original">
+                        <h4>Original</h4>
+                        <img id="originalImage" src="" alt="Original">
+                    </div>
+                    <div class="preview-transformed">
+                        <h4>Transformed</h4>
+                        <img id="transformedImage" src="" alt="Transformed">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

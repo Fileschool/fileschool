@@ -1,6 +1,6 @@
 .claude/
 .vscode/
-
+.env
 # Filestack glossary working files
 filestack_glossary/*.pdf
 filestack_glossary/*.md

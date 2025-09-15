@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Filestack Code Generator - Vector Powered</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .input-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        
+        .output pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .output code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .output h3 {
+            color: #667eea;
+            margin: 20px 0 10px 0;
+            border-bottom: 2px solid #e1e5e9;
+            padding-bottom: 5px;
+        }
+        
+        .output p {
+            margin: 10px 0;
+            color: #4a5568;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI Filestack Code Generator</h1>
+            <p>Vector Database Powered - Semantic Search through Filestack Documentation</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-group">
+                <label for="openaiKey">OpenAI API Key:</label>
+                <input type="password" id="openaiKey" placeholder="sk-proj-..." />
+            </div>
+            
+            <div class="input-group">
+                <label for="query">What do you want to build?</label>
+                <textarea id="query" placeholder="Example: Create a file picker that accepts images and PDFs, with drag and drop support and secure upload"></textarea>
+            </div>
+            
+            <div id="status" class="status" style="display: none;"></div>
+            
+            <button class="btn" onclick="generateCode()" id="generateBtn">Generate Code</button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Searching documentation and generating code...</p>
+            </div>
+            
+            <div class="output" id="output" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let vectorDbConnected = false;
+
+        // Check vector database on load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkVectorDatabase();
+        });
+
+        async function checkVectorDatabase() {
+            try {
+                // Use a simpler approach - try to connect and see if it works
+                const response = await fetch('http://localhost:6333/collections', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const hasCollection = data.result && data.result.collections && 
+                                         data.result.collections.some(c => c.name === 'filestack_docs');
+                    
+                    if (hasCollection) {
+                        showStatus('✅ Vector database connected and ready!', 'success');
+                        vectorDbConnected = true;
+                    } else {
+                        showStatus('❌ Collection "filestack_docs" not found. Run: npm run index', 'error');
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Vector DB check failed:', error);
+                showStatus('❌ Cannot connect to vector database. Make sure Qdrant is running on localhost:6333', 'error');
+                
+                // Try alternative check
+                setTimeout(checkVectorDatabase, 2000);
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        async function generateCode() {
+            const openaiKey = document.getElementById('openaiKey').value.trim();
+            const query = document.getElementById('query').value.trim();
+            
+            if (!openaiKey) {
+                showStatus('❌ Please enter your OpenAI API key', 'error');
+                return;
+            }
+            
+            if (!query) {
+                showStatus('❌ Please describe what you want to build', 'error');
+                return;
+            }
+            
+            if (!vectorDbConnected) {
+                showStatus('❌ Vector database not connected', 'error');
+                return;
+            }
+            
+            const generateBtn = document.getElementById('generateBtn');
+            const loading = document.getElementById('loading');
+            const output = document.getElementById('output');
+            
+            generateBtn.disabled = true;
+            loading.style.display = 'block';
+            output.style.display = 'none';
+            
+            try {
+                // Step 1: Get embedding for the query
+                const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${openaiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'text-embedding-3-large',
+                        input: query
+                    })
+                });
+                
+                if (!embeddingResponse.ok) {
+                    throw new Error('Failed to get embedding from OpenAI');
+                }
+                
+                const embeddingData = await embeddingResponse.json();
+                const queryEmbedding = embeddingData.data[0].embedding;
+                
+                // Step 2: Search vector database
+                const searchResponse = await fetch('http://localhost:6333/collections/filestack_docs/points/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        vector: queryEmbedding,
+                        limit: 3,
+                        with_payload: true,
+                        with_vectors: false
+                    })
+                });
+                
+                if (!searchResponse.ok) {
+                    throw new Error('Failed to search vector database');
+                }
+                
+                const searchData = await searchResponse.json();
+                const results = searchData.result || [];
+                
+                // Step 3: Build context from search results
+                let context = "Relevant Filestack documentation:\\n\\n";
+                results.forEach((result, index) => {
+                    const payload = result.payload || {};
+                    context += `${index + 1}. ${payload.title || 'Unknown'} (Score: ${(result.score * 100).toFixed(1)}%)\\n`;
+                    context += `${(payload.content || '').substring(0, 800)}...\\n\\n`;
+                });
+                
+                // Step 4: Generate code with OpenAI
+                const codeResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${openaiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are an expert Filestack developer. For filestack-js imports: In Node use CommonJS: const client = require("filestack-js").init("apikey"); In browsers use ES6: import * as filestack from "filestack-js"; const client = filestack.init("apikey"); Default to browser ES6 syntax unless specified as Node. Use ES6+ for everything else. CRITICAL STRUCTURE RULES: 1) pickerOptions contains ONLY picker configuration (fromSources, onUploadDone, accept, etc.) - ABSOLUTELY NEVER put transformOptions inside pickerOptions. 2) transformOptions MUST be defined as a separate const object OUTSIDE of pickerOptions and onUploadDone callback, at the top level. 3) Apply transformations using client.transform(fileUrl, transformOptions).toString() INSIDE the onUploadDone callback. 4) Always use variable names "pickerOptions" and "transformOptions". 5) Use exact parameter formats from documentation (crop: { dim: [x,y,w,h] }, rotate: { deg: 90 }). CRITICAL BOOLEAN vs OBJECT RULE: Many transforms support BOTH boolean true and object forms. Examples: sepia: true (simple) OR sepia: { tone: 80 } (with params). Others: blur: true OR blur: { amount: 5 }, sharpen: true OR sharpen: { amount: 3 }, etc. Use the simple boolean form when no specific parameters are needed, use object form when parameters are specified. 6) Always console.log original and transformed URLs. 7) Add event listener: document.getElementById("uploadButton").addEventListener("click", () => { client.picker(pickerOptions).open(); }). 8) IMPORTANT: When using client.transform(), the original file URL must be passed as the first parameter. This creates chained transformation URLs like: https://cdn.filestackcontent.com/API_KEY/transform1/transform2/"ORIGINAL_FILE_URL". Note: For chained transformations, the source file URL must be quoted and placed at the end. Never guess parameter names or values - stick precisely to documentation. CRITICAL: Use EXACT parameter names and values from the provided documentation context - never modify, abbreviate, or add underscores/hyphens. For example: use 'googledrive' not 'google_drive', use 'local_file_system' not 'local_file', etc. Provide working code examples.'
+                            },
+                            {
+                                role: 'user',
+                                content: `Query: ${query}\\n\\nContext from documentation:\\n${context}\\n\\nGenerate complete, working code with examples.`
+                            }
+                        ],
+                        max_tokens: 8000,
+                        temperature: 0.2
+                    })
+                });
+                
+                if (!codeResponse.ok) {
+                    throw new Error('Failed to generate code from OpenAI');
+                }
+                
+                const codeData = await codeResponse.json();
+                let generatedCode = codeData.choices[0].message.content;
+                
+                // Clean up the response format
+                generatedCode = formatCodeResponse(generatedCode);
+                
+                // Show results
+                output.innerHTML = generatedCode;
+                output.style.display = 'block';
+                showStatus(`✅ Code generated successfully! Used ${results.length} documentation sources.`, 'success');
+                
+            } catch (error) {
+                console.error('Generation failed:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                generateBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+
+        function formatCodeResponse(response) {
+            // Convert markdown-style code blocks to HTML
+            let formatted = response.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
+                return `<pre><code>${escapeHtml(code.trim())}</code></pre>`;
+            });
+            
+            // Convert inline code
+            formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Convert headers
+            formatted = formatted.replace(/### (.*$)/gm, '<h3>$1</h3>');
+            
+            // Convert paragraphs
+            formatted = formatted.replace(/\n\n/g, '</p><p>');
+            formatted = '<p>' + formatted + '</p>';
+            
+            // Clean up empty paragraphs
+            formatted = formatted.replace(/<p><\/p>/g, '');
+            formatted = formatted.replace(/<p>(<h3>.*<\/h3>)<\/p>/g, '$1');
+            formatted = formatted.replace(/<p>(<pre>.*<\/pre>)<\/p>/gs, '$1');
+            
+            return formatted;
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
