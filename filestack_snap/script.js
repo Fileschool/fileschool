@@ -3,27 +3,59 @@ let currentSection = 'picker';
 let filestackClient = null;
 let currentPicker = null;
 
+// Validation helper function
+function validateNumberInput(elementId, defaultValue = null) {
+    const element = document.getElementById(elementId);
+    if (!element) return defaultValue;
+
+    const value = parseFloat(element.value);
+    const min = parseFloat(element.min);
+    const max = parseFloat(element.max);
+
+    // If value is NaN or empty, return default
+    if (isNaN(value) || element.value === '') {
+        return defaultValue;
+    }
+
+    // Clamp value to min/max bounds
+    if (!isNaN(min) && value < min) {
+        element.value = min;
+        return min;
+    }
+    if (!isNaN(max) && value > max) {
+        element.value = max;
+        return max;
+    }
+
+    return value;
+}
+
+// Validation helper for integer values
+function validateIntegerInput(elementId, defaultValue = null) {
+    const value = validateNumberInput(elementId, defaultValue);
+    return value !== null ? Math.floor(value) : defaultValue;
+}
+
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeApp();
     setupEventListeners();
     setupTransformOptions();
     setupRangeSliders();
+    setupInputValidation();
 });
 
 // Initialize the application
 function initializeApp() {
-    // Set default API key for demo purposes
-    document.getElementById('globalApikey').value = 'YOUR_APIKEY';
-    
     // Initialize Filestack client
     if (typeof filestack !== 'undefined') {
-        filestackClient = filestack.init('YOUR_APIKEY');
+        const apiKey = document.getElementById('globalApikey').value || 'YOUR_APIKEY';
+        filestackClient = filestack.init(apiKey);
     }
-    
+
     // Show initial section
     showSection('picker');
-    
+
     // Generate initial code
     generatePickerCode();
 }
@@ -32,7 +64,7 @@ function initializeApp() {
 function setupEventListeners() {
     // Navigation
     document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', function (e) {
             e.preventDefault();
             const section = this.getAttribute('data-section');
             showSection(section);
@@ -41,7 +73,7 @@ function setupEventListeners() {
 
     // Code tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const tab = this.getAttribute('data-tab');
             switchCodeTab(tab);
         });
@@ -50,8 +82,35 @@ function setupEventListeners() {
     // Transform option toggles
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         if (checkbox.id.startsWith('enable')) {
-            checkbox.addEventListener('change', function() {
+            checkbox.addEventListener('change', function () {
                 toggleTransformInputs(this);
+            });
+        }
+    });
+
+    // Transform chains add step button
+    const addChainStepBtn = document.getElementById('addChainStep');
+    if (addChainStepBtn) {
+        addChainStepBtn.addEventListener('click', addChainStep);
+    }
+
+    // Initialize existing remove step buttons
+    document.querySelectorAll('.btn-remove-step').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.target.closest('.chain-step').remove();
+            generateTransformChainsCode();
+        });
+    });
+
+    // Initialize existing chain steps with dynamic placeholders
+    document.querySelectorAll('.chain-step').forEach(step => {
+        const operationSelect = step.querySelector('.chain-operation');
+        const paramsInput = step.querySelector('.chain-params');
+
+        if (operationSelect && paramsInput) {
+            operationSelect.addEventListener('change', () => {
+                updateParameterPlaceholder(operationSelect, paramsInput);
+                generateTransformChainsCode();
             });
         }
     });
@@ -64,14 +123,16 @@ function setupEventListeners() {
 function setupTransformOptions() {
     // Add event listeners for transform option toggles
     const transformOptions = [
-        'resize', 'crop', 'rotate', 'blur', 'sharpen', 'sepia', 
-        'roundedCorners', 'vignette', 'shadow', 'border', 'watermark'
+        'resize', 'crop', 'rotate', 'flip', 'flop', 'blur', 'sharpen', 'sepia',
+        'blackWhite', 'negative', 'circle', 'roundedCorners', 'partialBlur',
+        'partialPixelate', 'blurFaces', 'cropFaces', 'pixelateFaces', 'vignette',
+        'shadow', 'border', 'watermark', 'smartCrop', 'upscale', 'pdfConvert', 'pdfInfo'
     ];
 
     transformOptions.forEach(option => {
         const checkbox = document.getElementById(`enable${option.charAt(0).toUpperCase() + option.slice(1)}`);
         if (checkbox) {
-            checkbox.addEventListener('change', function() {
+            checkbox.addEventListener('change', function () {
                 const inputs = document.getElementById(`${option}Inputs`);
                 if (inputs) {
                     inputs.style.display = this.checked ? 'grid' : 'none';
@@ -85,18 +146,60 @@ function setupTransformOptions() {
 function setupRangeSliders() {
     const qualitySlider = document.getElementById('outputQuality');
     const compressSlider = document.getElementById('outputCompress');
-    
+
     if (qualitySlider) {
-        qualitySlider.addEventListener('input', function() {
+        qualitySlider.addEventListener('input', function () {
             document.getElementById('qualityValue').textContent = this.value + '%';
         });
     }
-    
+
     if (compressSlider) {
-        compressSlider.addEventListener('input', function() {
+        compressSlider.addEventListener('input', function () {
             document.getElementById('compressValue').textContent = this.value + '%';
         });
     }
+}
+
+// Setup input validation for all number inputs
+function setupInputValidation() {
+    // Get all number inputs with min/max attributes
+    const numberInputs = document.querySelectorAll('input[type="number"][min], input[type="number"][max]');
+
+    numberInputs.forEach(input => {
+        // Validate on blur (when user leaves the field)
+        input.addEventListener('blur', function () {
+            const value = parseFloat(this.value);
+            const min = parseFloat(this.min);
+            const max = parseFloat(this.max);
+
+            if (!isNaN(value)) {
+                if (!isNaN(min) && value < min) {
+                    this.value = min;
+                    showNotification(`Value clamped to minimum: ${min}`, 'info');
+                } else if (!isNaN(max) && value > max) {
+                    this.value = max;
+                    showNotification(`Value clamped to maximum: ${max}`, 'info');
+                }
+            }
+        });
+
+        // Also validate on input for immediate feedback
+        input.addEventListener('input', function () {
+            const value = parseFloat(this.value);
+            const min = parseFloat(this.min);
+            const max = parseFloat(this.max);
+
+            if (!isNaN(value)) {
+                if (!isNaN(min) && value < min) {
+                    this.style.borderColor = '#ff6b6b';
+                } else if (!isNaN(max) && value > max) {
+                    this.style.borderColor = '#ff6b6b';
+                } else {
+                    this.style.borderColor = '';
+                }
+            }
+        });
+    });
 }
 
 // Setup real-time code generation for all sections
@@ -153,12 +256,70 @@ function setupRealTimeCodeGeneration() {
         }, 300));
     });
 
-    // Faces section
-    document.querySelectorAll('#faces input, #faces select, #faces input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'faces') generateFacesCode();
-        }, 300));
-    });
+    function generateFacesCode() {
+        const options = collectFacesOptions();
+        let code = '';
+
+        switch (getCurrentTab()) {
+            case 'javascript':
+                code = generateJavaScriptFacesCode(options);
+                break;
+            case 'react':
+                code = generateReactFacesCode(options);
+                break;
+            case 'vue':
+                code = generateVueFacesCode(options);
+                break;
+            case 'url':
+                code = generateURLFacesCode(options);
+                break;
+        }
+
+        updateCodeDisplay(code, getCurrentTab());
+    }
+
+    function collectFacesOptions() {
+        const options = {};
+
+        const handle = document.getElementById('facesHandle').value;
+        const minSize = validateNumberInput('facesMinSize');
+        const maxSize = validateNumberInput('facesMaxSize');
+        const exportOption = document.getElementById('facesExport').checked;
+
+        if (minSize !== null) {
+            options.minsize = minSize;
+        }
+
+        if (maxSize !== null) {
+            options.maxsize = maxSize;
+        }
+
+        if (exportOption) {
+            options.export = true;
+        }
+
+        return { ...options, handle: handle || 'YOUR_FILE_HANDLE' };
+    }
+
+    function generateJavaScriptFacesCode(options) {
+        const { handle, ...detectOptions } = options;
+        return `// Face detection via Processing API (CDN)\nconst url = 'https://cdn.filestackcontent.com/detect_faces=${JSON.stringify(detectOptions)}/${handle}';\n\nfetch(url)\n  .then(r => r.json())\n  .then(data => {\n    console.log('Face detection:', data);\n  })\n  .catch(err => console.error('Face detection failed:', err));`;
+    }
+
+    function generateReactFacesCode(options) {
+        const { handle, ...detectOptions } = options;
+        return `const FacesComponent = () => {\n  const detectFaces = async () => {\n    const url = 'https://cdn.filestackcontent.com/detect_faces=${JSON.stringify(detectOptions)}/${handle}';\n    const res = await fetch(url);\n    const data = await res.json();\n    console.log('Face detection:', data);\n  };\n  return (<button onClick={detectFaces}>Detect Faces</button>);\n};`;
+    }
+
+    function generateVueFacesCode(options) {
+        const { handle, ...detectOptions } = options;
+        return `<template>\n  <button @click="detectFaces">Detect Faces</button>\n</template>\n\n<script>\nexport default {\n  methods: {\n    async detectFaces() {\n      const url = 'https://cdn.filestackcontent.com/detect_faces=${JSON.stringify(detectOptions)}/${handle}';\n      const res = await fetch(url);\n      const data = await res.json();\n      console.log('Face detection:', data);\n    }\n  }\n};\n</script>`;
+    }
+
+    function generateURLFacesCode(options) {
+        const { handle, ...detectOptions } = options;
+        return `// Face detection URL (Processing API)\nconst facesUrl = 'https://cdn.filestackcontent.com/detect_faces=${JSON.stringify(detectOptions)}/${handle}';\n\nfetch(facesUrl)\n  .then(r => r.json())\n  .then(data => console.log('Face detection:', data))\n  .catch(err => console.error('Face detection failed:', err));`;
+    }
 
     // Security section
     document.querySelectorAll('#security input, #security select, #security textarea, #security input[type="checkbox"]').forEach(element => {
@@ -181,13 +342,416 @@ function setupRealTimeCodeGeneration() {
         }, 300));
     });
 
+    // DnD section
+    document.querySelectorAll('#dnd input, #dnd select, #dnd input[type="checkbox"]').forEach(element => {
+        element.addEventListener('change', debounce(() => {
+            if (currentSection === 'dnd') generateDndCode();
+        }, 300));
+        element.addEventListener('input', debounce(() => {
+            if (currentSection === 'dnd') generateDndCode();
+        }, 300));
+    });
+
+    // New Intelligence Features Event Listeners
+    // Video Tagging and Video SFW are workflow-only; skip code generation listeners
+
+    // Caption Generation section
+    document.querySelectorAll('#caption input, #caption select, #caption input[type="checkbox"]').forEach(element => {
+        element.addEventListener('change', debounce(() => {
+            if (currentSection === 'caption') generateCaptionCode();
+        }, 300));
+    });
+
+    // Caption-specific UI handlers
+    document.querySelectorAll('input[name="captionInputType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const type = this.value;
+            document.getElementById('captionHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
+            document.getElementById('captionExternalGroup').style.display = type === 'external' ? 'block' : 'none';
+            document.getElementById('captionStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
+            if (currentSection === 'caption') generateCaptionCode();
+        });
+    });
+
+    document.getElementById('captionEnableChaining')?.addEventListener('change', function() {
+        const chainingGroup = document.getElementById('captionChainingGroup');
+        if (chainingGroup) {
+            chainingGroup.style.display = this.checked ? 'block' : 'none';
+        }
+        if (currentSection === 'caption') generateCaptionCode();
+    });
+
+    document.getElementById('addCaptionPreStep')?.addEventListener('click', function() {
+        addCaptionChainStep('captionPreChainBuilder');
+    });
+
+    // Tagging-specific UI handlers
+    document.querySelectorAll('input[name="taggingInputType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const type = this.value;
+            document.getElementById('taggingHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
+            document.getElementById('taggingExternalGroup').style.display = type === 'external' ? 'block' : 'none';
+            document.getElementById('taggingStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
+            if (currentSection === 'tagging') generateTaggingCode();
+        });
+    });
+
+    document.getElementById('taggingEnableChaining')?.addEventListener('change', function() {
+        const chainingGroup = document.getElementById('taggingChainingGroup');
+        if (chainingGroup) {
+            chainingGroup.style.display = this.checked ? 'block' : 'none';
+        }
+        if (currentSection === 'tagging') generateTaggingCode();
+    });
+
+    document.getElementById('addTaggingPreStep')?.addEventListener('click', function() {
+        addTaggingChainStep('taggingPreChainBuilder');
+    });
+
+    // OCR-specific UI handlers
+    document.querySelectorAll('input[name="ocrInputType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const type = this.value;
+            document.getElementById('ocrHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
+            document.getElementById('ocrExternalGroup').style.display = type === 'external' ? 'block' : 'none';
+            document.getElementById('ocrStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
+            if (currentSection === 'ocr') generateOcrCode();
+        });
+    });
+
+    document.getElementById('ocrEnableChaining')?.addEventListener('change', function() {
+        const chainingGroup = document.getElementById('ocrChainingGroup');
+        if (chainingGroup) {
+            chainingGroup.style.display = this.checked ? 'block' : 'none';
+        }
+        if (currentSection === 'ocr') generateOcrCode();
+    });
+
+    document.getElementById('addOcrPreStep')?.addEventListener('click', function() {
+        addOcrChainStep('ocrPreChainBuilder');
+    });
+
+    // SFW-specific UI handlers
+    document.querySelectorAll('input[name="sfwInputType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const type = this.value;
+            document.getElementById('sfwHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
+            document.getElementById('sfwExternalGroup').style.display = type === 'external' ? 'block' : 'none';
+            document.getElementById('sfwStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
+            if (currentSection === 'sfw') generateSfwCode();
+        });
+    });
+
+    document.getElementById('sfwEnableChaining')?.addEventListener('change', function() {
+        const chainingGroup = document.getElementById('sfwChainingGroup');
+        if (chainingGroup) {
+            chainingGroup.style.display = this.checked ? 'block' : 'none';
+        }
+        if (currentSection === 'sfw') generateSfwCode();
+    });
+
+    document.getElementById('addSfwPreStep')?.addEventListener('click', function() {
+        addSfwChainStep('sfwPreChainBuilder');
+    });
+
+    // Sentiment-specific UI handlers
+    document.querySelectorAll('input[name="sentimentInputType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const type = this.value;
+            document.getElementById('sentimentHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
+            document.getElementById('sentimentExternalGroup').style.display = type === 'external' ? 'block' : 'none';
+            document.getElementById('sentimentStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
+            if (currentSection === 'sentiment') generateSentimentCode();
+        });
+    });
+
+    document.getElementById('sentimentEnableChaining')?.addEventListener('change', function() {
+        const chainingGroup = document.getElementById('sentimentChainingGroup');
+        if (chainingGroup) {
+            chainingGroup.style.display = this.checked ? 'block' : 'none';
+        }
+        if (currentSection === 'sentiment') generateSentimentCode();
+    });
+
+    document.getElementById('addSentimentPreStep')?.addEventListener('click', function() {
+        addSentimentChainStep('sentimentPreChainBuilder');
+    });
+
+    // Phishing Detection and Virus Detection are workflow-only; skip code generation listeners
+
+    function generateSentimentCode() {
+        // Check if we have text input (text sentiment) or image input (image sentiment)
+        const text = document.getElementById('sentimentText')?.value?.trim();
+        const hasText = text && text.length > 0;
+
+        if (hasText) {
+            // Generate text sentiment code
+            generateTextSentimentCode(text);
+        } else {
+            // Generate image sentiment code
+            generateImageSentimentCode();
+        }
+    }
+
+    function generateTextSentimentCode(text) {
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const escapedText = text.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        const sec = `security=p:${policy},s:${signature}/`;
+        const url = `https://cdn.filestackcontent.com/${sec}text_sentiment=text:"${escapedText}"`;
+
+        const tab = getCurrentTab();
+        let code = '';
+
+        if (tab === 'javascript') {
+            code = `// Text sentiment analysis\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('Text sentiment:', data))\n  .catch(err => console.error('Text sentiment failed:', err));`;
+        } else if (tab === 'react') {
+            code = `const TextSentiment = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('Text sentiment:', data);\n  };\n  return (<button onClick={run}>Analyze Text Sentiment</button>);\n};`;
+        } else if (tab === 'vue') {
+            code = `<template><button @click="run">Analyze Text Sentiment</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('Text sentiment:', await r.json()); } } }</script>`;
+        } else if (tab === 'url') {
+            code = `// Text Sentiment URL\nconst url = '${url}';`;
+        }
+
+        updateCodeDisplay(code, tab);
+    }
+
+    function generateImageSentimentCode() {
+        // Get input type and values for image sentiment
+        const inputType = document.querySelector('input[name="sentimentInputType"]:checked')?.value || 'handle';
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_FILESTACK_API_KEY';
+
+        let source = '';
+        let needsApiKey = false;
+
+        // Determine source based on input type
+        switch (inputType) {
+            case 'handle':
+                source = document.getElementById('sentimentHandle')?.value || 'YOUR_FILE_HANDLE';
+                break;
+            case 'external':
+                source = document.getElementById('sentimentExternalUrl')?.value || 'https://example.com/image.jpg';
+                needsApiKey = true;
+                break;
+            case 'storage':
+                const alias = document.getElementById('sentimentStorageAlias')?.value || 'STORAGE_ALIAS';
+                const path = document.getElementById('sentimentStoragePath')?.value || '/path/to/image.jpg';
+                source = `src://${alias}${path}`;
+                needsApiKey = true;
+                break;
+        }
+
+        // Build transformation chain
+        const enableChaining = document.getElementById('sentimentEnableChaining')?.checked || false;
+        let transformChain = '';
+
+        if (enableChaining) {
+            const preSteps = document.querySelectorAll('#sentimentPreChainBuilder .chain-step');
+            const preTransforms = [];
+
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation').value;
+                const params = step.querySelector('.chain-params').value;
+                if (operation) {
+                    if (params) {
+                        preTransforms.push(`${operation}=${params}`);
+                    } else {
+                        preTransforms.push(operation);
+                    }
+                }
+            });
+
+            if (preTransforms.length > 0) {
+                transformChain = preTransforms.join('/') + '/';
+            }
+        }
+
+        // Build security part
+        const sec = `security=p:${policy},s:${signature}/`;
+
+        // Build final URL
+        let url;
+        if (needsApiKey) {
+            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}image_sentiment/${source}`;
+        } else {
+            url = `https://cdn.filestackcontent.com/${sec}${transformChain}image_sentiment/${source}`;
+        }
+
+        const tab = getCurrentTab();
+        let code = '';
+
+        if (tab === 'javascript') {
+            code = `// Image sentiment analysis\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('Image sentiment:', data))\n  .catch(err => console.error('Image sentiment failed:', err));`;
+
+            if (transformChain) {
+                code += `\n\n// This URL includes pre-processing transformations before sentiment analysis`;
+            }
+
+            code += `\n\n// Usage Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/src://<ALIAS>/<PATH>`;
+
+        } else if (tab === 'react') {
+            code = `const ImageSentiment = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('Image sentiment:', data);\n  };\n  return (<button onClick={run}>Analyze Image Sentiment</button>);\n};`;
+
+            if (transformChain) {
+                code += `\n\n// This URL includes pre-processing transformations before sentiment analysis`;
+            }
+
+        } else if (tab === 'vue') {
+            code = `<template><button @click="run">Analyze Image Sentiment</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('Image sentiment:', await r.json()); } } }</script>`;
+
+            if (transformChain) {
+                code += `\n\n<!-- This URL includes pre-processing transformations before sentiment analysis -->`;
+            }
+
+        } else if (tab === 'url') {
+            code = `// Image Sentiment URL\nconst url = '${url}';`;
+
+            if (transformChain) {
+                code += `\n\n// This URL includes pre-processing transformations before sentiment analysis`;
+            }
+
+            code += `\n\n// URL Format Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/src://<ALIAS>/<PATH>`;
+        }
+
+        updateCodeDisplay(code, tab);
+    }
+
+    function collectSentimentOptions() {
+        const options = {};
+
+        const text = document.getElementById('sentimentText').value;
+        const handle = document.getElementById('sentimentHandle').value;
+
+        if (text) {
+            options.text = text;
+        }
+
+        if (handle) {
+            options.handle = handle;
+        }
+
+        return options;
+    }
+
+    function generateJavaScriptSentimentCode(options) {
+        const { text, handle } = options;
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        let path = `security=p:${policy},s:${signature}/`;
+        if (text) {
+            const escaped = (text || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+            path += `text_sentiment=text:\\"${escaped}\\"`;
+        } else if (handle) {
+            path += `image_sentiment/${handle}`;
+        }
+
+        return `// Sentiment analysis via Processing API (CDN)\nconst url = 'https://cdn.filestackcontent.com/${path}';\n\nfetch(url)\n  .then(r => r.json())\n  .then(data => {\n    console.log('Sentiment analysis:', data);\n  })\n  .catch(err => console.error('Sentiment analysis failed:', err));`;
+    }
+
+    function generateReactSentimentCode(options) {
+        const { text, handle } = options;
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        let path = `security=p:${policy},s:${signature}/`;
+        if (text) {
+            const escaped = (text || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+            path += `text_sentiment=text:\\"${escaped}\\"`;
+        } else if (handle) {
+            path += `image_sentiment/${handle}`;
+        }
+
+        return `const SentimentComponent = () => {\n  const analyzeSentiment = async () => {\n    const url = 'https://cdn.filestackcontent.com/${path}';\n    const res = await fetch(url);\n    const data = await res.json();\n    console.log('Sentiment analysis:', data);\n  };\n  return (<button onClick={analyzeSentiment}>Analyze Sentiment</button>);\n};`;
+    }
+
+    function generateVueSentimentCode(options) {
+        const { text, handle } = options;
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        let path = `security=p:${policy},s:${signature}/`;
+        if (text) {
+            const escaped = (text || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+            path += `text_sentiment=text:\\"${escaped}\\"`;
+        } else if (handle) {
+            path += `image_sentiment/${handle}`;
+        }
+
+        return `<template>\n  <button @click=\"analyzeSentiment\">Analyze Sentiment</button>\n</template>\n\n<script>\nexport default {\n  methods: {\n    async analyzeSentiment() {\n      const url = 'https://cdn.filestackcontent.com/${path}';\n      const res = await fetch(url);\n      const data = await res.json();\n      console.log('Sentiment analysis:', data);\n    }\n  }\n};\n</script>`;
+    }
+
+    function generateURLSentimentCode(options) {
+        const { text, handle } = options;
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        let path = `security=p:${policy},s:${signature}/`;
+        if (text) {
+            const escaped = (text || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+            path += `text_sentiment=text:\\"${escaped}\\"`;
+        } else if (handle) {
+            path += `image_sentiment/${handle}`;
+        }
+
+        return `// Sentiment analysis URL (Processing API)\nconst sentimentUrl = 'https://cdn.filestackcontent.com/${path}';`;
+    }
+
+    // Video & Audio Processing Event Listeners
+    // Video Processing section
+    document.querySelectorAll('#video-processing input, #video-processing select, #video-processing input[type="checkbox"]').forEach(element => {
+        element.addEventListener('change', debounce(() => {
+            if (currentSection === 'video-processing') generateVideoProcessingCode();
+        }, 300));
+    });
+
+    // Audio Processing section
+    document.querySelectorAll('#audio-processing input, #audio-processing select, #audio-processing input[type="checkbox"]').forEach(element => {
+        element.addEventListener('change', debounce(() => {
+            if (currentSection === 'audio-processing') generateAudioProcessingCode();
+        }, 300));
+    });
+
+    // Automation Event Listeners
+    // Workflows section
+    document.querySelectorAll('#workflows input, #workflows select, #workflows textarea, #workflows input[type="checkbox"]').forEach(element => {
+        element.addEventListener('change', debounce(() => {
+            if (currentSection === 'workflows') generateWorkflowsCode();
+        }, 300));
+    });
+
+    // Webhooks section
+    document.querySelectorAll('#webhooks input, #webhooks select, #webhooks input[type="checkbox"]').forEach(element => {
+        element.addEventListener('change', debounce(() => {
+            if (currentSection === 'webhooks') generateWebhooksCode();
+        }, 300));
+    });
+
+    // Custom Source section
+    document.querySelectorAll('#custom-source input, #custom-source select, #custom-source input[type="checkbox"]').forEach(element => {
+        element.addEventListener('change', debounce(() => {
+            if (currentSection === 'custom-source') generateCustomSourceCode();
+        }, 300));
+    });
+
+    // Transform Chains section
+    document.querySelectorAll('#transform-chains input, #transform-chains select, #transform-chains input[type="checkbox"]').forEach(element => {
+        element.addEventListener('change', debounce(() => {
+            if (currentSection === 'transform-chains') generateTransformChainsCode();
+        }, 300));
+    });
+
     // Global API key
     const globalApiKey = document.getElementById('globalApikey');
     if (globalApiKey) {
         globalApiKey.addEventListener('change', debounce(() => {
+            // Re-initialize client with new API key
+            if (typeof filestack !== 'undefined') {
+                const apiKey = document.getElementById('globalApikey').value || 'YOUR_APIKEY';
+                filestackClient = filestack.init(apiKey);
+            }
             // Regenerate code for current section
             if (currentSection === 'picker') generatePickerCode();
             else if (currentSection === 'transform') generateTransformCode();
+            else if (currentSection === 'transform-chains') generateTransformChainsCode();
             else if (currentSection === 'upload') generateUploadCode();
             else if (currentSection === 'download') generateDownloadCode();
             else if (currentSection === 'sfw') generateSfwCode();
@@ -207,29 +771,29 @@ function showSection(sectionName) {
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
     });
-    
+
     // Remove active class from all nav items
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
-    
+
     // Show selected section
     const targetSection = document.getElementById(sectionName);
     if (targetSection) {
         targetSection.classList.add('active');
     }
-    
+
     // Add active class to nav item
     const navItem = document.querySelector(`[data-section="${sectionName}"]`);
     if (navItem) {
         navItem.classList.add('active');
     }
-    
+
     currentSection = sectionName;
-    
+
     // Reset code tabs to JavaScript and generate appropriate code
     switchCodeTab('javascript');
-    
+
     // Generate appropriate code
     if (sectionName === 'picker') {
         generatePickerCode('javascript');
@@ -247,12 +811,18 @@ function showSection(sectionName) {
         generateOcrCode();
     } else if (sectionName === 'faces') {
         generateFacesCode();
+    } else if (sectionName === 'caption') {
+        generateCaptionCode();
+    } else if (sectionName === 'video-tagging' || sectionName === 'video-sfw' || sectionName === 'phishing' || sectionName === 'virus') {
+        showWorkflowOnlyMessage(sectionName);
     } else if (sectionName === 'security') {
         generateSecurityCode();
     } else if (sectionName === 'store') {
         generateStoreCode();
     } else if (sectionName === 'metadata') {
         generateMetadataCode();
+    } else if (sectionName === 'dnd') {
+        generateDndCode();
     }
 }
 
@@ -262,20 +832,65 @@ function switchCodeTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    
+
     // Add active class to selected tab
     const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
     if (activeTab) {
         activeTab.classList.add('active');
     }
-    
+
     // Update code based on current section and tab
-    if (currentSection === 'picker') {
-        generatePickerCode(tabName);
-    } else if (currentSection === 'transform') {
-        generateTransformCode(tabName);
+    switch (currentSection) {
+        case 'picker':
+            generatePickerCode(tabName);
+            break;
+        case 'transform':
+            generateTransformCode(tabName);
+            break;
+        case 'upload':
+            generateUploadCode();
+            break;
+        case 'download':
+            generateDownloadCode();
+            break;
+        case 'sfw':
+            generateSfwCode();
+            break;
+        case 'tagging':
+            generateTaggingCode();
+            break;
+        case 'ocr':
+            generateOcrCode();
+            break;
+        case 'faces':
+            generateFacesCode();
+            break;
+        case 'security':
+            generateSecurityCode();
+            break;
+        case 'store':
+            generateStoreCode();
+            break;
+        case 'metadata':
+            generateMetadataCode();
+            break;
+        case 'dnd':
+            generateDndCode();
+            break;
+        case 'caption':
+            generateCaptionCode();
+            break;
+        case 'transform-chains':
+            generateTransformChainsCode(tabName);
+            break;
+        // Add more sections here as their generators exist
+        // case 'tagging': generateTaggingCode(); break;
+        // case 'ocr': generateOcrCode(); break;
+        // case 'dnd': generateDndCode(); break;
+        default:
+            break;
     }
-    
+
     // Update code display with correct language
     const codeElement = document.getElementById('generatedCode');
     if (codeElement) {
@@ -284,11 +899,17 @@ function switchCodeTab(tabName) {
     }
 }
 
+// Helper: get active code tab
+function getCurrentTab() {
+    const active = document.querySelector('.code-tabs .tab-btn.active');
+    return active ? active.getAttribute('data-tab') : 'javascript';
+}
+
 // Toggle transform inputs
 function toggleTransformInputs(checkbox) {
     const optionName = checkbox.id.replace('enable', '').toLowerCase();
     const inputs = document.getElementById(`${optionName}Inputs`);
-    
+
     if (inputs) {
         inputs.style.display = checkbox.checked ? 'grid' : 'none';
     }
@@ -298,7 +919,7 @@ function toggleTransformInputs(checkbox) {
 function generatePickerCode(tab = 'javascript') {
     const options = collectPickerOptions();
     let code = '';
-    
+
     switch (tab) {
         case 'javascript':
             code = generateJavaScriptPickerCode(options);
@@ -309,11 +930,17 @@ function generatePickerCode(tab = 'javascript') {
         case 'vue':
             code = generateVuePickerCode(options);
             break;
+        case 'angular':
+            code = generateAngularPickerCode(options);
+            break;
+        case 'nodejs':
+            code = generateNodeJSPickerCode(options);
+            break;
         case 'url':
             code = generateURLPickerCode(options);
             break;
     }
-    
+
     updateCodeDisplay(code, tab);
 }
 
@@ -321,7 +948,7 @@ function generatePickerCode(tab = 'javascript') {
 function generateTransformCode(tab = 'javascript') {
     const options = collectTransformOptions();
     let code = '';
-    
+
     switch (tab) {
         case 'javascript':
             code = generateJavaScriptTransformCode(options);
@@ -332,36 +959,38 @@ function generateTransformCode(tab = 'javascript') {
         case 'vue':
             code = generateVueTransformCode(options);
             break;
+        case 'angular':
+            code = generateAngularTransformCode(options);
+            break;
+        case 'nodejs':
+            code = generateNodeJSTransformCode(options);
+            break;
         case 'url':
             code = generateURLTransformCode(options);
             break;
     }
-    
+
     updateCodeDisplay(code, tab);
 }
 
 // Collect picker options
 function collectPickerOptions() {
     const options = {};
-    
-    // API Key
-    const apiKey = document.getElementById('globalApikey').value;
-    if (apiKey && apiKey !== 'YOUR_APIKEY') {
-        options.apiKey = apiKey;
-    }
-    
+
+    // API Key is handled separately in code generation, not in options
+
     // Display mode
     const displayMode = document.querySelector('input[name="displayMode"]:checked').value;
-    if (displayMode !== 'modal') {
+    if (displayMode !== 'overlay') {
         options.displayMode = displayMode;
     }
-    
+
     // Language
     const language = document.getElementById('language').value;
     if (language !== 'en') {
         options.lang = language;
     }
-    
+
     // Accept files
     const acceptFiles = [];
     document.querySelectorAll('#picker input[type="checkbox"][value]').forEach(checkbox => {
@@ -372,7 +1001,7 @@ function collectPickerOptions() {
     if (acceptFiles.length > 0) {
         options.accept = acceptFiles;
     }
-    
+
     // Sources
     const sources = [];
     document.querySelectorAll('#picker .config-card:nth-child(3) input[type="checkbox"]').forEach(checkbox => {
@@ -383,337 +1012,592 @@ function collectPickerOptions() {
     if (sources.length > 0) {
         options.fromSources = sources;
     }
-    
-    // File limits
-    const maxFiles = document.getElementById('maxFiles').value;
-    if (maxFiles) {
-        options.maxFiles = parseInt(maxFiles);
+
+    // File limits with validation
+    const maxFiles = validateIntegerInput('maxFiles');
+    if (maxFiles !== null) {
+        options.maxFiles = maxFiles;
     }
-    
-    const minFiles = document.getElementById('minFiles').value;
-    if (minFiles) {
-        options.minFiles = parseInt(minFiles);
+
+    const minFiles = validateIntegerInput('minFiles');
+    if (minFiles !== null) {
+        options.minFiles = minFiles;
     }
-    
-    const maxSize = document.getElementById('maxSize').value;
-    if (maxSize) {
-        options.maxSize = parseInt(maxSize) * 1024 * 1024; // Convert MB to bytes
+
+    const maxSize = validateIntegerInput('maxSize');
+    if (maxSize !== null) {
+        options.maxSize = maxSize * 1024 * 1024; // Convert MB to bytes
     }
-    
-    const concurrency = document.getElementById('concurrency').value;
-    if (concurrency) {
-        options.concurrency = parseInt(concurrency);
+
+    const concurrency = validateIntegerInput('concurrency');
+    if (concurrency !== null) {
+        options.concurrency = concurrency;
     }
-    
+
     // Image dimensions
-    const imageWidth = document.getElementById('imageWidth').value;
-    const imageHeight = document.getElementById('imageHeight').value;
-    if (imageWidth || imageHeight) {
-        options.imageDim = {};
-        if (imageWidth) options.imageDim.width = parseInt(imageWidth);
-        if (imageHeight) options.imageDim.height = parseInt(imageHeight);
+    const imageMaxDim = document.getElementById('imageMaxDim').value;
+    if (imageMaxDim) {
+        const dims = imageMaxDim.split(',').map(d => parseInt(d.trim()));
+        if (dims.length === 2) {
+            options.imageMax = dims;
+        }
     }
-    
-    const imageMaxWidth = document.getElementById('imageMaxWidth').value;
-    const imageMaxHeight = document.getElementById('imageMaxHeight').value;
-    if (imageMaxWidth || imageMaxHeight) {
-        options.imageMax = {};
-        if (imageMaxWidth) options.imageMax.width = parseInt(imageMaxWidth);
-        if (imageMaxHeight) options.imageMax.height = parseInt(imageMaxHeight);
+    const imageMinDim = document.getElementById('imageMinDim').value;
+    if (imageMinDim) {
+        const dims = imageMinDim.split(',').map(d => parseInt(d.trim()));
+        if (dims.length === 2) {
+            options.imageMin = dims;
+        }
     }
-    
-    const imageMinWidth = document.getElementById('imageMinWidth').value;
-    const imageMinHeight = document.getElementById('imageMinHeight').value;
-    if (imageMinWidth || imageMinHeight) {
-        options.imageMin = {};
-        if (imageMinWidth) options.imageMin.width = parseInt(imageMinWidth);
-        if (imageMinHeight) options.imageMin.height = parseInt(imageMinHeight);
-    }
-    
+
     // Advanced options
-    if (document.getElementById('multipleFileUpload').checked) {
-        options.multipleFileUpload = true;
-    }
-    
-    if (document.getElementById('disableThumbnails').checked) {
-        options.disableThumbnails = true;
-    }
-    
-    if (document.getElementById('disableTransformer').checked) {
-        options.disableTransformer = true;
-    }
-    
     if (document.getElementById('hideModalWhenUploading').checked) {
         options.hideModalWhenUploading = true;
     }
-    
-    if (document.getElementById('allowManualRetry').checked) {
-        options.allowManualRetry = true;
-    }
-    
+
     if (document.getElementById('uploadInBackground').checked) {
         options.uploadInBackground = true;
     }
-    
+
+    if (document.getElementById('cleanupImageExif').checked) {
+        options.cleanupImageExif = true;
+    }
+
+    if (document.getElementById('exposeOriginalFile').checked) {
+        options.exposeOriginalFile = true;
+    }
+
+    // Store Options
+    const loc = document.getElementById('storeLocation')?.value;
+    const path = document.getElementById('storePath')?.value;
+    const workflows = document.getElementById('storeWorkflows')?.value;
+    if ((loc && loc.length) || (path && path.length) || (workflows && workflows.length)) {
+        options.storeTo = {};
+        if (loc) options.storeTo.location = loc;
+        if (path) options.storeTo.path = path;
+        if (workflows) {
+            const wf = workflows.split(',').map(s => s.trim()).filter(Boolean);
+            if (wf.length) options.storeTo.workflows = wf;
+        }
+    }
+
+    // Upload Options with validation
+    const retry = validateIntegerInput('uploadRetry');
+    const timeout = validateIntegerInput('uploadTimeout');
+    const tagsJson = document.getElementById('uploadTagsJson')?.value;
+    if (retry !== null || timeout !== null || (tagsJson && tagsJson.trim() !== '')) {
+        options.uploadConfig = {};
+        if (retry !== null) options.uploadConfig.retry = retry;
+        if (timeout !== null) options.uploadConfig.timeout = timeout;
+        if (tagsJson && tagsJson.trim() !== '') {
+            try {
+                options.uploadConfig.tags = JSON.parse(tagsJson);
+            } catch (e) {
+                // ignore invalid JSON, UI will still show code without tags
+            }
+        }
+    }
+
     return options;
 }
 
 // Collect transform options
 function collectTransformOptions() {
     const options = {};
-    
+
     // File handle
     const handle = document.getElementById('transformHandle').value;
     if (handle) {
         options.handle = handle;
     }
-    
-    // Basic transformations
+
+    // Basic transformations with validation
     if (document.getElementById('enableResize').checked) {
-        const width = document.getElementById('resizeWidth').value;
-        const height = document.getElementById('resizeHeight').value;
+        const width = validateIntegerInput('resizeWidth');
+        const height = validateIntegerInput('resizeHeight');
         const fit = document.getElementById('resizeFit').value;
-        
+
         options.resize = {};
-        if (width) options.resize.width = parseInt(width);
-        if (height) options.resize.height = parseInt(height);
+        if (width !== null) options.resize.width = width;
+        if (height !== null) options.resize.height = height;
         if (fit !== 'clip') options.resize.fit = fit;
     }
-    
+
     if (document.getElementById('enableCrop').checked) {
-        const x = document.getElementById('cropX').value;
-        const y = document.getElementById('cropY').value;
-        const width = document.getElementById('cropWidth').value;
-        const height = document.getElementById('cropHeight').value;
-        
-        if (x && y && width && height) {
+        const x = validateIntegerInput('cropX');
+        const y = validateIntegerInput('cropY');
+        const width = validateIntegerInput('cropWidth');
+        const height = validateIntegerInput('cropHeight');
+
+        if (x !== null && y !== null && width !== null && height !== null) {
             options.crop = {
-                dim: [parseInt(x), parseInt(y), parseInt(width), parseInt(height)]
+                dim: [x, y, width, height]
             };
         }
     }
-    
+
     if (document.getElementById('enableRotate').checked) {
-        const degrees = document.getElementById('rotateDegrees').value;
-        if (degrees) {
-            options.rotate = parseInt(degrees);
+        const degrees = validateIntegerInput('rotateDegrees');
+        if (degrees !== null) {
+            options.rotate = degrees;
         }
     }
-    
+
     if (document.getElementById('enableFlip').checked) {
         options.flip = true;
     }
-    
+
     if (document.getElementById('enableFlop').checked) {
         options.flop = true;
     }
-    
-    // Filters
+
+    // Filters with validation
     if (document.getElementById('enableBlur').checked) {
-        const amount = document.getElementById('blurAmount').value;
-        if (amount) {
-            options.blur = parseInt(amount);
+        const amount = validateIntegerInput('blurAmount');
+        if (amount !== null) {
+            options.blur = amount;
         }
     }
-    
+
     if (document.getElementById('enableSharpen').checked) {
-        const amount = document.getElementById('sharpenAmount').value;
-        if (amount) {
-            options.sharpen = parseInt(amount);
+        const amount = validateIntegerInput('sharpenAmount');
+        if (amount !== null) {
+            options.sharpen = amount;
         }
     }
-    
+
     if (document.getElementById('enableSepia').checked) {
-        const amount = document.getElementById('sepiaAmount').value;
-        if (amount) {
-            options.sepia = parseInt(amount);
+        const tone = validateIntegerInput('sepiaTone');
+        if (tone !== null) {
+            options.sepia = { tone: tone };
         }
     }
-    
+
     if (document.getElementById('enableBlackWhite').checked) {
         options.blackwhite = true;
     }
-    
+
     if (document.getElementById('enableNegative').checked) {
         options.negative = true;
     }
-    
+
     if (document.getElementById('enableCircle').checked) {
         options.circle = true;
     }
-    
+
     if (document.getElementById('enableRoundedCorners').checked) {
-        const radius = document.getElementById('roundedCornersRadius').value;
-        if (radius) {
-            options.rounded_corners = parseInt(radius);
+        const radius = validateIntegerInput('roundedCornersRadius');
+        if (radius !== null) {
+            options.rounded_corners = radius;
         }
     }
-    
-    // Advanced effects
+
+    // Advanced effects with validation
     if (document.getElementById('enableVignette').checked) {
-        const amount = document.getElementById('vignetteAmount').value;
-        if (amount) {
-            options.vignette = parseInt(amount);
+        const amount = validateIntegerInput('vignetteAmount');
+        if (amount !== null) {
+            options.vignette = amount;
         }
     }
-    
+
     if (document.getElementById('enableShadow').checked) {
-        const blur = document.getElementById('shadowBlur').value;
-        const opacity = document.getElementById('shadowOpacity').value;
-        const x = document.getElementById('shadowX').value;
-        const y = document.getElementById('shadowY').value;
-        
+        const blur = validateIntegerInput('shadowBlur');
+        const opacity = validateIntegerInput('shadowOpacity');
+        const vector = document.getElementById('shadowVector').value;
+
         options.shadow = {};
-        if (blur) options.shadow.blur = parseInt(blur);
-        if (opacity) options.shadow.opacity = parseInt(opacity);
-        if (x) options.shadow.x = parseInt(x);
-        if (y) options.shadow.y = parseInt(y);
+        if (blur !== null) options.shadow.blur = blur;
+        if (opacity !== null) options.shadow.opacity = opacity;
+        if (vector) {
+            const vectorArray = vector.split(',').map(v => parseInt(v.trim()));
+            if (vectorArray.length === 2) {
+                options.shadow.vector = vectorArray;
+            }
+        }
     }
-    
+
     if (document.getElementById('enableBorder').checked) {
-        const width = document.getElementById('borderWidth').value;
+        const width = validateIntegerInput('borderWidth');
         const color = document.getElementById('borderColor').value;
-        
+
         options.border = {};
-        if (width) options.border.width = parseInt(width);
+        if (width !== null) options.border.width = width;
         if (color) options.border.color = color;
     }
-    
+
     if (document.getElementById('enableWatermark').checked) {
-        const text = document.getElementById('watermarkText').value;
-        const color = document.getElementById('watermarkColor').value;
-        const size = document.getElementById('watermarkSize').value;
-        
-        if (text) {
-            options.watermark = {};
-            options.watermark.text = text;
-            if (color) options.watermark.color = color;
-            if (size) options.watermark.size = parseInt(size);
+        const file = document.getElementById('watermarkFile').value;
+        const size = validateIntegerInput('watermarkSize');
+        const position = document.getElementById('watermarkPosition').value;
+
+        if (file) {
+            options.watermark = { file: file };
+            if (size !== null) options.watermark.size = size;
+            if (position) options.watermark.position = position.split(',');
         }
     }
-    
-    // Output settings
+
+    if (document.getElementById('enablePartialBlur').checked) {
+        const objects = document.getElementById('partialBlurObjects').value;
+        if (objects) {
+            try {
+                options.partial_blur = { objects: JSON.parse(objects) };
+            } catch (e) {
+                // ignore invalid JSON
+            }
+        }
+    }
+
+    if (document.getElementById('enablePartialPixelate').checked) {
+        const objects = document.getElementById('partialPixelateObjects').value;
+        if (objects) {
+            try {
+                options.partial_pixelate = { objects: JSON.parse(objects) };
+            }
+            catch (e) {
+                // ignore invalid JSON
+            }
+        }
+    }
+
+    // Face transformations with validation
+    if (document.getElementById('enableBlurFaces').checked) {
+        const amount = validateIntegerInput('blurFacesAmount');
+        const minSize = validateNumberInput('blurFacesMinSize');
+        const maxSize = validateNumberInput('blurFacesMaxSize');
+
+        options.blur_faces = {};
+        if (amount !== null) options.blur_faces.amount = amount;
+        if (minSize !== null) options.blur_faces.minsize = minSize;
+        if (maxSize !== null) options.blur_faces.maxsize = maxSize;
+    }
+
+    if (document.getElementById('enableCropFaces').checked) {
+        const width = validateIntegerInput('cropFacesWidth');
+        const height = validateIntegerInput('cropFacesHeight');
+        const mode = document.getElementById('cropFacesMode').value;
+
+        options.crop_faces = {};
+        if (width !== null) options.crop_faces.width = width;
+        if (height !== null) options.crop_faces.height = height;
+        if (mode) options.crop_faces.mode = mode;
+    }
+
+    if (document.getElementById('enablePixelateFaces').checked) {
+        const amount = validateIntegerInput('pixelateFacesAmount');
+        const minSize = validateNumberInput('pixelateFacesMinSize');
+        const maxSize = validateNumberInput('pixelateFacesMaxSize');
+
+        options.pixelate_faces = {};
+        if (amount !== null) options.pixelate_faces.amount = amount;
+        if (minSize !== null) options.pixelate_faces.minsize = minSize;
+        if (maxSize !== null) options.pixelate_faces.maxsize = maxSize;
+    }
+
+    // Smart crop with validation
+    if (document.getElementById('enableSmartCrop').checked) {
+        const width = validateIntegerInput('smartCropWidth');
+        const height = validateIntegerInput('smartCropHeight');
+        const mode = document.getElementById('smartCropMode').value;
+
+        if (width !== null && height !== null) {
+            options.smart_crop = {
+                width: width,
+                height: height
+            };
+            if (mode !== 'auto') options.smart_crop.mode = mode;
+        }
+    }
+
+    // AI Upscale
+    if (document.getElementById('enableUpscale').checked) {
+        const noise = document.getElementById('upscaleNoise').value;
+        const style = document.getElementById('upscaleStyle').value;
+
+        options.upscale = {};
+        if (noise !== 'none') options.upscale.noise = noise;
+        if (style) options.upscale.style = style;
+    }
+
+    // PDF processing
+    if (document.getElementById('enablePdfConvert').checked) {
+        const pages = document.getElementById('pdfPages').value;
+        const pageFormat = document.getElementById('pdfPageFormat').value;
+        const orientation = document.getElementById('pdfOrientation').value;
+
+        options.pdfconvert = {};
+        if (pages) options.pdfconvert.pages = pages.split(',').map(p => p.trim());
+        if (pageFormat) options.pdfconvert.pageformat = pageFormat;
+        if (orientation) options.pdfconvert.pageorientation = orientation;
+    }
+
+    if (document.getElementById('enablePdfInfo').checked) {
+        options.pdfinfo = true;
+    }
+
+    // Output settings with validation
     const format = document.getElementById('outputFormat').value;
     if (format !== 'auto') {
         options.output = { format: format };
     }
-    
-    const quality = document.getElementById('outputQuality').value;
-    if (quality !== '80') {
+
+    const quality = validateIntegerInput('outputQuality', 80);
+    if (quality !== 80) {
         if (!options.output) options.output = {};
-        options.output.quality = parseInt(quality);
+        options.output.quality = quality;
     }
-    
-    const compress = document.getElementById('outputCompress').value;
-    if (compress !== '80') {
+
+    const compress = validateIntegerInput('outputCompress', 80);
+    if (compress !== 80) {
         if (!options.output) options.output = {};
-        options.output.compress = parseInt(compress);
+        options.output.compress = compress;
     }
-    
+
     return options;
 }
 
 // Generate JavaScript picker code
 function generateJavaScriptPickerCode(options) {
     let code = `// Filestack Picker Configuration\n`;
-    code += `const apikey = "${options.apiKey || 'YOUR_APIKEY'}";\n`;
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+    code += `const apikey = "${apiKey}";\n`;
     code += `const client = filestack.init(apikey);\n\n`;
-    
-    code += `const options = ${JSON.stringify(options, null, 2)};\n\n`;
-    
+
+    // Build options object as code to preserve functions
+    const lines = [];
+    if (options.displayMode) lines.push(`  displayMode: '${options.displayMode}',`);
+    if (options.lang) lines.push(`  lang: '${options.lang}',`);
+    if (options.accept) lines.push(`  accept: ${JSON.stringify(options.accept)},`);
+    if (options.fromSources) lines.push(`  fromSources: ${JSON.stringify(options.fromSources)},`);
+    if (options.maxFiles) lines.push(`  maxFiles: ${options.maxFiles},`);
+    if (options.minFiles) lines.push(`  minFiles: ${options.minFiles},`);
+    if (options.maxSize) lines.push(`  maxSize: ${options.maxSize},`);
+    if (options.concurrency) lines.push(`  concurrency: ${options.concurrency},`);
+    if (options.imageDim) lines.push(`  imageDim: ${JSON.stringify(options.imageDim)},`);
+    if (options.imageMax) lines.push(`  imageMax: ${JSON.stringify(options.imageMax)},`);
+    if (options.imageMin) lines.push(`  imageMin: ${JSON.stringify(options.imageMin)},`);
+    if (options.multipleFileUpload) lines.push(`  multipleFileUpload: true,`);
+    if (options.disableThumbnails) lines.push(`  disableThumbnails: true,`);
+    if (options.disableTransformer) lines.push(`  disableTransformer: true,`);
+    if (options.hideModalWhenUploading) lines.push(`  hideModalWhenUploading: true,`);
+    if (options.allowManualRetry) lines.push(`  allowManualRetry: true,`);
+    if (options.uploadInBackground) lines.push(`  uploadInBackground: true,`);
+    if (options.transformationsUI) lines.push(`  transformationsUI: true,`);
+    if (options.cleanupImageExif) lines.push(`  cleanupImageExif: true,`);
+    if (options.exposeOriginalFile) lines.push(`  exposeOriginalFile: true,`);
+    if (options.modalSize) lines.push(`  modalSize: ${JSON.stringify(options.modalSize)},`);
+    if (options.pasteMode) lines.push(`  pasteMode: '${options.pasteMode}',`);
+
+    // storeTo
+    if (options.storeTo) {
+        lines.push(`  storeTo: ${JSON.stringify(options.storeTo, null, 2).replace(/\n/g, '\n  ')},`);
+    }
+
+    // uploadConfig (with optional callbacks)
+    if (options.uploadConfig) {
+        // Build uploadConfig body manually to include callbacks
+        const uc = [];
+        if (typeof options.uploadConfig.retry !== 'undefined') uc.push(`    retry: ${options.uploadConfig.retry},`);
+        if (typeof options.uploadConfig.timeout !== 'undefined') uc.push(`    timeout: ${options.uploadConfig.timeout},`);
+        if (options.uploadConfig.tags) uc.push(`    tags: ${JSON.stringify(options.uploadConfig.tags)},`);
+        if (document.getElementById('enableUploadOnProgress')?.checked) {
+            uc.push(`    onProgress: (evt) => { console.log('Upload progress', evt.totalPercent); },`);
+        }
+        if (document.getElementById('enableUploadOnRetry')?.checked) {
+            uc.push(`    onRetry: (data) => { console.log('Retry upload', data); },`);
+        }
+        lines.push(`  uploadConfig: {\n${uc.join('\n')}\n  },`);
+    }
+
+    // Callbacks
+    if (document.getElementById('enableOnFileSelected')?.checked) {
+        lines.push(`  onFileSelected: (file) => {\n    if (file.size > 1000 * 1000) {\n      throw new Error('File too big, select something smaller than 1MB');\n    }\n  },`);
+    }
+    if (document.getElementById('enableAcceptFn')?.checked) {
+        lines.push(`  acceptFn: (file, options) => {\n    return options.mimeFromMagicBytes(file.originalFile).then(() => Promise.resolve());\n  },`);
+    }
+    if (document.getElementById('enableOnUploadDone')?.checked) {
+        lines.push(`  onUploadDone: (res) => {\n    console.log('PickerResponse', res);\n  },`);
+    }
+
+    const optionsCode = `const options = {\n${lines.join('\n')}\n};\n\n`;
+    code += optionsCode;
+
     code += `const picker = client.picker(options);\n`;
     code += `picker.open();\n`;
-    
+
     return code;
 }
 
 // Generate React picker code
 function generateReactPickerCode(options) {
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
     let code = `// React Component with Filestack Picker\n`;
-    code += `import React, { useEffect } from 'react';\n`;
-    code += `import { filestack } from 'filestack-js';\n\n`;
-    
+    code += `import React from 'react';\n`;
+    code += `import { PickerOverlay } from 'filestack-react';\n\n`;
+
     code += `const FilestackPicker = () => {\n`;
-    code += `  useEffect(() => {\n`;
-    code += `    const apikey = "${options.apiKey || 'YOUR_APIKEY'}";\n`;
-    code += `    const client = filestack.init(apikey);\n\n`;
-    
-    code += `    const options = ${JSON.stringify(options, null, 4)};\n\n`;
-    
-    code += `    const picker = client.picker(options);\n`;
-    code += `    picker.open();\n`;
-    code += `  }, []);\n\n`;
-    
+    code += `  const onUploadDone = (res) => {\n`;
+    code += `    console.log(res);\n`;
+    code += `  };\n\n`;
+
     code += `  return (\n`;
-    code += `    <div>\n`;
-    code += `      <button onClick={() => picker.open()}>\n`;
-    code += `        Open File Picker\n`;
-    code += `      </button>\n`;
-    code += `    </div>\n`;
+    code += `    <PickerOverlay\n`;
+    code += `      apikey={'${apiKey}'}\n`;
+    code += `      pickerOptions={${JSON.stringify(options, null, 2)}}\n`;
+    code += `      onUploadDone={onUploadDone}\n`;
+    code += `    />\n`;
     code += `  );\n`;
     code += `};\n\n`;
-    
+
     code += `export default FilestackPicker;\n`;
-    
+
     return code;
 }
 
 // Generate Vue picker code
 function generateVuePickerCode(options) {
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
     let code = `<!-- Vue Component with Filestack Picker -->\n`;
     code += `<template>\n`;
     code += `  <div>\n`;
-    code += `    <button @click="openPicker">Open File Picker</button>\n`;
+    code += `    <picker-overlay\n`;
+    code += `      :apikey="'${apiKey}'"\n`;
+    code += `      :pickerOptions="${JSON.stringify(options, null, 2)}"\n`;
+    code += `      @uploadDone="onUploadDone"\n`;
+    code += `    />\n`;
     code += `  </div>\n`;
     code += `</template>\n\n`;
-    
+
     code += `<script>\n`;
-    code += `import { filestack } from 'filestack-js';\n\n`;
+    code += `import { PickerOverlay } from 'filestack-vue';\n\n`;
     code += `export default {\n`;
     code += `  name: 'FilestackPicker',\n`;
-    code += `  data() {\n`;
-    code += `    return {\n`;
-    code += `      picker: null\n`;
-    code += `    };\n`;
-    code += `  },\n`;
-    code += `  mounted() {\n`;
-    code += `    const apikey = "${options.apiKey || 'YOUR_APIKEY'}";\n`;
-    code += `    const client = filestack.init(apikey);\n\n`;
-    
-    code += `    const options = ${JSON.stringify(options, null, 4)};\n\n`;
-    
-    code += `    this.picker = client.picker(options);\n`;
+    code += `  components: {\n`;
+    code += `    PickerOverlay,\n`;
     code += `  },\n`;
     code += `  methods: {\n`;
-    code += `    openPicker() {\n`;
-    code += `      this.picker.open();\n`;
-    code += `    }\n`;
-    code += `  }\n`;
+    code += `    onUploadDone(res) {\n`;
+    code += `      console.log(res);\n`;
+    code += `    },\n`;
+    code += `  },\n`;
     code += `};\n`;
     code += `</script>\n`;
-    
+
+    return code;
+}
+
+// Generate Angular picker code
+function generateAngularPickerCode(options) {
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+    let code = `// Angular Component for Filestack Picker\n`;
+    code += `// First, install: npm install filestack-js @filestack/angular\n\n`;
+
+    code += `// In your app.module.ts:\n`;
+    code += `import { BrowserModule } from '@angular/platform-browser';\n`;
+    code += `import { NgModule } from '@angular/core';\n`;
+    code += `import { FilestackModule } from '@filestack/angular';\n`;
+    code += `import { AppComponent } from './app.component';\n\n`;
+
+    code += `@NgModule({\n`;
+    code += `  declarations: [AppComponent],\n`;
+    code += `  imports: [\n`;
+    code += `    BrowserModule,\n`;
+    code += `    FilestackModule.forRoot({ apikey: '${apiKey}' })\n`;
+    code += `  ],\n`;
+    code += `  bootstrap: [AppComponent]\n`;
+    code += `})\n`;
+    code += `export class AppModule {}\n\n`;
+
+    code += `// In your component:\n`;
+    code += `import { Component } from '@angular/core';\n\n`;
+
+    code += `@Component({\n`;
+    code += `  selector: 'app-filestack-picker',\n`;
+    code += `  template: \`\n`;
+    code += `    <ng-picker-overlay\n`;
+    code += `      [apikey]="apikey"\n`;
+    code += `      (uploadSuccess)="onUploadSuccess($event)">\n`;
+    code += `      <button class="custom-button">Open Picker</button>\n`;
+    code += `    </ng-picker-overlay>\n`;
+    code += `  \`\n`;
+    code += `})\n`;
+    code += `export class FilestackPickerComponent {\n`;
+    code += `  apikey = '${apiKey}';\n\n`;
+
+    code += `  onUploadSuccess(res: any) {\n`;
+    code += `    console.log('Upload successful:', res);\n`;
+    code += `  }\n`;
+    code += `}\n`;
+
+    return code;
+}
+
+// Generate NodeJS picker code
+function generateNodeJSPickerCode(options) {
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+    let code = `// Node.js Server-side Filestack Implementation\n`;
+    code += `const filestack = require('filestack-js');\n`;
+    code += `const express = require('express');\n`;
+    code += `const crypto = require('crypto');\n`;
+    code += `const app = express();\n\n`;
+
+    code += `const client = filestack.init('${apiKey}');\n`;
+    code += `const APP_SECRET = 'YOUR_APP_SECRET'; // Get this from Developer Portal\n\n`;
+
+    code += `// Generate security policy and signature manually\n`;
+    code += `function generateSecurity() {\n`;
+    code += `  const policy = {\n`;
+    code += `    expiry: Math.floor(Date.now() / 1000) + 3600, // 1 hour from now\n`;
+    code += `    call: ['pick', 'read', 'stat', 'write', 'writeUrl', 'store', 'convert', 'remove', 'exif'],\n`;
+    code += `    // Add more restrictions as needed\n`;
+    code += `  };\n\n`;
+
+    code += `  // Base64URL encode the policy\n`;
+    code += `  const policyBase64 = Buffer.from(JSON.stringify(policy))\n`;
+    code += `    .toString('base64')\n`;
+    code += `    .replace(/\\+/g, '-')\n`;
+    code += `    .replace(/\\//g, '_')\n`;
+    code += `    .replace(/=/g, '');\n\n`;
+
+    code += `  // Create HMAC-SHA256 signature\n`;
+    code += `  const signature = crypto\n`;
+    code += `    .createHmac('sha256', APP_SECRET)\n`;
+    code += `    .update(policyBase64)\n`;
+    code += `    .digest('hex');\n\n`;
+
+    code += `  return { policy: policyBase64, signature };\n`;
+    code += `}\n\n`;
+
+    code += `// Endpoint to get security credentials for client-side use\n`;
+    code += `app.get('/security', (req, res) => {\n`;
+    code += `  const security = generateSecurity();\n`;
+    code += `  res.json(security);\n`;
+    code += `});\n\n`;
+
+    code += `// Example picker initialization endpoint\n`;
+    code += `app.get('/picker-config', (req, res) => {\n`;
+    code += `  const security = generateSecurity();\n`;
+    code += `  const pickerOptions = {\n`;
+    code += `    ...${JSON.stringify(options, null, 4)},\n`;
+    code += `    security: security\n`;
+    code += `  };\n`;
+    code += `  res.json({ apikey: '${apiKey}', options: pickerOptions });\n`;
+    code += `});\n\n`;
+
+    code += `app.listen(3000, () => {\n`;
+    code += `  console.log('Server running on port 3000');\n`;
+    code += `});\n`;
+
     return code;
 }
 
 // Generate URL picker code
 function generateURLPickerCode(options) {
-    let code = `// Filestack Picker URL Configuration\n`;
-    code += `const baseUrl = "https://www.filestackapi.com/api/file/";\n`;
-    code += `const apikey = "${options.apiKey || 'YOUR_APIKEY'}";\n\n`;
-    
-    code += `// Picker options as URL parameters\n`;
-    code += `const pickerUrl = \`\${baseUrl}\${apikey}/picker\`;\n`;
-    code += `const options = ${JSON.stringify(options, null, 2)};\n\n`;
-    
-    code += `// Convert options to URL parameters\n`;
-    code += `const params = new URLSearchParams();\n`;
-    code += `Object.entries(options).forEach(([key, value]) => {\n`;
-    code += `  params.append(key, JSON.stringify(value));\n`;
-    code += `});\n\n`;
-    
-    code += `const fullUrl = \`\${pickerUrl}?\${params.toString()}\`;\n`;
-    code += `console.log('Picker URL:', fullUrl);\n`;
-    
+    let code = `// Filestack Picker URL configuration is not a public feature. Use the JS SDK.\n`;
+    code += `// See structured docs: Web Picker + PickerOptions + Store/Upload Options.\n`;
+    code += `// Recommended: client.picker(options).open() as in the JS example.\n`;
+
     return code;
 }
 
@@ -722,19 +1606,19 @@ function generateJavaScriptTransformCode(options) {
     let code = `// Filestack Image Transform\n`;
     code += `const apikey = "YOUR_APIKEY";\n`;
     code += `const client = filestack.init(apikey);\n\n`;
-    
+
     if (options.handle) {
         code += `const handle = "${options.handle}";\n`;
     } else {
         code += `const handle = "YOUR_FILE_HANDLE";\n`;
     }
-    
+
     code += `\nconst transformOptions = ${JSON.stringify(options, null, 2)};\n\n`;
-    
+
     code += `// Method 1: Using transform method\n`;
     code += `const transformedUrl = client.transform(handle, transformOptions);\n`;
     code += `console.log('Transformed URL:', transformedUrl);\n\n`;
-    
+
     code += `// Method 2: Using Filelink\n`;
     code += `const filelink = client.filelink(handle);\n`;
     code += `Object.entries(transformOptions).forEach(([key, value]) => {\n`;
@@ -742,7 +1626,7 @@ function generateJavaScriptTransformCode(options) {
     code += `});\n`;
     code += `const finalUrl = filelink.toString();\n`;
     code += `console.log('Final URL:', finalUrl);\n`;
-    
+
     return code;
 }
 
@@ -751,37 +1635,41 @@ function generateReactTransformCode(options) {
     let code = `// React Component with Filestack Transform\n`;
     code += `import React, { useState, useEffect } from 'react';\n`;
     code += `import { filestack } from 'filestack-js';\n\n`;
-    
+
     code += `const FilestackTransform = () => {\n`;
     code += `  const [transformedUrl, setTransformedUrl] = useState('');\n\n`;
-    
+
     code += `  useEffect(() => {\n`;
     code += `    const apikey = "YOUR_APIKEY";\n`;
     code += `    const client = filestack.init(apikey);\n`;
-    
+
     if (options.handle) {
         code += `    const handle = "${options.handle}";\n`;
     } else {
         code += `    const handle = "YOUR_FILE_HANDLE";\n`;
     }
-    
+
     code += `\n    const transformOptions = ${JSON.stringify(options, null, 4)};\n\n`;
-    
+
     code += `    const url = client.transform(handle, transformOptions);\n`;
     code += `    setTransformedUrl(url);\n`;
     code += `  }, []);\n\n`;
-    
+
     code += `  return (\n`;
     code += `    <div>\n`;
     code += `      {transformedUrl && (\n`;
     code += `        <img src={transformedUrl} alt="Transformed" />\n`;
     code += `      )}\n`;
     code += `    </div>\n`;
-    code += `  );\n`;
-    code += `};\n\n`;
-    
-    code += `export default FilestackTransform;\n`;
-    
+    code += `  );
+`;
+    code += `};
+
+`;
+
+    code += `export default FilestackTransform;
+`;
+
     return code;
 }
 
@@ -793,63 +1681,207 @@ function generateVueTransformCode(options) {
     code += `    <img v-if="transformedUrl" :src="transformedUrl" alt="Transformed" />\n`;
     code += `  </div>\n`;
     code += `</template>\n\n`;
-    
+
     code += `<script>\n`;
     code += `import { filestack } from 'filestack-js';\n\n`;
     code += `export default {\n`;
-    code += `  name: 'FilestackTransform',\n`;
+    code += `  name: 'FilestackTransform',
+`;
     code += `  data() {\n`;
     code += `    return {\n`;
     code += `      transformedUrl: ''\n`;
-    code += `    };\n`;
-    code += `  },\n`;
+    code += `    };
+`;
+    code += `  },
+`;
     code += `  mounted() {\n`;
     code += `    const apikey = "YOUR_APIKEY";\n`;
-    code += `    const client = filestack.init(apikey);\n`;
-    
+    code += `    const client = filestack.init(apikey);
+`;
+
     if (options.handle) {
         code += `    const handle = "${options.handle}";\n`;
     } else {
         code += `    const handle = "YOUR_FILE_HANDLE";\n`;
     }
-    
+
     code += `\n    const transformOptions = ${JSON.stringify(options, null, 4)};\n\n`;
-    
-    code += `    const url = client.transform(handle, transformOptions);\n`;
-    code += `    this.transformedUrl = url;\n`;
+
+    code += `    const url = client.transform(handle, transformOptions);
+`;
+    code += `    this.transformedUrl = url;
+`;
     code += `  }\n`;
-    code += `};\n`;
+    code += `};
+`;
     code += `</script>\n`;
-    
+
+    return code;
+}
+
+// Generate Angular transform code
+function generateAngularTransformCode(options) {
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+    let code = `// Angular Component for Filestack Transform\n`;
+    code += `// Using FilestackService from @filestack/angular\n\n`;
+
+    code += `import { Component, OnInit } from '@angular/core';\n`;
+    code += `import { FilestackService } from '@filestack/angular';\n\n`;
+
+    code += `@Component({\n`;
+    code += `  selector: 'app-filestack-transform',\n`;
+    code += `  template: \`\n`;
+    code += `    <input [(ngModel)]="handle" placeholder="Enter file handle">\n`;
+    code += `    <button (click)="transformFile()">Transform</button>\n`;
+    code += `    <img *ngIf="transformedUrl" [src]="transformedUrl" alt="Transformed">\n`;
+    code += `  \`\n`;
+    code += `})\n`;
+    code += `export class FilestackTransformComponent implements OnInit {\n`;
+    code += `  public handle: string = '';\n`;
+    code += `  public transformedUrl: string = '';\n\n`;
+
+    code += `  constructor(private filestackService: FilestackService) {}\n\n`;
+
+    code += `  ngOnInit() {\n`;
+    code += `    this.filestackService.init('${apiKey}');\n`;
+    code += `  }\n\n`;
+
+    code += `  transformFile() {\n`;
+    code += `    if (!this.handle) return;\n`;
+    code += `    const transformOptions = ${JSON.stringify(options, null, 4)};\n\n`;
+    code += `    this.transformedUrl = this.filestackService.transform(this.handle, transformOptions);\n`;
+    code += `  }\n`;
+    code += `}\n`;
+
+    return code;
+}
+
+// Generate NodeJS transform code
+function generateNodeJSTransformCode(options) {
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+    let code = `// Node.js Server-side Filestack Transform\n`;
+    code += `const filestack = require('filestack-js');\n`;
+    code += `const express = require('express');\n`;
+    code += `const crypto = require('crypto');\n`;
+    code += `const app = express();\n\n`;
+
+    code += `const client = filestack.init('${apiKey}');\n`;
+    code += `const APP_SECRET = 'YOUR_APP_SECRET'; // Get this from Developer Portal\n\n`;
+
+    code += `// Generate security policy for transformations\n`;
+    code += `function generateSecurity() {\n`;
+    code += `  const policy = {\n`;
+    code += `    expiry: Math.floor(Date.now() / 1000) + 3600, // 1 hour from now\n`;
+    code += `    call: ['read', 'convert'],\n`;
+    code += `  };\n\n`;
+
+    code += `  // Base64URL encode the policy\n`;
+    code += `  const policyBase64 = Buffer.from(JSON.stringify(policy))\n`;
+    code += `    .toString('base64')\n`;
+    code += `    .replace(/\\+/g, '-')\n`;
+    code += `    .replace(/\\//g, '_')\n`;
+    code += `    .replace(/=/g, '');\n\n`;
+
+    code += `  // Create HMAC-SHA256 signature\n`;
+    code += `  const signature = crypto\n`;
+    code += `    .createHmac('sha256', APP_SECRET)\n`;
+    code += `    .update(policyBase64)\n`;
+    code += `    .digest('hex');\n\n`;
+
+    code += `  return { policy: policyBase64, signature };\n`;
+    code += `}\n\n`;
+
+    code += `// Transform endpoint\n`;
+    code += `app.get('/transform/:handle', (req, res) => {\n`;
+    code += `  try {\n`;
+    code += `    const handle = req.params.handle;\n`;
+    code += `    const transformOptions = ${JSON.stringify(options, null, 4)};\n\n`;
+
+    code += `    // Generate transform URL (client-side transforms don't need server processing)\n`;
+    code += `    const transformedUrl = client.transform(handle, transformOptions);\n`;
+    code += `    \n`;
+    code += `    // If security is enabled, you can generate secured transform URLs\n`;
+    code += `    const security = generateSecurity();\n`;
+    code += `    const securedUrl = \`\${transformedUrl}?policy=\${security.policy}&signature=\${security.signature}\`;\n\n`;
+
+    code += `    res.json({ \n`;
+    code += `      success: true, \n`;
+    code += `      url: transformedUrl,\n`;
+    code += `      securedUrl: securedUrl\n`;
+    code += `    });\n`;
+    code += `  } catch (error) {\n`;
+    code += `    res.status(500).json({ error: error.message });\n`;
+    code += `  }\n`;
+    code += `});\n\n`;
+
+    code += `app.listen(3000, () => {\n`;
+    code += `  console.log('Transform server running on port 3000');\n`;
+    code += `});\n`;
+
     return code;
 }
 
 // Generate URL transform code
 function generateURLTransformCode(options) {
-    let code = `// Filestack Transform URL\n`;
-    code += `const baseUrl = "https://cdn.filestackcontent.com/";\n`;
-    
-    if (options.handle) {
-        code += `const handle = "${options.handle}";\n`;
-    } else {
-        code += `const handle = "YOUR_FILE_HANDLE";\n`;
+    let code = `// Filestack Transform URL (CDN)\n`;
+    code += `const base = 'https://cdn.filestackcontent.com';\n`;
+    const handle = options.handle || 'YOUR_FILE_HANDLE';
+    // Build only documented-safe segments (resize, crop, rotate, flip, flop, plus a few effects)
+    const segments = [];
+    if (options.resize) {
+        const p = [];
+        if (options.resize.width) p.push(`width:${options.resize.width}`);
+        if (options.resize.height) p.push(`height:${options.resize.height}`);
+        if (options.resize.fit) p.push(`fit:${options.resize.fit}`);
+        segments.push(`resize=${p.join(',')}`);
     }
-    
-    code += `\nconst transformOptions = ${JSON.stringify(options, null, 2)};\n\n`;
-    
-    code += `// Build transform URL\n`;
-    code += `let transformUrl = \`\${baseUrl}\${handle}\`;\n`;
-    code += `\n// Add transformations\n`;
-    code += `Object.entries(transformOptions).forEach(([key, value]) => {\n`;
-    code += `  if (typeof value === 'object') {\n`;
-    code += `    transformUrl += \`/\${key}/\${JSON.stringify(value)}\`;\n`;
-    code += `  } else {\n`;
-    code += `    transformUrl += \`/\${key}/\${value}\`;\n`;
-    code += `  }\n`;
-    code += `});\n\n`;
-    
-    code += `console.log('Transform URL:', transformUrl);\n`;
-    
+    if (options.crop && options.crop.dim) {
+        segments.push(`crop=dim:[${options.crop.dim.join(',')}]`);
+    }
+    if (typeof options.rotate === 'number') {
+        segments.push(`rotate=deg:${options.rotate}`);
+    }
+    if (options.flip) segments.push('flip');
+    if (options.flop) segments.push('flop');
+    if (typeof options.blur === 'number') segments.push(`blur=amount:${options.blur}`);
+    if (typeof options.sepia === 'number') segments.push(`sepia=tone:${options.sepia}`);
+    if (options.negative) segments.push('negative');
+    if (typeof options.vignette === 'number') segments.push(`vignette=amount:${options.vignette}`);
+    if (options.shadow) {
+        const sp = [];
+        if (typeof options.shadow.opacity !== 'undefined') sp.push(`opacity:${options.shadow.opacity}`);
+        if (typeof options.shadow.x !== 'undefined' && typeof options.shadow.y !== 'undefined') sp.push(`vector:[${options.shadow.x},${options.shadow.y}]`);
+        if (sp.length) segments.push(`shadow=${sp.join(',')}`);
+    }
+    if (options.border && typeof options.border.width !== 'undefined') segments.push(`border=width:${options.border.width}`);
+    if (options.blackwhite && typeof options.blackwhite === 'object' && typeof options.blackwhite.threshold !== 'undefined') {
+        segments.push(`blackwhite=threshold:${options.blackwhite.threshold}`);
+    }
+    if (options.partial_blur && Array.isArray(options.partial_blur.objects)) segments.push(`partial_blur=objects:[${options.partial_blur.objects.map(o => `[${o.join(',')}]`).join(',')}]`);
+    if (options.partial_pixelate && Array.isArray(options.partial_pixelate.objects)) segments.push(`partial_pixelate=objects:[${options.partial_pixelate.objects.map(o => `[${o.join(',')}]`).join(',')}]`);
+    if (options.smart_crop && options.smart_crop.width && options.smart_crop.height) {
+        const sp = [`width:${options.smart_crop.width}`, `height:${options.smart_crop.height}`];
+        if (options.smart_crop.mode) sp.push(`mode:${options.smart_crop.mode}`);
+        segments.push(`smart_crop=${sp.join(',')}`);
+    }
+    if (options.pdfconvert || options.pdfinfo || (options.output && options.output.format === 'pdf')) {
+        // Per docs, output=f:pdf should precede pdf tasks
+        segments.unshift('output=f:pdf');
+        if (options.pdfinfo) {
+            // Minimal example from docs
+            segments.push('pdfinfo=colorinfo:true');
+        }
+        if (options.pdfconvert) {
+            const pp = [];
+            if (options.pdfconvert.pageorientation) pp.push(`pageorientation:${options.pdfconvert.pageorientation}`);
+            if (options.pdfconvert.pageformat) pp.push(`pageformat:${options.pdfconvert.pageformat}`);
+            if (Array.isArray(options.pdfconvert.pages)) pp.push(`pages:[${options.pdfconvert.pages.join(',')}]`);
+            if (pp.length) segments.push(`pdfconvert=${pp.join(',')}`);
+        }
+    }
+    // Compose URL
+    code += `const url = base + '/${segments.join('/')}/${handle}';\n`;
+    code += `console.log('Transform URL:', url);\n`;
     return code;
 }
 
@@ -858,14 +1890,14 @@ function updateCodeDisplay(code, language) {
     const codeElement = document.getElementById('generatedCode');
     if (codeElement) {
         codeElement.textContent = code;
-        
+
         // Set the language class for syntax highlighting
-        const langClass = language === 'javascript' ? 'javascript' : 
-                         language === 'react' ? 'jsx' : 
-                         language === 'vue' ? 'vue' : 
-                         language === 'url' ? 'javascript' : 'javascript';
+        const langClass = language === 'javascript' ? 'javascript' :
+            language === 'react' ? 'jsx' :
+                language === 'vue' ? 'vue' :
+                    language === 'url' ? 'javascript' : 'javascript';
         codeElement.className = `language-${langClass}`;
-        
+
         // Re-highlight syntax
         if (typeof Prism !== 'undefined') {
             Prism.highlightElement(codeElement);
@@ -885,6 +1917,469 @@ function copyCode() {
         });
     }
 }
+
+// ===== Missing generators to avoid ReferenceError and enable code output =====
+
+// Display message for workflow-only sections (no code generation)
+function showWorkflowOnlyMessage(sectionName) {
+    const codeElement = document.getElementById('generatedCode');
+    if (!codeElement) return;
+    const pretty = {
+        'video-tagging': 'Video Tagging',
+        'video-sfw': 'Video SFW',
+        'phishing': 'Phishing Detection',
+        'virus': 'Virus Detection'
+    };
+    const title = pretty[sectionName] || 'This feature';
+    const msg = `// ${title} is workflow-only in Filestack.\n// No client-side code snippet is generated here.\n// Use Workflows in the Developer Portal and call run_workflow + workflow_status.`;
+    updateCodeDisplay(msg, 'javascript');
+}
+
+// Caption (Processing API: caption)
+function generateCaptionCode() {
+    // Get input type and values
+    const inputType = document.querySelector('input[name="captionInputType"]:checked')?.value || 'handle';
+    const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_FILESTACK_API_KEY';
+
+    let source = '';
+    let needsApiKey = false;
+
+    // Determine source based on input type
+    switch (inputType) {
+        case 'handle':
+            source = document.getElementById('captionHandle')?.value || 'YOUR_FILE_HANDLE';
+            break;
+        case 'external':
+            source = document.getElementById('captionExternalUrl')?.value || 'https://example.com/image.jpg';
+            needsApiKey = true;
+            break;
+        case 'storage':
+            const alias = document.getElementById('captionStorageAlias')?.value || 'STORAGE_ALIAS';
+            const path = document.getElementById('captionStoragePath')?.value || '/path/to/image.jpg';
+            source = `src://${alias}${path}`;
+            needsApiKey = true;
+            break;
+    }
+
+    // Build transformation chain
+    const enableChaining = document.getElementById('captionEnableChaining')?.checked || false;
+    let transformChain = '';
+
+    if (enableChaining) {
+        const preSteps = document.querySelectorAll('#captionPreChainBuilder .chain-step');
+        const preTransforms = [];
+
+        preSteps.forEach(step => {
+            const operation = step.querySelector('.chain-operation').value;
+            const params = step.querySelector('.chain-params').value;
+            if (operation) {
+                if (params) {
+                    preTransforms.push(`${operation}=${params}`);
+                } else {
+                    preTransforms.push(operation);
+                }
+            }
+        });
+
+        if (preTransforms.length > 0) {
+            transformChain = preTransforms.join('/') + '/';
+        }
+    }
+
+    // Build security part
+    const sec = `security=p:${policy},s:${signature}/`;
+
+    // Build final URL
+    let url;
+    if (needsApiKey) {
+        url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}caption/${source}`;
+    } else {
+        url = `https://cdn.filestackcontent.com/${sec}${transformChain}caption/${source}`;
+    }
+
+    const tab = getCurrentTab();
+    let code = '';
+
+    if (tab === 'javascript') {
+        code = `// Caption generation (Processing API)\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('Caption:', data))\n  .catch(err => console.error('Caption failed:', err));`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before caption generation`;
+        }
+
+        code += `\n\n// Usage Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/caption/<HANDLE>\n// With resize: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/resize=h:1000/caption/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/caption/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/caption/src://<ALIAS>/<PATH>`;
+
+    } else if (tab === 'react') {
+        code = `const Caption = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('Caption:', data);\n  };\n  return (<button onClick={run}>Generate Caption</button>);\n};`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before caption generation`;
+        }
+
+    } else if (tab === 'vue') {
+        code = `<template><button @click="run">Generate Caption</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('Caption:', await r.json()); } } }</script>`;
+
+        if (transformChain) {
+            code += `\n\n<!-- This URL includes pre-processing transformations before caption generation -->`;
+        }
+
+    } else if (tab === 'url') {
+        code = `// Caption URL\nconst url = '${url}';`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before caption generation`;
+        }
+
+        code += `\n\n// URL Format Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/caption/<HANDLE>\n// With resize: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/resize=h:1000/caption/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/caption/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/caption/src://<ALIAS>/<PATH>`;
+    }
+
+    updateCodeDisplay(code, tab);
+}
+
+// Tagging
+function generateTaggingCode() {
+    // Get input type and values
+    const inputType = document.querySelector('input[name="taggingInputType"]:checked')?.value || 'handle';
+    const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_FILESTACK_API_KEY';
+
+    let source = '';
+    let needsApiKey = false;
+
+    // Determine source based on input type
+    switch (inputType) {
+        case 'handle':
+            source = document.getElementById('taggingHandle')?.value || 'YOUR_FILE_HANDLE';
+            break;
+        case 'external':
+            source = document.getElementById('taggingExternalUrl')?.value || 'https://example.com/image.jpg';
+            needsApiKey = true;
+            break;
+        case 'storage':
+            const alias = document.getElementById('taggingStorageAlias')?.value || 'STORAGE_ALIAS';
+            const path = document.getElementById('taggingStoragePath')?.value || '/path/to/image.jpg';
+            source = `src://${alias}${path}`;
+            needsApiKey = true;
+            break;
+    }
+
+    // Build transformation chain
+    const enableChaining = document.getElementById('taggingEnableChaining')?.checked || false;
+    let transformChain = '';
+
+    if (enableChaining) {
+        const preSteps = document.querySelectorAll('#taggingPreChainBuilder .chain-step');
+        const preTransforms = [];
+
+        preSteps.forEach(step => {
+            const operation = step.querySelector('.chain-operation').value;
+            const params = step.querySelector('.chain-params').value;
+            if (operation) {
+                if (params) {
+                    preTransforms.push(`${operation}=${params}`);
+                } else {
+                    preTransforms.push(operation);
+                }
+            }
+        });
+
+        if (preTransforms.length > 0) {
+            transformChain = preTransforms.join('/') + '/';
+        }
+    }
+
+    // Build security part
+    const sec = `security=p:${policy},s:${signature}/`;
+
+    // Build final URL
+    let url;
+    if (needsApiKey) {
+        url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}tags=version:2/${source}`;
+    } else {
+        url = `https://cdn.filestackcontent.com/${sec}${transformChain}tags=version:2/${source}`;
+    }
+
+    const tab = getCurrentTab();
+    let code = '';
+
+    if (tab === 'javascript') {
+        code = `// Image tagging (Processing API)\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('Tags:', data))\n  .catch(err => console.error('Tagging failed:', err));`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before tagging`;
+        }
+
+        code += `\n\n// Usage Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/tags=version:2/<HANDLE>\n// With resize: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/resize=h:2000/tags=version:2/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/tags=version:2/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/tags=version:2/src://<ALIAS>/<PATH>`;
+
+    } else if (tab === 'react') {
+        code = `const Tagging = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('Tags:', data);\n  };\n  return (<button onClick={run}>Tag Image</button>);\n};`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before tagging`;
+        }
+
+    } else if (tab === 'vue') {
+        code = `<template><button @click="run">Tag Image</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('Tags:', await r.json()); } } }</script>`;
+
+        if (transformChain) {
+            code += `\n\n<!-- This URL includes pre-processing transformations before tagging -->`;
+        }
+
+    } else if (tab === 'url') {
+        code = `// Tagging URL\nconst url = '${url}';`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before tagging`;
+        }
+
+        code += `\n\n// URL Format Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/tags=version:2/<HANDLE>\n// With resize: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/resize=h:2000/tags=version:2/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/tags=version:2/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/tags=version:2/src://<ALIAS>/<PATH>`;
+    }
+
+    updateCodeDisplay(code, tab);
+}
+
+// OCR
+function generateOcrCode() {
+    // Get input type and values
+    const inputType = document.querySelector('input[name="ocrInputType"]:checked')?.value || 'handle';
+    const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_FILESTACK_API_KEY';
+
+    let source = '';
+    let needsApiKey = false;
+
+    // Determine source based on input type
+    switch (inputType) {
+        case 'handle':
+            source = document.getElementById('ocrHandle')?.value || 'YOUR_FILE_HANDLE';
+            break;
+        case 'external':
+            source = document.getElementById('ocrExternalUrl')?.value || 'https://example.com/document.pdf';
+            needsApiKey = true;
+            break;
+        case 'storage':
+            const alias = document.getElementById('ocrStorageAlias')?.value || 'STORAGE_ALIAS';
+            const path = document.getElementById('ocrStoragePath')?.value || '/path/to/document.pdf';
+            source = `src://${alias}${path}`;
+            needsApiKey = true;
+            break;
+    }
+
+    // Build transformation chain
+    const enableChaining = document.getElementById('ocrEnableChaining')?.checked || false;
+    let transformChain = '';
+
+    if (enableChaining) {
+        const preSteps = document.querySelectorAll('#ocrPreChainBuilder .chain-step');
+        const preTransforms = [];
+
+        preSteps.forEach(step => {
+            const operation = step.querySelector('.chain-operation').value;
+            const params = step.querySelector('.chain-params').value;
+            if (operation) {
+                if (params) {
+                    preTransforms.push(`${operation}=${params}`);
+                } else {
+                    preTransforms.push(operation);
+                }
+            }
+        });
+
+        if (preTransforms.length > 0) {
+            transformChain = preTransforms.join('/') + '/';
+        }
+    }
+
+    // OCR specific options
+    const withDoc = !!document.getElementById('ocrWithDocDetection')?.checked;
+    const coords = !!document.getElementById('ocrCoordinates')?.checked;
+    const preprocess = !!document.getElementById('ocrPreprocess')?.checked;
+    const docPart = withDoc ? `doc_detection=coords:${coords ? 'true' : 'false'},preprocess:${preprocess ? 'true' : 'false'}/` : '';
+
+    // Build security part
+    const sec = `security=p:${policy},s:${signature}/`;
+
+    // Build final URL
+    let url;
+    if (needsApiKey) {
+        url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}${docPart}ocr/${source}`;
+    } else {
+        url = `https://cdn.filestackcontent.com/${sec}${transformChain}${docPart}ocr/${source}`;
+    }
+
+    const tab = getCurrentTab();
+    let code = '';
+
+    if (tab === 'javascript') {
+        code = `// OCR via Processing API\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('OCR:', data))\n  .catch(err => console.error('OCR failed:', err));`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before OCR`;
+        }
+
+        code += `\n\n// Usage Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/ocr/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/ocr/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/ocr/src://<ALIAS>/<PATH>`;
+
+    } else if (tab === 'react') {
+        code = `const OCR = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('OCR:', data);\n  };\n  return (<button onClick={run}>Run OCR</button>);\n};`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before OCR`;
+        }
+
+    } else if (tab === 'vue') {
+        code = `<template><button @click="run">Run OCR</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('OCR:', await r.json()); } } }</script>`;
+
+        if (transformChain) {
+            code += `\n\n<!-- This URL includes pre-processing transformations before OCR -->`;
+        }
+
+    } else if (tab === 'url') {
+        code = `// OCR URL\nconst url = '${url}';`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before OCR`;
+        }
+
+        code += `\n\n// URL Format Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/ocr/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/ocr/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/ocr/src://<ALIAS>/<PATH>`;
+    }
+
+    updateCodeDisplay(code, tab);
+}
+
+// Faces (hoisted global)
+function generateFacesCode() {
+    const values = (function collectFacesOptions() {
+        const handle = document.getElementById('facesHandle')?.value || 'YOUR_FILE_HANDLE';
+        const minSize = validateNumberInput('facesMinSize');
+        const maxSize = validateNumberInput('facesMaxSize');
+        const exportOption = !!document.getElementById('facesExport')?.checked;
+        const parts = [];
+        if (minSize !== null) parts.push(`minsize:${minSize}`);
+        if (maxSize !== null) parts.push(`maxsize:${maxSize}`);
+        if (exportOption) parts.push('export:true');
+        return { handle, params: parts.join(',') };
+    })();
+    const tab = getCurrentTab();
+    const url = `https://cdn.filestackcontent.com/detect_faces${values.params ? `=${values.params}` : ''}/${values.handle}`;
+    let code = '';
+    if (tab === 'javascript') {
+        code = `// Face detection\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('Faces:', data))\n  .catch(err => console.error('Face detection failed:', err));`;
+    } else if (tab === 'react') {
+        code = `const Faces = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('Faces:', data);\n  };\n  return (<button onClick={run}>Detect Faces</button>);\n};`;
+    } else if (tab === 'vue') {
+        code = `<template><button @click=\"run\">Detect Faces</button></template>\n<script>\nexport default {\n  methods:{\n    async run(){\n      const res = await fetch('${url}');\n      const data = await res.json();\n      console.log('Faces:', data);\n    }\n  }\n}\n</script>`;
+    } else if (tab === 'url') {
+        code = `// Face detection URL\nconst url = '${url}';`;
+    }
+    updateCodeDisplay(code, tab);
+}
+
+// Security
+function generateSecurityCode() {
+    const policy = document.getElementById('securityPolicy')?.value || 'BASE64_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'SIGNATURE';
+    const tab = getCurrentTab();
+    let code = '';
+    if (tab === 'javascript') {
+        code = `// Initialize Filestack with security\nconst client = filestack.init('YOUR_APIKEY', {\n  security: { policy: '${policy}', signature: '${signature}' }\n});`;
+    } else if (tab === 'react') {
+        code = `import { PickerOverlay } from 'filestack-react';\n\n<PickerOverlay apikey={"YOUR_APIKEY"} pickerOptions={{ security: { policy: '${policy}', signature: '${signature}' } }} />`;
+    } else if (tab === 'vue') {
+        code = `<picker-overlay :apikey=\"'YOUR_APIKEY'\" :pickerOptions=\"{ security: { policy: '${policy}', signature: '${signature}' } }\" />`;
+    } else if (tab === 'url') {
+        code = `// URL usage\nconst url = 'https://cdn.filestackcontent.com/security=p:${policy},s:${signature}/sfw/YOUR_FILE_HANDLE';`;
+    }
+    updateCodeDisplay(code, tab);
+}
+
+// Store
+function generateStoreCode() {
+    const location = document.getElementById('storeLocation')?.value || 's3';
+    const path = document.getElementById('storePath')?.value || '/uploads/';
+    const access = document.getElementById('storeAccess')?.value || 'public';
+    const workflows = !!document.getElementById('storeWorkflows')?.checked;
+    const metadata = !!document.getElementById('storeMetadata')?.checked;
+    const versioning = !!document.getElementById('storeVersioning')?.checked;
+    const storeTo = { location, path, access }; // simplified
+    const tab = getCurrentTab();
+    let code = '';
+    if (tab === 'javascript') {
+        code = `const client = filestack.init('YOUR_APIKEY');\nconst picker = client.picker({ storeTo: ${JSON.stringify(storeTo, null, 2)} });\npicker.open();`;
+    } else if (tab === 'react') {
+        code = `import { PickerOverlay } from 'filestack-react';\n\n<PickerOverlay apikey={"YOUR_APIKEY"} pickerOptions={{ storeTo: ${JSON.stringify(storeTo)} }} />`;
+    } else if (tab === 'vue') {
+        code = `<picker-overlay :apikey=\"'YOUR_APIKEY'\" :pickerOptions=\"{ storeTo: ${JSON.stringify(storeTo)} }\" />`;
+    } else if (tab === 'url') {
+        code = `// StoreTo is configured via picker options, not direct URL.`;
+    }
+    updateCodeDisplay(code, tab);
+}
+
+// Metadata
+function generateMetadataCode() {
+    const handle = document.getElementById('metadataHandle')?.value || 'YOUR_FILE_HANDLE';
+    const policy = document.getElementById('securityPolicy')?.value || '';
+    const signature = document.getElementById('securitySignature')?.value || '';
+    const qs = policy && signature ? `?policy=${encodeURIComponent(policy)}&signature=${encodeURIComponent(signature)}` : '';
+    const url = `https://www.filestackapi.com/api/file/${handle}/metadata${qs}`;
+    const tab = getCurrentTab();
+    let code = '';
+    if (tab === 'javascript') {
+        code = `// File metadata (File API)\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('Metadata:', data))\n  .catch(err => console.error('Metadata failed:', err));`;
+    } else if (tab === 'react') {
+        code = `const Metadata = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('Metadata:', data);\n  };\n  return (<button onClick={run}>Get Metadata</button>);\n};`;
+    } else if (tab === 'vue') {
+        code = `<template><button @click=\"run\">Get Metadata</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('Metadata:', await r.json()); } } }</script>`;
+    } else if (tab === 'url') {
+        code = `// File API metadata URL\nconst url = '${url}';`;
+    }
+    updateCodeDisplay(code, tab);
+}
+
+// Drag & Drop (Drop Pane via Picker)
+function generateDndCode() {
+    const accept = document.getElementById('dndAccept')?.value || '';
+    const maxSize = validateIntegerInput('dndMaxSize');
+    const maxFiles = validateIntegerInput('dndMaxFiles');
+    const failOver = !!document.getElementById('dndFailOverMaxFiles')?.checked;
+    const container = document.getElementById('dndContainer')?.value || '.drop-container';
+    const policy = document.getElementById('dndPolicy')?.value || '';
+    const signature = document.getElementById('dndSignature')?.value || '';
+    const cname = document.getElementById('dndCname')?.value || '';
+    const config = {};
+    if (accept) config.accept = accept.split(',').map(s => s.trim());
+    if (maxSize !== null) config.maxSize = maxSize;
+    if (maxFiles !== null) config.maxFiles = maxFiles;
+    if (failOver) config.failOverMaxFiles = true;
+    const sdkConfigParts = [];
+    if (cname) sdkConfigParts.push(`cname: '${cname}'`);
+    if (policy && signature) sdkConfigParts.push(`security: { policy: '${policy}', signature: '${signature}' }`);
+    const sdkConfig = sdkConfigParts.length ? `const sdkConfig = { ${sdkConfigParts.join(', ')} }\n\n` : '';
+    const tab = getCurrentTab();
+    let code = '';
+    const base = `${sdkConfig}const filestackDnDInstance = new filestackDnD.init('YOUR_APIKEY', document.querySelector('${container}')${Object.keys(config).length ? `, ${JSON.stringify(config, null, 2)}` : ''}${sdkConfigParts.length ? `, null, null, sdkConfig` : ''});`;
+    if (tab === 'javascript') {
+        code = base;
+    } else if (tab === 'react') {
+        code = `// Include filestack-drag-and-drop script in index.html\n// Then use in componentDidMount / useEffect:\n${base}`;
+    } else if (tab === 'vue') {
+        code = `<!-- Include filestack-drag-and-drop script in index.html -->\n<script>\nexport default {\n  mounted(){\n    ${base}\n  }\n}\n</script>`;
+    } else if (tab === 'url') {
+        code = `// Drag & Drop is a JS library initialization, not a URL.`;
+    }
+    updateCodeDisplay(code, tab);
+}
+
+// Video Tagging (Workflow-only)
+// (removed) Workflow-only: no code generation for Video Tagging
+
+// Video SFW (Workflow-only)
+// (removed) Workflow-only: no code generation for Video SFW
+
 
 // Run code
 function runCode() {
@@ -910,26 +2405,28 @@ function runCode() {
         testStore();
     } else if (currentSection === 'metadata') {
         testMetadata();
+    } else if (currentSection === 'dnd') {
+        testDnd();
     }
 }
 
 // Test picker
 function testPicker() {
     const options = collectPickerOptions();
-    
+
     if (!filestackClient) {
         showNotification('Filestack client not initialized. Please check your API key.', 'error');
         return;
     }
-    
+
     try {
         if (currentPicker) {
             currentPicker.close();
         }
-        
+
         currentPicker = filestackClient.picker(options);
         currentPicker.open();
-        
+
         showNotification('Picker opened successfully!', 'success');
     } catch (error) {
         showNotification('Error opening picker: ' + error.message, 'error');
@@ -940,31 +2437,31 @@ function testPicker() {
 function previewTransform() {
     const options = collectTransformOptions();
     const handle = document.getElementById('transformHandle').value;
-    
+
     if (!handle) {
         showNotification('Please enter a file handle or URL', 'error');
         return;
     }
-    
+
     if (!filestackClient) {
         showNotification('Filestack client not initialized. Please check your API key.', 'error');
         return;
     }
-    
+
     try {
         const transformedUrl = filestackClient.transform(handle, options);
-        
+
         // Show preview modal
         const modal = document.getElementById('previewModal');
         const originalImage = document.getElementById('originalImage');
         const transformedImage = document.getElementById('transformedImage');
-        
+
         if (modal && originalImage && transformedImage) {
             originalImage.src = handle.startsWith('http') ? handle : `https://cdn.filestackcontent.com/${handle}`;
             transformedImage.src = transformedUrl;
             modal.classList.add('active');
         }
-        
+
         showNotification('Transform preview generated!', 'success');
     } catch (error) {
         showNotification('Error generating transform: ' + error.message, 'error');
@@ -979,13 +2476,6 @@ function closePreviewModal() {
     }
 }
 
-// Generate API key (demo function)
-function generateApiKey() {
-    const apiKeyInput = document.getElementById('globalApikey');
-    const demoKey = 'demo_' + Math.random().toString(36).substr(2, 9);
-    apiKeyInput.value = demoKey;
-    showNotification('Demo API key generated!', 'success');
-}
 
 // Show notification
 function showNotification(message, type = 'info') {
@@ -993,7 +2483,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
+
     // Add styles
     notification.style.cssText = `
         position: fixed;
@@ -1007,7 +2497,7 @@ function showNotification(message, type = 'info') {
         animation: slideIn 0.3s ease;
         max-width: 300px;
     `;
-    
+
     if (type === 'success') {
         notification.style.background = '#28a745';
     } else if (type === 'error') {
@@ -1015,10 +2505,10 @@ function showNotification(message, type = 'info') {
     } else {
         notification.style.background = '#EF4A26';
     }
-    
+
     // Add to page
     document.body.appendChild(notification);
-    
+
     // Remove after 3 seconds
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease';
@@ -1071,7 +2561,7 @@ function debounce(func, wait) {
 }
 
 // Close modal when clicking outside
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const modal = document.getElementById('previewModal');
     if (modal && e.target === modal) {
         closePreviewModal();
@@ -1079,7 +2569,7 @@ document.addEventListener('click', function(e) {
 });
 
 // Close modal with Escape key
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         closePreviewModal();
     }
@@ -1091,7 +2581,7 @@ document.addEventListener('keydown', function(e) {
 function generateUploadCode() {
     const options = collectUploadOptions();
     let code = '';
-    
+
     switch (getCurrentTab()) {
         case 'javascript':
             code = generateJavaScriptUploadCode(options);
@@ -1106,132 +2596,44 @@ function generateUploadCode() {
             code = generateURLUploadCode(options);
             break;
     }
-    
+
     updateCodeDisplay(code, getCurrentTab());
 }
 
 function collectUploadOptions() {
     const options = {};
-    
+
     const uploadPath = document.getElementById('uploadPath').value;
     if (uploadPath) {
         options.path = uploadPath;
     }
-    
+
     const uploadAccess = document.getElementById('uploadAccess').value;
     if (uploadAccess !== 'public') {
         options.access = uploadAccess;
     }
-    
-    if (document.getElementById('uploadMetadata').checked) {
-        options.metadata = true;
-    }
-    
+
     if (document.getElementById('uploadWorkflows').checked) {
         options.workflows = true;
     }
-    
-    if (document.getElementById('uploadIntelligence').checked) {
-        options.intelligence = true;
-    }
-    
+
     return options;
 }
 
 function generateJavaScriptUploadCode(options) {
-    return `// Upload file to Filestack
-const file = document.getElementById('uploadFile').files[0];
-if (!file) {
-    console.error('Please select a file');
-    return;
-}
-
-const client = filestack.init('YOUR_APIKEY');
-
-client.upload(file, ${JSON.stringify(options, null, 2)})
-    .then(response => {
-        console.log('Upload successful:', response);
-        // Handle successful upload
-    })
-    .catch(error => {
-        console.error('Upload failed:', error);
-        // Handle upload error
-    });`;
+    return `// Upload file to Filestack\nconst file = document.getElementById('uploadFile').files[0];\nif (!file) {\n    console.error('Please select a file');\n    return;\n}\n\nconst client = filestack.init('YOUR_APIKEY');\n\nclient.upload(file, ${JSON.stringify(options, null, 2)})\n    .then(response => {\n        console.log('Upload successful:', response);\n        // Handle successful upload\n    })\n    .catch(error => {\n        console.error('Upload failed:', error);\n        // Handle upload error\n    });`;
 }
 
 function generateReactUploadCode(options) {
-    return `import { filestack } from 'filestack-react';
-
-const UploadComponent = () => {
-    const client = filestack.init('YOUR_APIKEY');
-    
-    const handleUpload = async (file) => {
-        try {
-            const response = await client.upload(file, ${JSON.stringify(options, null, 2)});
-            console.log('Upload successful:', response);
-            // Handle successful upload
-        } catch (error) {
-            console.error('Upload failed:', error);
-            // Handle upload error
-        }
-    };
-    
-    return (
-        <input 
-            type="file" 
-            onChange={(e) => handleUpload(e.target.files[0])}
-            accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
-        />
-    );
-};`;
+    return `import { filestack } from 'filestack-react';\n\nconst UploadComponent = () => {\n    const client = filestack.init('YOUR_APIKEY');\n    \n    const handleUpload = async (file) => {\n        try {\n            const response = await client.upload(file, ${JSON.stringify(options, null, 2)});\n            console.log('Upload successful:', response);\n            // Handle successful upload\n        } catch (error) {\n            console.error('Upload failed:', error);\n            // Handle upload error\n        }\n    };\n    \n    return (\n        <input \n            type="file" \n            onChange={(e) => handleUpload(e.target.files[0])}\n            accept="image/*,video/*,audio/*,.pdf,.doc,.docx"\n        />\n    );\n};`;
 }
 
 function generateVueUploadCode(options) {
-    return `<template>
-    <input 
-        type="file" 
-        @change="handleUpload"
-        accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
-    />
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async handleUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const client = filestack.init('YOUR_APIKEY');
-            
-            try {
-                const response = await client.upload(file, ${JSON.stringify(options, null, 2)});
-                console.log('Upload successful:', response);
-                // Handle successful upload
-            } catch (error) {
-                console.error('Upload failed:', error);
-                // Handle upload error
-            }
-        }
-    }
-};
-</script>`;
+    return `<template>\n    <input \n        type="file" \n        @change="handleUpload"\n        accept="image/*,video/*,audio/*,.pdf,.doc,.docx"\n    />\n</template>\n\n<script>\nimport { filestack } from 'filestack-js';\n\nexport default {\n    methods: {\n        async handleUpload(event) {\n            const file = event.target.files[0];\n            if (!file) return;\n            \n            const client = filestack.init('YOUR_APIKEY');\n            \n            try {\n                const response = await client.upload(file, ${JSON.stringify(options, null, 2)});\n                console.log('Upload successful:', response);\n                // Handle successful upload\n            } catch (error) {\n                console.error('Upload failed:', error);\n                // Handle upload error\n            }\n        }\n    }\n};\n</script>`;
 }
 
 function generateURLUploadCode(options) {
-    return `// Direct upload URL
-const uploadUrl = 'https://www.filestackapi.com/api/store/S3?key=YOUR_APIKEY${Object.entries(options).map(([key, value]) => `&${key}=${encodeURIComponent(value)}`).join('')}';
-
-// Use with fetch or XMLHttpRequest
-fetch(uploadUrl, {
-    method: 'POST',
-    body: formData
-})
-.then(response => response.json())
-.then(data => console.log('Upload successful:', data))
-.catch(error => console.error('Upload failed:', error));`;
+    return `// Direct upload URL\nconst uploadUrl = 'https://www.filestackapi.com/api/store/S3?key=YOUR_APIKEY${Object.entries(options).map(([key, value]) => `&${key}=${encodeURIComponent(value)}`).join('')}';\n\n// Use with fetch or XMLHttpRequest\nfetch(uploadUrl, {\n    method: 'POST',\n    body: formData\n})\n.then(response => response.json())\n.then(data => console.log('Upload successful:', data))\n.catch(error => console.error('Upload failed:', error));`;
 }
 
 function testUpload() {
@@ -1240,7 +2642,7 @@ function testUpload() {
         showNotification('Please select a file to upload', 'error');
         return;
     }
-    
+
     showNotification('Upload functionality would be tested here with a real API key', 'info');
 }
 
@@ -1248,7 +2650,7 @@ function testUpload() {
 function generateDownloadCode() {
     const options = collectDownloadOptions();
     let code = '';
-    
+
     switch (getCurrentTab()) {
         case 'javascript':
             code = generateJavaScriptDownloadCode(options);
@@ -1263,1455 +2665,984 @@ function generateDownloadCode() {
             code = generateURLDownloadCode(options);
             break;
     }
-    
+
     updateCodeDisplay(code, getCurrentTab());
 }
 
 function collectDownloadOptions() {
     const options = {};
-    
+
     const handle = document.getElementById('downloadHandle').value;
-    
+
     const filename = document.getElementById('downloadFilename').value;
     if (filename) {
         options.filename = filename;
     }
-    
+
     const format = document.getElementById('downloadFormat').value;
     if (format !== 'original') {
         options.format = format;
     }
-    
-    if (document.getElementById('downloadTransform').checked) {
-        options.transform = true;
-    }
-    
-    if (document.getElementById('downloadMetadata').checked) {
-        options.metadata = true;
-    }
-    
-    if (document.getElementById('downloadSecure').checked) {
-        options.secure = true;
-    }
-    
+
     return { ...options, handle: handle || 'YOUR_FILE_HANDLE' };
 }
 
 function generateJavaScriptDownloadCode(options) {
     const { handle, ...downloadOptions } = options;
-    return `// Download file from Filestack
-const client = filestack.init('YOUR_APIKEY');
-
-client.download('${handle}', ${JSON.stringify(downloadOptions, null, 2)})
-    .then(response => {
-        console.log('Download successful:', response);
-        // Handle successful download
-    })
-    .catch(error => {
-        console.error('Download failed:', error);
-        // Handle download error
-    });`;
+    const params = Object.entries(downloadOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+    const url = `https://cdn.filestackcontent.com/${handle}${params ? '?' + params : ''}`;
+    const fname = downloadOptions.filename || 'download';
+    return `// Download via CDN URL\nconst link = document.createElement('a');\nlink.href = '${url}';\nlink.download = '${fname}';\ndocument.body.appendChild(link);\nlink.click();\nlink.remove();`;
 }
 
 function generateReactDownloadCode(options) {
     const { handle, ...downloadOptions } = options;
-    return `import { filestack } from 'filestack-react';
-
-const DownloadComponent = () => {
-    const client = filestack.init('YOUR_APIKEY');
-    
-    const handleDownload = async () => {
-        try {
-            const response = await client.download('${handle}', ${JSON.stringify(downloadOptions, null, 2)});
-            console.log('Download successful:', response);
-            // Handle successful download
-        } catch (error) {
-            console.error('Download failed:', error);
-            // Handle download error
-        }
-    };
-    
-    return (
-        <button onClick={handleDownload}>
-            Download File
-        </button>
-    );
-};`;
+    const params = Object.entries(downloadOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+    const url = `https://cdn.filestackcontent.com/${handle}${params ? '?' + params : ''}`;
+    const fname = downloadOptions.filename || 'download';
+    return `const DownloadComponent = () => {\n  const handleDownload = () => {\n    const link = document.createElement('a');\n    link.href = '${url}';\n    link.download = '${fname}';\n    document.body.appendChild(link);\n    link.click();\n    link.remove();\n  };\n  return (<button onClick={handleDownload}>Download File</button>);\n};`;
 }
 
 function generateVueDownloadCode(options) {
     const { handle, ...downloadOptions } = options;
-    return `<template>
-    <button @click="handleDownload">Download File</button>
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async handleDownload() {
-            const client = filestack.init('YOUR_APIKEY');
-            
-            try {
-                const response = await client.download('${handle}', ${JSON.stringify(downloadOptions, null, 2)});
-                console.log('Download successful:', response);
-                // Handle successful download
-            } catch (error) {
-                console.error('Download failed:', error);
-                // Handle download error
-            }
-        }
-    }
-};
-</script>`;
+    const params = Object.entries(downloadOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+    const url = `https://cdn.filestackcontent.com/${handle}${params ? '?' + params : ''}`;
+    const fname = downloadOptions.filename || 'download';
+    return `<template>\n  <button @click=\"handleDownload\">Download File</button>\n</template>\n\n<script>\nexport default {\n  methods: {\n    handleDownload(){\n      const link = document.createElement('a');\n      link.href = '${url}';\n      link.download = '${fname}';\n      document.body.appendChild(link);\n      link.click();\n      link.remove();\n    }\n  }\n};\n</script>`;
 }
+
+// Phishing (Workflow-only)
+// (removed) Workflow-only: no code generation for Phishing Detection
+
+// Virus (Workflow-only)
+// (removed) Workflow-only: no code generation for Virus Detection
 
 function generateURLDownloadCode(options) {
     const { handle, ...downloadOptions } = options;
     const params = Object.entries(downloadOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-    return `// Direct download URL
-const downloadUrl = 'https://cdn.filestackcontent.com/${handle}${params ? '?' + params : ''}';
-
-// Use with fetch or create download link
-const link = document.createElement('a');
-link.href = downloadUrl;
-link.download = '${downloadOptions.filename || 'download'}';
-link.click();`;
+    return `// Direct download URL\nconst downloadUrl = 'https://cdn.filestackcontent.com/${handle}${params ? '?' + params : ''}';\n\n// Use with fetch or create download link\nconst link = document.createElement('a');\nlink.href = downloadUrl;\nlink.download = '${downloadOptions.filename || 'download'}';\nlink.click();`;
 }
 
 function testDownload() {
-    const handle = document.getElementById('downloadHandle').value;
+    const handle = document.getElementById('downloadHandle');
     if (!handle) {
         showNotification('Please enter a file handle or URL', 'error');
         return;
     }
-    
+
     showNotification('Download functionality would be tested here with a real API key', 'info');
 }
 
 // Intelligence Functions
 function generateSfwCode() {
-    const options = collectSfwOptions();
-    let code = '';
-    
-    switch (getCurrentTab()) {
-        case 'javascript':
-            code = generateJavaScriptSfwCode(options);
+    // Get input type and values
+    const inputType = document.querySelector('input[name="sfwInputType"]:checked')?.value || 'handle';
+    const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_FILESTACK_API_KEY';
+
+    let source = '';
+    let needsApiKey = false;
+
+    // Determine source based on input type
+    switch (inputType) {
+        case 'handle':
+            source = document.getElementById('sfwHandle')?.value || 'YOUR_FILE_HANDLE';
             break;
-        case 'react':
-            code = generateReactSfwCode(options);
+        case 'external':
+            source = document.getElementById('sfwExternalUrl')?.value || 'https://example.com/image.jpg';
+            needsApiKey = true;
             break;
-        case 'vue':
-            code = generateVueSfwCode(options);
-            break;
-        case 'url':
-            code = generateURLSfwCode(options);
+        case 'storage':
+            const alias = document.getElementById('sfwStorageAlias')?.value || 'STORAGE_ALIAS';
+            const path = document.getElementById('sfwStoragePath')?.value || '/path/to/image.jpg';
+            source = `src://${alias}${path}`;
+            needsApiKey = true;
             break;
     }
-    
-    updateCodeDisplay(code, getCurrentTab());
+
+    // Build transformation chain
+    const enableChaining = document.getElementById('sfwEnableChaining')?.checked || false;
+    let transformChain = '';
+
+    if (enableChaining) {
+        const preSteps = document.querySelectorAll('#sfwPreChainBuilder .chain-step');
+        const preTransforms = [];
+
+        preSteps.forEach(step => {
+            const operation = step.querySelector('.chain-operation').value;
+            const params = step.querySelector('.chain-params').value;
+            if (operation) {
+                if (params) {
+                    preTransforms.push(`${operation}=${params}`);
+                } else {
+                    preTransforms.push(operation);
+                }
+            }
+        });
+
+        if (preTransforms.length > 0) {
+            transformChain = preTransforms.join('/') + '/';
+        }
+    }
+
+    // Build security part
+    const sec = `security=p:${policy},s:${signature}/`;
+
+    // Build final URL
+    let url;
+    if (needsApiKey) {
+        url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}sfw/${source}`;
+    } else {
+        url = `https://cdn.filestackcontent.com/${sec}${transformChain}sfw/${source}`;
+    }
+
+    const tab = getCurrentTab();
+    let code = '';
+
+    if (tab === 'javascript') {
+        code = `// Safe for Work detection via Processing API\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('SFW analysis:', data))\n  .catch(err => console.error('SFW analysis failed:', err));`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before SFW analysis`;
+        }
+
+        code += `\n\n// Usage Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/sfw/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/sfw/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/sfw/src://<ALIAS>/<PATH>`;
+
+    } else if (tab === 'react') {
+        code = `const SFW = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('SFW analysis:', data);\n  };\n  return (<button onClick={run}>Analyze SFW</button>);\n};`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before SFW analysis`;
+        }
+
+    } else if (tab === 'vue') {
+        code = `<template><button @click="run">Analyze SFW</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('SFW analysis:', await r.json()); } } }</script>`;
+
+        if (transformChain) {
+            code += `\n\n<!-- This URL includes pre-processing transformations before SFW analysis -->`;
+        }
+
+    } else if (tab === 'url') {
+        code = `// SFW URL\nconst url = '${url}';`;
+
+        if (transformChain) {
+            code += `\n\n// This URL includes pre-processing transformations before SFW analysis`;
+        }
+
+        code += `\n\n// URL Format Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/sfw/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/sfw/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/sfw/src://<ALIAS>/<PATH>`;
+    }
+
+    updateCodeDisplay(code, tab);
 }
 
 function collectSfwOptions() {
     const options = {};
-    
+
     const handle = document.getElementById('sfwHandle').value;
-    
-    const threshold = document.getElementById('sfwThreshold').value;
-    if (threshold !== '50') {
-        options.threshold = parseInt(threshold);
-    }
-    
-    const detections = [];
-    if (document.getElementById('sfwNudity').checked) detections.push('nudity');
-    if (document.getElementById('sfwViolence').checked) detections.push('violence');
-    if (document.getElementById('sfwDrugs').checked) detections.push('drugs');
-    if (document.getElementById('sfwHate').checked) detections.push('hate');
-    
-    if (detections.length > 0) {
-        options.detections = detections;
-    }
-    
+
     return { ...options, handle: handle || 'YOUR_FILE_HANDLE' };
 }
 
 function generateJavaScriptSfwCode(options) {
-    const { handle, ...sfwOptions } = options;
-    return `// Safe for Work detection
-const client = filestack.init('YOUR_APIKEY');
-
-client.sfw('${handle}', ${JSON.stringify(sfwOptions, null, 2)})
-    .then(response => {
-        console.log('SFW analysis:', response);
-        // Handle SFW results
-    })
-    .catch(error => {
-        console.error('SFW analysis failed:', error);
-        // Handle error
-    });`;
+    const { handle } = options;
+    const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+    const sec = `security=p:${policy},s:${signature}/`;
+    return `// Safe for Work detection via Processing API (CDN)\nconst url = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';\n\nfetch(url)\n  .then(r => r.json())\n  .then(data => {\n    console.log('SFW analysis:', data);\n  })\n  .catch(err => console.error('SFW analysis failed:', err));`;
 }
 
 function generateReactSfwCode(options) {
-    const { handle, ...sfwOptions } = options;
-    return `import { filestack } from 'filestack-react';
-
-const SfwComponent = () => {
-    const client = filestack.init('YOUR_APIKEY');
-    
-    const analyzeSfw = async () => {
-        try {
-            const response = await client.sfw('${handle}', ${JSON.stringify(sfwOptions, null, 2)});
-            console.log('SFW analysis:', response);
-            // Handle SFW results
-        } catch (error) {
-            console.error('SFW analysis failed:', error);
-            // Handle error
-        }
-    };
-    
-    return (
-        <button onClick={analyzeSfw}>
-            Analyze Content Safety
-        </button>
-    );
-};`;
+    const { handle } = options;
+    const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+    const sec = `security=p:${policy},s:${signature}/`;
+    return `const SfwComponent = () => {\n  const analyzeSfw = async () => {\n    const url = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';\n    const res = await fetch(url);\n    const data = await res.json();\n    console.log('SFW analysis:', data);\n  };\n  return (<button onClick={analyzeSfw}>Analyze Content Safety</button>);\n};`;
 }
 
 function generateVueSfwCode(options) {
-    const { handle, ...sfwOptions } = options;
-    return `<template>
-    <button @click="analyzeSfw">Analyze Content Safety</button>
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async analyzeSfw() {
-            const client = filestack.init('YOUR_APIKEY');
-            
-            try {
-                const response = await client.sfw('${handle}', ${JSON.stringify(sfwOptions, null, 2)});
-                console.log('SFW analysis:', response);
-                // Handle SFW results
-            } catch (error) {
-                console.error('SFW analysis failed:', error);
-                // Handle error
-            }
-        }
-    }
-};
-</script>`;
+    const { handle } = options;
+    const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+    const sec = `security=p:${policy},s:${signature}/`;
+    return `<template>\n  <button @click="analyzeSfw">Analyze Content Safety</button>\n</template>\n\n<script>\nexport default {\n  methods: {\n    async analyzeSfw() {\n      const url = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';\n      const res = await fetch(url);\n      const data = await res.json();\n      console.log('SFW analysis:', data);\n    }\n  }\n};\n</script>`;
 }
 
 function generateURLSfwCode(options) {
-    const { handle, ...sfwOptions } = options;
-    const params = Object.entries(sfwOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-    return `// SFW analysis URL
-const sfwUrl = 'https://www.filestackapi.com/api/sfw/${handle}?key=YOUR_APIKEY${params ? '&' + params : ''}';
-
-fetch(sfwUrl)
-    .then(response => response.json())
-    .then(data => console.log('SFW analysis:', data))
-    .catch(error => console.error('SFW analysis failed:', error));`;
+    const { handle } = options;
+    const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+    const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+    const sec = `security=p:${policy},s:${signature}/`;
+    return `// SFW URL (Processing API)\nconst sfwUrl = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';`;
 }
 
 function testSfw() {
     const handle = document.getElementById('sfwHandle').value;
-    if (!handle) {
-        showNotification('Please enter a file handle or URL', 'error');
-        return;
-    }
-    
-    showNotification('SFW analysis would be tested here with a real API key', 'info');
 }
 
-// Tagging Functions
-function generateTaggingCode() {
-    const options = collectTaggingOptions();
-    let code = '';
-    
-    switch (getCurrentTab()) {
-        case 'javascript':
-            code = generateJavaScriptTaggingCode(options);
-            break;
-        case 'react':
-            code = generateReactTaggingCode(options);
-            break;
-        case 'vue':
-            code = generateVueTaggingCode(options);
-            break;
-        case 'url':
-            code = generateURLTaggingCode(options);
-            break;
-    }
-    
-    updateCodeDisplay(code, getCurrentTab());
+// Transform Chains functionality
+function addChainStep() {
+    const chainBuilder = document.getElementById('chainBuilder');
+    const stepDiv = document.createElement('div');
+    stepDiv.className = 'chain-step';
+    stepDiv.innerHTML = `
+        <select class="chain-operation">
+            <option value="">Select Operation</option>
+            <option value="resize">Resize</option>
+            <option value="crop">Crop</option>
+            <option value="rotate">Rotate</option>
+            <option value="blur">Blur</option>
+            <option value="sharpen">Sharpen</option>
+            <option value="quality">Quality</option>
+            <option value="convert">Convert Format</option>
+            <option value="watermark">Watermark</option>
+            <option value="sepia">Sepia</option>
+            <option value="blackwhite">Black & White</option>
+            <option value="flip">Flip</option>
+            <option value="flop">Flop</option>
+            <option value="negative">Negative</option>
+            <option value="circle">Circle</option>
+            <option value="rounded_corners">Rounded Corners</option>
+            <option value="vignette">Vignette</option>
+            <option value="shadow">Shadow</option>
+            <option value="border">Border</option>
+            <option value="upscale">Upscale</option>
+        </select>
+        <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
+        <button type="button" class="btn-remove-step">×</button>
+    `;
+
+    // Add event listener for remove button
+    const removeBtn = stepDiv.querySelector('.btn-remove-step');
+    removeBtn.addEventListener('click', () => {
+        stepDiv.remove();
+        generateTransformChainsCode();
+    });
+
+    // Add event listeners for changes
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+
+    operationSelect.addEventListener('change', () => {
+        updateParameterPlaceholder(operationSelect, paramsInput);
+        generateTransformChainsCode();
+    });
+    paramsInput.addEventListener('input', debounce(() => generateTransformChainsCode(), 300));
+
+    chainBuilder.appendChild(stepDiv);
+    generateTransformChainsCode();
 }
 
-function collectTaggingOptions() {
-    const options = {};
-    
-    const handle = document.getElementById('taggingHandle').value;
-    
-    const limit = document.getElementById('taggingLimit').value;
-    if (limit !== '10') {
-        options.limit = parseInt(limit);
-    }
-    
-    const types = [];
-    if (document.getElementById('taggingObjects').checked) types.push('objects');
-    if (document.getElementById('taggingScenes').checked) types.push('scenes');
-    if (document.getElementById('taggingFaces').checked) types.push('faces');
-    if (document.getElementById('taggingText').checked) types.push('text');
-    
-    if (types.length > 0) {
-        options.types = types;
-    }
-    
-    return { ...options, handle: handle || 'YOUR_FILE_HANDLE' };
+function addCaptionChainStep(builderId) {
+    const chainBuilder = document.getElementById(builderId);
+    const stepDiv = document.createElement('div');
+    stepDiv.className = 'chain-step';
+    stepDiv.innerHTML = `
+        <select class="chain-operation">
+            <option value="">Select Operation</option>
+            <option value="resize">Resize</option>
+            <option value="crop">Crop</option>
+            <option value="rotate">Rotate</option>
+            <option value="blur">Blur</option>
+            <option value="sharpen">Sharpen</option>
+            <option value="quality">Quality</option>
+            <option value="convert">Convert Format</option>
+        </select>
+        <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
+        <button type="button" class="btn-remove-step">×</button>
+    `;
+
+    // Add event listener for remove button
+    const removeBtn = stepDiv.querySelector('.btn-remove-step');
+    removeBtn.addEventListener('click', () => {
+        stepDiv.remove();
+        generateCaptionCode();
+    });
+
+    // Add event listeners for changes
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+
+    operationSelect.addEventListener('change', () => {
+        updateParameterPlaceholder(operationSelect, paramsInput);
+        generateCaptionCode();
+    });
+    paramsInput.addEventListener('input', debounce(() => generateCaptionCode(), 300));
+
+    chainBuilder.appendChild(stepDiv);
+    generateCaptionCode();
 }
 
-function generateJavaScriptTaggingCode(options) {
-    const { handle, ...taggingOptions } = options;
-    return `// Image tagging
-const client = filestack.init('YOUR_APIKEY');
+function addTaggingChainStep(builderId) {
+    const chainBuilder = document.getElementById(builderId);
+    const stepDiv = document.createElement('div');
+    stepDiv.className = 'chain-step';
+    stepDiv.innerHTML = `
+        <select class="chain-operation">
+            <option value="">Select Operation</option>
+            <option value="resize">Resize</option>
+            <option value="crop">Crop</option>
+            <option value="rotate">Rotate</option>
+            <option value="blur">Blur</option>
+            <option value="sharpen">Sharpen</option>
+            <option value="quality">Quality</option>
+            <option value="convert">Convert Format</option>
+        </select>
+        <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
+        <button type="button" class="btn-remove-step">×</button>
+    `;
 
-client.tags('${handle}', ${JSON.stringify(taggingOptions, null, 2)})
-    .then(response => {
-        console.log('Tags:', response);
-        // Handle tagging results
-    })
-    .catch(error => {
-        console.error('Tagging failed:', error);
-        // Handle error
-    });`;
+    // Add event listener for remove button
+    const removeBtn = stepDiv.querySelector('.btn-remove-step');
+    removeBtn.addEventListener('click', () => {
+        stepDiv.remove();
+        generateTaggingCode();
+    });
+
+    // Add event listeners for changes
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+
+    operationSelect.addEventListener('change', () => {
+        updateParameterPlaceholder(operationSelect, paramsInput);
+        generateTaggingCode();
+    });
+    paramsInput.addEventListener('input', debounce(() => generateTaggingCode(), 300));
+
+    chainBuilder.appendChild(stepDiv);
+    generateTaggingCode();
 }
 
-function generateReactTaggingCode(options) {
-    const { handle, ...taggingOptions } = options;
-    return `import { filestack } from 'filestack-react';
+function addOcrChainStep(builderId) {
+    const chainBuilder = document.getElementById(builderId);
+    const stepDiv = document.createElement('div');
+    stepDiv.className = 'chain-step';
+    stepDiv.innerHTML = `
+        <select class="chain-operation">
+            <option value="">Select Operation</option>
+            <option value="resize">Resize</option>
+            <option value="crop">Crop</option>
+            <option value="rotate">Rotate</option>
+            <option value="blur">Blur</option>
+            <option value="sharpen">Sharpen</option>
+            <option value="quality">Quality</option>
+            <option value="convert">Convert Format</option>
+        </select>
+        <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
+        <button type="button" class="btn-remove-step">×</button>
+    `;
 
-const TaggingComponent = () => {
-    const client = filestack.init('YOUR_APIKEY');
-    
-    const generateTags = async () => {
-        try {
-            const response = await client.tags('${handle}', ${JSON.stringify(taggingOptions, null, 2)});
-            console.log('Tags:', response);
-            // Handle tagging results
-        } catch (error) {
-            console.error('Tagging failed:', error);
-            // Handle error
-        }
+    // Add event listener for remove button
+    const removeBtn = stepDiv.querySelector('.btn-remove-step');
+    removeBtn.addEventListener('click', () => {
+        stepDiv.remove();
+        generateOcrCode();
+    });
+
+    // Add event listeners for changes
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+
+    operationSelect.addEventListener('change', () => {
+        updateParameterPlaceholder(operationSelect, paramsInput);
+        generateOcrCode();
+    });
+    paramsInput.addEventListener('input', debounce(() => generateOcrCode(), 300));
+
+    chainBuilder.appendChild(stepDiv);
+    generateOcrCode();
+}
+
+function addSfwChainStep(builderId) {
+    const chainBuilder = document.getElementById(builderId);
+    const stepDiv = document.createElement('div');
+    stepDiv.className = 'chain-step';
+    stepDiv.innerHTML = `
+        <select class="chain-operation">
+            <option value="">Select Operation</option>
+            <option value="resize">Resize</option>
+            <option value="crop">Crop</option>
+            <option value="rotate">Rotate</option>
+            <option value="blur">Blur</option>
+            <option value="sharpen">Sharpen</option>
+            <option value="quality">Quality</option>
+            <option value="convert">Convert Format</option>
+        </select>
+        <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
+        <button type="button" class="btn-remove-step">×</button>
+    `;
+
+    // Add event listener for remove button
+    const removeBtn = stepDiv.querySelector('.btn-remove-step');
+    removeBtn.addEventListener('click', () => {
+        stepDiv.remove();
+        generateSfwCode();
+    });
+
+    // Add event listeners for changes
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+
+    operationSelect.addEventListener('change', () => {
+        updateParameterPlaceholder(operationSelect, paramsInput);
+        generateSfwCode();
+    });
+    paramsInput.addEventListener('input', debounce(() => generateSfwCode(), 300));
+
+    chainBuilder.appendChild(stepDiv);
+    generateSfwCode();
+}
+
+function addSentimentChainStep(builderId) {
+    const chainBuilder = document.getElementById(builderId);
+    const stepDiv = document.createElement('div');
+    stepDiv.className = 'chain-step';
+    stepDiv.innerHTML = `
+        <select class="chain-operation">
+            <option value="">Select Operation</option>
+            <option value="resize">Resize</option>
+            <option value="crop">Crop</option>
+            <option value="rotate">Rotate</option>
+            <option value="blur">Blur</option>
+            <option value="sharpen">Sharpen</option>
+            <option value="quality">Quality</option>
+            <option value="convert">Convert Format</option>
+        </select>
+        <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
+        <button type="button" class="btn-remove-step">×</button>
+    `;
+
+    // Add event listener for remove button
+    const removeBtn = stepDiv.querySelector('.btn-remove-step');
+    removeBtn.addEventListener('click', () => {
+        stepDiv.remove();
+        generateSentimentCode();
+    });
+
+    // Add event listeners for changes
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+
+    operationSelect.addEventListener('change', () => {
+        updateParameterPlaceholder(operationSelect, paramsInput);
+        generateSentimentCode();
+    });
+    paramsInput.addEventListener('input', debounce(() => generateSentimentCode(), 300));
+
+    chainBuilder.appendChild(stepDiv);
+    generateSentimentCode();
+}
+
+function updateParameterPlaceholder(operationSelect, paramsInput) {
+    const operation = operationSelect.value;
+    const placeholders = {
+        'resize': 'width:300,height:200,fit:clip',
+        'crop': 'x:10,y:10,width:300,height:200',
+        'rotate': 'deg:90',
+        'blur': 'amount:5',
+        'sharpen': 'amount:3',
+        'quality': 'value:75',
+        'convert': 'format:png',
+        'watermark': 'file:HANDLE,size:50,position:center',
+        'sepia': 'tone:80',
+        'blackwhite': '', // No parameters needed
+        'flip': '', // No parameters needed
+        'flop': '', // No parameters needed
+        'negative': '', // No parameters needed
+        'circle': '', // No parameters needed
+        'rounded_corners': 'radius:10',
+        'vignette': 'amount:20',
+        'shadow': 'blur:4,opacity:60,vector:[4,4]',
+        'border': 'width:3,color:black',
+        'upscale': 'noise:low,style:artwork'
     };
-    
-    return (
-        <button onClick={generateTags}>
-            Generate Tags
-        </button>
-    );
-};`;
-}
 
-function generateVueTaggingCode(options) {
-    const { handle, ...taggingOptions } = options;
-    return `<template>
-    <button @click="generateTags">Generate Tags</button>
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async generateTags() {
-            const client = filestack.init('YOUR_APIKEY');
-            
-            try {
-                const response = await client.tags('${handle}', ${JSON.stringify(taggingOptions, null, 2)});
-                console.log('Tags:', response);
-                // Handle tagging results
-            } catch (error) {
-                console.error('Tagging failed:', error);
-                // Handle error
-            }
-        }
-    }
-};
-</script>`;
-}
-
-function generateURLTaggingCode(options) {
-    const { handle, ...taggingOptions } = options;
-    const params = Object.entries(taggingOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-    return `// Tagging URL
-const taggingUrl = 'https://www.filestackapi.com/api/tags/${handle}?key=YOUR_APIKEY${params ? '&' + params : ''}';
-
-fetch(taggingUrl)
-    .then(response => response.json())
-    .then(data => console.log('Tags:', data))
-    .catch(error => console.error('Tagging failed:', error));`;
-}
-
-function testTagging() {
-    const handle = document.getElementById('taggingHandle').value;
-    if (!handle) {
-        showNotification('Please enter a file handle or URL', 'error');
-        return;
-    }
-    
-    showNotification('Tagging would be tested here with a real API key', 'info');
-}
-
-// OCR Functions
-function generateOcrCode() {
-    const options = collectOcrOptions();
-    let code = '';
-    
-    switch (getCurrentTab()) {
-        case 'javascript':
-            code = generateJavaScriptOcrCode(options);
-            break;
-        case 'react':
-            code = generateReactOcrCode(options);
-            break;
-        case 'vue':
-            code = generateVueOcrCode(options);
-            break;
-        case 'url':
-            code = generateURLOcrCode(options);
-            break;
-    }
-    
-    updateCodeDisplay(code, getCurrentTab());
-}
-
-function collectOcrOptions() {
-    const options = {};
-    
-    const handle = document.getElementById('ocrHandle').value;
-    
-    const language = document.getElementById('ocrLanguage').value;
-    if (language !== 'en') {
-        options.language = language;
-    }
-    
-    if (document.getElementById('ocrCoordinates').checked) {
-        options.coordinates = true;
-    }
-    
-    if (document.getElementById('ocrConfidence').checked) {
-        options.confidence = true;
-    }
-    
-    if (document.getElementById('ocrWords').checked) {
-        options.words = true;
-    }
-    
-    if (document.getElementById('ocrLines').checked) {
-        options.lines = true;
-    }
-    
-    return { ...options, handle: handle || 'YOUR_FILE_HANDLE' };
-}
-
-function generateJavaScriptOcrCode(options) {
-    const { handle, ...ocrOptions } = options;
-    return `// OCR text extraction
-const client = filestack.init('YOUR_APIKEY');
-
-client.ocr('${handle}', ${JSON.stringify(ocrOptions, null, 2)})
-    .then(response => {
-        console.log('OCR results:', response);
-        // Handle OCR results
-    })
-    .catch(error => {
-        console.error('OCR failed:', error);
-        // Handle error
-    });`;
-}
-
-function generateReactOcrCode(options) {
-    const { handle, ...ocrOptions } = options;
-    return `import { filestack } from 'filestack-react';
-
-const OcrComponent = () => {
-    const client = filestack.init('YOUR_APIKEY');
-    
-    const extractText = async () => {
-        try {
-            const response = await client.ocr('${handle}', ${JSON.stringify(ocrOptions, null, 2)});
-            console.log('OCR results:', response);
-            // Handle OCR results
-        } catch (error) {
-            console.error('OCR failed:', error);
-            // Handle error
-        }
-    };
-    
-    return (
-        <button onClick={extractText}>
-            Extract Text
-        </button>
-    );
-};`;
-}
-
-function generateVueOcrCode(options) {
-    const { handle, ...ocrOptions } = options;
-    return `<template>
-    <button @click="extractText">Extract Text</button>
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async extractText() {
-            const client = filestack.init('YOUR_APIKEY');
-            
-            try {
-                const response = await client.ocr('${handle}', ${JSON.stringify(ocrOptions, null, 2)});
-                console.log('OCR results:', response);
-                // Handle OCR results
-            } catch (error) {
-                console.error('OCR failed:', error);
-                // Handle error
-            }
-        }
-    }
-};
-</script>`;
-}
-
-function generateURLOcrCode(options) {
-    const { handle, ...ocrOptions } = options;
-    const params = Object.entries(ocrOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-    return `// OCR URL
-const ocrUrl = 'https://www.filestackapi.com/api/ocr/${handle}?key=YOUR_APIKEY${params ? '&' + params : ''}';
-
-fetch(ocrUrl)
-    .then(response => response.json())
-    .then(data => console.log('OCR results:', data))
-    .catch(error => console.error('OCR failed:', error));`;
-}
-
-function testOcr() {
-    const handle = document.getElementById('ocrHandle').value;
-    if (!handle) {
-        showNotification('Please enter a file handle or URL', 'error');
-        return;
-    }
-    
-    showNotification('OCR would be tested here with a real API key', 'info');
-}
-
-// Face Detection Functions
-function generateFacesCode() {
-    const options = collectFacesOptions();
-    let code = '';
-    
-    switch (getCurrentTab()) {
-        case 'javascript':
-            code = generateJavaScriptFacesCode(options);
-            break;
-        case 'react':
-            code = generateReactFacesCode(options);
-            break;
-        case 'vue':
-            code = generateVueFacesCode(options);
-            break;
-        case 'url':
-            code = generateURLFacesCode(options);
-            break;
-    }
-    
-    updateCodeDisplay(code, getCurrentTab());
-}
-
-function collectFacesOptions() {
-    const options = {};
-    
-    const handle = document.getElementById('facesHandle').value;
-    
-    const limit = document.getElementById('facesLimit').value;
-    if (limit !== '10') {
-        options.limit = parseInt(limit);
-    }
-    
-    const attributes = [];
-    if (document.getElementById('facesAttributes').checked) attributes.push('attributes');
-    if (document.getElementById('facesLandmarks').checked) attributes.push('landmarks');
-    if (document.getElementById('facesAge').checked) attributes.push('age');
-    if (document.getElementById('facesGender').checked) attributes.push('gender');
-    if (document.getElementById('facesEmotion').checked) attributes.push('emotion');
-    
-    if (attributes.length > 0) {
-        options.attributes = attributes;
-    }
-    
-    return { ...options, handle: handle || 'YOUR_FILE_HANDLE' };
-}
-
-function generateJavaScriptFacesCode(options) {
-    const { handle, ...facesOptions } = options;
-    return `// Face detection
-const client = filestack.init('YOUR_APIKEY');
-
-client.faces('${handle}', ${JSON.stringify(facesOptions, null, 2)})
-    .then(response => {
-        console.log('Face detection results:', response);
-        // Handle face detection results
-    })
-    .catch(error => {
-        console.error('Face detection failed:', error);
-        // Handle error
-    });`;
-}
-
-function generateReactFacesCode(options) {
-    const { handle, ...facesOptions } = options;
-    return `import { filestack } from 'filestack-react';
-
-const FacesComponent = () => {
-    const client = filestack.init('YOUR_APIKEY');
-    
-    const detectFaces = async () => {
-        try {
-            const response = await client.faces('${handle}', ${JSON.stringify(facesOptions, null, 2)});
-            console.log('Face detection results:', response);
-            // Handle face detection results
-        } catch (error) {
-            console.error('Face detection failed:', error);
-            // Handle error
-        }
-    };
-    
-    return (
-        <button onClick={detectFaces}>
-            Detect Faces
-        </button>
-    );
-};`;
-}
-
-function generateVueFacesCode(options) {
-    const { handle, ...facesOptions } = options;
-    return `<template>
-    <button @click="detectFaces">Detect Faces</button>
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async detectFaces() {
-            const client = filestack.init('YOUR_APIKEY');
-            
-            try {
-                const response = await client.faces('${handle}', ${JSON.stringify(facesOptions, null, 2)});
-                console.log('Face detection results:', response);
-                // Handle face detection results
-            } catch (error) {
-                console.error('Face detection failed:', error);
-                // Handle error
-            }
-        }
-    }
-};
-</script>`;
-}
-
-function generateURLFacesCode(options) {
-    const { handle, ...facesOptions } = options;
-    const params = Object.entries(facesOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-    return `// Face detection URL
-const facesUrl = 'https://www.filestackapi.com/api/faces/${handle}?key=YOUR_APIKEY${params ? '&' + params : ''}';
-
-fetch(facesUrl)
-    .then(response => response.json())
-    .then(data => console.log('Face detection results:', data))
-    .catch(error => console.error('Face detection failed:', error));`;
-}
-
-function testFaces() {
-    const handle = document.getElementById('facesHandle').value;
-    if (!handle) {
-        showNotification('Please enter a file handle or URL', 'error');
-        return;
-    }
-    
-    showNotification('Face detection would be tested here with a real API key', 'info');
-}
-
-// Security Functions
-function generateSecurityCode() {
-    const options = collectSecurityOptions();
-    let code = '';
-    
-    switch (getCurrentTab()) {
-        case 'javascript':
-            code = generateJavaScriptSecurityCode(options);
-            break;
-        case 'react':
-            code = generateReactSecurityCode(options);
-            break;
-        case 'vue':
-            code = generateVueSecurityCode(options);
-            break;
-        case 'url':
-            code = generateURLSecurityCode(options);
-            break;
-    }
-    
-    updateCodeDisplay(code, getCurrentTab());
-}
-
-function collectSecurityOptions() {
-    const options = {};
-    
-    const policy = document.getElementById('securityPolicy').value;
-    if (policy) {
-        try {
-            options.policy = JSON.parse(policy);
-        } catch (e) {
-            showNotification('Invalid JSON in security policy', 'error');
-            return options;
-        }
-    }
-    
-    const signature = document.getElementById('securitySignature').value;
-    if (signature) {
-        options.signature = signature;
-    }
-    
-    const expiry = document.getElementById('securityExpiry').value;
-    if (expiry && expiry !== '3600') {
-        options.expiry = parseInt(expiry);
-    }
-    
-    if (document.getElementById('securityCall').checked) {
-        options.callLimits = true;
-    }
-    
-    if (document.getElementById('securityPath').checked) {
-        options.pathRestrictions = true;
-    }
-    
-    if (document.getElementById('securityTransform').checked) {
-        options.transformRestrictions = true;
-    }
-    
-    return options;
-}
-
-function generateJavaScriptSecurityCode(options) {
-    return `// Security configuration
-const client = filestack.init('YOUR_APIKEY', ${JSON.stringify(options, null, 2)});
-
-// Now all operations will use the security policy
-client.picker()
-    .then(response => {
-        console.log('Secure picker response:', response);
-    })
-    .catch(error => {
-        console.error('Secure picker failed:', error);
-    });`;
-}
-
-function generateReactSecurityCode(options) {
-    return `import { filestack } from 'filestack-react';
-
-const SecureComponent = () => {
-    const client = filestack.init('YOUR_APIKEY', ${JSON.stringify(options, null, 2)});
-    
-    const openSecurePicker = async () => {
-        try {
-            const response = await client.picker();
-            console.log('Secure picker response:', response);
-        } catch (error) {
-            console.error('Secure picker failed:', error);
-        }
-    };
-    
-    return (
-        <button onClick={openSecurePicker}>
-            Open Secure Picker
-        </button>
-    );
-};`;
-}
-
-function generateVueSecurityCode(options) {
-    return `<template>
-    <button @click="openSecurePicker">Open Secure Picker</button>
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async openSecurePicker() {
-            const client = filestack.init('YOUR_APIKEY', ${JSON.stringify(options, null, 2)});
-            
-            try {
-                const response = await client.picker();
-                console.log('Secure picker response:', response);
-            } catch (error) {
-                console.error('Secure picker failed:', error);
-            }
-        }
-    }
-};
-</script>`;
-}
-
-function generateURLSecurityCode(options) {
-    const params = Object.entries(options).map(([key, value]) => `${key}=${encodeURIComponent(JSON.stringify(value))}`).join('&');
-    return `// Secure URL with policy
-const secureUrl = 'https://www.filestackapi.com/api/picker?key=YOUR_APIKEY${params ? '&' + params : ''}';
-
-// Use this URL with security policy applied
-console.log('Secure picker URL:', secureUrl);`;
-}
-
-function testSecurity() {
-    const policy = document.getElementById('securityPolicy').value;
-    if (!policy) {
-        showNotification('Please enter a security policy', 'error');
-        return;
-    }
-    
-    showNotification('Security configuration would be tested here with a real API key', 'info');
-}
-
-// Store Functions
-function generateStoreCode() {
-    const options = collectStoreOptions();
-    let code = '';
-    
-    switch (getCurrentTab()) {
-        case 'javascript':
-            code = generateJavaScriptStoreCode(options);
-            break;
-        case 'react':
-            code = generateReactStoreCode(options);
-            break;
-        case 'vue':
-            code = generateVueStoreCode(options);
-            break;
-        case 'url':
-            code = generateURLStoreCode(options);
-            break;
-    }
-    
-    updateCodeDisplay(code, getCurrentTab());
-}
-
-function collectStoreOptions() {
-    const options = {};
-    
-    const location = document.getElementById('storeLocation').value;
-    if (location !== 's3') {
-        options.location = location;
-    }
-    
-    const path = document.getElementById('storePath').value;
-    if (path) {
-        options.path = path;
-    }
-    
-    const access = document.getElementById('storeAccess').value;
-    if (access !== 'public') {
-        options.access = access;
-    }
-    
-    if (document.getElementById('storeMetadata').checked) {
-        options.metadata = true;
-    }
-    
-    if (document.getElementById('storeWorkflows').checked) {
-        options.workflows = true;
-    }
-    
-    if (document.getElementById('storeVersioning').checked) {
-        options.versioning = true;
-    }
-    
-    return options;
-}
-
-function generateJavaScriptStoreCode(options) {
-    return `// Store configuration
-const client = filestack.init('YOUR_APIKEY');
-
-client.picker({
-    storeTo: ${JSON.stringify(options, null, 2)}
-})
-.then(response => {
-    console.log('Store response:', response);
-    // Handle store response
-})
-.catch(error => {
-    console.error('Store failed:', error);
-    // Handle error
-});`;
-}
-
-function generateReactStoreCode(options) {
-    return `import { filestack } from 'filestack-react';
-
-const StoreComponent = () => {
-    const client = filestack.init('YOUR_APIKEY');
-    
-    const openStorePicker = async () => {
-        try {
-            const response = await client.picker({
-                storeTo: ${JSON.stringify(options, null, 2)}
-            });
-            console.log('Store response:', response);
-            // Handle store response
-        } catch (error) {
-            console.error('Store failed:', error);
-            // Handle error
-        }
-    };
-    
-    return (
-        <button onClick={openStorePicker}>
-            Open Store Picker
-        </button>
-    );
-};`;
-}
-
-function generateVueStoreCode(options) {
-    return `<template>
-    <button @click="openStorePicker">Open Store Picker</button>
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async openStorePicker() {
-            const client = filestack.init('YOUR_APIKEY');
-            
-            try {
-                const response = await client.picker({
-                    storeTo: ${JSON.stringify(options, null, 2)}
-                });
-                console.log('Store response:', response);
-                // Handle store response
-            } catch (error) {
-                console.error('Store failed:', error);
-                // Handle error
-            }
-        }
-    }
-};
-</script>`;
-}
-
-function generateURLStoreCode(options) {
-    const params = Object.entries(options).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-    return `// Store URL
-const storeUrl = 'https://www.filestackapi.com/api/store/S3?key=YOUR_APIKEY${params ? '&' + params : ''}';
-
-// Use with picker or direct upload
-console.log('Store configuration URL:', storeUrl);`;
-}
-
-function testStore() {
-    showNotification('Store configuration would be tested here with a real API key', 'info');
-}
-
-// Metadata Functions
-function generateMetadataCode() {
-    const options = collectMetadataOptions();
-    let code = '';
-    
-    switch (getCurrentTab()) {
-        case 'javascript':
-            code = generateJavaScriptMetadataCode(options);
-            break;
-        case 'react':
-            code = generateReactMetadataCode(options);
-            break;
-        case 'vue':
-            code = generateVueMetadataCode(options);
-            break;
-        case 'url':
-            code = generateURLMetadataCode(options);
-            break;
-    }
-    
-    updateCodeDisplay(code, getCurrentTab());
-}
-
-function collectMetadataOptions() {
-    const options = {};
-    
-    const handle = document.getElementById('metadataHandle').value;
-    
-    const types = [];
-    if (document.getElementById('metadataBasic').checked) types.push('basic');
-    if (document.getElementById('metadataExif').checked) types.push('exif');
-    if (document.getElementById('metadataColor').checked) types.push('color');
-    if (document.getElementById('metadataGeolocation').checked) types.push('geolocation');
-    
-    if (types.length > 0) {
-        options.types = types;
-    }
-    
-    return { ...options, handle: handle || 'YOUR_FILE_HANDLE' };
-}
-
-function generateJavaScriptMetadataCode(options) {
-    const { handle, ...metadataOptions } = options;
-    return `// Metadata extraction
-const client = filestack.init('YOUR_APIKEY');
-
-client.metadata('${handle}', ${JSON.stringify(metadataOptions, null, 2)})
-    .then(response => {
-        console.log('Metadata:', response);
-        // Handle metadata results
-    })
-    .catch(error => {
-        console.error('Metadata extraction failed:', error);
-        // Handle error
-    });`;
-}
-
-function generateReactMetadataCode(options) {
-    const { handle, ...metadataOptions } = options;
-    return `import { filestack } from 'filestack-react';
-
-const MetadataComponent = () => {
-    const client = filestack.init('YOUR_APIKEY');
-    
-    const extractMetadata = async () => {
-        try {
-            const response = await client.metadata('${handle}', ${JSON.stringify(metadataOptions, null, 2)});
-            console.log('Metadata:', response);
-            // Handle metadata results
-        } catch (error) {
-            console.error('Metadata extraction failed:', error);
-            // Handle error
-        }
-    };
-    
-    return (
-        <button onClick={extractMetadata}>
-            Extract Metadata
-        </button>
-    );
-};`;
-}
-
-function generateVueMetadataCode(options) {
-    const { handle, ...metadataOptions } = options;
-    return `<template>
-    <button @click="extractMetadata">Extract Metadata</button>
-</template>
-
-<script>
-import { filestack } from 'filestack-js';
-
-export default {
-    methods: {
-        async extractMetadata() {
-            const client = filestack.init('YOUR_APIKEY');
-            
-            try {
-                const response = await client.metadata('${handle}', ${JSON.stringify(metadataOptions, null, 2)});
-                console.log('Metadata:', response);
-                // Handle metadata results
-            } catch (error) {
-                console.error('Metadata extraction failed:', error);
-                // Handle error
-            }
-        }
-    }
-};
-</script>`;
-}
-
-function generateURLMetadataCode(options) {
-    const { handle, ...metadataOptions } = options;
-    const params = Object.entries(metadataOptions).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
-    return `// Metadata URL
-const metadataUrl = 'https://www.filestackapi.com/api/metadata/${handle}?key=YOUR_APIKEY${params ? '&' + params : ''}';
-
-fetch(metadataUrl)
-    .then(response => response.json())
-    .then(data => console.log('Metadata:', data))
-    .catch(error => console.error('Metadata extraction failed:', error));`;
-}
-
-function testMetadata() {
-    const handle = document.getElementById('metadataHandle').value;
-    if (!handle) {
-        showNotification('Please enter a file handle or URL', 'error');
-        return;
-    }
-    
-    showNotification('Metadata extraction would be tested here with a real API key', 'info');
-}
-
-// Utility function to get current tab
-function getCurrentTab() {
-    const activeTab = document.querySelector('.tab-btn.active');
-    return activeTab ? activeTab.getAttribute('data-tab') : 'javascript';
-}
-
-// Setup range slider for SFW threshold
-document.addEventListener('DOMContentLoaded', function() {
-    const sfwThreshold = document.getElementById('sfwThreshold');
-    const sfwThresholdValue = document.getElementById('sfwThresholdValue');
-    
-    if (sfwThreshold && sfwThresholdValue) {
-        sfwThreshold.addEventListener('input', function() {
-            sfwThresholdValue.textContent = this.value + '%';
-        });
-    }
-
-    // Initialize AI generator vector database check
-    checkAIVectorDatabase();
-});
-
-// AI Code Generator Functions
-let vectorDbConnected = false;
-
-// Dynamic Qdrant URL detection
-function getQdrantUrl() {
-    // Check if we're on a custom domain or ngrok
-    const hostname = window.location.hostname;
-    
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return 'http://localhost:6333';
-    } else {
-        // For production/ngrok, prompt user for Qdrant URL
-        const savedUrl = localStorage.getItem('qdrantUrl');
-        if (savedUrl) return savedUrl;
-        
-        const customUrl = prompt(
-            'Please enter your Qdrant database URL:\n\n' +
-            'For ngrok: https://your-qdrant-tunnel.ngrok.io\n' +
-            'For Qdrant Cloud: https://your-cluster.qdrant.io\n' +
-            'For self-hosted: https://your-server.com:6333'
-        );
-        
-        if (customUrl) {
-            localStorage.setItem('qdrantUrl', customUrl);
-            return customUrl;
-        }
-        
-        return 'http://localhost:6333'; // fallback
-    }
-}
-
-async function checkAIVectorDatabase() {
-    try {
-        const qdrantUrl = getQdrantUrl();
-        const response = await fetch(`${qdrantUrl}/collections`, {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            const hasCollection = data.result && data.result.collections && 
-                                data.result.collections.some(c => c.name === 'filestack_docs');
-            
-            if (hasCollection) {
-                showAIStatus('✅ Vector database connected and ready!', 'success');
-                vectorDbConnected = true;
-            } else {
-                showAIStatus('❌ Collection "filestack_docs" not found. Run: npm run index', 'error');
-            }
+    const placeholder = placeholders[operation];
+    if (placeholder !== undefined) {
+        if (placeholder === '') {
+            paramsInput.placeholder = 'No parameters needed';
+            paramsInput.disabled = true;
+            paramsInput.value = '';
         } else {
-            throw new Error(`HTTP ${response.status}`);
+            paramsInput.placeholder = placeholder;
+            paramsInput.disabled = false;
         }
-    } catch (error) {
-        console.error('Vector DB check failed:', error);
-        showAIStatus('❌ Cannot connect to vector database. Make sure Qdrant is running on localhost:6333', 'error');
-        
-        // Retry after 5 seconds
-        setTimeout(checkAIVectorDatabase, 5000);
+    } else {
+        paramsInput.placeholder = 'Parameters (e.g., width:300,height:200)';
+        paramsInput.disabled = false;
     }
 }
 
-function showAIStatus(message, type) {
-    const status = document.getElementById('aiStatus');
-    if (status) {
-        status.textContent = message;
-        status.className = `alert ${type}`;
-        status.style.display = 'block';
+function generateTransformChainsCode(tab = 'javascript') {
+    const options = collectTransformChainsOptions();
+    let code = '';
+
+    switch (tab) {
+        case 'javascript':
+            code = generateJavaScriptTransformChainsCode(options);
+            break;
+        case 'react':
+            code = generateReactTransformChainsCode(options);
+            break;
+        case 'vue':
+            code = generateVueTransformChainsCode(options);
+            break;
+        case 'angular':
+            code = generateAngularTransformChainsCode(options);
+            break;
+        case 'nodejs':
+            code = generateNodeJSTransformChainsCode(options);
+            break;
+        case 'url':
+            code = generateURLTransformChainsCode(options);
+            break;
     }
+
+    updateCodeDisplay(code, tab);
 }
 
-async function generateAICode() {
-    const openaiKey = document.getElementById('openaiApiKey').value.trim();
-    const query = document.getElementById('aiQuery').value.trim();
-    
-    if (!openaiKey) {
-        showAIStatus('❌ Please enter your OpenAI API key', 'error');
-        return;
-    }
-    
-    if (!query) {
-        showAIStatus('❌ Please describe what you want to build', 'error');
-        return;
-    }
-    
-    if (!vectorDbConnected) {
-        showAIStatus('❌ Vector database not connected', 'error');
-        return;
-    }
-    
-    const generateBtn = document.getElementById('aiGenerateBtn');
-    const loading = document.getElementById('aiLoading');
-    const outputContainer = document.getElementById('aiOutputContainer');
-    
-    generateBtn.disabled = true;
-    loading.style.display = 'block';
-    outputContainer.style.display = 'none';
-    
-    try {
-        // Step 1: Get embedding for the query
-        const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${openaiKey}`
-            },
-            body: JSON.stringify({
-                model: 'text-embedding-3-large',
-                input: query
-            })
-        });
-        
-        if (!embeddingResponse.ok) {
-            throw new Error('Failed to get embedding from OpenAI');
-        }
-        
-        const embeddingData = await embeddingResponse.json();
-        const queryEmbedding = embeddingData.data[0].embedding;
-        
-        // Step 2: Search vector database
-        const qdrantUrl = getQdrantUrl();
-        const searchResponse = await fetch(`${qdrantUrl}/collections/filestack_docs/points/search`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                vector: queryEmbedding,
-                limit: 3,
-                with_payload: true,
-                with_vectors: false
-            })
-        });
-        
-        if (!searchResponse.ok) {
-            throw new Error('Failed to search vector database');
-        }
-        
-        const searchData = await searchResponse.json();
-        const results = searchData.result || [];
-        
-        // Step 3: Build context from search results
-        let context = "Relevant Filestack documentation:\\n\\n";
-        results.forEach((result, index) => {
-            const payload = result.payload || {};
-            context += `${index + 1}. ${payload.title || 'Unknown'} (Score: ${(result.score * 100).toFixed(1)}%)\\n`;
-            context += `${(payload.content || '').substring(0, 800)}...\\n\\n`;
-        });
-        
-        // Step 4: Generate code with OpenAI
-        const codeResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${openaiKey}`
-            },
-            body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                messages: [
-                    {
-                        role: 'system',
-                        content: 'You are an expert Filestack developer. For filestack-js imports: In Node use CommonJS: const client = require("filestack-js").init("apikey"); In browsers use ES6: import * as filestack from "filestack-js"; const client = filestack.init("apikey"); Default to browser ES6 syntax unless specified as Node. Use ES6+ for everything else. CRITICAL STRUCTURE RULES: 1) pickerOptions contains ONLY picker configuration (fromSources, onUploadDone, accept, etc.) - ABSOLUTELY NEVER put transformOptions inside pickerOptions. 2) transformOptions MUST be defined as a separate const object OUTSIDE of pickerOptions and onUploadDone callback, at the top level. 3) Apply transformations using client.transform(fileUrl, transformOptions).toString() INSIDE the onUploadDone callback. 4) Always use variable names "pickerOptions" and "transformOptions". 5) Use exact parameter formats from documentation (crop: { dim: [x,y,w,h] }, rotate: { deg: 90 }). CRITICAL BOOLEAN vs OBJECT RULE: Many transforms support BOTH boolean true and object forms. Examples: sepia: true (simple) OR sepia: { tone: 80 } (with params). Others: blur: true OR blur: { amount: 5 }, sharpen: true OR sharpen: { amount: 3 }, etc. Use the simple boolean form when no specific parameters are needed, use object form when parameters are specified. 6) Always console.log original and transformed URLs. 7) Add event listener: document.getElementById("uploadButton").addEventListener("click", () => { client.picker(pickerOptions).open(); }). 8) IMPORTANT: When using client.transform(), the original file URL must be passed as the first parameter. This creates chained transformation URLs like: https://cdn.filestackcontent.com/API_KEY/transform1/transform2/"ORIGINAL_FILE_URL". Note: For chained transformations, the source file URL must be quoted and placed at the end. Never guess parameter names or values - stick precisely to documentation. CRITICAL: Use EXACT parameter names and values from the provided documentation context - never modify, abbreviate, or add underscores/hyphens. For example: use 'googledrive' not 'google_drive', use 'local_file_system' not 'local_file', etc. Provide working code examples.'
-                    },
-                    {
-                        role: 'user',
-                        content: `Query: ${query}\\n\\nContext from documentation:\\n${context}\\n\\nGenerate complete, working code with examples.`
+function collectTransformChainsOptions() {
+    const options = {};
+
+    // Get source handle
+    options.handle = document.getElementById('chainHandle')?.value || 'YOUR_FILE_HANDLE';
+
+    // Collect chain steps
+    options.steps = [];
+    const chainSteps = document.querySelectorAll('.chain-step');
+
+    chainSteps.forEach(step => {
+        const operation = step.querySelector('.chain-operation')?.value;
+        const paramsInput = step.querySelector('.chain-params');
+        const params = paramsInput?.value;
+
+        if (operation) {
+            const stepObj = { operation };
+
+            if (params && params.trim()) {
+                // Parse parameters string into object
+                stepObj.params = {};
+
+                // Check if it's a single value (no colons) vs key:value pairs
+                if (!params.includes(':')) {
+                    // Single value - use default parameter name based on operation
+                    const defaultParamNames = {
+                        'resize': 'width',
+                        'crop': 'width',
+                        'rotate': 'deg',
+                        'blur': 'amount',
+                        'sharpen': 'amount',
+                        'quality': 'value',
+                        'sepia': 'tone',
+                        'vignette': 'amount',
+                        'rounded_corners': 'radius'
+                    };
+
+                    const paramName = defaultParamNames[operation] || 'value';
+                    const trimmedValue = params.trim();
+
+                    if (!isNaN(trimmedValue) && trimmedValue !== '') {
+                        stepObj.params[paramName] = Number(trimmedValue);
+                    } else {
+                        stepObj.params[paramName] = trimmedValue;
                     }
-                ],
-                max_tokens: 8000,
-                temperature: 0.2
-            })
-        });
-        
-        if (!codeResponse.ok) {
-            throw new Error('Failed to generate code from OpenAI');
-        }
-        
-        const codeData = await codeResponse.json();
-        let generatedCode = codeData.choices[0].message.content;
-        
-        // Format the response
-        generatedCode = formatAICodeResponse(generatedCode);
-        
-        // Show results
-        document.getElementById('aiCodeOutput').innerHTML = generatedCode;
-        outputContainer.style.display = 'block';
-        
-        // Show sources in separate container
-        if (results.length > 0) {
-            const sourcesHtml = generateSourcesHtml(results);
-            document.getElementById('aiSources').innerHTML = sourcesHtml;
-            document.getElementById('aiSourcesContainer').style.display = 'block';
-        }
-        
-        showAIStatus(`✅ Code generated successfully! Used ${results.length} documentation sources.`, 'success');
-        
-    } catch (error) {
-        console.error('Generation failed:', error);
-        showAIStatus(`❌ Error: ${error.message}`, 'error');
-    } finally {
-        generateBtn.disabled = false;
-        loading.style.display = 'none';
-    }
-}
+                } else {
+                    // Key:value pairs format
+                    const paramPairs = params.split(',').map(p => p.trim()).filter(p => p.length > 0);
 
-function formatAICodeResponse(response) {
-    // Convert markdown-style code blocks to HTML with proper indentation
-    let formatted = response.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
-        const formattedCode = formatJavaScriptCode(code.trim());
-        return `<pre><code class="language-${language || 'javascript'}">${escapeHtml(formattedCode)}</code></pre>`;
-    });
-    
-    // Convert inline code
-    formatted = formatted.replace(/`([^`]+)`/g, '<code class="inline">$1</code>');
-    
-    // Convert headers
-    formatted = formatted.replace(/### (.*$)/gm, '<h3>$1</h3>');
-    
-    // Convert paragraphs
-    formatted = formatted.replace(/\n\n/g, '</p><p>');
-    formatted = '<p>' + formatted + '</p>';
-    
-    // Clean up empty paragraphs
-    formatted = formatted.replace(/<p><\/p>/g, '');
-    formatted = formatted.replace(/<p>(<h3>.*<\/h3>)<\/p>/g, '$1');
-    formatted = formatted.replace(/<p>(<pre>.*<\/pre>)<\/p>/gs, '$1');
-    
-    return formatted;
-}
+                    paramPairs.forEach(pair => {
+                        const colonIndex = pair.indexOf(':');
+                        if (colonIndex > 0) {
+                            const key = pair.substring(0, colonIndex).trim();
+                            const value = pair.substring(colonIndex + 1).trim();
 
-function formatJavaScriptCode(code) {
-    // Basic JavaScript code formatting
-    const lines = code.split('\n');
-    let indentLevel = 0;
-    let formattedLines = [];
-    
-    for (let line of lines) {
-        const trimmedLine = line.trim();
-        if (!trimmedLine) {
-            formattedLines.push('');
-            continue;
-        }
-        
-        // Decrease indent for closing brackets
-        if (trimmedLine.match(/^[\}\]]/)) {
-            indentLevel = Math.max(0, indentLevel - 1);
-        }
-        
-        // Add indentation
-        const indentedLine = '  '.repeat(indentLevel) + trimmedLine;
-        formattedLines.push(indentedLine);
-        
-        // Increase indent for opening brackets
-        if (trimmedLine.match(/[\{\[]$/) && !trimmedLine.match(/\}[\s,]*$/)) {
-            indentLevel++;
-        }
-    }
-    
-    return formattedLines.join('\n');
-}
-
-function escapeHtml(unsafe) {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-function generateSourcesHtml(results) {
-    if (!results || results.length === 0) return '';
-    
-    let sourcesHtml = '<h4>📚 Sources Used:</h4><ul class="sources-list">';
-    
-    results.forEach((result, index) => {
-        const payload = result.payload || {};
-        const title = payload.title || 'Unknown';
-        const filename = payload.filename || '';
-        const score = (result.score * 100).toFixed(1);
-        
-        // Generate documentation URL based on filename
-        let docUrl = '';
-        if (filename) {
-            const baseUrl = 'https://filestack.github.io/filestack-js/';
-            if (filename.includes('__classes__')) {
-                const className = filename.split('__classes__')[1].replace('.html.json', '');
-                docUrl = `${baseUrl}classes/${className}.html`;
-            } else if (filename.includes('__interfaces__')) {
-                const interfaceName = filename.split('__interfaces__')[1].replace('.html.json', '');
-                docUrl = `${baseUrl}interfaces/${interfaceName}.html`;
-            } else if (filename.includes('__enums__')) {
-                const enumName = filename.split('__enums__')[1].replace('.html.json', '');
-                docUrl = `${baseUrl}enums/${enumName}.html`;
-            } else if (filename.includes('__functions__')) {
-                const functionName = filename.split('__functions__')[1].replace('.html.json', '');
-                docUrl = `${baseUrl}functions/${functionName}.html`;
-            } else {
-                docUrl = baseUrl; // Fallback to main docs
+                            if (key && value) {
+                                // Handle special cases first
+                                if (value.startsWith('[') && value.endsWith(']')) {
+                                    // Array notation like [4,4]
+                                    try {
+                                        stepObj.params[key] = JSON.parse(value);
+                                    } catch {
+                                        stepObj.params[key] = value;
+                                    }
+                                } else if (!isNaN(value) && value !== '') {
+                                    // Numeric value
+                                    stepObj.params[key] = Number(value);
+                                } else if (value === 'true' || value === 'false') {
+                                    // Boolean value
+                                    stepObj.params[key] = value === 'true';
+                                } else {
+                                    // String value
+                                    stepObj.params[key] = value;
+                                }
+                            }
+                        }
+                    });
+                }
             }
+
+            options.steps.push(stepObj);
         }
-        
-        sourcesHtml += `<li class="source-item">
-            <strong>${title}</strong> 
-            <span class="source-score">(${score}% match)</span>
-            ${docUrl ? `<br><a href="${docUrl}" target="_blank" rel="noopener">📖 View Documentation</a>` : ''}
-        </li>`;
     });
-    
-    sourcesHtml += '</ul>';
-    return sourcesHtml;
+
+    // Get conditional options
+    options.conditional = document.getElementById('chainConditional')?.checked || false;
+    options.optimize = document.getElementById('chainOptimize')?.checked || false;
+    options.fallback = document.getElementById('chainFallback')?.checked || false;
+
+    return options;
 }
 
-function copyAICode() {
-    const codeOutput = document.getElementById('aiCodeOutput');
-    // Only copy the code, not the sources section
-    const codeElements = codeOutput.querySelectorAll('pre code');
-    let codeText = '';
-    
-    codeElements.forEach(element => {
-        codeText += element.textContent + '\n\n';
+function generateJavaScriptTransformChainsCode(options) {
+    const { handle, steps } = options;
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_APIKEY';
+
+    if (!steps || steps.length === 0) {
+        return `// Transform Chains - No operations defined
+const client = filestack.init('${apiKey}');
+const handle = '${handle}';
+
+// Add transformation steps to build a chain
+// Example: client.transform(handle).resize({width: 300}).blur({amount: 5}).store()`;
+    }
+
+    // Build transformation chain with proper line breaks
+    let transformChain = `client.transform('${handle}')`;
+    const chainParts = [];
+
+    steps.forEach(step => {
+        if (step.params && Object.keys(step.params).length > 0) {
+            const paramsStr = JSON.stringify(step.params, null, 0);
+            chainParts.push(`  .${step.operation}(${paramsStr})`);
+        } else {
+            chainParts.push(`  .${step.operation}()`);
+        }
     });
-    
-    navigator.clipboard.writeText(codeText.trim()).then(() => {
-        showNotification('Code copied to clipboard!', 'success');
-    }).catch(err => {
-        console.error('Failed to copy: ', err);
-        showNotification('Failed to copy code', 'error');
+
+    const formattedChain = transformChain + (chainParts.length > 0 ? '\n' + chainParts.join('\n') : '');
+
+    return `// Transform Chains
+const client = filestack.init('${apiKey}');
+
+// Build transformation chain
+const transformedFile = ${formattedChain};
+
+// Get the URL of the transformed image
+const transformUrl = transformedFile.getUrl();
+console.log('Transform URL:', transformUrl);
+
+// Or store the transformed result
+transformedFile.store()
+  .then(response => {
+    console.log('Stored transformed file:', response);
+  })
+  .catch(error => {
+    console.error('Transform error:', error);
+  });`;
+}
+
+function generateReactTransformChainsCode(options) {
+    const { handle, steps } = options;
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_APIKEY';
+
+    if (!steps || steps.length === 0) {
+        return `// React Transform Chains Component
+import * as filestack from 'filestack-js';
+
+const TransformChains = () => {
+    const client = filestack.init('${apiKey}');
+
+    const applyTransformChain = () => {
+        // Add transformation steps here
+        const handle = '${handle}';
+        // Example: client.transform(handle).resize({width: 300}).blur({amount: 5}).store()
+    };
+
+    return (
+        <button onClick={applyTransformChain}>
+            Apply Transform Chain
+        </button>
+    );
+};`;
+    }
+
+    // Build transformation chain with proper line breaks
+    let transformChain = `client.transform('${handle}')`;
+    const chainParts = [];
+
+    steps.forEach(step => {
+        if (step.params && Object.keys(step.params).length > 0) {
+            const paramsStr = JSON.stringify(step.params, null, 0);
+            chainParts.push(`      .${step.operation}(${paramsStr})`);
+        } else {
+            chainParts.push(`      .${step.operation}()`);
+        }
     });
+
+    const formattedChain = transformChain + (chainParts.length > 0 ? '\n' + chainParts.join('\n') : '');
+
+    return `// React Transform Chains Component
+import * as filestack from 'filestack-js';
+
+const TransformChains = () => {
+  const client = filestack.init('${apiKey}');
+
+  const applyTransformChain = async () => {
+    try {
+      const transformedFile = ${formattedChain};
+      const url = transformedFile.getUrl();
+      console.log('Transform URL:', url);
+
+      // Store the result
+      const response = await transformedFile.store();
+      console.log('Stored:', response);
+    } catch (error) {
+      console.error('Transform error:', error);
+    }
+  };
+
+  return (
+    <button onClick={applyTransformChain}>
+      Apply Transform Chain
+    </button>
+  );
+};
+
+export default TransformChains;`;
+}
+
+function generateVueTransformChainsCode(options) {
+    const { handle, steps } = options;
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_APIKEY';
+
+    if (!steps || steps.length === 0) {
+        return `<template>
+    <button @click="applyTransformChain">Apply Transform Chain</button>
+</template>
+
+<script>
+import * as filestack from 'filestack-js';
+
+export default {
+    methods: {
+        applyTransformChain() {
+            const client = filestack.init('${apiKey}');
+            const handle = '${handle}';
+            // Add transformation steps here
+        }
+    }
+};
+</script>`;
+    }
+
+    // Build transformation chain with proper line breaks
+    let transformChain = `client.transform('${handle}')`;
+    const chainParts = [];
+
+    steps.forEach(step => {
+        if (step.params && Object.keys(step.params).length > 0) {
+            const paramsStr = JSON.stringify(step.params, null, 0);
+            chainParts.push(`        .${step.operation}(${paramsStr})`);
+        } else {
+            chainParts.push(`        .${step.operation}()`);
+        }
+    });
+
+    const formattedChain = transformChain + (chainParts.length > 0 ? '\n' + chainParts.join('\n') : '');
+
+    return `<template>
+  <button @click="applyTransformChain">
+    Apply Transform Chain
+  </button>
+</template>
+
+<script>
+import * as filestack from 'filestack-js';
+
+export default {
+  methods: {
+    async applyTransformChain() {
+      try {
+        const client = filestack.init('${apiKey}');
+        const transformedFile = ${formattedChain};
+        const url = transformedFile.getUrl();
+        console.log('Transform URL:', url);
+
+        const response = await transformedFile.store();
+        console.log('Stored:', response);
+      } catch (error) {
+        console.error('Transform error:', error);
+      }
+    }
+  }
+};
+</script>`;
+}
+
+function generateAngularTransformChainsCode(options) {
+    const { handle, steps } = options;
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_APIKEY';
+
+    if (!steps || steps.length === 0) {
+        return `// Angular Transform Chains Component
+import { Component } from '@angular/core';
+import * as filestack from 'filestack-js';
+
+@Component({
+    selector: 'app-transform-chains',
+    template: '<button (click)="applyTransformChain()">Apply Transform Chain</button>'
+})
+export class TransformChainsComponent {
+    private client = filestack.init('${apiKey}');
+
+    applyTransformChain() {
+        const handle = '${handle}';
+        // Add transformation steps here
+    }
+}`;
+    }
+
+    // Build transformation chain with proper line breaks
+    let transformChain = `this.client.transform('${handle}')`;
+    const chainParts = [];
+
+    steps.forEach(step => {
+        if (step.params && Object.keys(step.params).length > 0) {
+            const paramsStr = JSON.stringify(step.params, null, 0);
+            chainParts.push(`        .${step.operation}(${paramsStr})`);
+        } else {
+            chainParts.push(`        .${step.operation}()`);
+        }
+    });
+
+    const formattedChain = transformChain + (chainParts.length > 0 ? '\n' + chainParts.join('\n') : '');
+
+    return `// Angular Transform Chains Component
+import { Component } from '@angular/core';
+import * as filestack from 'filestack-js';
+
+@Component({
+    selector: 'app-transform-chains',
+    template: '<button (click)="applyTransformChain()">Apply Transform Chain</button>'
+})
+export class TransformChainsComponent {
+    private client = filestack.init('${apiKey}');
+
+    async applyTransformChain() {
+        try {
+            const transformedFile = ${formattedChain};
+            const url = transformedFile.getUrl();
+            console.log('Transform URL:', url);
+
+            const response = await transformedFile.store();
+            console.log('Stored:', response);
+        } catch (error) {
+            console.error('Transform error:', error);
+        }
+    }
+}`;
+}
+
+function generateNodeJSTransformChainsCode(options) {
+    const { handle, steps } = options;
+    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_APIKEY';
+
+    if (!steps || steps.length === 0) {
+        return `// Node.js Transform Chains
+const filestack = require('filestack-js');
+
+const client = filestack.init('${apiKey}');
+const handle = '${handle}';
+
+// Add transformation steps to build a chain
+// Example: client.transform(handle).resize({width: 300}).blur({amount: 5}).store()`;
+    }
+
+    // Build transformation chain with proper line breaks
+    let transformChain = `client.transform('${handle}')`;
+    const chainParts = [];
+
+    steps.forEach(step => {
+        if (step.params && Object.keys(step.params).length > 0) {
+            const paramsStr = JSON.stringify(step.params, null, 0);
+            chainParts.push(`  .${step.operation}(${paramsStr})`);
+        } else {
+            chainParts.push(`  .${step.operation}()`);
+        }
+    });
+
+    const formattedChain = transformChain + (chainParts.length > 0 ? '\n' + chainParts.join('\n') : '');
+
+    return `// Node.js Transform Chains
+const filestack = require('filestack-js');
+
+const client = filestack.init('${apiKey}');
+
+async function applyTransformChain() {
+    try {
+        const transformedFile = ${formattedChain};
+        const url = transformedFile.getUrl();
+        console.log('Transform URL:', url);
+
+        const response = await transformedFile.store();
+        console.log('Stored transformed file:', response);
+        return response;
+    } catch (error) {
+        console.error('Transform chain error:', error);
+        throw error;
+    }
+}
+
+applyTransformChain();`;
+}
+
+function generateURLTransformChainsCode(options) {
+    const { handle, steps } = options;
+
+    if (!steps || steps.length === 0) {
+        return `// Transform Chain URL
+// Base URL: https://cdn.filestackapi.com/
+// Add transformation steps to the URL path
+// Example: https://cdn.filestackapi.com/resize=w:300/blur=a:5/${handle}`;
+    }
+
+    const transformParts = steps.map(step => {
+        if (step.params && Object.keys(step.params).length > 0) {
+            // Map common parameter names to URL shorthand
+            const urlParamMap = {
+                'width': 'w',
+                'height': 'h',
+                'amount': 'a',
+                'value': 'v',
+                'deg': 'd',
+                'degrees': 'd',
+                'format': 'f'
+            };
+
+            const paramPairs = Object.entries(step.params).map(([key, value]) => {
+                const urlKey = urlParamMap[key] || key;
+                // Handle arrays specially
+                if (Array.isArray(value)) {
+                    return `${urlKey}:${JSON.stringify(value)}`;
+                }
+                return `${urlKey}:${value}`;
+            }).join(',');
+            return `${step.operation}=${paramPairs}`;
+        } else {
+            return step.operation;
+        }
+    });
+
+    const transformPath = transformParts.join('/');
+    const transformUrl = `https://cdn.filestackapi.com/${transformPath}/${handle}`;
+
+    return `// Transform Chain URL
+const transformUrl = '${transformUrl}';
+
+// Use this URL directly in img tags, CSS, or anywhere you need the transformed image
+// Example usage:
+// <img src="\${transformUrl}" alt="Transformed image" />
+//
+// Or as CSS background:
+// background-image: url('\${transformUrl}');`;
 }
