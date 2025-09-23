@@ -3,6 +3,1661 @@ let currentSection = 'picker';
 let filestackClient = null;
 let currentPicker = null;
 
+// Enhanced Code Generation System
+class CodeGeneratorEnhanced {
+    constructor() {
+        this.generators = new Map();
+        this.templates = new Map();
+        this.validators = new Map();
+        this.initializeTemplates();
+    }
+
+    initializeTemplates() {
+        // JavaScript templates
+        this.templates.set('javascript-base', {
+            header: (apiKey) => `// Filestack Configuration\nconst apikey = "${apiKey}";\nconst client = filestack.init(apikey);\n\n`,
+            picker: (options) => `const picker = client.picker(${this.formatOptions(options)});\npicker.open();`,
+            transform: (url, transforms) => `const transformedUrl = client.transform()\n${transforms.map(t => `  .${t}`).join('\n')}\n  .output({ format: 'jpg', quality: 80 })\n  .url("${url}");`,
+            upload: (options) => `client.upload(${this.formatOptions(options)});`,
+            download: (handle) => `client.retrieve("${handle}");`
+        });
+
+        // React templates
+        this.templates.set('react-base', {
+            header: (apiKey) => `import * as filestack from 'filestack-js';\n\nconst apikey = "${apiKey}";\nconst client = filestack.init(apikey);\n\n// React Component\nfunction FilestackComponent() {\n  const handleAction = () => {`,
+            footer: () => `  };\n\n  return (\n    <button onClick={handleAction}>\n      Open Filestack\n    </button>\n  );\n}\n\nexport default FilestackComponent;`,
+            picker: (options) => `    const picker = client.picker(${this.formatOptions(options, '    ')});\n    picker.open();`,
+            transform: (url, transforms) => `    const transformedUrl = client.transform()\n${transforms.map(t => `      .${t}`).join('\n')}\n      .output({ format: 'jpg', quality: 80 })\n      .url("${url}");\n    console.log(transformedUrl);`,
+            upload: (options) => `    client.upload(${this.formatOptions(options, '    ')});`,
+            download: (handle) => `    client.retrieve("${handle}");`
+        });
+
+        // Vue templates
+        this.templates.set('vue-base', {
+            header: (apiKey) => `<template>\n  <button @click="handleAction">Open Filestack</button>\n</template>\n\n<script>\nimport * as filestack from 'filestack-js';\n\nconst apikey = "${apiKey}";\nconst client = filestack.init(apikey);\n\nexport default {\n  methods: {\n    handleAction() {`,
+            footer: () => `    }\n  }\n}\n</script>`,
+            picker: (options) => `      const picker = client.picker(${this.formatOptions(options, '      ')});\n      picker.open();`,
+            transform: (url, transforms) => `      const transformedUrl = client.transform()\n${transforms.map(t => `        .${t}`).join('\n')}\n        .output({ format: 'jpg', quality: 80 })\n        .url("${url}");\n      console.log(transformedUrl);`,
+            upload: (options) => `      client.upload(${this.formatOptions(options, '      ')});`,
+            download: (handle) => `      client.retrieve("${handle}");`
+        });
+
+        // Angular templates
+        this.templates.set('angular-base', {
+            header: (apiKey) => `import { Component } from '@angular/core';\nimport * as filestack from 'filestack-js';\n\n@Component({\n  selector: 'app-filestack',\n  template: '<button (click)="handleAction()">Open Filestack</button>'\n})\nexport class FilestackComponent {\n  private apikey = "${apiKey}";\n  private client = filestack.init(this.apikey);\n\n  handleAction() {`,
+            footer: () => `  }\n}`,
+            picker: (options) => `    const picker = this.client.picker(${this.formatOptions(options, '    ')});\n    picker.open();`,
+            transform: (url, transforms) => `    const transformedUrl = this.client.transform()\n${transforms.map(t => `      .${t}`).join('\n')}\n      .output({ format: 'jpg', quality: 80 })\n      .url("${url}");\n    console.log(transformedUrl);`,
+            upload: (options) => `    this.client.upload(${this.formatOptions(options, '    ')});`,
+            download: (handle) => `    this.client.retrieve("${handle}");`
+        });
+
+        // Node.js templates
+        this.templates.set('nodejs-base', {
+            header: (apiKey) => `const filestack = require('filestack-js');\n\nconst apikey = "${apiKey}";\nconst client = filestack.init(apikey);\n\n// Server-side function\nasync function handleFilestack() {\n  try {`,
+            footer: () => `  } catch (error) {\n    console.error('Filestack error:', error);\n  }\n}\n\nhandleFilestack();`,
+            picker: (options) => `    // Note: Picker requires browser environment\n    console.log('Picker config:', ${this.formatOptions(options, '    ')});`,
+            transform: (url, transforms) => `    const transformedUrl = client.transform()\n${transforms.map(t => `      .${t}`).join('\n')}\n      .output({ format: 'jpg', quality: 80 })\n      .url("${url}");\n    console.log('Transformed URL:', transformedUrl);`,
+            upload: (options) => `    const result = await client.upload(${this.formatOptions(options, '    ')});\n    console.log('Upload result:', result);`,
+            download: (handle) => `    const result = await client.retrieve("${handle}");\n    console.log('Download result:', result);`
+        });
+
+        // URL templates
+        this.templates.set('url-base', {
+            transform: (handle, transforms) => `https://cdn.filestackcontent.com/${transforms.join('/')}/${handle}`,
+            processApi: (handle, task, params) => `https://process.filestackapi.com/${task}/${params ? params + '/' : ''}${handle}`
+        });
+    }
+
+    formatOptions(options, indent = '') {
+        if (!options || typeof options !== 'object') return '{}';
+
+        const entries = Object.entries(options);
+        if (entries.length === 0) return '{}';
+
+        const formatted = entries.map(([key, value]) => {
+            let formattedValue;
+            if (typeof value === 'string') {
+                formattedValue = `"${value}"`;
+            } else if (typeof value === 'function') {
+                formattedValue = value.toString();
+            } else {
+                formattedValue = JSON.stringify(value, null, 2);
+            }
+            return `${indent}  ${key}: ${formattedValue}`;
+        }).join(',\n');
+
+        return `{\n${formatted}\n${indent}}`;
+    }
+
+    validateSection(section, options) {
+        const validator = this.validators.get(section);
+        if (validator) {
+            return validator(options);
+        }
+        return { valid: true, errors: [] };
+    }
+
+    generateCode(section, tab, options) {
+        try {
+            const validation = this.validateSection(section, options);
+            if (!validation.valid) {
+                return `// Validation Errors:\n${validation.errors.map(e => `// - ${e}`).join('\n')}\n\n// Please fix the errors above and regenerate the code.`;
+            }
+
+            // Check if this is a complex section that needs custom handling
+            const complexCode = this.handleComplexSection(section, tab, options);
+            if (complexCode) {
+                return complexCode;
+            }
+
+            const template = this.templates.get(`${tab}-base`);
+            if (!template) {
+                return `// Code generation for ${tab} is not yet implemented for ${section}.\n// Available tabs: javascript, react, vue, angular, nodejs, url`;
+            }
+
+            const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+            let code = '';
+
+            if (tab === 'url') {
+                return this.generateUrlCode(section, options);
+            }
+
+            if (template.header) {
+                code += template.header(apiKey);
+            }
+
+            const methodName = this.getSectionMethod(section);
+            if (template[methodName]) {
+                code += template[methodName](options.url || options.handle || 'default', options.transforms || options);
+            }
+
+            if (template.footer) {
+                code += template.footer();
+            }
+
+            return code || this.fallbackGeneration(section, tab, options);
+
+        } catch (error) {
+            return `// Error generating code: ${error.message}\n// Please check your configuration and try again.`;
+        }
+    }
+
+    generateUrlCode(section, options) {
+        const template = this.templates.get('url-base');
+        const handle = options.handle || 'YOUR_FILE_HANDLE';
+
+        switch (section) {
+            case 'transform':
+                const transforms = options.transforms || ['resize=width:300,height:300'];
+                return template.transform(handle, transforms);
+            case 'tagging':
+                return template.processApi(handle, 'tags', '');
+            case 'sfw':
+                return template.processApi(handle, 'sfw', '');
+            case 'faces':
+                return template.processApi(handle, 'faces', '');
+            case 'ocr':
+                return template.processApi(handle, 'ocr', '');
+            default:
+                return `// URL generation not implemented for ${section}`;
+        }
+    }
+
+    getSectionMethod(section) {
+        const methodMap = {
+            'picker': 'picker',
+            'transform': 'transform',
+            'upload': 'upload',
+            'download': 'download',
+            'sfw': 'transform',
+            'tagging': 'transform',
+            'faces': 'transform',
+            'ocr': 'transform'
+        };
+        return methodMap[section] || 'picker';
+    }
+
+    fallbackGeneration(section, tab, options) {
+        return `// Enhanced code generation for ${section} (${tab})\n// This is a fallback implementation\n// Please implement specific logic for this section.`;
+    }
+
+    registerValidator(section, validator) {
+        this.validators.set(section, validator);
+    }
+
+    registerCustomGenerator(section, generator) {
+        this.generators.set(section, generator);
+    }
+
+    // Handle complex sections that need custom logic
+    handleComplexSection(section, tab, options) {
+        switch (section) {
+            case 'sentiment':
+                return this.generateSentimentCode(tab, options);
+            case 'caption':
+                return this.generateCaptionCode(tab, options);
+            case 'tagging':
+                return this.generateTaggingCode(tab, options);
+            case 'sfw':
+                return this.generateSfwCode(tab, options);
+            case 'faces':
+                return this.generateFacesCode(tab, options);
+            case 'ocr':
+                return this.generateOcrCode(tab, options);
+            default:
+                return null;
+        }
+    }
+
+    generateSentimentCode(tab, options) {
+        const text = document.getElementById('sentimentText')?.value?.trim();
+        const hasText = text && text.length > 0;
+
+        if (hasText) {
+            return this.generateTextSentimentCode(tab, text, options);
+        } else {
+            return this.generateImageSentimentCode(tab, options);
+        }
+    }
+
+    generateTextSentimentCode(tab, text, options) {
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const escapedText = text.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        const sec = `security=p:${policy},s:${signature}/`;
+        const url = `https://cdn.filestackcontent.com/${sec}text_sentiment=text:"${escapedText}"`;
+
+        switch (tab) {
+            case 'javascript':
+                return `// Text sentiment analysis
+fetch('${url}')
+  .then(r => r.json())
+  .then(data => console.log('Text sentiment:', data))
+  .catch(err => console.error('Text sentiment failed:', err));`;
+
+            case 'react':
+                return `import React from 'react';
+
+const TextSentiment = () => {
+  const analyzeSentiment = async () => {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('Text sentiment:', data);
+    } catch (error) {
+      console.error('Text sentiment failed:', error);
+    }
+  };
+
+  return (
+    <button onClick={analyzeSentiment}>
+      Analyze Text Sentiment
+    </button>
+  );
+};
+
+export default TextSentiment;`;
+
+            case 'vue':
+                return `<template>
+  <button @click="analyzeSentiment">Analyze Text Sentiment</button>
+</template>
+
+<script>
+export default {
+  methods: {
+    async analyzeSentiment() {
+      try {
+        const res = await fetch('${url}');
+        const data = await res.json();
+        console.log('Text sentiment:', data);
+      } catch (error) {
+        console.error('Text sentiment failed:', error);
+      }
+    }
+  }
+}
+</script>`;
+
+            case 'angular':
+                return `import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-text-sentiment',
+  template: '<button (click)="analyzeSentiment()">Analyze Text Sentiment</button>'
+})
+export class TextSentimentComponent {
+  async analyzeSentiment() {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('Text sentiment:', data);
+    } catch (error) {
+      console.error('Text sentiment failed:', error);
+    }
+  }
+}`;
+
+            case 'nodejs':
+                return `const fetch = require('node-fetch');
+
+async function analyzeTextSentiment() {
+  try {
+    const res = await fetch('${url}');
+    const data = await res.json();
+    console.log('Text sentiment:', data);
+    return data;
+  } catch (error) {
+    console.error('Text sentiment failed:', error);
+    throw error;
+  }
+}
+
+analyzeTextSentiment();`;
+
+            case 'url':
+                return `// Text Sentiment Analysis URL
+const sentimentUrl = '${url}';
+
+// Usage: GET request to this URL returns sentiment analysis
+// Response format: { "sentiment": "positive|negative|neutral", "confidence": 0.85 }`;
+        }
+    }
+
+    generateImageSentimentCode(tab, options) {
+        const inputType = document.querySelector('input[name="sentimentInputType"]:checked')?.value || 'handle';
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+
+        let source = '';
+        let needsApiKey = false;
+
+        switch (inputType) {
+            case 'handle':
+                source = document.getElementById('sentimentHandle')?.value || 'YOUR_FILE_HANDLE';
+                break;
+            case 'external':
+                source = document.getElementById('sentimentExternalUrl')?.value || 'https://example.com/image.jpg';
+                needsApiKey = true;
+                break;
+            case 'storage':
+                const alias = document.getElementById('sentimentStorageAlias')?.value || 'STORAGE_ALIAS';
+                const path = document.getElementById('sentimentStoragePath')?.value || '/path/to/image.jpg';
+                source = `src://${alias}${path}`;
+                needsApiKey = true;
+                break;
+        }
+
+        // Build transformation chain
+        const enableChaining = document.getElementById('sentimentEnableChaining')?.checked || false;
+        let transformChain = '';
+
+        if (enableChaining) {
+            const preSteps = document.querySelectorAll('#sentimentPreChainBuilder .chain-step');
+            const preTransforms = [];
+
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    if (params) {
+                        preTransforms.push(`${operation}=${params}`);
+                    } else {
+                        preTransforms.push(operation);
+                    }
+                }
+            });
+
+            if (preTransforms.length > 0) {
+                transformChain = preTransforms.join('/') + '/';
+            }
+        }
+
+        const sec = `security=p:${policy},s:${signature}/`;
+        let url;
+
+        if (needsApiKey) {
+            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}sentiment/${source}`;
+        } else {
+            url = `https://cdn.filestackcontent.com/${sec}${transformChain}sentiment/${source}`;
+        }
+
+        const chainNote = transformChain ? `\n\n// This URL includes pre-processing transformations: ${transformChain.slice(0, -1)}` : '';
+
+        switch (tab) {
+            case 'javascript':
+                return `// Image sentiment analysis
+fetch('${url}')
+  .then(r => r.json())
+  .then(data => console.log('Image sentiment:', data))
+  .catch(err => console.error('Image sentiment failed:', err));${chainNote}`;
+
+            case 'react':
+                return `import React from 'react';
+
+const ImageSentiment = () => {
+  const analyzeSentiment = async () => {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('Image sentiment:', data);
+    } catch (error) {
+      console.error('Image sentiment failed:', error);
+    }
+  };
+
+  return (
+    <button onClick={analyzeSentiment}>
+      Analyze Image Sentiment
+    </button>
+  );
+};
+
+export default ImageSentiment;${chainNote}`;
+
+            case 'url':
+                return `// Image Sentiment Analysis URL
+const sentimentUrl = '${url}';${chainNote}`;
+
+            default:
+                return `// Image sentiment analysis for ${tab}
+const sentimentUrl = '${url}';${chainNote}`;
+        }
+    }
+
+    generateCaptionCode(tab, options) {
+        const inputType = document.querySelector('input[name="captionInputType"]:checked')?.value || 'handle';
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+
+        let source = '';
+        let needsApiKey = false;
+
+        switch (inputType) {
+            case 'handle':
+                source = document.getElementById('captionHandle')?.value || 'YOUR_FILE_HANDLE';
+                break;
+            case 'external':
+                source = document.getElementById('captionExternalUrl')?.value || 'https://example.com/image.jpg';
+                needsApiKey = true;
+                break;
+            case 'storage':
+                const alias = document.getElementById('captionStorageAlias')?.value || 'STORAGE_ALIAS';
+                const path = document.getElementById('captionStoragePath')?.value || '/path/to/image.jpg';
+                source = `src://${alias}${path}`;
+                needsApiKey = true;
+                break;
+        }
+
+        // Build transformation chain
+        const enableChaining = document.getElementById('captionEnableChaining')?.checked || false;
+        let transformChain = '';
+        const transformSteps = [];
+
+        if (enableChaining) {
+            const preSteps = document.querySelectorAll('#captionPreChainBuilder .chain-step');
+
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    if (params) {
+                        transformSteps.push(`${operation}=${params}`);
+                    } else {
+                        transformSteps.push(operation);
+                    }
+                }
+            });
+
+            if (transformSteps.length > 0) {
+                transformChain = transformSteps.join('/') + '/';
+            }
+        }
+
+        const sec = `security=p:${policy},s:${signature}/`;
+        let url;
+
+        if (needsApiKey) {
+            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}caption/${source}`;
+        } else {
+            url = `https://cdn.filestackcontent.com/${sec}${transformChain}caption/${source}`;
+        }
+
+        const chainNote = transformChain ? `\n\n// Pre-processing transformations applied: ${transformSteps.join(', ')}` : '';
+        const examples = `\n\n// URL Format Examples:
+// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/caption/<HANDLE>
+// With resize: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/resize=h:1000/caption/<HANDLE>
+// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/caption/<EXTERNAL_URL>`;
+
+        switch (tab) {
+            case 'javascript':
+                return `// Caption generation (Processing API)
+fetch('${url}')
+  .then(r => r.json())
+  .then(data => console.log('Caption:', data))
+  .catch(err => console.error('Caption failed:', err));${chainNote}${examples}`;
+
+            case 'react':
+                return `import React from 'react';
+
+const CaptionGenerator = () => {
+  const generateCaption = async () => {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('Caption:', data);
+    } catch (error) {
+      console.error('Caption failed:', error);
+    }
+  };
+
+  return (
+    <button onClick={generateCaption}>
+      Generate Caption
+    </button>
+  );
+};
+
+export default CaptionGenerator;${chainNote}`;
+
+            case 'vue':
+                return `<template>
+  <button @click="generateCaption">Generate Caption</button>
+</template>
+
+<script>
+export default {
+  methods: {
+    async generateCaption() {
+      try {
+        const res = await fetch('${url}');
+        const data = await res.json();
+        console.log('Caption:', data);
+      } catch (error) {
+        console.error('Caption failed:', error);
+      }
+    }
+  }
+}
+</script>${chainNote}`;
+
+            case 'angular':
+                return `import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-caption-generator',
+  template: '<button (click)="generateCaption()">Generate Caption</button>'
+})
+export class CaptionGeneratorComponent {
+  async generateCaption() {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('Caption:', data);
+    } catch (error) {
+      console.error('Caption failed:', error);
+    }
+  }
+}${chainNote}`;
+
+            case 'nodejs':
+                return `const fetch = require('node-fetch');
+
+async function generateCaption() {
+  try {
+    const res = await fetch('${url}');
+    const data = await res.json();
+    console.log('Caption:', data);
+    return data;
+  } catch (error) {
+    console.error('Caption failed:', error);
+    throw error;
+  }
+}
+
+generateCaption();${chainNote}`;
+
+            case 'url':
+                return `// Caption Generation URL
+const captionUrl = '${url}';${chainNote}${examples}`;
+        }
+    }
+
+    generateTaggingCode(tab, options) {
+        const inputType = document.querySelector('input[name="taggingInputType"]:checked')?.value || 'handle';
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+
+        let source = '';
+        let needsApiKey = false;
+
+        switch (inputType) {
+            case 'handle':
+                source = document.getElementById('taggingHandle')?.value || 'YOUR_FILE_HANDLE';
+                break;
+            case 'external':
+                source = document.getElementById('taggingExternalUrl')?.value || 'https://example.com/image.jpg';
+                needsApiKey = true;
+                break;
+            case 'storage':
+                const alias = document.getElementById('taggingStorageAlias')?.value || 'STORAGE_ALIAS';
+                const path = document.getElementById('taggingStoragePath')?.value || '/path/to/image.jpg';
+                source = `src://${alias}${path}`;
+                needsApiKey = true;
+                break;
+        }
+
+        // Build transformation chain
+        const enableChaining = document.getElementById('taggingEnableChaining')?.checked || false;
+        let transformChain = '';
+        const transformSteps = [];
+
+        if (enableChaining) {
+            const preSteps = document.querySelectorAll('#taggingPreChainBuilder .chain-step');
+
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    if (params) {
+                        transformSteps.push(`${operation}=${params}`);
+                    } else {
+                        transformSteps.push(operation);
+                    }
+                }
+            });
+
+            if (transformSteps.length > 0) {
+                transformChain = transformSteps.join('/') + '/';
+            }
+        }
+
+        const sec = `security=p:${policy},s:${signature}/`;
+        let url;
+
+        if (needsApiKey) {
+            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}tags/${source}`;
+        } else {
+            url = `https://cdn.filestackcontent.com/${sec}${transformChain}tags/${source}`;
+        }
+
+        const chainNote = transformChain ? `\n\n// Pre-processing transformations applied: ${transformSteps.join(', ')}` : '';
+
+        switch (tab) {
+            case 'javascript':
+                return `// Image tagging
+fetch('${url}')
+  .then(r => r.json())
+  .then(data => console.log('Image tags:', data))
+  .catch(err => console.error('Tagging failed:', err));${chainNote}`;
+
+            case 'react':
+                return `import React from 'react';
+
+const ImageTagger = () => {
+  const tagImage = async () => {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('Image tags:', data);
+    } catch (error) {
+      console.error('Tagging failed:', error);
+    }
+  };
+
+  return (
+    <button onClick={tagImage}>
+      Tag Image
+    </button>
+  );
+};
+
+export default ImageTagger;${chainNote}`;
+
+            case 'vue':
+                return `<template>
+  <button @click="tagImage">Tag Image</button>
+</template>
+
+<script>
+export default {
+  methods: {
+    async tagImage() {
+      try {
+        const res = await fetch('${url}');
+        const data = await res.json();
+        console.log('Image tags:', data);
+      } catch (error) {
+        console.error('Tagging failed:', error);
+      }
+    }
+  }
+}
+</script>${chainNote}`;
+
+            case 'url':
+                return `// Image Tagging URL
+const taggingUrl = '${url}';${chainNote}`;
+
+            default:
+                return `// Image tagging for ${tab}
+const taggingUrl = '${url}';${chainNote}`;
+        }
+    }
+
+    generateSfwCode(tab, options) {
+        const inputType = document.querySelector('input[name="sfwInputType"]:checked')?.value || 'handle';
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+
+        let source = '';
+        let needsApiKey = false;
+
+        switch (inputType) {
+            case 'handle':
+                source = document.getElementById('sfwHandle')?.value || 'YOUR_FILE_HANDLE';
+                break;
+            case 'external':
+                source = document.getElementById('sfwExternalUrl')?.value || 'https://example.com/image.jpg';
+                needsApiKey = true;
+                break;
+            case 'storage':
+                const alias = document.getElementById('sfwStorageAlias')?.value || 'STORAGE_ALIAS';
+                const path = document.getElementById('sfwStoragePath')?.value || '/path/to/image.jpg';
+                source = `src://${alias}${path}`;
+                needsApiKey = true;
+                break;
+        }
+
+        // Build transformation chain
+        const enableChaining = document.getElementById('sfwEnableChaining')?.checked || false;
+        let transformChain = '';
+        const transformSteps = [];
+
+        if (enableChaining) {
+            const preSteps = document.querySelectorAll('#sfwPreChainBuilder .chain-step');
+
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    if (params) {
+                        transformSteps.push(`${operation}=${params}`);
+                    } else {
+                        transformSteps.push(operation);
+                    }
+                }
+            });
+
+            if (transformSteps.length > 0) {
+                transformChain = transformSteps.join('/') + '/';
+            }
+        }
+
+        const sec = `security=p:${policy},s:${signature}/`;
+        let url;
+
+        if (needsApiKey) {
+            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}sfw/${source}`;
+        } else {
+            url = `https://cdn.filestackcontent.com/${sec}${transformChain}sfw/${source}`;
+        }
+
+        const chainNote = transformChain ? `\n\n// Pre-processing transformations applied: ${transformSteps.join(', ')}` : '';
+
+        switch (tab) {
+            case 'javascript':
+                return `// Safe for Work detection
+fetch('${url}')
+  .then(r => r.json())
+  .then(data => console.log('SFW status:', data))
+  .catch(err => console.error('SFW check failed:', err));${chainNote}`;
+
+            case 'react':
+                return `import React from 'react';
+
+const SafeForWorkChecker = () => {
+  const checkSFW = async () => {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('SFW status:', data);
+    } catch (error) {
+      console.error('SFW check failed:', error);
+    }
+  };
+
+  return (
+    <button onClick={checkSFW}>
+      Check SFW Status
+    </button>
+  );
+};
+
+export default SafeForWorkChecker;${chainNote}`;
+
+            case 'vue':
+                return `<template>
+  <button @click="checkSFW">Check SFW Status</button>
+</template>
+
+<script>
+export default {
+  methods: {
+    async checkSFW() {
+      try {
+        const res = await fetch('${url}');
+        const data = await res.json();
+        console.log('SFW status:', data);
+      } catch (error) {
+        console.error('SFW check failed:', error);
+      }
+    }
+  }
+}
+</script>${chainNote}`;
+
+            case 'url':
+                return `// Safe for Work Check URL
+const sfwUrl = '${url}';${chainNote}`;
+
+            default:
+                return `// Safe for Work check for ${tab}
+const sfwUrl = '${url}';${chainNote}`;
+        }
+    }
+
+    generateFacesCode(tab, options) {
+        const inputType = document.querySelector('input[name="facesInputType"]:checked')?.value || 'handle';
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+
+        let source = '';
+        let needsApiKey = false;
+
+        switch (inputType) {
+            case 'handle':
+                source = document.getElementById('facesHandle')?.value || 'YOUR_FILE_HANDLE';
+                break;
+            case 'external':
+                source = document.getElementById('facesExternalUrl')?.value || 'https://example.com/image.jpg';
+                needsApiKey = true;
+                break;
+            case 'storage':
+                const alias = document.getElementById('facesStorageAlias')?.value || 'STORAGE_ALIAS';
+                const path = document.getElementById('facesStoragePath')?.value || '/path/to/image.jpg';
+                source = `src://${alias}${path}`;
+                needsApiKey = true;
+                break;
+        }
+
+        // Build transformation chain
+        const enableChaining = document.getElementById('facesEnableChaining')?.checked || false;
+        let transformChain = '';
+        const transformSteps = [];
+
+        if (enableChaining) {
+            const preSteps = document.querySelectorAll('#facesPreChainBuilder .chain-step');
+
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    if (params) {
+                        transformSteps.push(`${operation}=${params}`);
+                    } else {
+                        transformSteps.push(operation);
+                    }
+                }
+            });
+
+            if (transformSteps.length > 0) {
+                transformChain = transformSteps.join('/') + '/';
+            }
+        }
+
+        const sec = `security=p:${policy},s:${signature}/`;
+        let url;
+
+        if (needsApiKey) {
+            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}detect_faces/${source}`;
+        } else {
+            url = `https://cdn.filestackcontent.com/${sec}${transformChain}detect_faces/${source}`;
+        }
+
+        const chainNote = transformChain ? `\n\n// Pre-processing transformations applied: ${transformSteps.join(', ')}` : '';
+
+        switch (tab) {
+            case 'javascript':
+                return `// Face detection
+fetch('${url}')
+  .then(r => r.json())
+  .then(data => console.log('Faces detected:', data))
+  .catch(err => console.error('Face detection failed:', err));${chainNote}`;
+
+            case 'react':
+                return `import React from 'react';
+
+const FaceDetector = () => {
+  const detectFaces = async () => {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('Faces detected:', data);
+    } catch (error) {
+      console.error('Face detection failed:', error);
+    }
+  };
+
+  return (
+    <button onClick={detectFaces}>
+      Detect Faces
+    </button>
+  );
+};
+
+export default FaceDetector;${chainNote}`;
+
+            case 'vue':
+                return `<template>
+  <button @click="detectFaces">Detect Faces</button>
+</template>
+
+<script>
+export default {
+  methods: {
+    async detectFaces() {
+      try {
+        const res = await fetch('${url}');
+        const data = await res.json();
+        console.log('Faces detected:', data);
+      } catch (error) {
+        console.error('Face detection failed:', error);
+      }
+    }
+  }
+}
+</script>${chainNote}`;
+
+            case 'url':
+                return `// Face Detection URL
+const facesUrl = '${url}';${chainNote}`;
+
+            default:
+                return `// Face detection for ${tab}
+const facesUrl = '${url}';${chainNote}`;
+        }
+    }
+
+    generateOcrCode(tab, options) {
+        const inputType = document.querySelector('input[name="ocrInputType"]:checked')?.value || 'handle';
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+
+        let source = '';
+        let needsApiKey = false;
+
+        switch (inputType) {
+            case 'handle':
+                source = document.getElementById('ocrHandle')?.value || 'YOUR_FILE_HANDLE';
+                break;
+            case 'external':
+                source = document.getElementById('ocrExternalUrl')?.value || 'https://example.com/document.pdf';
+                needsApiKey = true;
+                break;
+            case 'storage':
+                const alias = document.getElementById('ocrStorageAlias')?.value || 'STORAGE_ALIAS';
+                const path = document.getElementById('ocrStoragePath')?.value || '/path/to/image.jpg';
+                source = `src://${alias}${path}`;
+                needsApiKey = true;
+                break;
+        }
+
+        // Build transformation chain
+        const enableChaining = document.getElementById('ocrEnableChaining')?.checked || false;
+        let transformChain = '';
+        const transformSteps = [];
+
+        if (enableChaining) {
+            const preSteps = document.querySelectorAll('#ocrPreChainBuilder .chain-step');
+
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    if (params) {
+                        transformSteps.push(`${operation}=${params}`);
+                    } else {
+                        transformSteps.push(operation);
+                    }
+                }
+            });
+
+            if (transformSteps.length > 0) {
+                transformChain = transformSteps.join('/') + '/';
+            }
+        }
+
+        const sec = `security=p:${policy},s:${signature}/`;
+        let url;
+
+        if (needsApiKey) {
+            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}ocr/${source}`;
+        } else {
+            url = `https://cdn.filestackcontent.com/${sec}${transformChain}ocr/${source}`;
+        }
+
+        const chainNote = transformChain ? `\n\n// Pre-processing transformations applied: ${transformSteps.join(', ')}` : '';
+
+        switch (tab) {
+            case 'javascript':
+                return `// Optical Character Recognition (OCR)
+fetch('${url}')
+  .then(r => r.json())
+  .then(data => console.log('OCR results:', data))
+  .catch(err => console.error('OCR failed:', err));${chainNote}`;
+
+            case 'react':
+                return `import React from 'react';
+
+const OCRProcessor = () => {
+  const processOCR = async () => {
+    try {
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('OCR results:', data);
+    } catch (error) {
+      console.error('OCR failed:', error);
+    }
+  };
+
+  return (
+    <button onClick={processOCR}>
+      Process OCR
+    </button>
+  );
+};
+
+export default OCRProcessor;${chainNote}`;
+
+            case 'vue':
+                return `<template>
+  <button @click="processOCR">Process OCR</button>
+</template>
+
+<script>
+export default {
+  methods: {
+    async processOCR() {
+      try {
+        const res = await fetch('${url}');
+        const data = await res.json();
+        console.log('OCR results:', data);
+      } catch (error) {
+        console.error('OCR failed:', error);
+      }
+    }
+  }
+}
+</script>${chainNote}`;
+
+            case 'url':
+                return `// OCR Processing URL
+const ocrUrl = '${url}';${chainNote}`;
+
+            default:
+                return `// OCR processing for ${tab}
+const ocrUrl = '${url}';${chainNote}`;
+        }
+    }
+}
+
+// Initialize enhanced code generator
+const enhancedCodeGenerator = new CodeGeneratorEnhanced();
+
+// Enhanced update function with better error handling and validation
+function updateCodeDisplayEnhanced(code, language, section) {
+    const codeElement = document.getElementById('generatedCode');
+    if (!codeElement) {
+        console.error('Code display element not found');
+        return;
+    }
+
+    // Add metadata comments
+    const timestamp = new Date().toISOString();
+    const metadata = `// Generated on: ${timestamp}\n// Section: ${section}\n// Language: ${language}\n// API Key: ${document.getElementById('globalApikey')?.value ? 'Configured' : 'Not set'}\n\n`;
+
+    const fullCode = metadata + code;
+    codeElement.textContent = fullCode;
+
+    // Enhanced language detection and syntax highlighting
+    const languageMap = {
+        'javascript': 'javascript',
+        'react': 'jsx',
+        'vue': 'vue',
+        'angular': 'typescript',
+        'nodejs': 'javascript',
+        'url': 'http'
+    };
+
+    const langClass = languageMap[language] || 'javascript';
+    codeElement.className = `language-${langClass}`;
+
+    // Enhanced syntax highlighting with error handling
+    if (typeof Prism !== 'undefined') {
+        try {
+            Prism.highlightElement(codeElement);
+        } catch (e) {
+            console.warn('Syntax highlighting failed:', e);
+        }
+    }
+
+    // Add copy functionality enhancement
+    if (window.enhancedCopyHandler) {
+        window.enhancedCopyHandler.updateCode(fullCode);
+    }
+}
+
+// Enhanced copy functionality
+window.enhancedCopyHandler = {
+    currentCode: '',
+    updateCode(code) {
+        this.currentCode = code;
+    },
+    copy() {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(this.currentCode).then(() => {
+                this.showNotification('Code copied to clipboard!');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                this.fallbackCopy();
+            });
+        } else {
+            this.fallbackCopy();
+        }
+    },
+    fallbackCopy() {
+        const textarea = document.createElement('textarea');
+        textarea.value = this.currentCode;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        this.showNotification('Code copied to clipboard!');
+    },
+    showNotification(message) {
+        // Create temporary notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            z-index: 10000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+};
+
+// Enhanced section-specific validators
+enhancedCodeGenerator.registerValidator('picker', (options) => {
+    const errors = [];
+    const apiKey = document.getElementById('globalApikey')?.value;
+
+    if (!apiKey || apiKey === 'YOUR_API_KEY') {
+        errors.push('Please enter a valid Filestack API key');
+    }
+
+    if (options.maxSize && isNaN(parseInt(options.maxSize))) {
+        errors.push('Max file size must be a number');
+    }
+
+    if (options.maxFiles && isNaN(parseInt(options.maxFiles))) {
+        errors.push('Max files must be a number');
+    }
+
+    return { valid: errors.length === 0, errors };
+});
+
+enhancedCodeGenerator.registerValidator('transform', (options) => {
+    const errors = [];
+
+    if (!options.transforms || options.transforms.length === 0) {
+        errors.push('At least one transformation must be selected');
+    }
+
+    return { valid: errors.length === 0, errors };
+});
+
+// Override the original copy function to use enhanced version
+function copyCode() {
+    window.enhancedCopyHandler.copy();
+}
+
+// Universal enhanced code generation wrapper
+function generateCodeEnhanced(section, tab = 'javascript') {
+    try {
+        // Get options based on section
+        let options = {};
+        switch (section) {
+            case 'picker':
+                options = collectPickerOptions();
+                break;
+            case 'transform':
+                options = collectTransformOptions();
+                break;
+            case 'upload':
+                options = collectUploadOptions();
+                break;
+            case 'download':
+                options = collectDownloadOptions();
+                break;
+            case 'sfw':
+                options = collectSfwOptions();
+                break;
+            case 'tagging':
+                options = collectTaggingOptions();
+                break;
+            case 'faces':
+                options = collectFacesOptions();
+                break;
+            case 'ocr':
+                options = collectOcrOptions();
+                break;
+            default:
+                options = {};
+        }
+
+        // Try enhanced generation first
+        const enhancedCode = enhancedCodeGenerator.generateCode(section, tab, options);
+
+        // Always use enhanced version if available, otherwise use fallback message
+        updateCodeDisplayEnhanced(enhancedCode, tab, section);
+
+    } catch (error) {
+        console.error(`Enhanced ${section} generation failed:`, error);
+        const fallbackCode = `// Error generating code for ${section}\n// Please check your configuration and try again.\n// Error: ${error.message}`;
+        updateCodeDisplayEnhanced(fallbackCode, tab, section);
+    }
+}
+
+// Enhanced collection functions to handle missing options
+function collectUploadOptions() {
+    try {
+        return {
+            maxSize: document.getElementById('uploadMaxSize')?.value || null,
+            accept: document.getElementById('uploadAccept')?.value || null,
+            tags: document.getElementById('uploadTags')?.value || null
+        };
+    } catch (error) {
+        console.warn('Error collecting upload options:', error);
+        return {};
+    }
+}
+
+function collectDownloadOptions() {
+    try {
+        return {
+            handle: document.getElementById('downloadHandle')?.value || 'YOUR_FILE_HANDLE',
+            policy: document.getElementById('downloadPolicy')?.value || null,
+            signature: document.getElementById('downloadSignature')?.value || null
+        };
+    } catch (error) {
+        console.warn('Error collecting download options:', error);
+        return { handle: 'YOUR_FILE_HANDLE' };
+    }
+}
+
+function collectSfwOptions() {
+    try {
+        return {
+            handle: document.getElementById('sfwHandle')?.value || 'YOUR_FILE_HANDLE',
+            url: document.getElementById('sfwExternalUrl')?.value || null,
+            inputType: document.querySelector('input[name="sfwInputType"]:checked')?.value || 'handle'
+        };
+    } catch (error) {
+        console.warn('Error collecting SFW options:', error);
+        return { handle: 'YOUR_FILE_HANDLE' };
+    }
+}
+
+function collectTaggingOptions() {
+    try {
+        return {
+            handle: document.getElementById('taggingHandle')?.value || 'YOUR_FILE_HANDLE',
+            url: document.getElementById('taggingExternalUrl')?.value || null,
+            inputType: document.querySelector('input[name="taggingInputType"]:checked')?.value || 'handle'
+        };
+    } catch (error) {
+        console.warn('Error collecting tagging options:', error);
+        return { handle: 'YOUR_FILE_HANDLE' };
+    }
+}
+
+function collectFacesOptions() {
+    try {
+        return {
+            handle: document.getElementById('facesHandle')?.value || 'YOUR_FILE_HANDLE',
+            url: document.getElementById('facesExternalUrl')?.value || null,
+            inputType: document.querySelector('input[name="facesInputType"]:checked')?.value || 'handle'
+        };
+    } catch (error) {
+        console.warn('Error collecting faces options:', error);
+        return { handle: 'YOUR_FILE_HANDLE' };
+    }
+}
+
+function collectOcrOptions() {
+    try {
+        return {
+            handle: document.getElementById('ocrHandle')?.value || 'YOUR_FILE_HANDLE',
+            url: document.getElementById('ocrExternalUrl')?.value || null,
+            inputType: document.querySelector('input[name="ocrInputType"]:checked')?.value || 'handle'
+        };
+    } catch (error) {
+        console.warn('Error collecting OCR options:', error);
+        return { handle: 'YOUR_FILE_HANDLE' };
+    }
+}
+
+// Setup manual code generation system with visual feedback
+function setupManualCodeGeneration() {
+    let configurationChanged = false;
+    const generateBtn = document.getElementById('generateCodeBtn');
+
+    if (!generateBtn) {
+        console.error('Generate Code button not found');
+        return;
+    }
+
+    // Function to mark configuration as changed
+    const markConfigChanged = () => {
+        if (!configurationChanged) {
+            configurationChanged = true;
+            updateGenerateButton(true);
+        }
+    };
+
+    // Function to mark configuration as up-to-date
+    const markConfigUpToDate = () => {
+        configurationChanged = false;
+        updateGenerateButton(false);
+    };
+
+    // Update generate button appearance
+    window.updateGenerateButton = function(hasChanges) {
+        if (!generateBtn) return;
+
+        if (hasChanges) {
+            generateBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Generate Code (Updated)';
+            generateBtn.classList.add('btn-warning');
+            generateBtn.classList.remove('btn-primary');
+            generateBtn.style.animation = 'pulse 2s infinite';
+        } else {
+            generateBtn.innerHTML = '<i class="fas fa-play"></i> Generate Code';
+            generateBtn.classList.add('btn-primary');
+            generateBtn.classList.remove('btn-warning');
+            generateBtn.style.animation = '';
+        }
+    };
+
+    // Manual generation function
+    window.manualGenerateCode = function() {
+        if (currentSection) {
+            const activeTab = document.querySelector('.tab-btn.active');
+            const tabName = activeTab ? activeTab.getAttribute('data-tab') : 'javascript';
+            generateCodeEnhanced(currentSection, tabName);
+            markConfigUpToDate();
+            showUserFeedback('Code generated successfully!', 'success');
+        } else {
+            showUserFeedback('Please select a section first', 'warning');
+        }
+    };
+
+    // Set initial placeholder
+    window.setCodePlaceholder = function() {
+        const codeElement = document.getElementById('generatedCode');
+        if (codeElement) {
+            codeElement.textContent = `// Your generated code will appear here
+// Configure your options and click "Generate Code" button above
+//
+// Tip: Any configuration changes will be highlighted in the button`;
+        }
+    };
+
+    // Monitor all form inputs for changes
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        // Skip inputs that shouldn't trigger change notifications
+        if (input.type === 'file' || input.classList.contains('no-regenerate')) {
+            return;
+        }
+
+        input.addEventListener('input', markConfigChanged);
+        input.addEventListener('change', markConfigChanged);
+    });
+
+    // Monitor checkboxes specifically
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            // Handle transform option toggles
+            if (checkbox.id.startsWith('enable')) {
+                toggleTransformInputs(checkbox);
+            }
+            markConfigChanged();
+        });
+    });
+
+    // Monitor radio buttons
+    const radios = document.querySelectorAll('input[type="radio"]');
+    radios.forEach(radio => {
+        radio.addEventListener('change', markConfigChanged);
+    });
+
+    // API Key input gets special treatment
+    const apiKeyInput = document.getElementById('globalApikey');
+    if (apiKeyInput) {
+        apiKeyInput.addEventListener('input', () => {
+            // Update Filestack client when API key changes
+            if (typeof filestack !== 'undefined' && apiKeyInput.value) {
+                try {
+                    filestackClient = filestack.init(apiKeyInput.value);
+                } catch (error) {
+                    console.warn('Invalid API key:', error);
+                }
+            }
+            markConfigChanged();
+        });
+    }
+
+    // Add pulse animation CSS if not already present
+    if (!document.querySelector('style[data-manual-generation-styles]')) {
+        const style = document.createElement('style');
+        style.setAttribute('data-manual-generation-styles', 'true');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+
+            .code-header-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .code-actions {
+                display: flex;
+                gap: 8px;
+            }
+
+            .btn-warning {
+                background-color: #ff9800 !important;
+                border-color: #ff9800 !important;
+                color: white !important;
+            }
+
+            .btn-warning:hover {
+                background-color: #f57c00 !important;
+                border-color: #f57c00 !important;
+            }
+
+            /* Fix code overflow issues */
+            .code-content {
+                overflow-x: hidden !important;
+            }
+
+            .code-content pre {
+                overflow-x: auto !important;
+                white-space: pre-wrap !important;
+                word-wrap: break-word !important;
+                max-width: 100% !important;
+            }
+
+            .code-content code {
+                white-space: pre-wrap !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                max-width: 100% !important;
+                display: block !important;
+            }
+
+            /* Ensure code panel doesn't overflow */
+            .code-panel {
+                overflow: hidden !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Enhanced error handling and user feedback system
+function showUserFeedback(message, type = 'info') {
+    const existingFeedback = document.querySelector('.user-feedback');
+    if (existingFeedback) {
+        existingFeedback.remove();
+    }
+
+    const feedback = document.createElement('div');
+    feedback.className = 'user-feedback';
+    feedback.style.cssText = `
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        max-width: 300px;
+        padding: 12px 16px;
+        border-radius: 6px;
+        z-index: 10001;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease-out;
+    `;
+
+    // Set colors based on type
+    const colors = {
+        success: { bg: '#4CAF50', text: 'white' },
+        error: { bg: '#f44336', text: 'white' },
+        warning: { bg: '#ff9800', text: 'white' },
+        info: { bg: '#2196F3', text: 'white' }
+    };
+
+    const color = colors[type] || colors.info;
+    feedback.style.backgroundColor = color.bg;
+    feedback.style.color = color.text;
+    feedback.textContent = message;
+
+    // Add close button
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '×';
+    closeBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: ${color.text};
+        font-size: 18px;
+        font-weight: bold;
+        padding: 0;
+        margin-left: 10px;
+        cursor: pointer;
+        float: right;
+        line-height: 1;
+    `;
+    closeBtn.onclick = () => feedback.remove();
+
+    feedback.appendChild(closeBtn);
+    document.body.appendChild(feedback);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (feedback.parentNode) {
+            feedback.remove();
+        }
+    }, 5000);
+
+    // Add slide-in animation
+    if (!document.querySelector('style[data-feedback-styles]')) {
+        const style = document.createElement('style');
+        style.setAttribute('data-feedback-styles', 'true');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Enhanced initialization with better error handling
+function enhancedInitialization() {
+    try {
+        // Validate that essential elements exist
+        const essentialElements = [
+            'generatedCode',
+            'globalApikey'
+        ];
+
+        const missingElements = essentialElements.filter(id => !document.getElementById(id));
+
+        if (missingElements.length > 0) {
+            showUserFeedback(`Missing essential elements: ${missingElements.join(', ')}`, 'error');
+            return;
+        }
+
+        // Initialize with guidance
+        showUserFeedback('Filestack Snap ready! Configure your options and click Generate Code.', 'info');
+
+        // Add keyboard shortcuts
+        setupKeyboardShortcuts();
+
+    } catch (error) {
+        console.error('Enhanced initialization failed:', error);
+        showUserFeedback('Initialization failed. Some features may not work correctly.', 'error');
+    }
+}
+
+// Keyboard shortcuts for better UX
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + C to copy code
+        if ((e.ctrlKey || e.metaKey) && e.key === 'c' && e.target.closest('.code-content')) {
+            e.preventDefault();
+            copyCode();
+            return;
+        }
+
+        // Ctrl/Cmd + R to generate code manually
+        if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+            e.preventDefault();
+            if (typeof manualGenerateCode === 'function') {
+                manualGenerateCode();
+            }
+            return;
+        }
+
+        // Number keys 1-6 to switch tabs
+        if (e.key >= '1' && e.key <= '6' && !e.target.matches('input, textarea, select')) {
+            const tabIndex = parseInt(e.key) - 1;
+            const tabs = ['javascript', 'react', 'vue', 'angular', 'nodejs', 'url'];
+            if (tabs[tabIndex]) {
+                switchCodeTab(tabs[tabIndex]);
+                showUserFeedback(`Switched to ${tabs[tabIndex]} tab - Click Generate Code to update`, 'info');
+            }
+        }
+    });
+}
+
+// Add to document ready
+document.addEventListener('DOMContentLoaded', function () {
+    initializeApp();
+    setupEventListeners();
+    setupTransformOptions();
+    setupRangeSliders();
+    setupInputValidation();
+    enhancedInitialization();
+});
+
 // Validation helper function
 function validateNumberInput(elementId, defaultValue = null) {
     const element = document.getElementById(elementId);
@@ -36,14 +1691,7 @@ function validateIntegerInput(elementId, defaultValue = null) {
     return value !== null ? Math.floor(value) : defaultValue;
 }
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded', function () {
-    initializeApp();
-    setupEventListeners();
-    setupTransformOptions();
-    setupRangeSliders();
-    setupInputValidation();
-});
+// Original initialization (now handled by enhanced version above)
 
 // Initialize the application
 function initializeApp() {
@@ -56,8 +1704,11 @@ function initializeApp() {
     // Show initial section
     showSection('picker');
 
-    // Generate initial code
-    generatePickerCode();
+    // Set up manual code generation system
+    setupManualCodeGeneration();
+
+    // Set initial placeholder text
+    setCodePlaceholder();
 }
 
 // Setup event listeners
@@ -354,66 +2005,6 @@ function setupRealTimeCodeGeneration() {
 
     // New Intelligence Features Event Listeners
     // Video Tagging and Video SFW are workflow-only; skip code generation listeners
-
-    // Sentiment Analysis section
-    document.querySelectorAll('#sentiment input, #sentiment select, #sentiment textarea, #sentiment input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'sentiment') generateSentimentCode();
-        }, 300));
-        element.addEventListener('input', debounce(() => {
-            if (currentSection === 'sentiment') generateSentimentCode();
-        }, 300));
-    });
-
-    // Video Processing section
-    document.querySelectorAll('#video-processing input, #video-processing select, #video-processing input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'video-processing') generateVideoProcessingCode();
-        }, 300));
-        element.addEventListener('input', debounce(() => {
-            if (currentSection === 'video-processing') generateVideoProcessingCode();
-        }, 300));
-    });
-
-    // Audio Processing section
-    document.querySelectorAll('#audio-processing input, #audio-processing select, #audio-processing input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'audio-processing') generateAudioProcessingCode();
-        }, 300));
-        element.addEventListener('input', debounce(() => {
-            if (currentSection === 'audio-processing') generateAudioProcessingCode();
-        }, 300));
-    });
-
-    // Workflows section
-    document.querySelectorAll('#workflows input, #workflows select, #workflows input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'workflows') generateWorkflowsCode();
-        }, 300));
-        element.addEventListener('input', debounce(() => {
-            if (currentSection === 'workflows') generateWorkflowsCode();
-        }, 300));
-    });
-
-    // Webhooks section
-    document.querySelectorAll('#webhooks input, #webhooks select, #webhooks input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'webhooks') generateWebhooksCode();
-        }, 300));
-        element.addEventListener('input', debounce(() => {
-            if (currentSection === 'webhooks') generateWebhooksCode();
-        }, 300));
-    });
-
-    // Custom Source section
-    document.querySelectorAll('#custom-source input, #custom-source select, #custom-source input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'custom-source') generateCustomSourceCode();
-        }, 300));
-        element.addEventListener('input', debounce(() => {
-            if (currentSection === 'custom-source') generateCustomSourceCode();
-        }, 300));
-    });
 
     // Caption Generation section
     document.querySelectorAll('#caption input, #caption select, #caption input[type="checkbox"]').forEach(element => {
@@ -825,171 +2416,6 @@ function setupRealTimeCodeGeneration() {
     }
 }
 
-// Sentiment Analysis Code Generation (Global)
-function generateSentimentCode() {
-    const tab = getCurrentTab();
-    let code = '';
-
-    if (tab === 'javascript') {
-        code = `// Sentiment Analysis
-const text = 'Sample text to analyze';
-const handle = 'YOUR_FILE_HANDLE';
-
-// Text sentiment analysis
-fetch('https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/text_sentiment=text:"' + text + '"')
-  .then(r => r.json())
-  .then(data => console.log('Text sentiment:', data))
-  .catch(err => console.error('Text sentiment failed:', err));
-
-// Image sentiment analysis
-fetch('https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/image_sentiment/' + handle)
-  .then(r => r.json())
-  .then(data => console.log('Image sentiment:', data))
-  .catch(err => console.error('Image sentiment failed:', err));`;
-    } else if (tab === 'react') {
-        code = `const SentimentAnalysis = () => {
-  const analyzeText = async () => {
-    const text = 'Sample text to analyze';
-    const response = await fetch('https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/text_sentiment=text:"' + text + '"');
-    const data = await response.json();
-    console.log('Text sentiment:', data);
-  };
-
-  const analyzeImage = async () => {
-    const handle = 'YOUR_FILE_HANDLE';
-    const response = await fetch('https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/image_sentiment/' + handle);
-    const data = await response.json();
-    console.log('Image sentiment:', data);
-  };
-
-  return (
-    <div>
-      <button onClick={analyzeText}>Analyze Text Sentiment</button>
-      <button onClick={analyzeImage}>Analyze Image Sentiment</button>
-    </div>
-  );
-};`;
-    } else if (tab === 'vue') {
-        code = `<template>
-  <div>
-    <button @click="analyzeText">Analyze Text Sentiment</button>
-    <button @click="analyzeImage">Analyze Image Sentiment</button>
-  </div>
-</template>
-
-<script>
-export default {
-  methods: {
-    async analyzeText() {
-      const text = 'Sample text to analyze';
-      const response = await fetch('https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/text_sentiment=text:"' + text + '"');
-      const data = await response.json();
-      console.log('Text sentiment:', data);
-    },
-    async analyzeImage() {
-      const handle = 'YOUR_FILE_HANDLE';
-      const response = await fetch('https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/image_sentiment/' + handle);
-      const data = await response.json();
-      console.log('Image sentiment:', data);
-    }
-  }
-};
-</script>`;
-    } else if (tab === 'angular') {
-        code = `// Angular Sentiment Analysis Service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class SentimentService {
-  constructor(private http: HttpClient) {}
-
-  analyzeText(text: string) {
-    const url = \`https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/text_sentiment=text:"\${text}"\`;
-    return this.http.get(url);
-  }
-
-  analyzeImage(handle: string) {
-    const url = \`https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/image_sentiment/\${handle}\`;
-    return this.http.get(url);
-  }
-}
-
-// Component usage
-@Component({
-  selector: 'app-sentiment',
-  template: \`
-    <button (click)="analyzeText()">Analyze Text Sentiment</button>
-    <button (click)="analyzeImage()">Analyze Image Sentiment</button>
-  \`
-})
-export class SentimentComponent {
-  constructor(private sentimentService: SentimentService) {}
-
-  analyzeText() {
-    this.sentimentService.analyzeText('Sample text').subscribe(
-      data => console.log('Text sentiment:', data)
-    );
-  }
-
-  analyzeImage() {
-    this.sentimentService.analyzeImage('YOUR_FILE_HANDLE').subscribe(
-      data => console.log('Image sentiment:', data)
-    );
-  }
-}`;
-    } else if (tab === 'nodejs') {
-        code = `// Node.js Sentiment Analysis Server
-const express = require('express');
-const fetch = require('node-fetch');
-const app = express();
-
-app.use(express.json());
-
-// Text sentiment analysis endpoint
-app.post('/analyze-text-sentiment', async (req, res) => {
-  try {
-    const { text } = req.body;
-    const url = \`https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/text_sentiment=text:"\${text}"\`;
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    res.json({ success: true, sentiment: data });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Image sentiment analysis endpoint
-app.post('/analyze-image-sentiment', async (req, res) => {
-  try {
-    const { handle } = req.body;
-    const url = \`https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/image_sentiment/\${handle}\`;
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    res.json({ success: true, sentiment: data });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.listen(3000, () => {
-  console.log('Sentiment analysis server running on port 3000');
-});`;
-    } else if (tab === 'url') {
-        code = `// Sentiment Analysis URLs
-const textSentimentUrl = 'https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/text_sentiment=text:"YOUR_TEXT"';
-const imageSentimentUrl = 'https://cdn.filestackcontent.com/security=p:YOUR_POLICY,s:YOUR_SIGNATURE/image_sentiment/YOUR_FILE_HANDLE';`;
-    }
-
-    updateCodeDisplay(code, tab);
-}
-
 // Show section
 function showSection(sectionName) {
     // Hide all sections
@@ -1019,47 +2445,14 @@ function showSection(sectionName) {
     // Reset code tabs to JavaScript and generate appropriate code
     switchCodeTab('javascript');
 
-    // Generate appropriate code
-    if (sectionName === 'picker') {
-        generatePickerCode('javascript');
-    } else if (sectionName === 'transform') {
-        generateTransformCode('javascript');
-    } else if (sectionName === 'upload') {
-        generateUploadCode();
-    } else if (sectionName === 'download') {
-        generateDownloadCode();
-    } else if (sectionName === 'sfw') {
-        generateSfwCode();
-    } else if (sectionName === 'tagging') {
-        generateTaggingCode();
-    } else if (sectionName === 'ocr') {
-        generateOcrCode();
-    } else if (sectionName === 'faces') {
-        generateFacesCode();
-    } else if (sectionName === 'caption') {
-        generateCaptionCode();
-    } else if (sectionName === 'video-tagging' || sectionName === 'video-sfw' || sectionName === 'phishing' || sectionName === 'virus') {
+    // Mark configuration as changed when switching sections
+    if (typeof updateGenerateButton === 'function') {
+        updateGenerateButton(true);
+    }
+
+    // Show workflow message for sections that don't have direct API support
+    if (sectionName === 'video-tagging' || sectionName === 'video-sfw' || sectionName === 'phishing' || sectionName === 'virus') {
         showWorkflowOnlyMessage(sectionName);
-    } else if (sectionName === 'security') {
-        generateSecurityCode();
-    } else if (sectionName === 'store') {
-        generateStoreCode();
-    } else if (sectionName === 'metadata') {
-        generateMetadataCode();
-    } else if (sectionName === 'dnd') {
-        generateDndCode();
-    } else if (sectionName === 'sentiment') {
-        generateSentimentCode();
-    } else if (sectionName === 'video-processing') {
-        generateVideoProcessingCode();
-    } else if (sectionName === 'audio-processing') {
-        generateAudioProcessingCode();
-    } else if (sectionName === 'workflows') {
-        generateWorkflowsCode();
-    } else if (sectionName === 'webhooks') {
-        generateWebhooksCode();
-    } else if (sectionName === 'custom-source') {
-        generateCustomSourceCode();
     }
 }
 
@@ -1076,70 +2469,9 @@ function switchCodeTab(tabName) {
         activeTab.classList.add('active');
     }
 
-    // Update code based on current section and tab
-    switch (currentSection) {
-        case 'picker':
-            generatePickerCode(tabName);
-            break;
-        case 'transform':
-            generateTransformCode(tabName);
-            break;
-        case 'upload':
-            generateUploadCode();
-            break;
-        case 'download':
-            generateDownloadCode();
-            break;
-        case 'sfw':
-            generateSfwCode();
-            break;
-        case 'tagging':
-            generateTaggingCode();
-            break;
-        case 'ocr':
-            generateOcrCode();
-            break;
-        case 'faces':
-            generateFacesCode();
-            break;
-        case 'security':
-            generateSecurityCode();
-            break;
-        case 'store':
-            generateStoreCode();
-            break;
-        case 'metadata':
-            generateMetadataCode();
-            break;
-        case 'dnd':
-            generateDndCode();
-            break;
-        case 'caption':
-            generateCaptionCode();
-            break;
-        case 'transform-chains':
-            generateTransformChainsCode(tabName);
-            break;
-        case 'sentiment':
-            generateSentimentCode();
-            break;
-        case 'video-processing':
-            generateVideoProcessingCode();
-            break;
-        case 'audio-processing':
-            generateAudioProcessingCode();
-            break;
-        case 'workflows':
-            generateWorkflowsCode();
-            break;
-        case 'webhooks':
-            generateWebhooksCode();
-            break;
-        case 'custom-source':
-            generateCustomSourceCode();
-            break;
-        default:
-            break;
+    // Mark configuration as changed when switching tabs
+    if (typeof updateGenerateButton === 'function') {
+        updateGenerateButton(true);
     }
 
     // Update code display with correct language
@@ -1166,7 +2498,28 @@ function toggleTransformInputs(checkbox) {
     }
 }
 
-// Generate picker code
+// Enhanced wrapper for picker code generation
+function generatePickerCodeEnhanced(tab = 'javascript') {
+    try {
+        const options = collectPickerOptions();
+
+        // Try enhanced generation first
+        const enhancedCode = enhancedCodeGenerator.generateCode('picker', tab, options);
+
+        if (enhancedCode && !enhancedCode.includes('fallback implementation')) {
+            updateCodeDisplayEnhanced(enhancedCode, tab, 'picker');
+            return;
+        }
+
+        // Fall back to original generation if enhanced fails
+        generatePickerCode(tab);
+    } catch (error) {
+        console.error('Enhanced picker generation failed:', error);
+        generatePickerCode(tab);
+    }
+}
+
+// Generate picker code (original function preserved)
 function generatePickerCode(tab = 'javascript') {
     const options = collectPickerOptions();
     let code = '';
@@ -1195,7 +2548,28 @@ function generatePickerCode(tab = 'javascript') {
     updateCodeDisplay(code, tab);
 }
 
-// Generate transform code
+// Enhanced wrapper for transform code generation
+function generateTransformCodeEnhanced(tab = 'javascript') {
+    try {
+        const options = collectTransformOptions();
+
+        // Try enhanced generation first
+        const enhancedCode = enhancedCodeGenerator.generateCode('transform', tab, options);
+
+        if (enhancedCode && !enhancedCode.includes('fallback implementation')) {
+            updateCodeDisplayEnhanced(enhancedCode, tab, 'transform');
+            return;
+        }
+
+        // Fall back to original generation if enhanced fails
+        generateTransformCode(tab);
+    } catch (error) {
+        console.error('Enhanced transform generation failed:', error);
+        generateTransformCode(tab);
+    }
+}
+
+// Generate transform code (original function preserved)
 function generateTransformCode(tab = 'javascript') {
     const options = collectTransformOptions();
     let code = '';
@@ -2276,70 +3650,6 @@ function generateCaptionCode() {
             code += `\n\n<!-- This URL includes pre-processing transformations before caption generation -->`;
         }
 
-    } else if (tab === 'angular') {
-        code = `// Angular Caption Service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class CaptionService {
-  constructor(private http: HttpClient) {}
-
-  generateCaption() {
-    return this.http.get('${url}');
-  }
-}
-
-// Component usage
-@Component({
-  selector: 'app-caption',
-  template: \`<button (click)="generateCaption()">Generate Caption</button>\`
-})
-export class CaptionComponent {
-  constructor(private captionService: CaptionService) {}
-
-  generateCaption() {
-    this.captionService.generateCaption().subscribe(
-      data => console.log('Caption:', data),
-      error => console.error('Caption failed:', error)
-    );
-  }
-}`;
-
-        if (transformChain) {
-            code += `\n\n// This URL includes pre-processing transformations before caption generation`;
-        }
-
-    } else if (tab === 'nodejs') {
-        code = `// Node.js Caption Server
-const express = require('express');
-const fetch = require('node-fetch');
-const app = express();
-
-app.get('/generate-caption/:handle', async (req, res) => {
-  try {
-    const handle = req.params.handle;
-    const url = '${url.replace(source, '\${handle}')}';
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    res.json({ success: true, caption: data });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.listen(3000, () => {
-  console.log('Caption server running on port 3000');
-});`;
-
-        if (transformChain) {
-            code += `\n\n// This URL includes pre-processing transformations before caption generation`;
-        }
-
     } else if (tab === 'url') {
         code = `// Caption URL\nconst url = '${url}';`;
 
@@ -2547,59 +3857,6 @@ function generateOcrCode() {
 
     } else if (tab === 'vue') {
         code = `<template><button @click="run">Run OCR</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('OCR:', await r.json()); } } }</script>`;
-    } else if (tab === 'angular') {
-        code = `// Angular OCR Service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class OcrService {
-  constructor(private http: HttpClient) {}
-
-  runOcr() {
-    return this.http.get('${url}');
-  }
-}
-
-@Component({
-  selector: 'app-ocr',
-  template: \`<button (click)="runOcr()">Run OCR</button>\`
-})
-export class OcrComponent {
-  constructor(private ocrService: OcrService) {}
-
-  runOcr() {
-    this.ocrService.runOcr().subscribe(
-      data => console.log('OCR:', data),
-      error => console.error('OCR failed:', error)
-    );
-  }
-}`;
-    } else if (tab === 'nodejs') {
-        code = `// Node.js OCR Server
-const express = require('express');
-const fetch = require('node-fetch');
-const app = express();
-
-app.get('/ocr/:handle', async (req, res) => {
-  try {
-    const handle = req.params.handle;
-    const url = '${url.replace(source, '\${handle}')}';
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    res.json({ success: true, ocr: data });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.listen(3000, () => {
-  console.log('OCR server running on port 3000');
-});`;
 
         if (transformChain) {
             code += `\n\n<!-- This URL includes pre-processing transformations before OCR -->`;
@@ -2705,208 +3962,6 @@ function generateMetadataCode() {
     } else if (tab === 'url') {
         code = `// File API metadata URL\nconst url = '${url}';`;
     }
-    updateCodeDisplay(code, tab);
-}
-
-// Webhooks
-function generateWebhooksCode() {
-    const endpoint = document.getElementById('webhookEndpoint')?.value || 'https://yourapp.com/webhook/filestack';
-    const events = [];
-    if (document.getElementById('webhookUpload')?.checked) events.push('file.uploaded');
-    if (document.getElementById('webhookProcess')?.checked) events.push('file.processed');
-    if (document.getElementById('webhookWorkflow')?.checked) events.push('workflow.completed');
-    const secret = document.getElementById('webhookSecret')?.value || 'your_webhook_secret';
-    const retries = validateIntegerInput('webhookRetries') || 3;
-    const customPayload = document.getElementById('webhookCustomPayload')?.value || '';
-
-    const tab = getCurrentTab();
-    let code = '';
-
-    if (tab === 'javascript') {
-        code = `// Configure webhook endpoint
-const webhookConfig = {
-  url: '${endpoint}',
-  events: ${JSON.stringify(events)},
-  secret: '${secret}',
-  retryAttempts: ${retries}${customPayload ? `,
-  customPayload: ${customPayload}` : ''}
-};
-
-// Set up webhook (usually done via dashboard or API)
-// Example webhook payload handler:
-app.post('/webhook/filestack', (req, res) => {
-  const payload = req.body;
-  console.log('Webhook received:', payload);
-
-  // Verify webhook signature
-  const signature = req.headers['x-filestack-signature'];
-  const expectedSig = crypto.createHmac('sha256', '${secret}')
-    .update(JSON.stringify(payload))
-    .digest('hex');
-
-  if (signature === expectedSig) {
-    // Process webhook data
-    handleFilestackEvent(payload);
-    res.status(200).send('OK');
-  } else {
-    res.status(401).send('Unauthorized');
-  }
-});`;
-    } else if (tab === 'react') {
-        code = `const WebhookHandler = () => {
-  const webhookConfig = {
-    url: '${endpoint}',
-    events: ${JSON.stringify(events)},
-    secret: '${secret}',
-    retryAttempts: ${retries}${customPayload ? `,
-    customPayload: ${customPayload}` : ''}
-  };
-
-  const handleWebhook = useCallback((payload) => {
-    console.log('Webhook received:', payload);
-    // Process webhook data
-  }, []);
-
-  return (
-    <div>
-      <p>Webhook endpoint: {webhookConfig.url}</p>
-      <p>Events: {webhookConfig.events.join(', ')}</p>
-    </div>
-  );
-};`;
-    } else if (tab === 'vue') {
-        code = `<template>
-  <div>
-    <p>Webhook endpoint: {{ webhookConfig.url }}</p>
-    <p>Events: {{ webhookConfig.events.join(', ') }}</p>
-  </div>
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-      webhookConfig: {
-        url: '${endpoint}',
-        events: ${JSON.stringify(events)},
-        secret: '${secret}',
-        retryAttempts: ${retries}${customPayload ? `,
-        customPayload: ${customPayload}` : ''}
-      }
-    };
-  },
-  methods: {
-    handleWebhook(payload) {
-      console.log('Webhook received:', payload);
-      // Process webhook data
-    }
-  }
-};
-</script>`;
-    } else if (tab === 'angular') {
-        code = `// Angular Webhook Service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class WebhookService {
-  private webhookConfig = {
-    url: '${endpoint}',
-    events: ${JSON.stringify(events)},
-    secret: '${secret}',
-    retryAttempts: ${retries}${customPayload ? `,
-    customPayload: ${customPayload}` : ''}
-  };
-
-  constructor(private http: HttpClient) {}
-
-  handleWebhook(payload: any) {
-    console.log('Webhook received:', payload);
-    // Process webhook data
-  }
-
-  // Webhook endpoint handler (if implementing in Angular Universal)
-  setupWebhookEndpoint() {
-    // This would typically be in your backend/server setup
-    return this.webhookConfig;
-  }
-}`;
-    } else if (tab === 'nodejs') {
-        code = `// Node.js Webhook Server
-const express = require('express');
-const crypto = require('crypto');
-const app = express();
-
-app.use(express.json());
-
-const webhookConfig = {
-  url: '${endpoint}',
-  events: ${JSON.stringify(events)},
-  secret: '${secret}',
-  retryAttempts: ${retries}${customPayload ? `,
-  customPayload: ${customPayload}` : ''}
-};
-
-// Webhook endpoint handler
-app.post('/webhook/filestack', (req, res) => {
-  const payload = req.body;
-
-  // Verify webhook signature
-  const signature = req.headers['x-filestack-signature'];
-  const expectedSig = crypto.createHmac('sha256', '${secret}')
-    .update(JSON.stringify(payload))
-    .digest('hex');
-
-  if (signature === expectedSig) {
-    console.log('Webhook received:', payload);
-
-    // Process different event types
-    switch(payload.event) {
-      case 'file.uploaded':
-        handleFileUploaded(payload);
-        break;
-      case 'file.processed':
-        handleFileProcessed(payload);
-        break;
-      case 'workflow.completed':
-        handleWorkflowCompleted(payload);
-        break;
-    }
-
-    res.status(200).send('OK');
-  } else {
-    res.status(401).send('Unauthorized');
-  }
-});
-
-function handleFileUploaded(payload) {
-  // Handle file upload completion
-}
-
-function handleFileProcessed(payload) {
-  // Handle file processing completion
-}
-
-function handleWorkflowCompleted(payload) {
-  // Handle workflow completion
-}
-
-app.listen(3000, () => {
-  console.log('Webhook server running on port 3000');
-});`;
-    } else if (tab === 'url') {
-        code = `// Webhook configuration (set via API or dashboard)
-const config = {
-  url: '${endpoint}',
-  events: ${JSON.stringify(events)},
-  secret: '${secret}',
-  retryAttempts: ${retries}${customPayload ? `,
-  customPayload: ${customPayload}` : ''}
-};`;
-    }
-
     updateCodeDisplay(code, tab);
 }
 
@@ -4215,687 +5270,4 @@ const transformUrl = '${transformUrl}';
 //
 // Or as CSS background:
 // background-image: url('\${transformUrl}');`;
-}
-
-// Video Processing
-function generateVideoProcessingCode() {
-    const handle = document.getElementById('videoHandle')?.value || 'YOUR_FILE_HANDLE';
-    const preset = document.getElementById('videoPreset')?.value || 'h264';
-    const width = validateIntegerInput('videoWidth') || 1920;
-    const height = validateIntegerInput('videoHeight') || 1080;
-    const fps = validateIntegerInput('videoFps') || 30;
-    const audioBitrate = validateIntegerInput('videoAudioBitrate') || 128;
-
-    const tab = getCurrentTab();
-    let code = '';
-
-    if (tab === 'javascript') {
-        code = `// Video processing with custom parameters
-const videoParams = {
-  preset: '${preset}',
-  width: ${width},
-  height: ${height},
-  fps: ${fps},
-  audio_bitrate: ${audioBitrate}
-};
-
-// Synchronous URL-based processing
-const videoUrl = \`https://cdn.filestackcontent.com/video_convert=preset:\${videoParams.preset},width:\${videoParams.width},height:\${videoParams.height},fps:\${videoParams.fps},audio_bitrate:\${videoParams.audio_bitrate}/${handle}\`;
-
-// Asynchronous processing for large files
-fetch('https://process.filestackapi.com/', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    sources: ['${handle}'],
-    tasks: [{
-      name: 'video_convert',
-      params: videoParams
-    }]
-  })
-}).then(r => r.json()).then(data => console.log('Video job:', data));`;
-    } else if (tab === 'react') {
-        code = `const VideoProcessor = () => {
-  const processVideo = async () => {
-    const response = await fetch('https://process.filestackapi.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sources: ['${handle}'],
-        tasks: [{
-          name: 'video_convert',
-          params: {
-            preset: '${preset}',
-            width: ${width},
-            height: ${height},
-            fps: ${fps},
-            audio_bitrate: ${audioBitrate}
-          }
-        }]
-      })
-    });
-    const result = await response.json();
-    console.log('Video processing result:', result);
-  };
-
-  return <button onClick={processVideo}>Process Video</button>;
-};`;
-    } else if (tab === 'vue') {
-        code = `<template>
-  <button @click="processVideo">Process Video</button>
-</template>
-
-<script>
-export default {
-  methods: {
-    async processVideo() {
-      const response = await fetch('https://process.filestackapi.com/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sources: ['${handle}'],
-          tasks: [{
-            name: 'video_convert',
-            params: {
-              preset: '${preset}',
-              width: ${width},
-              height: ${height},
-              fps: ${fps},
-              audio_bitrate: ${audioBitrate}
-            }
-          }]
-        })
-      });
-      const result = await response.json();
-      console.log('Video processing result:', result);
-    }
-  }
-};
-</script>`;
-    } else if (tab === 'angular') {
-        code = `// Angular Video Processing Service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class VideoProcessingService {
-  constructor(private http: HttpClient) {}
-
-  processVideo(): Observable<any> {
-    const videoParams = {
-      preset: '${preset}',
-      width: ${width},
-      height: ${height},
-      fps: ${fps},
-      audio_bitrate: ${audioBitrate}
-    };
-
-    return this.http.post('https://process.filestackapi.com/', {
-      sources: ['${handle}'],
-      tasks: [{
-        name: 'video_convert',
-        params: videoParams
-      }]
-    });
-  }
-
-  // Generate transform URL for synchronous processing
-  getVideoTransformUrl(): string {
-    return 'https://cdn.filestackcontent.com/video_convert=preset:${preset},width:${width},height:${height},fps:${fps},audio_bitrate:${audioBitrate}/${handle}';
-  }
-}
-
-// Component usage
-@Component({
-  selector: 'app-video-processor',
-  template: \`<button (click)="processVideo()">Process Video</button>\`
-})
-export class VideoProcessorComponent {
-  constructor(private videoService: VideoProcessingService) {}
-
-  processVideo() {
-    this.videoService.processVideo().subscribe(
-      result => console.log('Video processing result:', result),
-      error => console.error('Video processing error:', error)
-    );
-  }
-}`;
-    } else if (tab === 'nodejs') {
-        code = `// Node.js Video Processing Server
-const filestack = require('filestack-js');
-const express = require('express');
-const app = express();
-
-app.use(express.json());
-
-const client = filestack.init('YOUR_API_KEY');
-
-// Process video endpoint
-app.post('/process-video', async (req, res) => {
-  try {
-    const videoParams = {
-      preset: '${preset}',
-      width: ${width},
-      height: ${height},
-      fps: ${fps},
-      audio_bitrate: ${audioBitrate}
-    };
-
-    // Asynchronous processing
-    const response = await fetch('https://process.filestackapi.com/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer YOUR_API_KEY'
-      },
-      body: JSON.stringify({
-        sources: ['${handle}'],
-        tasks: [{
-          name: 'video_convert',
-          params: videoParams
-        }]
-      })
-    });
-
-    const result = await response.json();
-    res.json({
-      success: true,
-      jobId: result.job_id,
-      message: 'Video processing started'
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
-
-// Generate transform URL for synchronous processing
-app.get('/video-transform-url/:handle', (req, res) => {
-  const handle = req.params.handle;
-  const transformUrl = \`https://cdn.filestackcontent.com/video_convert=preset:${preset},width:${width},height:${height},fps:${fps},audio_bitrate:${audioBitrate}/\${handle}\`;
-
-  res.json({ transformUrl });
-});
-
-app.listen(3000, () => {
-  console.log('Video processing server running on port 3000');
-});`;
-    } else if (tab === 'url') {
-        code = `// Video processing URL
-const videoUrl = 'https://cdn.filestackcontent.com/video_convert=preset:${preset},width:${width},height:${height},fps:${fps},audio_bitrate:${audioBitrate}/${handle}';`;
-    }
-
-    updateCodeDisplay(code, tab);
-}
-
-// Audio Processing
-function generateAudioProcessingCode() {
-    const handle = document.getElementById('audioHandle')?.value || 'YOUR_FILE_HANDLE';
-    const format = document.getElementById('audioFormat')?.value || 'mp3';
-    const bitrate = validateIntegerInput('audioBitrate') || 320;
-    const sampleRate = validateIntegerInput('audioSampleRate') || 44100;
-
-    const tab = getCurrentTab();
-    let code = '';
-
-    if (tab === 'javascript') {
-        code = `// Audio processing with format conversion
-const audioParams = {
-  format: '${format}',
-  bitrate: ${bitrate},
-  sample_rate: ${sampleRate}
-};
-
-const audioUrl = \`https://cdn.filestackcontent.com/audio_convert=format:\${audioParams.format},bitrate:\${audioParams.bitrate},sample_rate:\${audioParams.sample_rate}/${handle}\`;
-
-// For asynchronous processing
-fetch('https://process.filestackapi.com/', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    sources: ['${handle}'],
-    tasks: [{
-      name: 'audio_convert',
-      params: audioParams
-    }]
-  })
-}).then(r => r.json()).then(data => console.log('Audio job:', data));`;
-    } else if (tab === 'react') {
-        code = `const AudioProcessor = () => {
-  const processAudio = async () => {
-    const response = await fetch('https://process.filestackapi.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sources: ['${handle}'],
-        tasks: [{
-          name: 'audio_convert',
-          params: {
-            format: '${format}',
-            bitrate: ${bitrate},
-            sample_rate: ${sampleRate}
-          }
-        }]
-      })
-    });
-    const result = await response.json();
-    console.log('Audio processing result:', result);
-  };
-
-  return <button onClick={processAudio}>Process Audio</button>;
-};`;
-    } else if (tab === 'vue') {
-        code = `<template>
-  <button @click="processAudio">Process Audio</button>
-</template>
-
-<script>
-export default {
-  methods: {
-    async processAudio() {
-      const response = await fetch('https://process.filestackapi.com/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sources: ['${handle}'],
-          tasks: [{
-            name: 'audio_convert',
-            params: {
-              format: '${format}',
-              bitrate: ${bitrate},
-              sample_rate: ${sampleRate}
-            }
-          }]
-        })
-      });
-      const result = await response.json();
-      console.log('Audio processing result:', result);
-    }
-  }
-};
-</script>`;
-    } else if (tab === 'angular') {
-        code = `// Angular Audio Processing Service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class AudioProcessingService {
-  constructor(private http: HttpClient) {}
-
-  processAudio() {
-    return this.http.post('https://process.filestackapi.com/', {
-      sources: ['${handle}'],
-      tasks: [{
-        name: 'audio_convert',
-        params: {
-          format: '${format}',
-          bitrate: ${bitrate},
-          sample_rate: ${sampleRate}
-        }
-      }]
-    });
-  }
-}`;
-    } else if (tab === 'nodejs') {
-        code = `// Node.js Audio Processing
-const express = require('express');
-const app = express();
-
-app.post('/process-audio', async (req, res) => {
-  const response = await fetch('https://process.filestackapi.com/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      sources: ['${handle}'],
-      tasks: [{
-        name: 'audio_convert',
-        params: {
-          format: '${format}',
-          bitrate: ${bitrate},
-          sample_rate: ${sampleRate}
-        }
-      }]
-    })
-  });
-  const result = await response.json();
-  res.json(result);
-});`;
-    } else if (tab === 'url') {
-        code = `// Audio processing URL
-const audioUrl = 'https://cdn.filestackcontent.com/audio_convert=format:${format},bitrate:${bitrate},sample_rate:${sampleRate}/${handle}';`;
-    }
-
-    updateCodeDisplay(code, tab);
-}
-
-// Workflows
-function generateWorkflowsCode() {
-    const workflowId = document.getElementById('workflowId')?.value || 'YOUR_WORKFLOW_ID';
-    const sources = document.getElementById('workflowSources')?.value || 'YOUR_FILE_HANDLE';
-    const webhookUrl = document.getElementById('workflowWebhook')?.value || '';
-
-    const tab = getCurrentTab();
-    let code = '';
-
-    if (tab === 'javascript') {
-        code = `// Execute workflow
-const workflowConfig = {
-  workflow_id: '${workflowId}',
-  sources: ['${sources}']${webhookUrl ? `,
-  webhook_url: '${webhookUrl}'` : ''}
-};
-
-fetch('https://process.filestackapi.com/workflows', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_API_KEY'
-  },
-  body: JSON.stringify(workflowConfig)
-}).then(r => r.json()).then(data => {
-  console.log('Workflow started:', data);
-  // data.job_id can be used to track progress
-});`;
-    } else if (tab === 'react') {
-        code = `const WorkflowRunner = () => {
-  const runWorkflow = async () => {
-    const response = await fetch('https://process.filestackapi.com/workflows', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer YOUR_API_KEY'
-      },
-      body: JSON.stringify({
-        workflow_id: '${workflowId}',
-        sources: ['${sources}']${webhookUrl ? `,
-        webhook_url: '${webhookUrl}'` : ''}
-      })
-    });
-    const result = await response.json();
-    console.log('Workflow started:', result);
-  };
-
-  return <button onClick={runWorkflow}>Run Workflow</button>;
-};`;
-    } else if (tab === 'vue') {
-        code = `<template>
-  <button @click="runWorkflow">Run Workflow</button>
-</template>
-
-<script>
-export default {
-  methods: {
-    async runWorkflow() {
-      const response = await fetch('https://process.filestackapi.com/workflows', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer YOUR_API_KEY'
-        },
-        body: JSON.stringify({
-          workflow_id: '${workflowId}',
-          sources: ['${sources}']${webhookUrl ? `,
-          webhook_url: '${webhookUrl}'` : ''}
-        })
-      });
-      const result = await response.json();
-      console.log('Workflow started:', result);
-    }
-  }
-};
-</script>`;
-    } else if (tab === 'angular') {
-        code = `// Angular Workflow Service
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class WorkflowService {
-  constructor(private http: HttpClient) {}
-
-  runWorkflow() {
-    return this.http.post('https://process.filestackapi.com/workflows', {
-      workflow_id: '${workflowId}',
-      sources: ['${sources}']${webhookUrl ? `,
-      webhook_url: '${webhookUrl}'` : ''}
-    }, {
-      headers: {
-        'Authorization': 'Bearer YOUR_API_KEY'
-      }
-    });
-  }
-}`;
-    } else if (tab === 'nodejs') {
-        code = `// Node.js Workflow Server
-const express = require('express');
-const app = express();
-
-app.post('/run-workflow', async (req, res) => {
-  try {
-    const response = await fetch('https://process.filestackapi.com/workflows', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer YOUR_API_KEY'
-      },
-      body: JSON.stringify({
-        workflow_id: '${workflowId}',
-        sources: ['${sources}']${webhookUrl ? `,
-        webhook_url: '${webhookUrl}'` : ''}
-      })
-    });
-    const result = await response.json();
-    res.json({ success: true, jobId: result.job_id });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});`;
-    } else if (tab === 'url') {
-        code = `// Workflow execution via API
-const workflowConfig = {
-  workflow_id: '${workflowId}',
-  sources: ['${sources}']${webhookUrl ? `,
-  webhook_url: '${webhookUrl}'` : ''}
-};`;
-    }
-
-    updateCodeDisplay(code, tab);
-}
-
-// Custom Source
-function generateCustomSourceCode() {
-    const sourceName = document.getElementById('customSourceName')?.value || 'my_enterprise_system';
-    const displayName = document.getElementById('customSourceDisplayName')?.value || 'Enterprise Files';
-    const authUrl = document.getElementById('customSourceAuthUrl')?.value || 'https://api.mycompany.com/auth';
-    const listUrl = document.getElementById('customSourceListUrl')?.value || 'https://api.mycompany.com/files';
-    const clientId = document.getElementById('customSourceClientId')?.value || 'your_client_id';
-
-    const tab = getCurrentTab();
-    let code = '';
-
-    if (tab === 'javascript') {
-        code = `// Custom source configuration
-const customSource = {
-  name: '${sourceName}',
-  displayName: '${displayName}',
-  authUrl: '${authUrl}',
-  listUrl: '${listUrl}',
-  authType: 'oauth2',
-  clientId: '${clientId}',
-  scope: 'files.read'
-};
-
-// Using custom source in picker
-const client = filestack.init('YOUR_API_KEY');
-client.pick({
-  fromSources: ['${sourceName}'],
-  customSourceConfig: customSource
-}).then(result => {
-  console.log('Files selected from custom source:', result);
-});`;
-    } else if (tab === 'react') {
-        code = `const CustomSourcePicker = () => {
-  const openPicker = () => {
-    const client = filestack.init('YOUR_API_KEY');
-    client.pick({
-      fromSources: ['${sourceName}'],
-      customSourceConfig: {
-        name: '${sourceName}',
-        displayName: '${displayName}',
-        authUrl: '${authUrl}',
-        listUrl: '${listUrl}',
-        authType: 'oauth2',
-        clientId: '${clientId}',
-        scope: 'files.read'
-      }
-    }).then(result => {
-      console.log('Files selected:', result);
-    });
-  };
-
-  return <button onClick={openPicker}>Open Custom Source Picker</button>;
-};`;
-    } else if (tab === 'vue') {
-        code = `<template>
-  <button @click="openPicker">Open Custom Source Picker</button>
-</template>
-
-<script>
-export default {
-  methods: {
-    openPicker() {
-      const client = filestack.init('YOUR_API_KEY');
-      client.pick({
-        fromSources: ['${sourceName}'],
-        customSourceConfig: {
-          name: '${sourceName}',
-          displayName: '${displayName}',
-          authUrl: '${authUrl}',
-          listUrl: '${listUrl}',
-          authType: 'oauth2',
-          clientId: '${clientId}',
-          scope: 'files.read'
-        }
-      }).then(result => {
-        console.log('Files selected:', result);
-      });
-    }
-  }
-};
-</script>`;
-    } else if (tab === 'angular') {
-        code = `// Angular Custom Source Service
-import { Injectable } from '@angular/core';
-import { FilestackService } from '@filestack/angular';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class CustomSourceService {
-  constructor(private filestack: FilestackService) {}
-
-  openCustomSourcePicker() {
-    const customSourceConfig = {
-      name: '${sourceName}',
-      displayName: '${displayName}',
-      authUrl: '${authUrl}',
-      listUrl: '${listUrl}',
-      authType: 'oauth2',
-      clientId: '${clientId}',
-      scope: 'files.read'
-    };
-
-    return this.filestack.pick({
-      fromSources: ['${sourceName}'],
-      customSourceConfig: customSourceConfig
-    });
-  }
-}
-
-// Component usage
-@Component({
-  selector: 'app-custom-picker',
-  template: \`<button (click)="openPicker()">Open Custom Source</button>\`
-})
-export class CustomPickerComponent {
-  constructor(private customSource: CustomSourceService) {}
-
-  openPicker() {
-    this.customSource.openCustomSourcePicker().then(result => {
-      console.log('Files selected:', result);
-    });
-  }
-}`;
-    } else if (tab === 'nodejs') {
-        code = `// Node.js Custom Source Proxy Server
-const express = require('express');
-const app = express();
-
-app.use(express.json());
-
-// Custom source configuration
-const customSourceConfig = {
-  name: '${sourceName}',
-  displayName: '${displayName}',
-  authUrl: '${authUrl}',
-  listUrl: '${listUrl}',
-  authType: 'oauth2',
-  clientId: '${clientId}',
-  scope: 'files.read'
-};
-
-// Proxy endpoint for custom source authentication
-app.get('/custom-source/auth', (req, res) => {
-  // Redirect to your custom authentication URL
-  res.redirect(customSourceConfig.authUrl);
-});
-
-// Proxy endpoint for file listing
-app.get('/custom-source/files', async (req, res) => {
-  try {
-    const response = await fetch(customSourceConfig.listUrl, {
-      headers: {
-        'Authorization': req.headers.authorization
-      }
-    });
-    const files = await response.json();
-    res.json(files);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Serve the picker configuration
-app.get('/custom-source/config', (req, res) => {
-  res.json(customSourceConfig);
-});
-
-app.listen(3000, () => {
-  console.log('Custom source proxy server running on port 3000');
-});`;
-    } else if (tab === 'url') {
-        code = `// Custom source configuration
-const customSourceConfig = {
-  name: '${sourceName}',
-  displayName: '${displayName}',
-  authUrl: '${authUrl}',
-  listUrl: '${listUrl}',
-  authType: 'oauth2',
-  clientId: '${clientId}',
-  scope: 'files.read'
-};`;
-    }
-
-    updateCodeDisplay(code, tab);
 }

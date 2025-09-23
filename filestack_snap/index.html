@@ -2507,7 +2507,17 @@
         <!-- Code Panel -->
         <aside class="code-panel">
             <div class="code-header">
-                <h3><i class="fas fa-code"></i> Generated Code</h3>
+                <div class="code-header-top">
+                    <h3><i class="fas fa-code"></i> Generated Code</h3>
+                    <div class="code-actions">
+                        <button id="generateCodeBtn" class="btn btn-primary btn-small" onclick="manualGenerateCode()">
+                            <i class="fas fa-play"></i> Generate Code
+                        </button>
+                        <button class="btn btn-secondary btn-small" onclick="copyCode()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
                 <div class="code-tabs">
                     <button class="tab-btn active" data-tab="javascript">JavaScript</button>
                     <button class="tab-btn" data-tab="react">React</button>
@@ -2516,15 +2526,12 @@
                     <button class="tab-btn" data-tab="nodejs">Node.js</button>
                     <button class="tab-btn" data-tab="url">URL</button>
                 </div>
-                <button class="btn btn-secondary btn-small" onclick="copyCode()">
-                    <i class="fas fa-copy"></i> Copy
-                </button>
             </div>
 
             <div class="code-content">
                 <pre><code class="language-javascript" id="generatedCode">
 // Your generated code will appear here
-// Select options and click "Generate Code" to see the result
+// Configure your options and click "Generate Code" button above
                 </code></pre>
             </div>
 
