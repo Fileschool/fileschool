@@ -1033,7 +1033,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Image Resizing</h3>
                         <p class="feature-description">Resize images to any dimension while maintaining optimal quality with smart cropping and retention of important features.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/resize=width:300,height:200/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/resize=width:300,height:200/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1045,7 +1045,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Smart Crop</h3>
                         <p class="feature-description">Automatically crop images based on content detection (faces/objects) with optional coordinates output.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/smart_crop=width:400,height:400,mode:face/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/smart_crop=width:400,height:400,mode:face/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1057,7 +1057,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Filters & Effects</h3>
                         <p class="feature-description">Apply professional-grade filters including sepia, blur, sharpen, enhance, and creative effects.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/filter=sepia:50/enhance=brightness:20,contrast:30/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/filter=sepia:50/enhance=brightness:20,contrast:30/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1069,7 +1069,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Watermark & Overlays</h3>
                         <p class="feature-description">Add watermark overlays on your images with customizable position, size, and opacity.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/watermark=position:[middle,center]/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/watermark=position:[middle,center]/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1081,11 +1081,43 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Document Processing</h3>
                         <p class="feature-description">Extract PDF info, merge or convert PDFs, and transform documents into images in one call.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/output=f:pdf/pdfinfo=colorinfo:true/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/output=f:pdf/pdfinfo=colorinfo:true/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
                         <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Document Processing Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="video-audio-processing">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Video & Audio Processing</h3>
+                        <p class="feature-description">Advanced video and audio transcoding with format conversion, quality control, and effects. Supports asynchronous processing for large files.</p>
+                        <div class="code-block">// Video transcoding with custom parameters
+https://cdn.filestackcontent.com/video_convert=preset:h264,width:1920,height:1080,fps:30,audio_bitrate:128/<HANDLE>
+
+// Audio processing with format conversion
+https://cdn.filestackcontent.com/audio_convert=format:mp3,bitrate:320,sample_rate:44100/<HANDLE>
+
+// Asynchronous processing (returns job UUID)
+POST https://process.filestackapi.com/
+{
+  "sources": ["<HANDLE>"],
+  "tasks": [{
+    "name": "video_convert",
+    "params": {
+      "preset": "h264",
+      "width": "1920",
+      "height": "1080",
+      "fps": "30",
+      "audio_bitrate": "128"
+    }
+  }]
+}</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Video Audio Processing Example">
                     </div>
                 </div>
             </div>
@@ -1121,10 +1153,10 @@
                         <p class="feature-description">Upload from 25+ sources including local files, Google Drive, Dropbox, Instagram, Facebook, and more.</p>
                         <div class="code-block">const options = {
   fromSources: [
-    'local_file_system', 
-    'googledrive', 
+    'local_file_system',
+    'googledrive',
     'dropbox',
-    'instagram', 
+    'instagram',
     'facebook'
   ]
 };</div>
@@ -1132,6 +1164,81 @@
                     </div>
                     <div class="feature-image">
                         <img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Multi-Source Upload">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="webhooks-integration">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Webhooks Integration</h3>
+                        <p class="feature-description">Real-time event notifications for upload completion, processing status, and workflow completion with customizable payload and retry logic.</p>
+                        <div class="code-block">// Configure webhook endpoint
+const webhookConfig = {
+  url: 'https://yourapp.com/webhook/filestack',
+  events: ['file.uploaded', 'file.processed', 'workflow.completed'],
+  secret: 'your_webhook_secret',
+  retryAttempts: 3,
+  customPayload: {
+    userId: '{user_id}',
+    projectId: '{project_id}'
+  }
+};
+
+// Webhook payload example
+{
+  "event": "file.uploaded",
+  "timestamp": "2025-01-20T10:30:00Z",
+  "handle": "ABC123DEF456",
+  "filename": "image.jpg",
+  "size": 1024000,
+  "mimetype": "image/jpeg",
+  "metadata": {
+    "width": 1920,
+    "height": 1080
+  },
+  "custom": {
+    "userId": "user123",
+    "projectId": "proj456"
+  }
+}</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Webhooks Integration">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="custom-source-integration">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Custom Source Integration</h3>
+                        <p class="feature-description">Create custom upload sources with your own authentication, file listing, and upload logic for enterprise systems and proprietary storage.</p>
+                        <div class="code-block">// Custom source configuration
+const customSource = {
+  name: 'my_enterprise_system',
+  displayName: 'Enterprise Files',
+  authUrl: 'https://api.mycompany.com/auth',
+  listUrl: 'https://api.mycompany.com/files',
+  downloadUrl: 'https://api.mycompany.com/download',
+  authType: 'oauth2',
+  clientId: 'your_client_id',
+  scope: 'files.read',
+  headers: {
+    'X-Custom-Header': 'value'
+  },
+  params: {
+    'department': 'marketing',
+    'access_level': 'read'
+  }
+};
+
+// Using custom source in picker
+client.pick({
+  fromSources: ['my_enterprise_system'],
+  customSourceConfig: customSource
+});</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Custom Source Integration">
                     </div>
                 </div>
             </div>
@@ -1147,7 +1254,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Custom Workflow Processing</h3>
                         <p class="feature-description">Run predefined workflows on your files to automate multi-step transformations and processing tasks.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/run_workflow=id:&lt;WORKFLOW_ID&gt;/&lt;FILE_HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/run_workflow=id:<WORKFLOW_ID>/<FILE_HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1170,6 +1277,117 @@
                     </div>
                     <div class="feature-image">
                         <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Batch Processing Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="advanced-workflow-parameters">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Advanced Workflow Configuration</h3>
+                        <p class="feature-description">Create complex workflows with conditional logic, custom parameters, error handling, and dynamic task chaining for enterprise-grade automation.</p>
+                        <div class="code-block">// Advanced workflow with parameters
+const advancedWorkflow = {
+  name: 'enterprise_processing_pipeline',
+  description: 'Complete file processing with intelligence and delivery',
+  sources: ['<HANDLE_1>', '<HANDLE_2>', '<HANDLE_N>'],
+
+  // Global workflow parameters
+  parameters: {
+    quality_threshold: 0.8,
+    output_format: 'webp',
+    compression_level: 'high',
+    webhook_url: 'https://yourapp.com/webhook',
+    notification_email: 'admin@yourcompany.com',
+    batch_size: 10,
+    max_retries: 3
+  },
+
+  tasks: [
+    {
+      name: 'virus_detection',
+      condition: 'always',
+      params: {
+        action_on_threat: 'quarantine',
+        notify_admin: true
+      }
+    },
+    {
+      name: 'metadata_extraction',
+      condition: 'if_safe',
+      params: {
+        include: ['exif', 'iptc', 'technical'],
+        store_metadata: true,
+        privacy_filter: 'remove_gps'
+      }
+    },
+    {
+      name: 'image_resize',
+      condition: 'if_image',
+      params: {
+        width: '{dynamic_width}',
+        height: '{dynamic_height}',
+        maintain_aspect_ratio: true,
+        upscale_limit: '2x'
+      }
+    },
+    {
+      name: 'video_convert',
+      condition: 'if_video',
+      params: {
+        preset: 'h264_high',
+        max_bitrate: '5000k',
+        audio_codec: 'aac',
+        subtitle_burn: false
+      }
+    },
+    {
+      name: 'OCR',
+      condition: 'if_document_or_image',
+      params: {
+        language: 'auto_detect',
+        output_format: 'searchable_pdf',
+        confidence_threshold: 0.7
+      }
+    },
+    {
+      name: 'text_sentiment',
+      condition: 'if_text_extracted',
+      params: {
+        analyze_emotions: true,
+        context_analysis: true,
+        language: 'auto'
+      }
+    }
+  ],
+
+  // Error handling and notifications
+  error_handling: {
+    on_task_failure: 'continue_with_warning',
+    max_failures_per_batch: 2,
+    notify_on_errors: true
+  },
+
+  // Output configuration
+  output: {
+    store_to: 's3://my-bucket/processed/',
+    naming_pattern: '{original_name}_{timestamp}_{task_name}',
+    generate_thumbnails: true,
+    create_manifest: true
+  }
+};
+
+// Execute workflow with custom parameters
+fetch('https://process.filestackapi.com/workflows', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(advancedWorkflow)
+});</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Advanced Workflow Configuration">
                     </div>
                 </div>
             </div>
@@ -1197,7 +1415,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">OCR (Optical Character Recognition)</h3>
                         <p class="feature-description">Extract text from images and documents automatically using advanced OCR technology.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/OCR/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/OCR/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1209,7 +1427,7 @@
                     <div class="feature-content">
                         <h3 class="feature-title">Object Detection</h3>
                         <p class="feature-description">Automatically identify and label objects within images using AI-powered object detection.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/detect_objects/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/detect_objects/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1222,7 +1440,7 @@
                         <h3 class="feature-title">Image and Video SFW</h3>
                         <p class="feature-description">Automatically detect and filter inappropriate content in images and videos to keep your platform safe and compliant.</p>
                         <div class="code-block">// Image SFW (Processing API)
-https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/sfw/&lt;HANDLE&gt;
+https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/sfw/<HANDLE>
 
 // Video SFW (Workflows only)
 Video SFW – Create a workflow with Intelligence task</div>
@@ -1237,7 +1455,7 @@ Video SFW – Create a workflow with Intelligence task</div>
                     <div class="feature-content">
                         <h3 class="feature-title">Image Captioning</h3>
                         <p class="feature-description">Automatically generate descriptive captions for your images with advanced AI captioning service.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/caption/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/caption/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1249,7 +1467,7 @@ Video SFW – Create a workflow with Intelligence task</div>
                     <div class="feature-content">
                         <h3 class="feature-title">Copyright Detection</h3>
                         <p class="feature-description">Automatically identify copyrighted content in your files using our robust detection service.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/security=p:&lt;POLICY&gt;,s:&lt;SIGNATURE&gt;/copyright/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/copyright/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1266,6 +1484,80 @@ Video SFW – Create a workflow with Intelligence task</div>
                     </div>
                     <div class="feature-image">
                         <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Phishing Detection Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="metadata-extraction">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Metadata Extraction</h3>
+                        <p class="feature-description">Extract comprehensive metadata from files including EXIF data, document properties, media information, and custom attributes with configurable output formats.</p>
+                        <div class="code-block">// Basic metadata extraction
+https://cdn.filestackcontent.com/metadata/<HANDLE>
+
+// Advanced metadata with custom parameters
+https://cdn.filestackcontent.com/metadata=format:json,include:exif,include:iptc,include:xmp/<HANDLE>
+
+// Programmatic metadata extraction
+const metadataConfig = {
+  format: 'json',
+  include: ['exif', 'iptc', 'xmp', 'technical'],
+  exclude: ['gps_coordinates'],
+  customFields: {
+    extractTextFrom: 'ocr',
+    includeColorProfile: true,
+    includeOrientation: true
+  }
+};
+
+fetch(`https://cdn.filestackcontent.com/metadata=${encodeParams(metadataConfig)}/<HANDLE>`)
+  .then(response => response.json())
+  .then(metadata => {
+    console.log('File metadata:', metadata);
+  });</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Metadata Extraction Example">
+                    </div>
+                </div>
+
+                <div class="feature-item" id="sentiment-analysis">
+                    <div class="feature-content">
+                        <h3 class="feature-title">Text Sentiment Analysis</h3>
+                        <p class="feature-description">AI-powered sentiment analysis of text content extracted from documents, images, or OCR with confidence scoring and emotional tone detection.</p>
+                        <div class="code-block">// Sentiment analysis on extracted text
+https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/text_sentiment=confidence_threshold:0.8,language:en/<HANDLE>
+
+// Combined OCR + Sentiment Analysis
+https://cdn.filestackcontent.com/OCR/text_sentiment=output_format:detailed,include_emotions:true/<HANDLE>
+
+// Workflow for batch sentiment analysis
+{
+  "sources": ["<HANDLE>"],
+  "tasks": [
+    {
+      "name": "OCR",
+      "params": {
+        "language": "en"
+      }
+    },
+    {
+      "name": "text_sentiment",
+      "params": {
+        "confidence_threshold": 0.8,
+        "output_format": "detailed",
+        "include_emotions": true,
+        "categories": ["positive", "negative", "neutral"],
+        "context_analysis": true
+      }
+    }
+  ],
+  "webhook_url": "https://yourapp.com/webhook/sentiment"
+}</div>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                    <div class="feature-image">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=350&h=250&fit=crop&crop=entropy&auto=format&q=60" alt="Sentiment Analysis Example">
                     </div>
                 </div>
             </div>
@@ -1358,7 +1650,7 @@ client.pick({
                     <div class="feature-content">
                         <h3 class="feature-title">Adaptive Delivery</h3>
                         <p class="feature-description">Automatically optimize file delivery based on the user's device, browser, and connection speed.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/output=format:webp,quality:auto/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/output=format:webp,quality:auto/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1370,7 +1662,7 @@ client.pick({
                     <div class="feature-content">
                         <h3 class="feature-title">Global CDN</h3>
                         <p class="feature-description">Deliver content from servers closest to your users with our global Content Delivery Network.</p>
-                        <div class="code-block">https://cdn.filestackcontent.com/cache=expiry:86400/&lt;HANDLE&gt;</div>
+                        <div class="code-block">https://cdn.filestackcontent.com/cache=expiry:86400/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1388,7 +1680,7 @@ ETag: "abc123def456"
 Last-Modified: Wed, 21 Oct 2025 07:28:00 GMT
 
 // URL-based cache control
-https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</div>
+https://cdn.filestackcontent.com/cache=expiry:3600,public:true/<HANDLE></div>
                         <a href="#" class="btn btn-outline">Learn More</a>
                     </div>
                     <div class="feature-image">
@@ -1460,8 +1752,9 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                             <p>25+ sources including cloud storage, social media, and local files</p>
                             <br>
                         </div>
-                    </div>
+                        </div>
                         <a href="#uploads" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Upload</a>
+                    </div>
                 </div>
 
                 <div class="capability-item">
@@ -1476,8 +1769,9 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                             <p>Real-time image and document processing with 100+ formats </br></p>
                             <br>
                         </div>
+                        </div>
+                        <a href="#transformations" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Transform</a>
                     </div>
-                    <a href="#transformations" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Transform</a>
                 </div>
 
                 <div class="capability-item">
@@ -1492,8 +1786,9 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                             <p>AI-powered virus detection, content moderation, and OCR</p>
                             <br>
                         </div>
+                        </div>
+                        <a href="#intelligence" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Intelligence</a>
                     </div>
-                    <a href="#intelligence" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Intelligence</a>
                 </div>
 
                 <div class="capability-item">
@@ -1508,8 +1803,9 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                             <p>Enterprise-grade protection with flexible access controls</p>
                             <br>
                         </div>
+                        </div>
+                        <a href="#security" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Security</a>
                     </div>
-                    <a href="#security" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Security</a>
                 </div>
 
                 <div class="capability-item">
@@ -1524,8 +1820,9 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                         <p>Global CDN with smart caching and adaptive optimization</p>
                         <br>
                     </div>
-                </div>
+                    </div>
                     <a href="#delivery" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Delivery</a>
+                </div>
                 </div>
 
                 <div class="capability-item">
@@ -1540,8 +1837,9 @@ https://cdn.filestackcontent.com/cache=expiry:3600,public:true/&lt;HANDLE&gt;</d
                         <p>Automated pipelines for complex file processing tasks</p>
                         <br>
                     </div>
-                </div>
+                    </div>
                     <a href="#workflows" class="capability-btn" style="display: block; background: #e9ecef; color: #333; padding: 12px 16px; text-decoration: none; font-size: 0.9rem; font-weight: 500; text-align: center; border-radius: 0 0 12px 12px; margin-top: -12px; width: calc(100% - 4px); margin-left: 2px; height: 44px; box-sizing: border-box; line-height: 1.2;">More on Filestack Workflows</a>
+                </div>
                 </div>
             </div>
 
