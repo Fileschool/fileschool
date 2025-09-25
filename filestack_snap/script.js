@@ -379,9 +379,9 @@ const sentimentUrl = '${url}';
         let url;
 
         if (needsApiKey) {
-            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}sentiment/${source}`;
+            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}image_sentiment/${source}`;
         } else {
-            url = `https://cdn.filestackcontent.com/${sec}${transformChain}sentiment/${source}`;
+            url = `https://cdn.filestackcontent.com/${sec}${transformChain}image_sentiment/${source}`;
         }
 
         const chainNote = transformChain ? `\n\n// This URL includes pre-processing transformations: ${transformChain.slice(0, -1)}` : '';
@@ -1180,12 +1180,8 @@ window.enhancedCopyHandler = {
 // Enhanced section-specific validators
 enhancedCodeGenerator.registerValidator('picker', (options) => {
     const errors = [];
-    const apiKey = document.getElementById('globalApikey')?.value;
 
-    if (!apiKey || apiKey === 'YOUR_API_KEY') {
-        errors.push('Please enter a valid Filestack API key');
-    }
-
+    // Removed API key validation - API key is optional for handles
     if (options.maxSize && isNaN(parseInt(options.maxSize))) {
         errors.push('Max file size must be a number');
     }
@@ -1766,8 +1762,8 @@ function setupEventListeners() {
         }
     });
 
-    // Real-time code generation for all sections
-    setupRealTimeCodeGeneration();
+    // End of disabled automatic generation code
+    */
 }
 
 // Setup transform options
@@ -1853,9 +1849,13 @@ function setupInputValidation() {
     });
 }
 
-// Setup real-time code generation for all sections
+// Real-time code generation disabled - using manual generation only
 function setupRealTimeCodeGeneration() {
-    // Picker section
+    // This function is disabled - manual generation only
+    return; // Exit early to prevent automatic generation
+
+    /*
+    // DISABLED: All automatic generation code below
     document.querySelectorAll('#picker input, #picker select, #picker input[type="checkbox"]').forEach(element => {
         element.addEventListener('change', debounce(() => {
             if (currentSection === 'picker') generatePickerCode();
@@ -2399,19 +2399,7 @@ function setupRealTimeCodeGeneration() {
                 const apiKey = document.getElementById('globalApikey').value || 'YOUR_APIKEY';
                 filestackClient = filestack.init(apiKey);
             }
-            // Regenerate code for current section
-            if (currentSection === 'picker') generatePickerCode();
-            else if (currentSection === 'transform') generateTransformCode();
-            else if (currentSection === 'transform-chains') generateTransformChainsCode();
-            else if (currentSection === 'upload') generateUploadCode();
-            else if (currentSection === 'download') generateDownloadCode();
-            else if (currentSection === 'sfw') generateSfwCode();
-            else if (currentSection === 'tagging') generateTaggingCode();
-            else if (currentSection === 'ocr') generateOcrCode();
-            else if (currentSection === 'faces') generateFacesCode();
-            else if (currentSection === 'security') generateSecurityCode();
-            else if (currentSection === 'store') generateStoreCode();
-            else if (currentSection === 'metadata') generateMetadataCode();
+            // Manual generation only - no automatic regeneration
         }, 300));
     }
 }
@@ -2469,9 +2457,9 @@ function switchCodeTab(tabName) {
         activeTab.classList.add('active');
     }
 
-    // Mark configuration as changed when switching tabs
-    if (typeof updateGenerateButton === 'function') {
-        updateGenerateButton(true);
+    // Automatically generate code when switching tabs
+    if (typeof manualGenerateCode === 'function') {
+        manualGenerateCode();
     }
 
     // Update code display with correct language
