@@ -13,7 +13,7 @@
 
 ## 🤝 Contribute
 
-Interested in contributing to a project? Find the CONTRIBUTING file in the community project to learn how. Want to start something new? Reach out to **devrel@filestack.com** and share your ideas!
+Interested in contributing to a project? Find the CONTRIBUTING file in the community project to learn how. Want to start something new? Reach out to **carl.cruz@filestack.com** and share your ideas!
 
 ## 🚀 More from Filestack
 
