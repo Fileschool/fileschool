@@ -1377,14 +1377,65 @@ function setupManualCodeGeneration() {
 
     // Manual generation function
     window.manualGenerateCode = function() {
-        if (currentSection) {
+        if (!currentSection) {
+            showUserFeedback('Please select a section first', 'warning');
+            return;
+        }
+
+        // Check if current section is workflow-only (no client-side code generation)
+        // Workflow-only sections: video-tagging, video-sfw, phishing, virus
+        // Code-generating sections: picker, transform, upload, download, sfw, tagging, faces, ocr,
+        //                          caption, sentiment, dnd, security, metadata, store, transform-chains,
+        //                          workflows, webhooks, custom-source, video-processing, audio-processing
+        const workflowOnlySections = ['video-tagging', 'video-sfw', 'phishing', 'virus'];
+        if (workflowOnlySections.includes(currentSection)) {
+            showUserFeedback('This section is workflow-only and does not generate code', 'info');
+            return;
+        }
+
+        try {
             const activeTab = document.querySelector('.tab-btn.active');
             const tabName = activeTab ? activeTab.getAttribute('data-tab') : 'javascript';
+
+            // Show loading state
+            const generateBtn = document.getElementById('generateCodeBtn');
+            const originalText = generateBtn ? generateBtn.innerHTML : '';
+            if (generateBtn && !generateBtn.disabled) {
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                generateBtn.disabled = true;
+            }
+
+            // Generate code
             generateCodeEnhanced(currentSection, tabName);
             markConfigUpToDate();
-            showUserFeedback('Code generated successfully!', 'success');
-        } else {
-            showUserFeedback('Please select a section first', 'warning');
+
+            // Restore button state
+            if (generateBtn) {
+                setTimeout(() => {
+                    generateBtn.innerHTML = originalText;
+                    // Only re-enable if not a workflow-only section
+                    if (!workflowOnlySections.includes(currentSection)) {
+                        generateBtn.disabled = false;
+                    }
+                    showUserFeedback('Code generated successfully!', 'success');
+                }, 300);
+            } else {
+                showUserFeedback('Code generated successfully!', 'success');
+            }
+        } catch (error) {
+            console.error('Code generation error:', error);
+            showUserFeedback('Error generating code. Please check your configuration.', 'error');
+
+            // Restore button state on error
+            const generateBtn = document.getElementById('generateCodeBtn');
+            if (generateBtn) {
+                generateBtn.innerHTML = '<i class="fas fa-play"></i> Generate Code';
+                // Only re-enable if not a workflow-only section
+                const workflowOnlySections = ['video-tagging', 'video-sfw', 'phishing', 'virus'];
+                if (!workflowOnlySections.includes(currentSection)) {
+                    generateBtn.disabled = false;
+                }
+            }
         }
     };
 
@@ -1761,9 +1812,6 @@ function setupEventListeners() {
             });
         }
     });
-
-    // End of disabled automatic generation code
-    */
 }
 
 // Setup transform options
@@ -1853,555 +1901,6 @@ function setupInputValidation() {
 function setupRealTimeCodeGeneration() {
     // This function is disabled - manual generation only
     return; // Exit early to prevent automatic generation
-
-    /*
-    // DISABLED: All automatic generation code below
-    document.querySelectorAll('#picker input, #picker select, #picker input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'picker') generatePickerCode();
-        }, 300));
-    });
-
-    // Transform section
-    document.querySelectorAll('#transform input, #transform select, #transform input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'transform') generateTransformCode();
-        }, 300));
-    });
-
-    // Upload section
-    document.querySelectorAll('#upload input, #upload select, #upload input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'upload') generateUploadCode();
-        }, 300));
-    });
-
-    // Download section
-    document.querySelectorAll('#download input, #download select, #download input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'download') generateDownloadCode();
-        }, 300));
-    });
-
-    // SFW section
-    document.querySelectorAll('#sfw input, #sfw select, #sfw input[type="checkbox"], #sfw input[type="range"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'sfw') generateSfwCode();
-        }, 300));
-        element.addEventListener('input', debounce(() => {
-            if (currentSection === 'sfw') generateSfwCode();
-        }, 300));
-    });
-
-    // Tagging section
-    document.querySelectorAll('#tagging input, #tagging select, #tagging input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'tagging') generateTaggingCode();
-        }, 300));
-    });
-
-    // OCR section
-    document.querySelectorAll('#ocr input, #ocr select, #ocr input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'ocr') generateOcrCode();
-        }, 300));
-    });
-
-    function generateFacesCode() {
-        const options = collectFacesOptions();
-        let code = '';
-
-        switch (getCurrentTab()) {
-            case 'javascript':
-                code = generateJavaScriptFacesCode(options);
-                break;
-            case 'react':
-                code = generateReactFacesCode(options);
-                break;
-            case 'vue':
-                code = generateVueFacesCode(options);
-                break;
-            case 'url':
-                code = generateURLFacesCode(options);
-                break;
-        }
-
-        updateCodeDisplay(code, getCurrentTab());
-    }
-
-    function collectFacesOptions() {
-        const options = {};
-
-        const handle = document.getElementById('facesHandle').value;
-        const minSize = validateNumberInput('facesMinSize');
-        const maxSize = validateNumberInput('facesMaxSize');
-        const exportOption = document.getElementById('facesExport').checked;
-
-        if (minSize !== null) {
-            options.minsize = minSize;
-        }
-
-        if (maxSize !== null) {
-            options.maxsize = maxSize;
-        }
-
-        if (exportOption) {
-            options.export = true;
-        }
-
-        return { ...options, handle: handle || 'YOUR_FILE_HANDLE' };
-    }
-
-    function generateJavaScriptFacesCode(options) {
-        const { handle, ...detectOptions } = options;
-        return `// Face detection via Processing API (CDN)\nconst url = 'https://cdn.filestackcontent.com/detect_faces=${JSON.stringify(detectOptions)}/${handle}';\n\nfetch(url)\n  .then(r => r.json())\n  .then(data => {\n    console.log('Face detection:', data);\n  })\n  .catch(err => console.error('Face detection failed:', err));`;
-    }
-
-    function generateReactFacesCode(options) {
-        const { handle, ...detectOptions } = options;
-        return `const FacesComponent = () => {\n  const detectFaces = async () => {\n    const url = 'https://cdn.filestackcontent.com/detect_faces=${JSON.stringify(detectOptions)}/${handle}';\n    const res = await fetch(url);\n    const data = await res.json();\n    console.log('Face detection:', data);\n  };\n  return (<button onClick={detectFaces}>Detect Faces</button>);\n};`;
-    }
-
-    function generateVueFacesCode(options) {
-        const { handle, ...detectOptions } = options;
-        return `<template>\n  <button @click="detectFaces">Detect Faces</button>\n</template>\n\n<script>\nexport default {\n  methods: {\n    async detectFaces() {\n      const url = 'https://cdn.filestackcontent.com/detect_faces=${JSON.stringify(detectOptions)}/${handle}';\n      const res = await fetch(url);\n      const data = await res.json();\n      console.log('Face detection:', data);\n    }\n  }\n};\n</script>`;
-    }
-
-    function generateURLFacesCode(options) {
-        const { handle, ...detectOptions } = options;
-        return `// Face detection URL (Processing API)\nconst facesUrl = 'https://cdn.filestackcontent.com/detect_faces=${JSON.stringify(detectOptions)}/${handle}';\n\nfetch(facesUrl)\n  .then(r => r.json())\n  .then(data => console.log('Face detection:', data))\n  .catch(err => console.error('Face detection failed:', err));`;
-    }
-
-    // Security section
-    document.querySelectorAll('#security input, #security select, #security textarea, #security input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'security') generateSecurityCode();
-        }, 300));
-    });
-
-    // Store section
-    document.querySelectorAll('#store input, #store select, #store input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'store') generateStoreCode();
-        }, 300));
-    });
-
-    // Metadata section
-    document.querySelectorAll('#metadata input, #metadata select, #metadata input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'metadata') generateMetadataCode();
-        }, 300));
-    });
-
-    // DnD section
-    document.querySelectorAll('#dnd input, #dnd select, #dnd input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'dnd') generateDndCode();
-        }, 300));
-        element.addEventListener('input', debounce(() => {
-            if (currentSection === 'dnd') generateDndCode();
-        }, 300));
-    });
-
-    // New Intelligence Features Event Listeners
-    // Video Tagging and Video SFW are workflow-only; skip code generation listeners
-
-    // Caption Generation section
-    document.querySelectorAll('#caption input, #caption select, #caption input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'caption') generateCaptionCode();
-        }, 300));
-    });
-
-    // Caption-specific UI handlers
-    document.querySelectorAll('input[name="captionInputType"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const type = this.value;
-            document.getElementById('captionHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
-            document.getElementById('captionExternalGroup').style.display = type === 'external' ? 'block' : 'none';
-            document.getElementById('captionStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
-            if (currentSection === 'caption') generateCaptionCode();
-        });
-    });
-
-    document.getElementById('captionEnableChaining')?.addEventListener('change', function() {
-        const chainingGroup = document.getElementById('captionChainingGroup');
-        if (chainingGroup) {
-            chainingGroup.style.display = this.checked ? 'block' : 'none';
-        }
-        if (currentSection === 'caption') generateCaptionCode();
-    });
-
-    document.getElementById('addCaptionPreStep')?.addEventListener('click', function() {
-        addCaptionChainStep('captionPreChainBuilder');
-    });
-
-    // Tagging-specific UI handlers
-    document.querySelectorAll('input[name="taggingInputType"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const type = this.value;
-            document.getElementById('taggingHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
-            document.getElementById('taggingExternalGroup').style.display = type === 'external' ? 'block' : 'none';
-            document.getElementById('taggingStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
-            if (currentSection === 'tagging') generateTaggingCode();
-        });
-    });
-
-    document.getElementById('taggingEnableChaining')?.addEventListener('change', function() {
-        const chainingGroup = document.getElementById('taggingChainingGroup');
-        if (chainingGroup) {
-            chainingGroup.style.display = this.checked ? 'block' : 'none';
-        }
-        if (currentSection === 'tagging') generateTaggingCode();
-    });
-
-    document.getElementById('addTaggingPreStep')?.addEventListener('click', function() {
-        addTaggingChainStep('taggingPreChainBuilder');
-    });
-
-    // OCR-specific UI handlers
-    document.querySelectorAll('input[name="ocrInputType"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const type = this.value;
-            document.getElementById('ocrHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
-            document.getElementById('ocrExternalGroup').style.display = type === 'external' ? 'block' : 'none';
-            document.getElementById('ocrStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
-            if (currentSection === 'ocr') generateOcrCode();
-        });
-    });
-
-    document.getElementById('ocrEnableChaining')?.addEventListener('change', function() {
-        const chainingGroup = document.getElementById('ocrChainingGroup');
-        if (chainingGroup) {
-            chainingGroup.style.display = this.checked ? 'block' : 'none';
-        }
-        if (currentSection === 'ocr') generateOcrCode();
-    });
-
-    document.getElementById('addOcrPreStep')?.addEventListener('click', function() {
-        addOcrChainStep('ocrPreChainBuilder');
-    });
-
-    // SFW-specific UI handlers
-    document.querySelectorAll('input[name="sfwInputType"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const type = this.value;
-            document.getElementById('sfwHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
-            document.getElementById('sfwExternalGroup').style.display = type === 'external' ? 'block' : 'none';
-            document.getElementById('sfwStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
-            if (currentSection === 'sfw') generateSfwCode();
-        });
-    });
-
-    document.getElementById('sfwEnableChaining')?.addEventListener('change', function() {
-        const chainingGroup = document.getElementById('sfwChainingGroup');
-        if (chainingGroup) {
-            chainingGroup.style.display = this.checked ? 'block' : 'none';
-        }
-        if (currentSection === 'sfw') generateSfwCode();
-    });
-
-    document.getElementById('addSfwPreStep')?.addEventListener('click', function() {
-        addSfwChainStep('sfwPreChainBuilder');
-    });
-
-    // Sentiment-specific UI handlers
-    document.querySelectorAll('input[name="sentimentInputType"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const type = this.value;
-            document.getElementById('sentimentHandleGroup').style.display = type === 'handle' ? 'block' : 'none';
-            document.getElementById('sentimentExternalGroup').style.display = type === 'external' ? 'block' : 'none';
-            document.getElementById('sentimentStorageGroup').style.display = type === 'storage' ? 'block' : 'none';
-            if (currentSection === 'sentiment') generateSentimentCode();
-        });
-    });
-
-    document.getElementById('sentimentEnableChaining')?.addEventListener('change', function() {
-        const chainingGroup = document.getElementById('sentimentChainingGroup');
-        if (chainingGroup) {
-            chainingGroup.style.display = this.checked ? 'block' : 'none';
-        }
-        if (currentSection === 'sentiment') generateSentimentCode();
-    });
-
-    document.getElementById('addSentimentPreStep')?.addEventListener('click', function() {
-        addSentimentChainStep('sentimentPreChainBuilder');
-    });
-
-    // Phishing Detection and Virus Detection are workflow-only; skip code generation listeners
-
-    function generateSentimentCode() {
-        // Check if we have text input (text sentiment) or image input (image sentiment)
-        const text = document.getElementById('sentimentText')?.value?.trim();
-        const hasText = text && text.length > 0;
-
-        if (hasText) {
-            // Generate text sentiment code
-            generateTextSentimentCode(text);
-        } else {
-            // Generate image sentiment code
-            generateImageSentimentCode();
-        }
-    }
-
-    function generateTextSentimentCode(text) {
-        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
-        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-        const escapedText = text.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-        const sec = `security=p:${policy},s:${signature}/`;
-        const url = `https://cdn.filestackcontent.com/${sec}text_sentiment=text:"${escapedText}"`;
-
-        const tab = getCurrentTab();
-        let code = '';
-
-        if (tab === 'javascript') {
-            code = `// Text sentiment analysis\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('Text sentiment:', data))\n  .catch(err => console.error('Text sentiment failed:', err));`;
-        } else if (tab === 'react') {
-            code = `const TextSentiment = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('Text sentiment:', data);\n  };\n  return (<button onClick={run}>Analyze Text Sentiment</button>);\n};`;
-        } else if (tab === 'vue') {
-            code = `<template><button @click="run">Analyze Text Sentiment</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('Text sentiment:', await r.json()); } } }</script>`;
-        } else if (tab === 'url') {
-            code = `// Text Sentiment URL\nconst url = '${url}';`;
-        }
-
-        updateCodeDisplay(code, tab);
-    }
-
-    function generateImageSentimentCode() {
-        // Get input type and values for image sentiment
-        const inputType = document.querySelector('input[name="sentimentInputType"]:checked')?.value || 'handle';
-        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
-        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_FILESTACK_API_KEY';
-
-        let source = '';
-        let needsApiKey = false;
-
-        // Determine source based on input type
-        switch (inputType) {
-            case 'handle':
-                source = document.getElementById('sentimentHandle')?.value || 'YOUR_FILE_HANDLE';
-                break;
-            case 'external':
-                source = document.getElementById('sentimentExternalUrl')?.value || 'https://example.com/image.jpg';
-                needsApiKey = true;
-                break;
-            case 'storage':
-                const alias = document.getElementById('sentimentStorageAlias')?.value || 'STORAGE_ALIAS';
-                const path = document.getElementById('sentimentStoragePath')?.value || '/path/to/image.jpg';
-                source = `src://${alias}${path}`;
-                needsApiKey = true;
-                break;
-        }
-
-        // Build transformation chain
-        const enableChaining = document.getElementById('sentimentEnableChaining')?.checked || false;
-        let transformChain = '';
-
-        if (enableChaining) {
-            const preSteps = document.querySelectorAll('#sentimentPreChainBuilder .chain-step');
-            const preTransforms = [];
-
-            preSteps.forEach(step => {
-                const operation = step.querySelector('.chain-operation').value;
-                const params = step.querySelector('.chain-params').value;
-                if (operation) {
-                    if (params) {
-                        preTransforms.push(`${operation}=${params}`);
-                    } else {
-                        preTransforms.push(operation);
-                    }
-                }
-            });
-
-            if (preTransforms.length > 0) {
-                transformChain = preTransforms.join('/') + '/';
-            }
-        }
-
-        // Build security part
-        const sec = `security=p:${policy},s:${signature}/`;
-
-        // Build final URL
-        let url;
-        if (needsApiKey) {
-            url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}image_sentiment/${source}`;
-        } else {
-            url = `https://cdn.filestackcontent.com/${sec}${transformChain}image_sentiment/${source}`;
-        }
-
-        const tab = getCurrentTab();
-        let code = '';
-
-        if (tab === 'javascript') {
-            code = `// Image sentiment analysis\nfetch('${url}')\n  .then(r => r.json())\n  .then(data => console.log('Image sentiment:', data))\n  .catch(err => console.error('Image sentiment failed:', err));`;
-
-            if (transformChain) {
-                code += `\n\n// This URL includes pre-processing transformations before sentiment analysis`;
-            }
-
-            code += `\n\n// Usage Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/src://<ALIAS>/<PATH>`;
-
-        } else if (tab === 'react') {
-            code = `const ImageSentiment = () => {\n  const run = async () => {\n    const res = await fetch('${url}');\n    const data = await res.json();\n    console.log('Image sentiment:', data);\n  };\n  return (<button onClick={run}>Analyze Image Sentiment</button>);\n};`;
-
-            if (transformChain) {
-                code += `\n\n// This URL includes pre-processing transformations before sentiment analysis`;
-            }
-
-        } else if (tab === 'vue') {
-            code = `<template><button @click="run">Analyze Image Sentiment</button></template>\n<script>export default { methods:{ async run(){ const r=await fetch('${url}'); console.log('Image sentiment:', await r.json()); } } }</script>`;
-
-            if (transformChain) {
-                code += `\n\n<!-- This URL includes pre-processing transformations before sentiment analysis -->`;
-            }
-
-        } else if (tab === 'url') {
-            code = `// Image Sentiment URL\nconst url = '${url}';`;
-
-            if (transformChain) {
-                code += `\n\n// This URL includes pre-processing transformations before sentiment analysis`;
-            }
-
-            code += `\n\n// URL Format Examples:\n// Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/<HANDLE>\n// External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/<EXTERNAL_URL>\n// Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/image_sentiment/src://<ALIAS>/<PATH>`;
-        }
-
-        updateCodeDisplay(code, tab);
-    }
-
-    function collectSentimentOptions() {
-        const options = {};
-
-        const text = document.getElementById('sentimentText').value;
-        const handle = document.getElementById('sentimentHandle').value;
-
-        if (text) {
-            options.text = text;
-        }
-
-        if (handle) {
-            options.handle = handle;
-        }
-
-        return options;
-    }
-
-    function generateJavaScriptSentimentCode(options) {
-        const { text, handle } = options;
-        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
-        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-        let path = `security=p:${policy},s:${signature}/`;
-        if (text) {
-            const escaped = (text || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
-            path += `text_sentiment=text:\\"${escaped}\\"`;
-        } else if (handle) {
-            path += `image_sentiment/${handle}`;
-        }
-
-        return `// Sentiment analysis via Processing API (CDN)\nconst url = 'https://cdn.filestackcontent.com/${path}';\n\nfetch(url)\n  .then(r => r.json())\n  .then(data => {\n    console.log('Sentiment analysis:', data);\n  })\n  .catch(err => console.error('Sentiment analysis failed:', err));`;
-    }
-
-    function generateReactSentimentCode(options) {
-        const { text, handle } = options;
-        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
-        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-        let path = `security=p:${policy},s:${signature}/`;
-        if (text) {
-            const escaped = (text || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
-            path += `text_sentiment=text:\\"${escaped}\\"`;
-        } else if (handle) {
-            path += `image_sentiment/${handle}`;
-        }
-
-        return `const SentimentComponent = () => {\n  const analyzeSentiment = async () => {\n    const url = 'https://cdn.filestackcontent.com/${path}';\n    const res = await fetch(url);\n    const data = await res.json();\n    console.log('Sentiment analysis:', data);\n  };\n  return (<button onClick={analyzeSentiment}>Analyze Sentiment</button>);\n};`;
-    }
-
-    function generateVueSentimentCode(options) {
-        const { text, handle } = options;
-        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
-        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-        let path = `security=p:${policy},s:${signature}/`;
-        if (text) {
-            const escaped = (text || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
-            path += `text_sentiment=text:\\"${escaped}\\"`;
-        } else if (handle) {
-            path += `image_sentiment/${handle}`;
-        }
-
-        return `<template>\n  <button @click=\"analyzeSentiment\">Analyze Sentiment</button>\n</template>\n\n<script>\nexport default {\n  methods: {\n    async analyzeSentiment() {\n      const url = 'https://cdn.filestackcontent.com/${path}';\n      const res = await fetch(url);\n      const data = await res.json();\n      console.log('Sentiment analysis:', data);\n    }\n  }\n};\n</script>`;
-    }
-
-    function generateURLSentimentCode(options) {
-        const { text, handle } = options;
-        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
-        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-        let path = `security=p:${policy},s:${signature}/`;
-        if (text) {
-            const escaped = (text || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
-            path += `text_sentiment=text:\\"${escaped}\\"`;
-        } else if (handle) {
-            path += `image_sentiment/${handle}`;
-        }
-
-        return `// Sentiment analysis URL (Processing API)\nconst sentimentUrl = 'https://cdn.filestackcontent.com/${path}';`;
-    }
-
-    // Video & Audio Processing Event Listeners
-    // Video Processing section
-    document.querySelectorAll('#video-processing input, #video-processing select, #video-processing input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'video-processing') generateVideoProcessingCode();
-        }, 300));
-    });
-
-    // Audio Processing section
-    document.querySelectorAll('#audio-processing input, #audio-processing select, #audio-processing input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'audio-processing') generateAudioProcessingCode();
-        }, 300));
-    });
-
-    // Automation Event Listeners
-    // Workflows section
-    document.querySelectorAll('#workflows input, #workflows select, #workflows textarea, #workflows input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'workflows') generateWorkflowsCode();
-        }, 300));
-    });
-
-    // Webhooks section
-    document.querySelectorAll('#webhooks input, #webhooks select, #webhooks input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'webhooks') generateWebhooksCode();
-        }, 300));
-    });
-
-    // Custom Source section
-    document.querySelectorAll('#custom-source input, #custom-source select, #custom-source input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'custom-source') generateCustomSourceCode();
-        }, 300));
-    });
-
-    // Transform Chains section
-    document.querySelectorAll('#transform-chains input, #transform-chains select, #transform-chains input[type="checkbox"]').forEach(element => {
-        element.addEventListener('change', debounce(() => {
-            if (currentSection === 'transform-chains') generateTransformChainsCode();
-        }, 300));
-    });
-
-    // Global API key
-    const globalApiKey = document.getElementById('globalApikey');
-    if (globalApiKey) {
-        globalApiKey.addEventListener('change', debounce(() => {
-            // Re-initialize client with new API key
-            if (typeof filestack !== 'undefined') {
-                const apiKey = document.getElementById('globalApikey').value || 'YOUR_APIKEY';
-                filestackClient = filestack.init(apiKey);
-            }
-            // Manual generation only - no automatic regeneration
-        }, 300));
-    }
 }
 
 // Show section
@@ -2433,14 +1932,39 @@ function showSection(sectionName) {
     // Reset code tabs to JavaScript and generate appropriate code
     switchCodeTab('javascript');
 
-    // Mark configuration as changed when switching sections
-    if (typeof updateGenerateButton === 'function') {
-        updateGenerateButton(true);
-    }
+    // Define workflow-only sections (no code generation)
+    const workflowOnlySections = ['video-tagging', 'video-sfw', 'phishing', 'virus'];
+    const isWorkflowOnly = workflowOnlySections.includes(sectionName);
+
+    // Get generate button
+    const generateBtn = document.getElementById('generateCodeBtn');
 
     // Show workflow message for sections that don't have direct API support
-    if (sectionName === 'video-tagging' || sectionName === 'video-sfw' || sectionName === 'phishing' || sectionName === 'virus') {
+    if (isWorkflowOnly) {
         showWorkflowOnlyMessage(sectionName);
+
+        // Disable and grey out generate button
+        if (generateBtn) {
+            generateBtn.disabled = true;
+            generateBtn.style.opacity = '0.5';
+            generateBtn.style.cursor = 'not-allowed';
+            generateBtn.title = 'This section is workflow-only and does not generate code';
+        }
+    } else {
+        // Enable generate button for code-generating sections
+        if (generateBtn) {
+            generateBtn.disabled = false;
+            generateBtn.style.opacity = '1';
+            generateBtn.style.cursor = 'pointer';
+            generateBtn.title = 'Generate code for this section';
+        }
+
+        // Auto-generate code when switching to a new section
+        if (typeof manualGenerateCode === 'function') {
+            setTimeout(() => {
+                manualGenerateCode();
+            }, 100);
+        }
     }
 }
 
