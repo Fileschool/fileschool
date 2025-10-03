@@ -47,6 +47,14 @@
                             <label for="globalApikey">API Key</label>
                             <input type="text" id="globalApikey" placeholder="Enter your Filestack API key">
                         </div>
+                        <div class="form-group">
+                            <label for="securityPolicy">Security Policy</label>
+                            <input type="text" id="securityPolicy" placeholder="Enter security policy">
+                        </div>
+                        <div class="form-group">
+                            <label for="securitySignature">Security Signature</label>
+                            <input type="text" id="securitySignature" placeholder="Enter security signature">
+                        </div>
                     </div>
                     <a href="#picker" class="nav-item active" data-section="picker">
                         <i class="fas fa-folder-open"></i>
@@ -1136,21 +1144,36 @@
                             <label>Pre-SFW Transformations</label>
                             <div id="sfwPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addSfwPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addSfwPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                     </div>
@@ -1233,21 +1256,36 @@
                             <label>Pre-Tagging Transformations</label>
                             <div id="taggingPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addTaggingPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addTaggingPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                     </div>
@@ -1417,21 +1455,36 @@
                             <label>Pre-OCR Transformations</label>
                             <div id="ocrPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addOcrPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addOcrPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                         <div class="form-group">
@@ -1548,16 +1601,16 @@
                         <h3><i class="fas fa-cog"></i> Security Settings</h3>
 
                         <div class="form-group">
-                            <label for="securityPolicy">Security Policy (Base64 Encoded)</label>
-                            <textarea id="securityPolicy" placeholder="Enter your base64-encoded security policy JSON"
-                                rows="4"></textarea>
-                            <small class="form-help">Must be generated server-side and base64 encoded</small>
+                            <label>Security Policy (Base64 Encoded)</label>
+                            <textarea class="form-control" placeholder="Enter your base64-encoded security policy JSON"
+                                rows="4" readonly>Uses global security policy from sidebar</textarea>
+                            <small class="form-help">Configure in the sidebar under API Key section</small>
                         </div>
 
                         <div class="form-group">
-                            <label for="securitySignature">Security Signature (HMAC-SHA256)</label>
-                            <input type="text" id="securitySignature" placeholder="Enter your HMAC-SHA256 signature">
-                            <small class="form-help">Must be generated server-side using your app secret</small>
+                            <label>Security Signature (HMAC-SHA256)</label>
+                            <input type="text" class="form-control" placeholder="Enter your HMAC-SHA256 signature" readonly value="Uses global security signature from sidebar">
+                            <small class="form-help">Configure in the sidebar under API Key section</small>
                         </div>
 
                     </div>
@@ -1808,21 +1861,36 @@
                             <label>Pre-Caption Transformations</label>
                             <div id="captionPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addCaptionPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addCaptionPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                     </div>
@@ -2001,21 +2069,36 @@
                             <label>Pre-Sentiment Transformations</label>
                             <div id="sentimentPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addSentimentPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addSentimentPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
                     </div>
 

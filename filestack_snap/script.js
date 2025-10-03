@@ -193,6 +193,8 @@ class CodeGeneratorEnhanced {
     // Handle complex sections that need custom logic
     handleComplexSection(section, tab, options) {
         switch (section) {
+            case 'transform':
+                return this.generateTransformCodeCustom(tab, options);
             case 'sentiment':
                 return this.generateSentimentCode(tab, options);
             case 'caption':
@@ -207,6 +209,26 @@ class CodeGeneratorEnhanced {
                 return this.generateOcrCode(tab, options);
             default:
                 return null;
+        }
+    }
+
+    generateTransformCodeCustom(tab, options) {
+        // Use the existing dedicated transform code generators
+        switch (tab) {
+            case 'javascript':
+                return generateJavaScriptTransformCode(options);
+            case 'react':
+                return generateReactTransformCode(options);
+            case 'vue':
+                return generateVueTransformCode(options);
+            case 'angular':
+                return generateAngularTransformCode(options);
+            case 'nodejs':
+                return generateNodeJSTransformCode(options);
+            case 'url':
+                return generateURLTransformCode(options);
+            default:
+                return `// Transform code generation not implemented for ${tab}`;
         }
     }
 
@@ -225,7 +247,10 @@ class CodeGeneratorEnhanced {
         const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
         const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
         const escapedText = text.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-        const sec = `security=p:${policy},s:${signature}/`;
+        // Build security part only if both policy and signature are provided
+        const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+        const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+        const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
         const url = `https://cdn.filestackcontent.com/${sec}text_sentiment=text:"${escapedText}"`;
 
         switch (tab) {
@@ -375,7 +400,10 @@ const sentimentUrl = '${url}';
             }
         }
 
-        const sec = `security=p:${policy},s:${signature}/`;
+        // Build security part only if both policy and signature are provided
+        const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+        const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+        const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
         let url;
 
         if (needsApiKey) {
@@ -477,7 +505,10 @@ const sentimentUrl = '${url}';${chainNote}`;
             }
         }
 
-        const sec = `security=p:${policy},s:${signature}/`;
+        // Build security part only if both policy and signature are provided
+        const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+        const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+        const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
         let url;
 
         if (needsApiKey) {
@@ -636,7 +667,10 @@ const captionUrl = '${url}';${chainNote}${examples}`;
             }
         }
 
-        const sec = `security=p:${policy},s:${signature}/`;
+        // Build security part only if both policy and signature are provided
+        const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+        const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+        const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
         let url;
 
         if (needsApiKey) {
@@ -759,7 +793,11 @@ const taggingUrl = '${url}';${chainNote}`;
             }
         }
 
-        const sec = `security=p:${policy},s:${signature}/`;
+        // Build security part only if both policy and signature are provided
+        const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+        const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+        const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
+
         let url;
 
         if (needsApiKey) {
@@ -882,7 +920,10 @@ const sfwUrl = '${url}';${chainNote}`;
             }
         }
 
-        const sec = `security=p:${policy},s:${signature}/`;
+        // Build security part only if both policy and signature are provided
+        const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+        const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+        const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
         let url;
 
         if (needsApiKey) {
@@ -1005,7 +1046,10 @@ const facesUrl = '${url}';${chainNote}`;
             }
         }
 
-        const sec = `security=p:${policy},s:${signature}/`;
+        // Build security part only if both policy and signature are provided
+        const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+        const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+        const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
         let url;
 
         if (needsApiKey) {
@@ -1196,7 +1240,10 @@ enhancedCodeGenerator.registerValidator('picker', (options) => {
 enhancedCodeGenerator.registerValidator('transform', (options) => {
     const errors = [];
 
-    if (!options.transforms || options.transforms.length === 0) {
+    // Check if at least one transformation option is set (excluding handle and output)
+    const transformKeys = Object.keys(options).filter(key => key !== 'handle' && key !== 'output');
+
+    if (transformKeys.length === 0) {
         errors.push('At least one transformation must be selected');
     }
 
@@ -1284,11 +1331,34 @@ function collectDownloadOptions() {
 
 function collectSfwOptions() {
     try {
-        return {
+        const options = {
             handle: document.getElementById('sfwHandle')?.value || 'YOUR_FILE_HANDLE',
             url: document.getElementById('sfwExternalUrl')?.value || null,
             inputType: document.querySelector('input[name="sfwInputType"]:checked')?.value || 'handle'
         };
+
+        // Check if chaining is enabled
+        const enableChaining = document.getElementById('sfwEnableChaining')?.checked || false;
+        if (enableChaining) {
+            options.enableChaining = true;
+            options.preTransforms = [];
+
+            // Collect pre-transformation chain steps
+            const preSteps = document.querySelectorAll('#sfwPreChainBuilder .chain-step');
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    const transform = { operation };
+                    if (params) {
+                        transform.params = params;
+                    }
+                    options.preTransforms.push(transform);
+                }
+            });
+        }
+
+        return options;
     } catch (error) {
         console.warn('Error collecting SFW options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
@@ -1297,11 +1367,34 @@ function collectSfwOptions() {
 
 function collectTaggingOptions() {
     try {
-        return {
+        const options = {
             handle: document.getElementById('taggingHandle')?.value || 'YOUR_FILE_HANDLE',
             url: document.getElementById('taggingExternalUrl')?.value || null,
             inputType: document.querySelector('input[name="taggingInputType"]:checked')?.value || 'handle'
         };
+
+        // Check if chaining is enabled
+        const enableChaining = document.getElementById('taggingEnableChaining')?.checked || false;
+        if (enableChaining) {
+            options.enableChaining = true;
+            options.preTransforms = [];
+
+            // Collect pre-transformation chain steps
+            const preSteps = document.querySelectorAll('#taggingPreChainBuilder .chain-step');
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    const transform = { operation };
+                    if (params) {
+                        transform.params = params;
+                    }
+                    options.preTransforms.push(transform);
+                }
+            });
+        }
+
+        return options;
     } catch (error) {
         console.warn('Error collecting tagging options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
@@ -1310,11 +1403,22 @@ function collectTaggingOptions() {
 
 function collectFacesOptions() {
     try {
-        return {
+        const options = {
             handle: document.getElementById('facesHandle')?.value || 'YOUR_FILE_HANDLE',
             url: document.getElementById('facesExternalUrl')?.value || null,
             inputType: document.querySelector('input[name="facesInputType"]:checked')?.value || 'handle'
         };
+
+        // Faces detection parameters
+        const minSize = document.getElementById('facesMinSize')?.value;
+        const maxSize = document.getElementById('facesMaxSize')?.value;
+        const exportFaces = document.getElementById('facesExport')?.checked;
+
+        if (minSize) options.minsize = parseFloat(minSize);
+        if (maxSize) options.maxsize = parseFloat(maxSize);
+        if (exportFaces) options.export = true;
+
+        return options;
     } catch (error) {
         console.warn('Error collecting faces options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
@@ -1323,11 +1427,34 @@ function collectFacesOptions() {
 
 function collectOcrOptions() {
     try {
-        return {
+        const options = {
             handle: document.getElementById('ocrHandle')?.value || 'YOUR_FILE_HANDLE',
             url: document.getElementById('ocrExternalUrl')?.value || null,
             inputType: document.querySelector('input[name="ocrInputType"]:checked')?.value || 'handle'
         };
+
+        // Check if chaining is enabled
+        const enableChaining = document.getElementById('ocrEnableChaining')?.checked || false;
+        if (enableChaining) {
+            options.enableChaining = true;
+            options.preTransforms = [];
+
+            // Collect pre-transformation chain steps
+            const preSteps = document.querySelectorAll('#ocrPreChainBuilder .chain-step');
+            preSteps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    const transform = { operation };
+                    if (params) {
+                        transform.params = params;
+                    }
+                    options.preTransforms.push(transform);
+                }
+            });
+        }
+
+        return options;
     } catch (error) {
         console.warn('Error collecting OCR options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
@@ -1800,16 +1927,88 @@ function setupEventListeners() {
         });
     });
 
-    // Initialize existing chain steps with dynamic placeholders
+    // Initialize existing chain steps with dynamic placeholders and hints
     document.querySelectorAll('.chain-step').forEach(step => {
         const operationSelect = step.querySelector('.chain-operation');
         const paramsInput = step.querySelector('.chain-params');
 
         if (operationSelect && paramsInput) {
+            // Create or get hint div
+            let hintDiv = step.querySelector('.chain-param-hint');
+            if (!hintDiv) {
+                hintDiv = document.createElement('div');
+                hintDiv.className = 'chain-param-hint';
+                hintDiv.style.display = 'none';
+                paramsInput.parentNode.insertBefore(hintDiv, paramsInput.nextSibling);
+            }
+
+            // Add change listener
             operationSelect.addEventListener('change', () => {
-                updateParameterPlaceholder(operationSelect, paramsInput);
-                generateTransformChainsCode();
+                const paramInfo = getParameterInfo(operationSelect.value);
+
+                if (operationSelect.value) {
+                    paramsInput.placeholder = paramInfo.example;
+
+                    if (paramInfo.example === '') {
+                        paramsInput.disabled = true;
+                        paramsInput.value = '';
+                        hintDiv.style.display = 'none';
+                    } else {
+                        paramsInput.disabled = false;
+                        hintDiv.innerHTML = `<strong>${paramInfo.description}</strong><br>${paramInfo.constraints}`;
+                        hintDiv.style.display = 'block';
+                    }
+                } else {
+                    paramsInput.placeholder = 'Select operation first';
+                    hintDiv.style.display = 'none';
+                }
             });
+
+            // Set initial placeholder and hint if operation is already selected
+            if (operationSelect.value) {
+                const paramInfo = getParameterInfo(operationSelect.value);
+                paramsInput.placeholder = paramInfo.example;
+                if (paramInfo.example && paramInfo.example !== '') {
+                    hintDiv.innerHTML = `<strong>${paramInfo.description}</strong><br>${paramInfo.constraints}`;
+                    hintDiv.style.display = 'block';
+                }
+            }
+        }
+    });
+
+    // Setup chaining toggles for intelligence features
+    const chainingToggles = [
+        { checkbox: 'sfwEnableChaining', group: 'sfwChainingGroup' },
+        { checkbox: 'taggingEnableChaining', group: 'taggingChainingGroup' },
+        { checkbox: 'ocrEnableChaining', group: 'ocrChainingGroup' },
+        { checkbox: 'captionEnableChaining', group: 'captionChainingGroup' },
+        { checkbox: 'sentimentEnableChaining', group: 'sentimentChainingGroup' }
+    ];
+
+    chainingToggles.forEach(({ checkbox, group }) => {
+        const checkboxEl = document.getElementById(checkbox);
+        const groupEl = document.getElementById(group);
+
+        if (checkboxEl && groupEl) {
+            checkboxEl.addEventListener('change', function() {
+                groupEl.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+    });
+
+    // Setup add step buttons for chain builders
+    const addStepButtons = [
+        { button: 'addSfwPreStep', builder: 'sfwPreChainBuilder' },
+        { button: 'addTaggingPreStep', builder: 'taggingPreChainBuilder' },
+        { button: 'addOcrPreStep', builder: 'ocrPreChainBuilder' },
+        { button: 'addCaptionPreStep', builder: 'captionPreChainBuilder' },
+        { button: 'addSentimentPreStep', builder: 'sentimentPreChainBuilder' }
+    ];
+
+    addStepButtons.forEach(({ button, builder }) => {
+        const buttonEl = document.getElementById(button);
+        if (buttonEl) {
+            buttonEl.addEventListener('click', () => addChainStepToBuilder(builder));
         }
     });
 }
@@ -3125,8 +3324,10 @@ function generateCaptionCode() {
         }
     }
 
-    // Build security part
-    const sec = `security=p:${policy},s:${signature}/`;
+    // Build security part only if both policy and signature are provided
+    const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+    const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+    const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
 
     // Build final URL
     let url;
@@ -3228,8 +3429,10 @@ function generateTaggingCode() {
         }
     }
 
-    // Build security part
-    const sec = `security=p:${policy},s:${signature}/`;
+    // Build security part only if both policy and signature are provided
+    const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+    const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+    const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
 
     // Build final URL
     let url;
@@ -3337,8 +3540,10 @@ function generateOcrCode() {
     const preprocess = !!document.getElementById('ocrPreprocess')?.checked;
     const docPart = withDoc ? `doc_detection=coords:${coords ? 'true' : 'false'},preprocess:${preprocess ? 'true' : 'false'}/` : '';
 
-    // Build security part
-    const sec = `security=p:${policy},s:${signature}/`;
+    // Build security part only if both policy and signature are provided
+    const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+    const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+    const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
 
     // Build final URL
     let url;
@@ -3923,8 +4128,10 @@ function generateSfwCode() {
         }
     }
 
-    // Build security part
-    const sec = `security=p:${policy},s:${signature}/`;
+    // Build security part only if both policy and signature are provided
+    const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+    const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+    const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
 
     // Build final URL
     let url;
@@ -3985,7 +4192,10 @@ function generateJavaScriptSfwCode(options) {
     const { handle } = options;
     const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
     const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-    const sec = `security=p:${policy},s:${signature}/`;
+    // Build security part only if both policy and signature are provided
+    const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+    const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+    const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
     return `// Safe for Work detection via Processing API (CDN)\nconst url = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';\n\nfetch(url)\n  .then(r => r.json())\n  .then(data => {\n    console.log('SFW analysis:', data);\n  })\n  .catch(err => console.error('SFW analysis failed:', err));`;
 }
 
@@ -3993,7 +4203,10 @@ function generateReactSfwCode(options) {
     const { handle } = options;
     const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
     const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-    const sec = `security=p:${policy},s:${signature}/`;
+    // Build security part only if both policy and signature are provided
+    const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+    const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+    const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
     return `const SfwComponent = () => {\n  const analyzeSfw = async () => {\n    const url = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';\n    const res = await fetch(url);\n    const data = await res.json();\n    console.log('SFW analysis:', data);\n  };\n  return (<button onClick={analyzeSfw}>Analyze Content Safety</button>);\n};`;
 }
 
@@ -4001,7 +4214,10 @@ function generateVueSfwCode(options) {
     const { handle } = options;
     const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
     const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-    const sec = `security=p:${policy},s:${signature}/`;
+    // Build security part only if both policy and signature are provided
+    const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+    const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+    const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
     return `<template>\n  <button @click="analyzeSfw">Analyze Content Safety</button>\n</template>\n\n<script>\nexport default {\n  methods: {\n    async analyzeSfw() {\n      const url = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';\n      const res = await fetch(url);\n      const data = await res.json();\n      console.log('SFW analysis:', data);\n    }\n  }\n};\n</script>`;
 }
 
@@ -4009,7 +4225,10 @@ function generateURLSfwCode(options) {
     const { handle } = options;
     const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
     const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-    const sec = `security=p:${policy},s:${signature}/`;
+    // Build security part only if both policy and signature are provided
+    const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+    const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+    const sec = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
     return `// SFW URL (Processing API)\nconst sfwUrl = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';`;
 }
 
@@ -4018,6 +4237,187 @@ function testSfw() {
 }
 
 // Transform Chains functionality
+// Get parameter hints and constraints for transformation operations
+function getParameterInfo(operation) {
+    const info = {
+        'resize': {
+            example: 'width:300,height:200,fit:clip',
+            description: 'Width (px), Height (px), Fit (clip|crop|scale|max)',
+            constraints: 'Width/Height: 1-10000px'
+        },
+        'crop': {
+            example: 'x:10,y:10,width:300,height:200',
+            description: 'X position, Y position, Width, Height (all in pixels)',
+            constraints: 'All values must be positive integers'
+        },
+        'rotate': {
+            example: 'deg:90',
+            description: 'Rotation angle in degrees',
+            constraints: 'Degrees: 0-359 or exif'
+        },
+        'blur': {
+            example: 'amount:5',
+            description: 'Blur intensity',
+            constraints: 'Amount: 0-20 (higher = more blur)'
+        },
+        'sharpen': {
+            example: 'amount:3',
+            description: 'Sharpen intensity',
+            constraints: 'Amount: 0-20'
+        },
+        'quality': {
+            example: 'value:75',
+            description: 'Output quality for JPG/WebP',
+            constraints: 'Value: 1-100 (higher = better quality)'
+        },
+        'convert': {
+            example: 'format:png',
+            description: 'Convert to different format',
+            constraints: 'Format: jpg, png, webp, gif, bmp, tiff'
+        },
+        'watermark': {
+            example: 'file:HANDLE,size:50,position:center',
+            description: 'File handle, Size (%), Position',
+            constraints: 'Size: 1-500%, Position: top|middle|bottom,left|center|right'
+        },
+        'sepia': {
+            example: 'tone:80',
+            description: 'Sepia tone intensity',
+            constraints: 'Tone: 0-100'
+        },
+        'rounded_corners': {
+            example: 'radius:10',
+            description: 'Corner radius in pixels',
+            constraints: 'Radius: 1-10000px'
+        },
+        'vignette': {
+            example: 'amount:20',
+            description: 'Vignette effect intensity',
+            constraints: 'Amount: 0-100'
+        },
+        'shadow': {
+            example: 'blur:4,opacity:60,vector:[4,4]',
+            description: 'Blur amount, Opacity %, Vector offset [x,y]',
+            constraints: 'Blur: 0-100, Opacity: 0-100, Vector: [-1000,1000]'
+        },
+        'border': {
+            example: 'width:3,color:black',
+            description: 'Border width (px) and color',
+            constraints: 'Width: 1-1000px, Color: hex or name'
+        },
+        'upscale': {
+            example: 'noise:low,style:artwork',
+            description: 'AI upscaling options',
+            constraints: 'Noise: none|low|medium|high, Style: artwork|photo'
+        },
+        'blackwhite': {
+            example: '',
+            description: 'No parameters needed - converts to black & white',
+            constraints: ''
+        },
+        'flip': {
+            example: '',
+            description: 'No parameters needed - flips image vertically',
+            constraints: ''
+        },
+        'flop': {
+            example: '',
+            description: 'No parameters needed - flips image horizontally',
+            constraints: ''
+        },
+        'negative': {
+            example: '',
+            description: 'No parameters needed - inverts colors',
+            constraints: ''
+        },
+        'circle': {
+            example: '',
+            description: 'No parameters needed - crops to circle',
+            constraints: ''
+        }
+    };
+
+    return info[operation] || {
+        example: 'key:value,key2:value2',
+        description: 'Custom parameters',
+        constraints: ''
+    };
+}
+
+// Universal function to add chain step to any builder
+function addChainStepToBuilder(builderId) {
+    const chainBuilder = document.getElementById(builderId);
+    if (!chainBuilder) return;
+
+    const stepDiv = document.createElement('div');
+    stepDiv.className = 'chain-step';
+    stepDiv.innerHTML = `
+        <div class="chain-step-header">
+            <select class="chain-operation">
+                <option value="">Select Operation</option>
+                <option value="resize">Resize</option>
+                <option value="crop">Crop</option>
+                <option value="rotate">Rotate</option>
+                <option value="blur">Blur</option>
+                <option value="sharpen">Sharpen</option>
+                <option value="sepia">Sepia</option>
+                <option value="blackwhite">Black & White</option>
+                <option value="flip">Flip</option>
+                <option value="flop">Flop</option>
+                <option value="negative">Negative</option>
+                <option value="circle">Circle</option>
+                <option value="rounded_corners">Rounded Corners</option>
+                <option value="vignette">Vignette</option>
+                <option value="shadow">Shadow</option>
+                <option value="border">Border</option>
+                <option value="watermark">Watermark</option>
+                <option value="upscale">Upscale</option>
+                <option value="quality">Quality</option>
+                <option value="convert">Convert Format</option>
+            </select>
+            <button type="button" class="btn-remove-step">×</button>
+        </div>
+        <input type="text" class="chain-params" placeholder="Select operation first">
+        <div class="chain-param-hint" style="display:none;"></div>
+    `;
+
+    // Get elements
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+    const hintDiv = stepDiv.querySelector('.chain-param-hint');
+    const removeBtn = stepDiv.querySelector('.btn-remove-step');
+
+    // Update placeholder and hint when operation changes
+    operationSelect.addEventListener('change', () => {
+        const paramInfo = getParameterInfo(operationSelect.value);
+
+        if (operationSelect.value) {
+            paramsInput.placeholder = paramInfo.example;
+
+            if (paramInfo.example === '') {
+                paramsInput.disabled = true;
+                paramsInput.value = '';
+                hintDiv.style.display = 'none';
+            } else {
+                paramsInput.disabled = false;
+                hintDiv.innerHTML = `<strong>${paramInfo.description}</strong><br>${paramInfo.constraints}`;
+                hintDiv.style.display = 'block';
+            }
+        } else {
+            paramsInput.placeholder = 'Select operation first';
+            paramsInput.disabled = false;
+            hintDiv.style.display = 'none';
+        }
+    });
+
+    // Add event listener for remove button
+    removeBtn.addEventListener('click', () => {
+        stepDiv.remove();
+    });
+
+    chainBuilder.appendChild(stepDiv);
+}
+
 function addChainStep() {
     const chainBuilder = document.getElementById('chainBuilder');
     const stepDiv = document.createElement('div');
