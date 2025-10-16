@@ -217,6 +217,10 @@ class CodeGeneratorEnhanced {
                 return this.generateFacesCode(tab, options);
             case 'ocr':
                 return this.generateOcrCode(tab, options);
+            case 'workflows':
+                return this.generateWorkflowsCode(tab, options);
+            case 'webhooks':
+                return this.generateWebhooksCode(tab, options);
             default:
                 return null;
         }
@@ -1131,6 +1135,318 @@ const ocrUrl = '${url}';${chainNote}`;
 const ocrUrl = '${url}';${chainNote}`;
         }
     }
+
+    generateWorkflowsCode(tab, options) {
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
+        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
+        const workflowId = options.workflowId || 'YOUR_WORKFLOW_ID';
+        const sourceType = options.sourceType || 'handle';
+        const jobId = options.jobId || null;
+
+        // Build security part only if both policy and signature are provided
+        const hasPolicy = policy && policy !== 'YOUR_POLICY' && policy.trim();
+        const hasSignature = signature && signature !== 'YOUR_SIGNATURE' && signature.trim();
+        const securityPart = (hasPolicy && hasSignature) ? `security=p:${policy},s:${signature}/` : '';
+
+        let source = '';
+        let needsApiKey = false;
+
+        // Build source based on type
+        switch (sourceType) {
+            case 'handle':
+                source = options.handle || 'YOUR_FILE_HANDLE';
+                break;
+            case 'url':
+                source = options.url || 'https://example.com/image.jpg';
+                needsApiKey = true;
+                break;
+            case 'storage':
+                const alias = options.storageAlias || 'STORAGE_ALIAS';
+                const path = options.storagePath || '/path/to/file.jpg';
+                source = `src://${alias}${path}`;
+                needsApiKey = true;
+                break;
+        }
+
+        // Build run workflow URL
+        const apiKeyPart = needsApiKey ? `${apiKey}/` : '';
+        const runWorkflowUrl = `https://cdn.filestackcontent.com/${apiKeyPart}${securityPart}run_workflow=id:${workflowId}/${source}`;
+
+        // Build status check URL
+        const statusUrl = jobId ?
+            `https://cdn.filestackcontent.com/${apiKey}/${securityPart}workflow_status=job_id:${jobId}` :
+            `https://cdn.filestackcontent.com/${apiKey}/${securityPart}workflow_status=job_id:JOB_ID_FROM_RESPONSE`;
+
+        switch (tab) {
+            case 'javascript':
+                return `// Filestack Workflows API
+// Base URL: https://cdn.filestackcontent.com
+
+// Step 1: Run Workflow (GET request)
+const runWorkflowUrl = '${runWorkflowUrl}';
+
+fetch(runWorkflowUrl)
+  .then(r => r.json())
+  .then(data => {
+    console.log('Workflow started:', data);
+    console.log('Job ID:', data.jobid);
+    console.log('Status:', data.status);
+
+    // Step 2: Check workflow status using Job ID
+    const jobId = data.jobid;
+    const statusUrl = \`https://cdn.filestackcontent.com/${apiKey}/${securityPart}workflow_status=job_id:\${jobId}\`;
+
+    // Poll for status (you may want to add a delay/retry mechanism)
+    setTimeout(() => {
+      fetch(statusUrl)
+        .then(r => r.json())
+        .then(statusData => {
+          console.log('Workflow status:', statusData);
+          console.log('Results:', statusData.results);
+        })
+        .catch(err => console.error('Status check failed:', err));
+    }, 3000);
+  })
+  .catch(err => console.error('Workflow failed:', err));`;
+
+            case 'react':
+                return `import React, { useState } from 'react';
+
+const WorkflowExecutor = () => {
+  const [jobId, setJobId] = useState('');
+  const [status, setStatus] = useState('');
+  const [results, setResults] = useState(null);
+
+  const runWorkflow = async () => {
+    const runUrl = '${runWorkflowUrl}';
+
+    try {
+      const res = await fetch(runUrl);
+      const data = await res.json();
+      console.log('Workflow started:', data);
+      setJobId(data.jobid);
+      setStatus(data.status);
+    } catch (error) {
+      console.error('Workflow failed:', error);
+    }
+  };
+
+  const checkStatus = async () => {
+    if (!jobId) return;
+
+    const statusUrl = \`https://cdn.filestackcontent.com/${apiKey}/${securityPart}workflow_status=job_id:\${jobId}\`;
+
+    try {
+      const res = await fetch(statusUrl);
+      const data = await res.json();
+      console.log('Status:', data);
+      setStatus(data.status);
+      setResults(data.results);
+    } catch (error) {
+      console.error('Status check failed:', error);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={runWorkflow}>Run Workflow</button>
+      {jobId && (
+        <>
+          <p>Job ID: {jobId}</p>
+          <p>Status: {status}</p>
+          <button onClick={checkStatus}>Check Status</button>
+          {results && <pre>{JSON.stringify(results, null, 2)}</pre>}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default WorkflowExecutor;`;
+
+            case 'nodejs':
+                return `const fetch = require('node-fetch');
+
+// Step 1: Run Workflow
+async function runWorkflow() {
+  const runUrl = '${runWorkflowUrl}';
+
+  try {
+    const res = await fetch(runUrl);
+    const data = await res.json();
+    console.log('Workflow started:', data);
+    console.log('Job ID:', data.jobid);
+
+    // Step 2: Wait and check status
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    const statusUrl = \`https://cdn.filestackcontent.com/${apiKey}/${securityPart}workflow_status=job_id:\${data.jobid}\`;
+    const statusRes = await fetch(statusUrl);
+    const statusData = await statusRes.json();
+
+    console.log('Workflow status:', statusData);
+    console.log('Results:', statusData.results);
+
+    return statusData;
+  } catch (error) {
+    console.error('Workflow error:', error);
+  }
+}
+
+runWorkflow();`;
+
+            case 'url':
+                return `// Filestack Workflows API (GET requests via URL)
+
+// Step 1: Run Workflow
+GET ${runWorkflowUrl}
+
+// Response will include:
+// {
+//   "jobid": "job-id-here",
+//   "status": "Started",
+//   "sources": ["${source}"],
+//   "workflow": "${workflowId}",
+//   "createdAt": "timestamp",
+//   "updatedAt": "timestamp"
+// }
+
+// Step 2: Check Workflow Status (use Job ID from response)
+GET ${statusUrl}
+
+// Response when completed:
+// {
+//   "jobid": "job-id-here",
+//   "status": "Finished",
+//   "results": { /* workflow results here */ },
+//   "sources": ["${source}"],
+//   "workflow": "${workflowId}",
+//   "ttl": 172800
+// }`;
+
+            default:
+                return `// Workflow execution for ${tab}
+// Run workflow: ${runWorkflowUrl}
+// Check status: ${statusUrl}`;
+        }
+    }
+
+    generateWebhooksCode(tab, options) {
+        const url = options.url || 'https://your-app.com/filestack-webhook';
+        const secret = options.secret || null;
+        const events = options.events || {};
+
+        const eventTypes = [];
+        if (events.upload) eventTypes.push('upload.complete');
+        if (events.transform) eventTypes.push('transform.complete');
+        if (events.workflow) eventTypes.push('workflow.complete');
+
+        const eventsNote = eventTypes.length > 0 ? `\n// Configured events: ${eventTypes.join(', ')}` : '';
+
+        switch (tab) {
+            case 'javascript':
+            case 'nodejs':
+                return `// Webhook Configuration
+// Configure webhooks in your Filestack Developer Portal
+// Webhook URL: ${url}${secret ? `\n// Secret Key: ${secret}` : ''}${eventsNote}
+
+// Example webhook handler (Node.js/Express)
+const express = require('express');
+const crypto = require('crypto');
+const app = express();
+
+app.post('/filestack-webhook', express.json(), (req, res) => {
+  ${secret ? `// Verify webhook signature
+  const signature = req.headers['x-filestack-signature'];
+  const payload = JSON.stringify(req.body);
+  const expectedSignature = crypto
+    .createHmac('sha256', '${secret}')
+    .update(payload)
+    .digest('hex');
+
+  if (signature !== expectedSignature) {
+    return res.status(401).send('Invalid signature');
+  }
+
+  ` : ''}// Process webhook event
+  const event = req.body;
+  console.log('Webhook received:', event);
+
+  // Handle different event types
+  switch(event.type) {
+    case 'upload.complete':
+      console.log('Upload completed:', event.data);
+      break;
+    case 'transform.complete':
+      console.log('Transform completed:', event.data);
+      break;
+    case 'workflow.complete':
+      console.log('Workflow completed:', event.data);
+      break;
+  }
+
+  res.status(200).send('OK');
+});
+
+app.listen(3000, () => console.log('Webhook server running on port 3000'));`;
+
+            case 'react':
+                return `// Webhook Configuration
+// Configure webhooks in your Filestack Developer Portal
+// Webhook URL: ${url}${secret ? `\n// Secret Key: ${secret}` : ''}${eventsNote}
+
+// Note: Webhooks are server-side only
+// You'll need a backend server to receive webhook notifications
+// This React component shows how to poll for status or use WebSockets
+
+import React, { useEffect, useState } from 'react';
+
+const WebhookStatus = () => {
+  const [events, setEvents] = useState([]);
+
+  // Poll your backend for webhook events
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/filestack-events');
+        const data = await res.json();
+        setEvents(data);
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div>
+      <h3>Filestack Events</h3>
+      {events.map((event, i) => (
+        <div key={i}>{event.type}: {event.status}</div>
+      ))}
+    </div>
+  );
+};
+
+export default WebhookStatus;`;
+
+            case 'url':
+                return `// Webhook Configuration
+Webhook URL: ${url}${secret ? `\nSecret Key: ${secret}` : ''}${eventsNote}
+
+// Configure in Filestack Developer Portal:
+// 1. Go to https://dev.filestack.com
+// 2. Navigate to Webhooks section
+// 3. Add webhook URL: ${url}
+// 4. Select event types: ${eventTypes.length > 0 ? eventTypes.join(', ') : 'upload.complete, transform.complete, workflow.complete'}${secret ? `\n// 5. Set secret key for signature verification` : ''}`;
+
+            default:
+                return `// Webhook Configuration
+// Webhook URL: ${url}${secret ? `\n// Secret Key: ${secret}` : ''}${eventsNote}`;
+        }
+    }
 }
 
 // Initialize enhanced code generator
@@ -1294,6 +1610,12 @@ function generateCodeEnhanced(section, tab = 'javascript') {
                 break;
             case 'ocr':
                 options = collectOcrOptions();
+                break;
+            case 'workflows':
+                options = collectWorkflowsOptions();
+                break;
+            case 'webhooks':
+                options = collectWebhooksOptions();
                 break;
             default:
                 options = {};
@@ -1468,6 +1790,42 @@ function collectOcrOptions() {
     } catch (error) {
         console.warn('Error collecting OCR options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
+    }
+}
+
+function collectWorkflowsOptions() {
+    try {
+        const sourceType = document.querySelector('input[name="workflowSourceType"]:checked')?.value || 'handle';
+
+        return {
+            workflowId: document.getElementById('workflowId')?.value || null,
+            sourceType: sourceType,
+            handle: document.getElementById('workflowHandle')?.value || null,
+            url: document.getElementById('workflowUrl')?.value || null,
+            storageAlias: document.getElementById('workflowStorageAlias')?.value || null,
+            storagePath: document.getElementById('workflowStoragePath')?.value || null,
+            jobId: document.getElementById('workflowJobId')?.value || null
+        };
+    } catch (error) {
+        console.warn('Error collecting workflows options:', error);
+        return {};
+    }
+}
+
+function collectWebhooksOptions() {
+    try {
+        return {
+            url: document.getElementById('webhookUrl')?.value || null,
+            secret: document.getElementById('webhookSecret')?.value || null,
+            events: {
+                upload: document.getElementById('webhookUpload')?.checked || false,
+                transform: document.getElementById('webhookTransform')?.checked || false,
+                workflow: document.getElementById('webhookWorkflow')?.checked || false
+            }
+        };
+    } catch (error) {
+        console.warn('Error collecting webhooks options:', error);
+        return {};
     }
 }
 
@@ -2052,6 +2410,30 @@ function setupEventListeners() {
         if (buttonEl) {
             buttonEl.addEventListener('click', () => addChainStepToBuilder(builder));
         }
+    });
+
+    // Setup workflow source type radio buttons
+    const workflowSourceRadios = document.querySelectorAll('input[name="workflowSourceType"]');
+    workflowSourceRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const handleGroup = document.getElementById('workflowHandleGroup');
+            const urlGroup = document.getElementById('workflowUrlGroup');
+            const storageGroup = document.getElementById('workflowStorageGroup');
+
+            // Hide all groups
+            if (handleGroup) handleGroup.style.display = 'none';
+            if (urlGroup) urlGroup.style.display = 'none';
+            if (storageGroup) storageGroup.style.display = 'none';
+
+            // Show selected group
+            if (this.value === 'handle' && handleGroup) {
+                handleGroup.style.display = 'block';
+            } else if (this.value === 'url' && urlGroup) {
+                urlGroup.style.display = 'block';
+            } else if (this.value === 'storage' && storageGroup) {
+                storageGroup.style.display = 'block';
+            }
+        });
     });
 }
 

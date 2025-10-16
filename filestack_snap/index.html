@@ -2295,7 +2295,10 @@
             <section id="workflows" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-sitemap"></i> Workflows</h2>
-                    <p>Execute automated workflows for complex file processing pipelines and business logic.</p>
+                    <p>Automate file processing with conditional logic, transformations, and intelligent routing.</p>
+                    <a href="https://www.filestack.com/docs/api/workflows_api/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
                 </div>
 
                 <div class="config-grid">
@@ -2303,56 +2306,111 @@
                         <h3><i class="fas fa-cog"></i> Configuration</h3>
 
                         <div class="form-group">
-                            <label for="workflowId">Workflow ID</label>
-                            <input type="text" id="workflowId" placeholder="Enter workflow ID">
+                            <label for="workflowId">
+                                Workflow ID
+                                <span style="color: #666; font-weight: normal; font-size: 0.85rem;">
+                                    (Get from <a href="https://dev.filestack.com" target="_blank" style="color: var(--primary-orange);">Developer Portal</a>)
+                                </span>
+                            </label>
+                            <input type="text" id="workflowId" placeholder="e.g., 67d273c3-249c-4192-b228-9c3e1d003963">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                The UUID of your workflow created in the Developer Portal
+                            </small>
                         </div>
 
                         <div class="form-group">
-                            <label for="workflowSources">Source Files (comma-separated handles)</label>
-                            <textarea id="workflowSources" rows="2" placeholder="handle1, handle2, handle3"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="workflowWebhook">Webhook URL (optional)</label>
-                            <input type="text" id="workflowWebhook" placeholder="https://your-app.com/webhook">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Execution Options</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="workflowAsync" checked>
-                                    <span>Async Execution</span>
+                            <label>Source Type</label>
+                            <div class="radio-group">
+                                <label class="radio-item">
+                                    <input type="radio" name="workflowSourceType" value="handle" checked>
+                                    <span>File Handle</span>
                                 </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="workflowNotify">
-                                    <span>Email Notifications</span>
+                                <label class="radio-item">
+                                    <input type="radio" name="workflowSourceType" value="url">
+                                    <span>External URL</span>
                                 </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="workflowRetry">
-                                    <span>Auto Retry on Failure</span>
+                                <label class="radio-item">
+                                    <input type="radio" name="workflowSourceType" value="storage">
+                                    <span>Storage Alias</span>
                                 </label>
                             </div>
+                            <small style="color: #666; display: block; margin-top: 0.5rem;">
+                                Choose how to identify the file for workflow processing
+                            </small>
+                        </div>
+
+                        <div class="form-group" id="workflowHandleGroup">
+                            <label for="workflowHandle">File Handle</label>
+                            <input type="text" id="workflowHandle" placeholder="e.g., pR4oeS63QLmYIFNs2ZvZ">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                The handle returned after uploading a file to Filestack
+                            </small>
+                        </div>
+
+                        <div class="form-group" id="workflowUrlGroup" style="display: none;">
+                            <label for="workflowUrl">External File URL</label>
+                            <input type="text" id="workflowUrl" placeholder="https://example.com/image.jpg">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                Direct URL to a file hosted externally (requires API key)
+                            </small>
+                        </div>
+
+                        <div id="workflowStorageGroup" style="display: none;">
+                            <div class="form-group">
+                                <label for="workflowStorageAlias">Storage Alias</label>
+                                <input type="text" id="workflowStorageAlias" placeholder="e.g., my-s3-bucket">
+                                <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                    Your custom storage alias configured in Developer Portal
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="workflowStoragePath">File Path</label>
+                                <input type="text" id="workflowStoragePath" placeholder="/path/to/file.jpg">
+                                <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                    Path to the file within your storage location
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="workflowJobId">Job ID (Optional - For Status Check)</label>
+                            <input type="text" id="workflowJobId" placeholder="Enter job ID from workflow response">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                After running a workflow, use the returned Job ID to check processing status
+                            </small>
                         </div>
                     </div>
 
                     <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Workflows</h3>
-                        <p>Powerful workflow automation for complex processing:</p>
+                        <h3><i class="fas fa-info-circle"></i> What Are Workflows?</h3>
+                        <p style="margin-bottom: 1rem;">Workflows automate complex file processing with business rules and conditional logic. Create workflows in the Developer Portal to:</p>
 
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Multi-step processing pipelines</li>
-                            <li><i class="fas fa-check"></i> Conditional logic and branching</li>
-                            <li><i class="fas fa-check"></i> Async and sync execution</li>
-                            <li><i class="fas fa-check"></i> Webhook notifications</li>
-                            <li><i class="fas fa-check"></i> Error handling and retry logic</li>
-                            <li><i class="fas fa-check"></i> Status monitoring</li>
+                            <li><i class="fas fa-check"></i> <strong>Transformations</strong> - Image/video/audio processing</li>
+                            <li><i class="fas fa-check"></i> <strong>Intelligence</strong> - Tagging, SFW detection, OCR, virus scanning</li>
+                            <li><i class="fas fa-check"></i> <strong>Conditional Logic</strong> - Route files based on content or metadata</li>
+                            <li><i class="fas fa-check"></i> <strong>Webhooks</strong> - Receive results asynchronously</li>
+                            <li><i class="fas fa-check"></i> <strong>Multi-step</strong> - Chain multiple operations together</li>
                         </ul>
 
                         <div class="info-box">
-                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Essential for automated content processing, batch operations, and complex business
-                                workflows requiring multiple steps.</p>
+                            <h4><i class="fas fa-rocket"></i> How It Works</h4>
+                            <p style="line-height: 1.8;">
+                                <strong>1. Create Workflow</strong> - Build in <a href="https://dev.filestack.com" target="_blank" style="color: var(--primary-orange);">Developer Portal</a><br>
+                                <strong>2. Get UUID</strong> - Copy your Workflow ID<br>
+                                <strong>3. Run Workflow</strong> - Make GET request to start processing<br>
+                                <strong>4. Get Job ID</strong> - Response includes Job ID<br>
+                                <strong>5. Check Status</strong> - Poll for results or use webhooks
+                            </p>
+                        </div>
+
+                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
+                            <h4 style="color: #856404;"><i class="fas fa-exclamation-triangle"></i> Important Notes</h4>
+                            <p style="color: #856404; margin: 0; line-height: 1.6;">
+                                • Workflows are <strong>asynchronous</strong> - results come via webhook or status check<br>
+                                • Security: Requires <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">runWorkflow</code> and <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">convert</code> policy calls<br>
+                                • Each upload triggers one workflow job
+                            </p>
                         </div>
                     </div>
                 </div>
