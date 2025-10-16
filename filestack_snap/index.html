@@ -181,6 +181,45 @@
                         transformations.</p>
                 </div>
 
+                <!-- Quick Start Templates -->
+                <div class="config-card quick-start-card">
+                    <h3><i class="fas fa-rocket"></i> Quick Start Templates</h3>
+                    <p class="card-description">Load pre-configured settings optimized for common use cases. Click a template to auto-fill the configuration below.</p>
+
+                    <div class="template-grid">
+                        <button class="template-btn" onclick="loadTemplate('startup')">
+                            <i class="fas fa-building"></i>
+                            <span class="template-name">Startup / SaaS</span>
+                            <small>Profile photos, documents, team files</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('ecommerce')">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="template-name">E-Commerce</span>
+                            <small>Product images, invoices, receipts</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('edtech')">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span class="template-name">EdTech / Learning</span>
+                            <small>Assignments, PDFs, videos, presentations</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('printing')">
+                            <i class="fas fa-print"></i>
+                            <span class="template-name">Printing Service</span>
+                            <small>High-res images, PDFs, design files</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('healthcare')">
+                            <i class="fas fa-heartbeat"></i>
+                            <span class="template-name">Healthcare</span>
+                            <small>Medical records, images, secure docs</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('media')">
+                            <i class="fas fa-photo-video"></i>
+                            <span class="template-name">Media / Creative</span>
+                            <small>Photos, videos, audio, large files</small>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="config-grid">
                     <!-- Basic Configuration -->
                     <div class="config-card">
@@ -588,6 +627,55 @@
                 <div class="section-header">
                     <h2><i class="fas fa-magic"></i> Image Transformations</h2>
                     <p>Apply advanced image transformations and filters to your uploaded images.</p>
+                </div>
+
+                <!-- Transformation Pipeline Templates -->
+                <div class="config-card quick-start-card">
+                    <h3><i class="fas fa-layer-group"></i> Transformation Pipelines</h3>
+                    <p class="card-description">Pre-built transformation chains for common image processing workflows. Click to auto-configure.</p>
+
+                    <div class="template-grid">
+                        <button class="template-btn" onclick="loadTransformPipeline('profile')">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="template-name">Profile Picture</span>
+                            <small>Square crop, resize 400x400, optimize</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('thumbnail')">
+                            <i class="fas fa-th"></i>
+                            <span class="template-name">Thumbnail</span>
+                            <small>Resize 200x200, compress, sharpen</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('product')">
+                            <i class="fas fa-box"></i>
+                            <span class="template-name">Product Image</span>
+                            <small>Resize 1200x1200, white background, watermark</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('social')">
+                            <i class="fas fa-share-alt"></i>
+                            <span class="template-name">Social Media</span>
+                            <small>1080x1080, enhance colors, compress</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('banner')">
+                            <i class="fas fa-image"></i>
+                            <span class="template-name">Hero Banner</span>
+                            <small>Resize 1920x600, blur background, overlay</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('print')">
+                            <i class="fas fa-print"></i>
+                            <span class="template-name">Print Ready</span>
+                            <small>High-res 3000px, 300 DPI, no compression</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('vintage')">
+                            <i class="fas fa-film"></i>
+                            <span class="template-name">Vintage Filter</span>
+                            <small>Sepia, vignette, noise, blur edges</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('modern')">
+                            <i class="fas fa-sparkles"></i>
+                            <span class="template-name">Modern & Clean</span>
+                            <small>Enhance, sharpen, auto-adjust, compress</small>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="transform-grid">
@@ -1094,6 +1182,9 @@
                 <div class="section-header">
                     <h2><i class="fas fa-shield-alt"></i> Safe for Work Detection</h2>
                     <p>Check if images are suitable for workplace environments using AI-powered content analysis.</p>
+                    <a href="https://www.filestack.com/docs/transformations/intelligence/sfw/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
                 </div>
 
                 <div class="config-grid">
@@ -1105,7 +1196,7 @@
                             <div class="radio-group">
                                 <label class="radio-item">
                                     <input type="radio" name="sfwInputType" value="handle" checked>
-                                    <span>Handle</span>
+                                    <span>File Handle</span>
                                 </label>
                                 <label class="radio-item">
                                     <input type="radio" name="sfwInputType" value="external">
@@ -1116,23 +1207,38 @@
                                     <span>Storage Alias</span>
                                 </label>
                             </div>
+                            <small style="color: #666; display: block; margin-top: 0.5rem;">
+                                Choose how to identify the image for content analysis
+                            </small>
                         </div>
 
                         <div class="form-group" id="sfwHandleGroup">
-                            <label for="sfwHandle">Image Handle</label>
-                            <input type="text" id="sfwHandle" placeholder="Enter image handle">
+                            <label for="sfwHandle">File Handle</label>
+                            <input type="text" id="sfwHandle" placeholder="e.g., H2swKXwhRxKFrylkjGcz">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                The handle returned after uploading to Filestack
+                            </small>
                         </div>
 
                         <div class="form-group" id="sfwExternalGroup" style="display: none;">
                             <label for="sfwExternalUrl">External Image URL</label>
                             <input type="text" id="sfwExternalUrl" placeholder="https://example.com/image.jpg">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                Direct URL to an image (requires API key in URL)
+                            </small>
                         </div>
 
                         <div class="form-group" id="sfwStorageGroup" style="display: none;">
                             <label for="sfwStorageAlias">Storage Alias</label>
-                            <input type="text" id="sfwStorageAlias" placeholder="my-storage-alias">
-                            <label for="sfwStoragePath">File Path</label>
+                            <input type="text" id="sfwStorageAlias" placeholder="e.g., my-s3-bucket">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                Custom storage configured in Developer Portal
+                            </small>
+                            <label for="sfwStoragePath" style="margin-top: 1rem;">File Path</label>
                             <input type="text" id="sfwStoragePath" placeholder="/path/to/image.jpg">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                Path to the file within your storage
+                            </small>
                         </div>
 
                         <div class="form-group">
@@ -1140,6 +1246,9 @@
                                 <input type="checkbox" id="sfwEnableChaining">
                                 <span>Chain with other transformations</span>
                             </label>
+                            <small style="color: #666; display: block; margin-top: 0.3rem; margin-left: 1.75rem;">
+                                Apply transformations before SFW detection (e.g., crop specific area)
+                            </small>
                         </div>
 
                         <div class="form-group" id="sfwChainingGroup" style="display: none;">
@@ -1181,21 +1290,39 @@
                     </div>
 
                     <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Safe for Work</h3>
-                        <p>The Safe for Work (SFW) feature uses advanced AI to analyze images and determine if they are
-                            appropriate for workplace environments. It can detect:</p>
+                        <h3><i class="fas fa-info-circle"></i> What is Safe for Work?</h3>
+                        <p style="margin-bottom: 1rem;">Safe for Work (SFW) detection uses AI to analyze images and return a simple boolean indicating if content is appropriate for workplace environments.</p>
 
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Adult content</li>
-                            <li><i class="fas fa-check"></i> Violence</li>
-                            <li><i class="fas fa-check"></i> Drugs and alcohol</li>
-                            <li><i class="fas fa-check"></i> Hate symbols</li>
-                            <li><i class="fas fa-check"></i> Inappropriate text</li>
+                            <li><i class="fas fa-check"></i> <strong>Direct API</strong> - Synchronous operation (instant results)</li>
+                            <li><i class="fas fa-check"></i> <strong>Workflows</strong> - Also available for automated pipelines</li>
+                            <li><i class="fas fa-check"></i> <strong>Chainable</strong> - Combine with other transformations</li>
+                            <li><i class="fas fa-check"></i> <strong>Security Required</strong> - Needs policy & signature</li>
                         </ul>
 
                         <div class="info-box">
-                            <h4><i class="fas fa-lightbulb"></i> How it works</h4>
-                            <p>The SFW API returns a boolean value indicating if the image is safe for work.</p>
+                            <h4><i class="fas fa-code"></i> Response Format</h4>
+                            <p style="line-height: 1.8; margin: 0;">
+                                <strong>Safe Image:</strong> <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 3px;">{"sfw": true}</code><br>
+                                <strong>Unsafe Image:</strong> <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 3px;">{"sfw": false}</code>
+                            </p>
+                        </div>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-rocket"></i> Use Cases</h4>
+                            <p style="margin: 0; line-height: 1.6;">
+                                • <strong>User-Generated Content</strong> - Filter uploads automatically<br>
+                                • <strong>Moderation</strong> - Flag content for manual review<br>
+                                • <strong>Compliance</strong> - Ensure workplace-appropriate content<br>
+                                • <strong>Conditional Logic</strong> - Route files based on SFW status
+                            </p>
+                        </div>
+
+                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
+                            <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
+                            <p style="color: #856404; margin: 0;">
+                                SFW detection requires <strong>security policy and signature</strong>. Make sure to configure these in the API Key section at the top of the page.
+                            </p>
                         </div>
                     </div>
                 </div>

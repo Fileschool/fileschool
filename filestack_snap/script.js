@@ -2600,8 +2600,10 @@ function switchCodeTab(tabName) {
         activeTab.classList.add('active');
     }
 
-    // Don't automatically generate code when switching tabs
-    // Users should click "Generate Code" button manually
+    // Auto-regenerate code for the new language/framework
+    if (currentSection && typeof generateCodeEnhanced === 'function') {
+        generateCodeEnhanced(currentSection, tabName);
+    }
 
     // Update code display with correct language
     const codeElement = document.getElementById('generatedCode');
@@ -3663,6 +3665,8 @@ function generateURLTransformCode(options) {
 // Update code display
 function updateCodeDisplay(code, language) {
     const codeElement = document.getElementById('generatedCode');
+    const codePanel = document.querySelector('.code-panel');
+
     if (codeElement) {
         codeElement.textContent = code;
 
@@ -3677,16 +3681,333 @@ function updateCodeDisplay(code, language) {
         if (typeof Prism !== 'undefined') {
             Prism.highlightElement(codeElement);
         }
+
+        // Add glow animation to code panel
+        if (codePanel) {
+            codePanel.classList.add('code-updated');
+            setTimeout(() => {
+                codePanel.classList.remove('code-updated');
+            }, 600);
+        }
     }
+}
+
+// Quick Start Templates
+function loadTemplate(templateName) {
+    const templates = {
+        startup: {
+            name: 'Startup / SaaS',
+            description: 'Optimized for profile photos, documents, and team collaboration files',
+            config: {
+                displayMode: 'overlay',
+                maxFiles: 10,
+                maxSize: 10485760, // 10MB
+                accept: ['image/*', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.csv'],
+                fromSources: ['local_file_system', 'googledrive', 'dropbox', 'onedrive', 'url'],
+                storeTo: { location: 's3' },
+                transformations: { crop: true, rotate: true }
+            }
+        },
+        ecommerce: {
+            name: 'E-Commerce',
+            description: 'Perfect for product images, invoices, and receipts',
+            config: {
+                displayMode: 'overlay',
+                maxFiles: 20,
+                maxSize: 5242880, // 5MB
+                accept: ['image/jpeg', 'image/png', 'image/webp', '.pdf'],
+                fromSources: ['local_file_system', 'url', 'webcam'],
+                storeTo: { location: 's3' },
+                transformations: { crop: true, rotate: true, circle: false },
+                imageMin: [800, 800],
+                imageMax: [4000, 4000]
+            }
+        },
+        edtech: {
+            name: 'EdTech / Learning',
+            description: 'Designed for assignments, PDFs, videos, and educational content',
+            config: {
+                displayMode: 'overlay',
+                maxFiles: 5,
+                maxSize: 104857600, // 100MB
+                accept: ['.pdf', '.doc', '.docx', '.ppt', '.pptx', 'video/*', 'image/*'],
+                fromSources: ['local_file_system', 'googledrive', 'onedrive', 'dropbox', 'webcam'],
+                storeTo: { location: 's3' },
+                transformations: { crop: false, rotate: false }
+            }
+        },
+        printing: {
+            name: 'Printing Service',
+            description: 'High-resolution images, PDFs, and design files with quality preservation',
+            config: {
+                displayMode: 'overlay',
+                maxFiles: 15,
+                maxSize: 52428800, // 50MB
+                accept: ['image/*', '.pdf', '.ai', '.psd', '.eps', '.svg'],
+                fromSources: ['local_file_system', 'googledrive', 'dropbox', 'url'],
+                storeTo: { location: 's3' },
+                transformations: { crop: true, rotate: true },
+                imageMin: [2400, 2400],
+                imageMax: [10000, 10000]
+            }
+        },
+        healthcare: {
+            name: 'Healthcare',
+            description: 'HIPAA-compliant settings for medical records and sensitive documents',
+            config: {
+                displayMode: 'overlay',
+                maxFiles: 5,
+                maxSize: 20971520, // 20MB
+                accept: ['.pdf', 'image/*', '.doc', '.docx', '.dicom'],
+                fromSources: ['local_file_system', 'webcam'],
+                storeTo: { location: 's3' },
+                transformations: { crop: true, rotate: true },
+                uploadInBackground: false
+            }
+        },
+        media: {
+            name: 'Media / Creative',
+            description: 'For photos, videos, audio files, and large creative assets',
+            config: {
+                displayMode: 'overlay',
+                maxFiles: 50,
+                maxSize: 524288000, // 500MB
+                accept: ['image/*', 'video/*', 'audio/*'],
+                fromSources: ['local_file_system', 'googledrive', 'dropbox', 'instagram', 'facebook', 'webcam', 'video'],
+                storeTo: { location: 's3' },
+                transformations: { crop: true, rotate: true, circle: false },
+                videoResolution: '1920x1080'
+            }
+        }
+    };
+
+    const template = templates[templateName];
+    if (!template) {
+        showNotification('Template not found', 'error');
+        return;
+    }
+
+    // Apply configuration to form fields
+    const config = template.config;
+
+    // Display Mode
+    if (config.displayMode) {
+        document.querySelector(`input[name="displayMode"][value="${config.displayMode}"]`)?.click();
+    }
+
+    // Max Files
+    if (config.maxFiles) {
+        const maxFilesInput = document.getElementById('maxFiles');
+        if (maxFilesInput) maxFilesInput.value = config.maxFiles;
+    }
+
+    // Max Size (convert bytes to MB for display)
+    if (config.maxSize) {
+        const maxSizeInput = document.getElementById('maxSize');
+        if (maxSizeInput) maxSizeInput.value = Math.floor(config.maxSize / 1048576); // Convert bytes to MB
+    }
+
+    // File Acceptance - uncheck all first, then check the ones in config
+    const fileAcceptanceSection = document.querySelector('.config-card:has(h3 .fa-file-alt)');
+    if (fileAcceptanceSection && config.accept) {
+        const allFileCheckboxes = fileAcceptanceSection.querySelectorAll('input[type="checkbox"]');
+        allFileCheckboxes.forEach(checkbox => checkbox.checked = false);
+
+        config.accept.forEach(acceptType => {
+            const checkbox = Array.from(allFileCheckboxes).find(cb =>
+                cb.value === acceptType ||
+                (acceptType.includes('*') && cb.value.includes('*') && cb.value.split('/')[0] === acceptType.split('/')[0])
+            );
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+
+    // Sources - uncheck all first, then check the ones in config
+    const sourcesSection = document.querySelector('.config-card:has(h3 .fa-cloud)');
+    if (sourcesSection && config.fromSources) {
+        const allSourceCheckboxes = sourcesSection.querySelectorAll('input[type="checkbox"]');
+        allSourceCheckboxes.forEach(checkbox => checkbox.checked = false);
+
+        config.fromSources.forEach(source => {
+            const checkbox = Array.from(allSourceCheckboxes).find(cb => cb.value === source);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+
+    // Image dimensions
+    if (config.imageMin) {
+        const imageMinDimInput = document.getElementById('imageMinDim');
+        if (imageMinDimInput) imageMinDimInput.value = config.imageMin.join(',');
+    }
+
+    if (config.imageMax) {
+        const imageMaxDimInput = document.getElementById('imageMaxDim');
+        if (imageMaxDimInput) imageMaxDimInput.value = config.imageMax.join(',');
+    }
+
+    // Storage location
+    if (config.storeTo && config.storeTo.location) {
+        const storeLocationSelect = document.getElementById('storeLocation');
+        if (storeLocationSelect) {
+            storeLocationSelect.value = config.storeTo.location === 's3' ? '' : config.storeTo.location;
+        }
+    }
+
+    // Show success notification
+    showNotification(`Template "${template.name}" loaded successfully!`, 'success');
+
+    // Auto-generate code with the new configuration
+    setTimeout(() => {
+        manualGenerateCode();
+    }, 300);
+}
+
+// Transformation Pipeline Templates
+function loadTransformPipeline(pipelineName) {
+    const pipelines = {
+        profile: {
+            name: 'Profile Picture',
+            description: 'Perfect square profile image with optimization',
+            transforms: [
+                { id: 'enableResize', params: { resizeWidth: 400, resizeHeight: 400, resizeFit: 'crop' } },
+                { id: 'enableCircle', params: {} },
+                { id: 'enableEnhance', params: {} },
+                { id: 'enableCompress', params: {} }
+            ]
+        },
+        thumbnail: {
+            name: 'Thumbnail',
+            description: 'Small optimized thumbnail for galleries',
+            transforms: [
+                { id: 'enableResize', params: { resizeWidth: 200, resizeHeight: 200, resizeFit: 'max' } },
+                { id: 'enableSharpen', params: { sharpenAmount: 3 } },
+                { id: 'enableCompress', params: {} }
+            ]
+        },
+        product: {
+            name: 'Product Image',
+            description: 'E-commerce product image with white background',
+            transforms: [
+                { id: 'enableResize', params: { resizeWidth: 1200, resizeHeight: 1200, resizeFit: 'max' } },
+                { id: 'enableEnhance', params: {} },
+                { id: 'enableSharpen', params: { sharpenAmount: 2 } },
+                { id: 'enableCompress', params: {} }
+            ]
+        },
+        social: {
+            name: 'Social Media',
+            description: 'Instagram/Facebook ready square image',
+            transforms: [
+                { id: 'enableResize', params: { resizeWidth: 1080, resizeHeight: 1080, resizeFit: 'crop' } },
+                { id: 'enableEnhance', params: {} },
+                { id: 'enableSharpen', params: { sharpenAmount: 2 } },
+                { id: 'enableCompress', params: {} }
+            ]
+        },
+        banner: {
+            name: 'Hero Banner',
+            description: 'Wide banner with subtle background blur',
+            transforms: [
+                { id: 'enableResize', params: { resizeWidth: 1920, resizeHeight: 600, resizeFit: 'crop' } },
+                { id: 'enableBlur', params: { blurAmount: 2 } },
+                { id: 'enableEnhance', params: {} },
+                { id: 'enableCompress', params: {} }
+            ]
+        },
+        print: {
+            name: 'Print Ready',
+            description: 'High resolution for printing without compression',
+            transforms: [
+                { id: 'enableResize', params: { resizeWidth: 3000, resizeHeight: 3000, resizeFit: 'max' } },
+                { id: 'enableEnhance', params: {} }
+            ]
+        },
+        vintage: {
+            name: 'Vintage Filter',
+            description: 'Old-school photo effect with sepia and vignette',
+            transforms: [
+                { id: 'enableSepia', params: { sepiaTone: 80 } },
+                { id: 'enableVignette', params: { vignetteAmount: 50 } },
+                { id: 'enableBlur', params: { blurAmount: 1 } }
+            ]
+        },
+        modern: {
+            name: 'Modern & Clean',
+            description: 'Enhanced and sharpened for modern look',
+            transforms: [
+                { id: 'enableEnhance', params: {} },
+                { id: 'enableSharpen', params: { sharpenAmount: 3 } },
+                { id: 'enableCompress', params: {} }
+            ]
+        }
+    };
+
+    const pipeline = pipelines[pipelineName];
+    if (!pipeline) {
+        showNotification('Pipeline not found', 'error');
+        return;
+    }
+
+    // Clear all transform checkboxes first
+    document.querySelectorAll('#transform input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+        // Hide the input fields
+        const inputs = checkbox.closest('.transform-option')?.querySelector('.transform-inputs');
+        if (inputs) inputs.style.display = 'none';
+    });
+
+    // Apply pipeline transforms
+    pipeline.transforms.forEach(transform => {
+        const checkbox = document.getElementById(transform.id);
+        if (checkbox) {
+            checkbox.checked = true;
+
+            // Show and populate input fields
+            const inputsDiv = checkbox.closest('.transform-option')?.querySelector('.transform-inputs');
+            if (inputsDiv) {
+                inputsDiv.style.display = 'grid';
+
+                // Set parameter values
+                Object.keys(transform.params).forEach(paramKey => {
+                    const input = document.getElementById(paramKey);
+                    if (input) {
+                        input.value = transform.params[paramKey];
+                    }
+                });
+            }
+        }
+    });
+
+    // Show success notification
+    showNotification(`Pipeline "${pipeline.name}" loaded successfully!`, 'success');
+
+    // Auto-generate code with the new configuration
+    setTimeout(() => {
+        manualGenerateCode();
+    }, 300);
 }
 
 // Copy code to clipboard
 function copyCode() {
     const codeElement = document.getElementById('generatedCode');
+    const copyBtn = event?.target?.closest('.btn-secondary');
+
     if (codeElement) {
         const text = codeElement.textContent;
         navigator.clipboard.writeText(text).then(() => {
             showNotification('Code copied to clipboard!', 'success');
+
+            // Add visual feedback to the button
+            if (copyBtn) {
+                copyBtn.classList.add('copied');
+                const originalHTML = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = originalHTML;
+                }, 2000);
+            }
         }).catch(() => {
             showNotification('Failed to copy code', 'error');
         });
