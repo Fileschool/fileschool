@@ -205,6 +205,8 @@ class CodeGeneratorEnhanced {
         switch (section) {
             case 'transform':
                 return this.generateTransformCodeCustom(tab, options);
+            case 'transform-chains':
+                return this.generateTransformChainsCode(tab, options);
             case 'sentiment':
                 return this.generateSentimentCode(tab, options);
             case 'caption':
@@ -1332,6 +1334,188 @@ GET ${statusUrl}
         }
     }
 
+    generateTransformChainsCode(tab, options) {
+        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+        const handle = options.handle || 'YOUR_FILE_HANDLE';
+        const chains = options.chains || [];
+
+        if (chains.length === 0) {
+            return `// No transformation steps configured\n// Please add transformation steps to the chain builder`;
+        }
+
+        // Build URL-based chain
+        const chainUrl = chains.map(c => {
+            if (c.params) {
+                return `${c.operation}=${c.params}`;
+            }
+            return c.operation;
+        }).join('/');
+
+        const fullUrl = `https://cdn.filestackcontent.com/${chainUrl}/${handle}`;
+
+        switch (tab) {
+            case 'javascript':
+                return `// Filestack Transform Chains
+const apikey = "${apiKey}";
+const client = filestack.init(apikey);
+
+// Transform chain URL
+const transformUrl = "${fullUrl}";
+
+// Fetch transformed file
+fetch(transformUrl)
+  .then(response => response.blob())
+  .then(blob => {
+    console.log('Transform chain completed:', blob);
+    // Use the transformed file
+    const url = URL.createObjectURL(blob);
+    console.log('Transformed image URL:', url);
+  })
+  .catch(error => console.error('Transform chain failed:', error));`;
+
+            case 'react':
+                return `import React, { useState } from 'react';
+import * as filestack from 'filestack-js';
+
+const apikey = "${apiKey}";
+const client = filestack.init(apikey);
+
+function TransformChain() {
+  const [transformedUrl, setTransformedUrl] = useState('');
+
+  const applyTransformChain = async () => {
+    try {
+      const transformUrl = "${fullUrl}";
+      const response = await fetch(transformUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setTransformedUrl(url);
+      console.log('Transform chain completed');
+    } catch (error) {
+      console.error('Transform chain failed:', error);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={applyTransformChain}>
+        Apply Transform Chain
+      </button>
+      {transformedUrl && (
+        <img src={transformedUrl} alt="Transformed" />
+      )}
+    </div>
+  );
+}
+
+export default TransformChain;`;
+
+            case 'vue':
+                return `<template>
+  <div>
+    <button @click="applyTransformChain">
+      Apply Transform Chain
+    </button>
+    <img v-if="transformedUrl" :src="transformedUrl" alt="Transformed" />
+  </div>
+</template>
+
+<script>
+import * as filestack from 'filestack-js';
+
+const apikey = "${apiKey}";
+const client = filestack.init(apikey);
+
+export default {
+  data() {
+    return {
+      transformedUrl: ''
+    };
+  },
+  methods: {
+    async applyTransformChain() {
+      try {
+        const transformUrl = "${fullUrl}";
+        const response = await fetch(transformUrl);
+        const blob = await response.blob();
+        this.transformedUrl = URL.createObjectURL(blob);
+        console.log('Transform chain completed');
+      } catch (error) {
+        console.error('Transform chain failed:', error);
+      }
+    }
+  }
+};
+</script>`;
+
+            case 'angular':
+                return `import { Component } from '@angular/core';
+import * as filestack from 'filestack-js';
+
+@Component({
+  selector: 'app-transform-chain',
+  template: \`
+    <button (click)="applyTransformChain()">
+      Apply Transform Chain
+    </button>
+    <img *ngIf="transformedUrl" [src]="transformedUrl" alt="Transformed" />
+  \`
+})
+export class TransformChainComponent {
+  private apikey = "${apiKey}";
+  private client = filestack.init(this.apikey);
+  transformedUrl = '';
+
+  async applyTransformChain() {
+    try {
+      const transformUrl = "${fullUrl}";
+      const response = await fetch(transformUrl);
+      const blob = await response.blob();
+      this.transformedUrl = URL.createObjectURL(blob);
+      console.log('Transform chain completed');
+    } catch (error) {
+      console.error('Transform chain failed:', error);
+    }
+  }
+}`;
+
+            case 'nodejs':
+                return `// Filestack Transform Chains (Node.js)
+const filestack = require('filestack-js');
+const fetch = require('node-fetch');
+const fs = require('fs');
+
+const apikey = "${apiKey}";
+const client = filestack.init(apikey);
+
+// Transform chain URL
+const transformUrl = "${fullUrl}";
+
+// Fetch and save transformed file
+fetch(transformUrl)
+  .then(response => response.buffer())
+  .then(buffer => {
+    fs.writeFileSync('transformed_output.jpg', buffer);
+    console.log('Transform chain completed, saved to transformed_output.jpg');
+  })
+  .catch(error => console.error('Transform chain failed:', error));`;
+
+            case 'url':
+                return `# Transform Chain URL
+
+${fullUrl}
+
+# Individual transformation steps:
+${chains.map((c, i) => `${i + 1}. ${c.operation}${c.params ? ` - ${c.params}` : ''}`).join('\n')}
+
+# Use this URL directly in your application
+# Or fetch it to download the transformed file`;
+
+            default:
+                return `// Transform chains code generation not implemented for ${tab}`;
+        }
+    }
+
     generateWebhooksCode(tab, options) {
         const url = options.url || 'https://your-app.com/filestack-webhook';
         const secret = options.secret || null;
@@ -1617,6 +1801,9 @@ function generateCodeEnhanced(section, tab = 'javascript') {
             case 'webhooks':
                 options = collectWebhooksOptions();
                 break;
+            case 'transform-chains':
+                options = collectTransformChainsOptions();
+                break;
             default:
                 options = {};
         }
@@ -1829,6 +2016,36 @@ function collectWebhooksOptions() {
     }
 }
 
+function collectTransformChainsOptions() {
+    try {
+        const chainBuilder = document.getElementById('chainBuilder');
+        const handle = document.getElementById('chainHandle')?.value || 'YOUR_FILE_HANDLE';
+        const chains = [];
+
+        if (chainBuilder) {
+            const steps = chainBuilder.querySelectorAll('.chain-step');
+            steps.forEach(step => {
+                const operation = step.querySelector('.chain-operation')?.value;
+                const params = step.querySelector('.chain-params')?.value;
+                if (operation) {
+                    chains.push({ operation, params });
+                }
+            });
+        }
+
+        return {
+            handle,
+            chains,
+            optimize: document.getElementById('chainOptimize')?.checked || false,
+            conditional: document.getElementById('chainConditional')?.checked || false,
+            fallback: document.getElementById('chainFallback')?.checked || false
+        };
+    } catch (error) {
+        console.warn('Error collecting transform chains options:', error);
+        return { handle: 'YOUR_FILE_HANDLE', chains: [] };
+    }
+}
+
 // Setup manual code generation system with visual feedback
 function setupManualCodeGeneration() {
     let configurationChanged = false;
@@ -1858,15 +2075,11 @@ function setupManualCodeGeneration() {
         if (!generateBtn) return;
 
         if (hasChanges) {
-            generateBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Generate Code (Updated)';
-            generateBtn.classList.add('btn-warning');
-            generateBtn.classList.remove('btn-primary');
-            generateBtn.style.animation = 'pulse 2s infinite';
+            generateBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Update Code';
+            generateBtn.classList.add('config-changed');
         } else {
             generateBtn.innerHTML = '<i class="fas fa-play"></i> Generate Code';
-            generateBtn.classList.add('btn-primary');
-            generateBtn.classList.remove('btn-warning');
-            generateBtn.style.animation = '';
+            generateBtn.classList.remove('config-changed');
         }
     };
 
@@ -3980,6 +4193,116 @@ function loadTransformPipeline(pipelineName) {
 
     // Show success notification
     showNotification(`Pipeline "${pipeline.name}" loaded successfully!`, 'success');
+
+    // Auto-generate code with the new configuration
+    setTimeout(() => {
+        manualGenerateCode();
+    }, 300);
+}
+
+// Transform Chain Pipeline Templates
+function loadChainPipeline(pipelineName) {
+    const pipelines = {
+        responsive: {
+            name: 'Responsive Images',
+            description: 'Generate multiple image sizes for responsive web design',
+            chains: [
+                { operation: 'resize', params: 'width:320,fit:max' },
+                { operation: 'quality', params: 'value:85' },
+                { operation: 'convert', params: 'format:webp' }
+            ]
+        },
+        watermark: {
+            name: 'Watermark & Protect',
+            description: 'Add watermark and optimize for protection',
+            chains: [
+                { operation: 'resize', params: 'width:1200,fit:max' },
+                { operation: 'watermark', params: 'file:YOUR_WATERMARK_HANDLE,position:bottom-right,size:100' },
+                { operation: 'quality', params: 'value:80' },
+                { operation: 'sharpen', params: 'amount:2' }
+            ]
+        },
+        ecommerce: {
+            name: 'E-Commerce Suite',
+            description: 'Main product image, thumbnail, and zoom view',
+            chains: [
+                { operation: 'resize', params: 'width:1200,height:1200,fit:max' },
+                { operation: 'sharpen', params: 'amount:2' },
+                { operation: 'quality', params: 'value:90' },
+                { operation: 'convert', params: 'format:jpg' }
+            ]
+        },
+        'social-pack': {
+            name: 'Social Media Pack',
+            description: 'Optimized for Instagram, Facebook, Twitter',
+            chains: [
+                { operation: 'resize', params: 'width:1080,height:1080,fit:crop' },
+                { operation: 'sharpen', params: 'amount:2' },
+                { operation: 'quality', params: 'value:85' },
+                { operation: 'convert', params: 'format:jpg' }
+            ]
+        },
+        'content-moderation': {
+            name: 'Content Moderation',
+            description: 'Check safety, blur faces, add watermark',
+            chains: [
+                { operation: 'blur', params: 'amount:10,type:faces' },
+                { operation: 'watermark', params: 'file:YOUR_WATERMARK_HANDLE,position:center' },
+                { operation: 'quality', params: 'value:80' }
+            ]
+        },
+        artistic: {
+            name: 'Artistic Effects',
+            description: 'Apply creative filters and effects',
+            chains: [
+                { operation: 'resize', params: 'width:1200,fit:max' },
+                { operation: 'sharpen', params: 'amount:3' },
+                { operation: 'quality', params: 'value:90' }
+            ]
+        }
+    };
+
+    const pipeline = pipelines[pipelineName];
+    if (!pipeline) {
+        showNotification('Chain pipeline not found', 'error');
+        return;
+    }
+
+    // Clear existing chain steps
+    const chainBuilder = document.getElementById('chainBuilder');
+    if (!chainBuilder) {
+        showNotification('Chain builder not found', 'error');
+        return;
+    }
+
+    chainBuilder.innerHTML = '';
+
+    // Add each step from the pipeline
+    pipeline.chains.forEach((chain, index) => {
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'chain-step';
+        stepDiv.innerHTML = `
+            <select class="chain-operation">
+                <option value="">Select Operation</option>
+                <option value="resize" ${chain.operation === 'resize' ? 'selected' : ''}>Resize</option>
+                <option value="crop" ${chain.operation === 'crop' ? 'selected' : ''}>Crop</option>
+                <option value="rotate" ${chain.operation === 'rotate' ? 'selected' : ''}>Rotate</option>
+                <option value="blur" ${chain.operation === 'blur' ? 'selected' : ''}>Blur</option>
+                <option value="sharpen" ${chain.operation === 'sharpen' ? 'selected' : ''}>Sharpen</option>
+                <option value="quality" ${chain.operation === 'quality' ? 'selected' : ''}>Quality</option>
+                <option value="convert" ${chain.operation === 'convert' ? 'selected' : ''}>Convert Format</option>
+                <option value="watermark" ${chain.operation === 'watermark' ? 'selected' : ''}>Watermark</option>
+                <option value="sepia" ${chain.operation === 'sepia' ? 'selected' : ''}>Sepia</option>
+                <option value="enhance" ${chain.operation === 'enhance' ? 'selected' : ''}>Enhance</option>
+            </select>
+            <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)" value="${chain.params}">
+            <button type="button" class="btn-remove-step" onclick="this.parentElement.remove()">×</button>
+        `;
+        chainBuilder.appendChild(stepDiv);
+    });
+
+    // Show success notification
+    showNotification(`Chain pipeline "${pipeline.name}" loaded successfully!`, 'success');
 
     // Auto-generate code with the new configuration
     setTimeout(() => {

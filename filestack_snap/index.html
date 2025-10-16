@@ -57,8 +57,8 @@
             <button class="tier-tab active" data-tier="uploads">
                 <i class="fas fa-upload"></i> Uploads
             </button>
-            <button class="tier-tab" data-tier="transforms">
-                <i class="fas fa-magic"></i> Transforms
+            <button class="tier-tab" data-tier="transformations">
+                <i class="fas fa-magic"></i> Transformations
             </button>
             <button class="tier-tab" data-tier="intelligence">
                 <i class="fas fa-brain"></i> Intelligence
@@ -90,8 +90,8 @@
             </button>
         </div>
 
-        <!-- Tier 2: Subcategories for Transforms -->
-        <div class="nav-tier nav-tier-2" data-parent="transforms">
+        <!-- Tier 2: Subcategories for transformations -->
+        <div class="nav-tier nav-tier-2" data-parent="transformations">
             <button class="sub-tab" data-section="transform">
                 <i class="fas fa-images"></i> Image Transform
             </button>
@@ -220,48 +220,50 @@
                     </div>
                 </div>
 
+                <!-- Section Divider -->
+                <div class="section-divider">
+                    <span><i class="fas fa-wrench"></i> Configuration Options</span>
+                </div>
+
                 <div class="config-grid">
-                    <!-- Basic Configuration -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
+                    <!-- Basic Configuration - Compact Layout -->
+                    <div class="config-card config-compact">
+                        <h3><i class="fas fa-cog"></i> Basic Settings</h3>
 
-                        <div class="form-group">
-                            <label>Display Mode</label>
-                            <div class="radio-group">
-                                <label class="radio-item">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Display Mode</label>
+                                <select id="displayModeSelect" onchange="document.querySelector('input[name=displayMode][value=' + this.value + ']').checked = true">
+                                    <option value="overlay" selected>Overlay</option>
+                                    <option value="inline">Inline</option>
+                                    <option value="dropPane">Drop Pane</option>
+                                </select>
+                                <div style="display: none;">
                                     <input type="radio" name="displayMode" value="overlay" checked>
-                                    <span>Overlay</span>
-                                </label>
-                                <label class="radio-item">
                                     <input type="radio" name="displayMode" value="inline">
-                                    <span>Inline</span>
-                                </label>
-                                <label class="radio-item">
                                     <input type="radio" name="displayMode" value="dropPane">
-                                    <span>Drop Pane</span>
-                                </label>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Language</label>
-                            <select id="language">
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <option value="it">Italian</option>
-                                <option value="pt">Portuguese</option>
-                                <option value="ru">Russian</option>
-                                <option value="ja">Japanese</option>
-                                <option value="ko">Korean</option>
-                                <option value="zh">Chinese</option>
-                            </select>
+                            <div class="form-group">
+                                <label>Language</label>
+                                <select id="language">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
+                                    <option value="it">Italian</option>
+                                    <option value="pt">Portuguese</option>
+                                    <option value="ru">Russian</option>
+                                    <option value="ja">Japanese</option>
+                                    <option value="ko">Korean</option>
+                                    <option value="zh">Chinese</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <!-- File Acceptance -->
-                    <div class="config-card">
+                    <div class="config-card config-full-width">
                         <h3><i class="fas fa-file-alt"></i> File Acceptance</h3>
                         <p class="card-description">Select which file types are allowed. If none selected, all types are
                             enabled.</p>
@@ -319,7 +321,7 @@
                     </div>
 
                     <!-- Sources -->
-                    <div class="config-card">
+                    <div class="config-card config-full-width">
                         <h3><i class="fas fa-cloud"></i> Sources</h3>
                         <p class="card-description">Select which sources users can upload from. If none selected, all
                             sources are enabled.</p>
@@ -392,9 +394,9 @@
                         </div>
                     </div>
 
-                    <!-- File Limits -->
+                    <!-- File Limits & Dimensions Combined -->
                     <div class="config-card">
-                        <h3><i class="fas fa-chart-bar"></i> File Limits</h3>
+                        <h3><i class="fas fa-chart-bar"></i> Limits & Constraints</h3>
 
                         <div class="form-row">
                             <div class="form-group">
@@ -407,28 +409,24 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="maxSize">Max File Size (MB)</label>
-                            <input type="number" id="maxSize" min="1" max="163840" placeholder="0">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="maxSize">Max File Size (MB)</label>
+                                <input type="number" id="maxSize" min="1" max="163840" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="concurrency">Upload Concurrency</label>
+                                <input type="number" id="concurrency" min="1" max="10" placeholder="4">
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="concurrency">Upload Concurrency</label>
-                            <input type="number" id="concurrency" min="1" max="10" placeholder="4">
-                        </div>
-                    </div>
-
-                    <!-- Image Dimensions -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-expand-arrows-alt"></i> Image Dimensions</h3>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="imageMaxDim">Max Dimensions (width, height)</label>
+                                <label for="imageMaxDim">Max Dimensions (w,h)</label>
                                 <input type="text" id="imageMaxDim" placeholder="1920,1080">
                             </div>
                             <div class="form-group">
-                                <label for="imageMinDim">Min Dimensions (width, height)</label>
+                                <label for="imageMinDim">Min Dimensions (w,h)</label>
                                 <input type="text" id="imageMinDim" placeholder="100,100">
                             </div>
                         </div>
@@ -1495,7 +1493,7 @@
             <section id="ocr" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-file-text"></i> OCR (Optical Character Recognition)</h2>
-                    <p>Extract text from images, PDFs, and documents using advanced OCR technology via URL transforms.
+                    <p>Extract text from images, PDFs, and documents using advanced OCR technology via URL transformations.
                     </p>
                 </div>
 
@@ -1627,7 +1625,7 @@
 
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About OCR</h3>
-                        <p>OCR is implemented as URL-based transforms that can be chained with other processing tasks:
+                        <p>OCR is implemented as URL-based transformations that can be chained with other processing tasks:
                         </p>
 
                         <ul class="feature-list">
@@ -1635,7 +1633,7 @@
                             <li><i class="fas fa-check"></i> Multi-language support</li>
                             <li><i class="fas fa-check"></i> Document detection preprocessing</li>
                             <li><i class="fas fa-check"></i> Works with external URLs</li>
-                            <li><i class="fas fa-check"></i> Chainable with other transforms</li>
+                            <li><i class="fas fa-check"></i> Chainable with other transformations</li>
                         </ul>
 
                         <div class="info-box">
@@ -2698,6 +2696,45 @@
                     <p>Create complex transformation pipelines by chaining multiple operations together.</p>
                 </div>
 
+                <!-- Transform Chain Pipeline Templates -->
+                <div class="config-card quick-start-card">
+                    <h3><i class="fas fa-project-diagram"></i> Chain Pipelines</h3>
+                    <p class="card-description">Pre-built multi-step transformation chains for complex workflows. Click to auto-configure.</p>
+
+                    <div class="template-grid">
+                        <button class="template-btn" onclick="loadChainPipeline('responsive')">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span class="template-name">Responsive Images</span>
+                            <small>Generate multiple sizes: 320, 768, 1024, 1920</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('watermark')">
+                            <i class="fas fa-copyright"></i>
+                            <span class="template-name">Watermark & Protect</span>
+                            <small>Resize, watermark, optimize, secure</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('ecommerce')">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="template-name">E-Commerce Suite</span>
+                            <small>Main, thumb, zoom images with optimization</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('social-pack')">
+                            <i class="fas fa-hashtag"></i>
+                            <span class="template-name">Social Media Pack</span>
+                            <small>Instagram, Facebook, Twitter formats</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('content-moderation')">
+                            <i class="fas fa-user-shield"></i>
+                            <span class="template-name">Content Moderation</span>
+                            <small>SFW check, blur faces, watermark</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('artistic')">
+                            <i class="fas fa-palette"></i>
+                            <span class="template-name">Artistic Effects</span>
+                            <small>Filters, borders, vignette, color grading</small>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="config-grid">
                     <div class="config-card">
                         <h3><i class="fas fa-cog"></i> Configuration</h3>
@@ -2736,7 +2773,7 @@
                             <div class="checkbox-group">
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="chainConditional">
-                                    <span>Enable Conditional Transforms</span>
+                                    <span>Enable Conditional transformations</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="chainOptimize">
