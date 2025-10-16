@@ -1906,6 +1906,11 @@ input[type="range"]::-moz-range-thumb:hover {
     margin-bottom: 1rem;
     overflow-x: auto;
     overflow-y: visible;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 3rem;
 }
 
 .chain-builder::-webkit-scrollbar {

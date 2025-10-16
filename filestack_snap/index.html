@@ -2976,76 +2976,74 @@
                     </div>
                 </div>
 
-                <div class="config-grid">
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                <div class="config-card">
+                    <h3><i class="fas fa-cog"></i> Configuration</h3>
 
-                        <div class="form-group">
-                            <label for="chainHandle">Source Handle or URL</label>
-                            <input type="text" id="chainHandle" placeholder="Enter file handle or URL">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Transform Chain Builder</label>
-                            <div id="chainBuilder" class="chain-builder">
-                                <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                        <option value="watermark">Watermark</option>
-                                    </select>
-                                    <input type="text" class="chain-params"
-                                        placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
-                                </div>
-                            </div>
-                            <button type="button" id="addChainStep" class="btn btn-secondary btn-small">Add
-                                Step</button>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Conditional Logic</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="chainConditional">
-                                    <span>Enable Conditional transformations</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="chainOptimize">
-                                    <span>Auto-optimize Chain</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="chainFallback">
-                                    <span>Fallback on Error</span>
-                                </label>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label for="chainHandle">Source Handle or URL</label>
+                        <input type="text" id="chainHandle" placeholder="Enter file handle or URL" class="track-changes">
                     </div>
 
-                    <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Transform Chains</h3>
-                        <p>Advanced transformation pipelines for complex processing:</p>
-
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Multi-step transformations</li>
-                            <li><i class="fas fa-check"></i> Conditional logic support</li>
-                            <li><i class="fas fa-check"></i> Chain optimization</li>
-                            <li><i class="fas fa-check"></i> Error handling and fallbacks</li>
-                            <li><i class="fas fa-check"></i> Performance optimization</li>
-                            <li><i class="fas fa-check"></i> Batch processing</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Ideal for complex image processing workflows, automated content optimization, and
-                                sophisticated file transformation pipelines.</p>
+                    <div class="form-group">
+                        <label>Transform Chain Builder</label>
+                        <div id="chainBuilder" class="chain-builder">
+                            <div class="chain-step">
+                                <select class="chain-operation track-changes">
+                                    <option value="">Select Operation</option>
+                                    <option value="resize">Resize</option>
+                                    <option value="crop">Crop</option>
+                                    <option value="rotate">Rotate</option>
+                                    <option value="blur">Blur</option>
+                                    <option value="sharpen">Sharpen</option>
+                                    <option value="quality">Quality</option>
+                                    <option value="convert">Convert Format</option>
+                                    <option value="watermark">Watermark</option>
+                                </select>
+                                <input type="text" class="chain-params track-changes"
+                                    placeholder="Parameters (e.g., width:300,height:200)">
+                                <button type="button" class="btn-remove-step">×</button>
+                            </div>
                         </div>
+                        <button type="button" id="addChainStep" class="btn btn-secondary btn-small">Add
+                            Step</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Conditional Logic</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="chainConditional" class="track-changes">
+                                <span>Enable Conditional transformations</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="chainOptimize" class="track-changes">
+                                <span>Auto-optimize Chain</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="chainFallback" class="track-changes">
+                                <span>Fallback on Error</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-card">
+                    <h3><i class="fas fa-info-circle"></i> About Transform Chains</h3>
+                    <p>Advanced transformation pipelines for complex processing:</p>
+
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Multi-step transformations</li>
+                        <li><i class="fas fa-check"></i> Conditional logic support</li>
+                        <li><i class="fas fa-check"></i> Chain optimization</li>
+                        <li><i class="fas fa-check"></i> Error handling and fallbacks</li>
+                        <li><i class="fas fa-check"></i> Performance optimization</li>
+                        <li><i class="fas fa-check"></i> Batch processing</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                        <p>Ideal for complex image processing workflows, automated content optimization, and
+                            sophisticated file transformation pipelines.</p>
                     </div>
                 </div>
             </section>

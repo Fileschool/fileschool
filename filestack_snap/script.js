@@ -1339,9 +1339,11 @@ GET ${statusUrl}
     }
 
     generateTransformChainsCode(tab, options) {
+        console.log('generateTransformChainsCode called with:', { tab, options });
         const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
         const handle = options.handle || 'YOUR_FILE_HANDLE';
         const chains = options.chains || [];
+        console.log('Chains collected:', chains);
 
         if (chains.length === 0) {
             return `// No transformation steps configured\n// Please add transformation steps to the chain builder`;
@@ -2435,28 +2437,34 @@ function collectWebhooksOptions() {
 
 function collectTransformChainsOptions() {
     try {
+        console.log('collectTransformChainsOptions called');
         const chainBuilder = document.getElementById('chainBuilder');
+        console.log('chainBuilder element:', chainBuilder);
         const handle = document.getElementById('chainHandle')?.value || 'YOUR_FILE_HANDLE';
         const chains = [];
 
         if (chainBuilder) {
             const steps = chainBuilder.querySelectorAll('.chain-step');
+            console.log('Found chain steps:', steps.length);
             steps.forEach(step => {
                 const operation = step.querySelector('.chain-operation')?.value;
                 const params = step.querySelector('.chain-params')?.value;
+                console.log('Step operation:', operation, 'params:', params);
                 if (operation) {
                     chains.push({ operation, params });
                 }
             });
         }
 
-        return {
+        const result = {
             handle,
             chains,
             optimize: document.getElementById('chainOptimize')?.checked || false,
             conditional: document.getElementById('chainConditional')?.checked || false,
             fallback: document.getElementById('chainFallback')?.checked || false
         };
+        console.log('collectTransformChainsOptions result:', result);
+        return result;
     } catch (error) {
         console.warn('Error collecting transform chains options:', error);
         return { handle: 'YOUR_FILE_HANDLE', chains: [] };
@@ -2552,6 +2560,7 @@ function setupManualCodeGeneration() {
 
     // Manual generation function
     window.manualGenerateCode = function() {
+        console.log('manualGenerateCode called, currentSection:', currentSection);
         if (!currentSection) {
             showUserFeedback('Please select a section first', 'warning');
             return;
@@ -4773,7 +4782,7 @@ function loadChainPipeline(pipelineName) {
         const stepDiv = document.createElement('div');
         stepDiv.className = 'chain-step';
         stepDiv.innerHTML = `
-            <select class="chain-operation">
+            <select class="chain-operation track-changes">
                 <option value="">Select Operation</option>
                 <option value="resize" ${chain.operation === 'resize' ? 'selected' : ''}>Resize</option>
                 <option value="crop" ${chain.operation === 'crop' ? 'selected' : ''}>Crop</option>
@@ -4786,9 +4795,22 @@ function loadChainPipeline(pipelineName) {
                 <option value="sepia" ${chain.operation === 'sepia' ? 'selected' : ''}>Sepia</option>
                 <option value="enhance" ${chain.operation === 'enhance' ? 'selected' : ''}>Enhance</option>
             </select>
-            <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)" value="${chain.params}">
-            <button type="button" class="btn-remove-step" onclick="this.parentElement.remove()">×</button>
+            <input type="text" class="chain-params track-changes" placeholder="Parameters (e.g., width:300,height:200)" value="${chain.params}">
+            <button type="button" class="btn-remove-step" onclick="this.parentElement.remove(); manualGenerateCode();">×</button>
         `;
+
+        // Add event listeners to track changes
+        const select = stepDiv.querySelector('.chain-operation');
+        const input = stepDiv.querySelector('.chain-params');
+
+        select.addEventListener('change', () => {
+            manualGenerateCode();
+        });
+
+        input.addEventListener('input', () => {
+            manualGenerateCode();
+        });
+
         chainBuilder.appendChild(stepDiv);
     });
 
@@ -5997,7 +6019,7 @@ function addChainStep() {
     const stepDiv = document.createElement('div');
     stepDiv.className = 'chain-step';
     stepDiv.innerHTML = `
-        <select class="chain-operation">
+        <select class="chain-operation track-changes">
             <option value="">Select Operation</option>
             <option value="resize">Resize</option>
             <option value="crop">Crop</option>
@@ -6019,7 +6041,7 @@ function addChainStep() {
             <option value="border">Border</option>
             <option value="upscale">Upscale</option>
         </select>
-        <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
+        <input type="text" class="chain-params track-changes" placeholder="Parameters (e.g., width:300,height:200)">
         <button type="button" class="btn-remove-step">×</button>
     `;
 
@@ -6027,7 +6049,9 @@ function addChainStep() {
     const removeBtn = stepDiv.querySelector('.btn-remove-step');
     removeBtn.addEventListener('click', () => {
         stepDiv.remove();
-        generateTransformChainsCode();
+        if (typeof manualGenerateCode === 'function') {
+            manualGenerateCode();
+        }
     });
 
     // Add event listeners for changes
@@ -6036,12 +6060,20 @@ function addChainStep() {
 
     operationSelect.addEventListener('change', () => {
         updateParameterPlaceholder(operationSelect, paramsInput);
-        generateTransformChainsCode();
+        if (typeof manualGenerateCode === 'function') {
+            manualGenerateCode();
+        }
     });
-    paramsInput.addEventListener('input', debounce(() => generateTransformChainsCode(), 300));
+    paramsInput.addEventListener('input', debounce(() => {
+        if (typeof manualGenerateCode === 'function') {
+            manualGenerateCode();
+        }
+    }, 300));
 
     chainBuilder.appendChild(stepDiv);
-    generateTransformChainsCode();
+    if (typeof manualGenerateCode === 'function') {
+        manualGenerateCode();
+    }
 }
 
 function addCaptionChainStep(builderId) {
