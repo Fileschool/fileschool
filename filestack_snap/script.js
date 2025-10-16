@@ -129,7 +129,17 @@ class CodeGeneratorEnhanced {
 
             const methodName = this.getSectionMethod(section);
             if (template[methodName]) {
-                code += template[methodName](options.url || options.handle || 'default', options.transforms || options);
+                // Different sections have different parameter signatures
+                if (section === 'picker' || section === 'upload') {
+                    // Picker and upload take just options
+                    code += template[methodName](options);
+                } else if (section === 'download') {
+                    // Download takes just a handle
+                    code += template[methodName](options.handle || 'YOUR_FILE_HANDLE');
+                } else {
+                    // Transform-based sections take url/handle and transforms
+                    code += template[methodName](options.url || options.handle || 'default', options.transforms || options);
+                }
             }
 
             if (template.footer) {
@@ -2316,35 +2326,55 @@ function collectPickerOptions() {
     // API Key is handled separately in code generation, not in options
 
     // Display mode
-    const displayMode = document.querySelector('input[name="displayMode"]:checked').value;
-    if (displayMode !== 'overlay') {
+    const displayMode = document.querySelector('input[name="displayMode"]:checked')?.value;
+    if (displayMode && displayMode !== 'overlay') {
         options.displayMode = displayMode;
     }
 
     // Language
-    const language = document.getElementById('language').value;
-    if (language !== 'en') {
+    const language = document.getElementById('language')?.value;
+    if (language && language !== 'en') {
         options.lang = language;
     }
 
-    // Accept files
+    // Accept files - Find the "File Acceptance" card and get its checkboxes
     const acceptFiles = [];
-    document.querySelectorAll('#picker input[type="checkbox"][value]').forEach(checkbox => {
-        if (checkbox.checked) {
-            acceptFiles.push(checkbox.value);
-        }
-    });
+    const fileAcceptanceCard = Array.from(document.querySelectorAll('#picker .config-card')).find(card =>
+        card.textContent.includes('File Acceptance')
+    );
+    console.log('File Acceptance Card found:', fileAcceptanceCard);
+    if (fileAcceptanceCard) {
+        const checkboxes = fileAcceptanceCard.querySelectorAll('input[type="checkbox"][value]');
+        console.log('File acceptance checkboxes:', checkboxes.length);
+        checkboxes.forEach(checkbox => {
+            console.log('Checkbox:', checkbox.value, 'Checked:', checkbox.checked);
+            if (checkbox.checked) {
+                acceptFiles.push(checkbox.value);
+            }
+        });
+    }
+    console.log('Accept files collected:', acceptFiles);
     if (acceptFiles.length > 0) {
         options.accept = acceptFiles;
     }
 
-    // Sources
+    // Sources - Find the "Sources" card and get its checkboxes
     const sources = [];
-    document.querySelectorAll('#picker .config-card:nth-child(3) input[type="checkbox"]').forEach(checkbox => {
-        if (checkbox.checked) {
-            sources.push(checkbox.value);
-        }
-    });
+    const sourcesCard = Array.from(document.querySelectorAll('#picker .config-card')).find(card =>
+        card.textContent.includes('Sources') && !card.textContent.includes('From')
+    );
+    console.log('Sources Card found:', sourcesCard);
+    if (sourcesCard) {
+        const checkboxes = sourcesCard.querySelectorAll('input[type="checkbox"][value]');
+        console.log('Sources checkboxes:', checkboxes.length);
+        checkboxes.forEach(checkbox => {
+            console.log('Source checkbox:', checkbox.value, 'Checked:', checkbox.checked);
+            if (checkbox.checked) {
+                sources.push(checkbox.value);
+            }
+        });
+    }
+    console.log('Sources collected:', sources);
     if (sources.length > 0) {
         options.fromSources = sources;
     }
@@ -2434,6 +2464,7 @@ function collectPickerOptions() {
         }
     }
 
+    console.log('Final collected picker options:', options);
     return options;
 }
 
