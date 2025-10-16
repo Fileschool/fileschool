@@ -6,122 +6,327 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filestack Transformations Playground</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: #f9fafb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin: 0;
-            padding: 40px;
+            padding: 20px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             width: 100%;
             background: #fff;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 20px;
-            color: #333;
+            margin: 0 0 30px 0;
+            color: #1a202c;
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .handle-input {
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-top: -20px;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .input-section h3 {
+            margin: 0 0 15px 0;
+            color: #2d3748;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .input-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
-        .handle-input input {
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group input {
             flex: 1;
-            padding: 10px 14px;
-            border: 1px solid #ccc;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
             border-radius: 8px;
             font-size: 14px;
+            transition: all 0.2s;
+            background: white;
         }
 
-        .handle-input button {
-            padding: 10px 16px;
-            background: #ff6900;
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.2s;
+            font-size: 14px;
+            transition: all 0.2s;
+            white-space: nowrap;
         }
 
-        .handle-input button:hover {
-            background: #e85d00;
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .input-group button:active {
+            transform: translateY(0);
+        }
+
+        .input-group button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .security-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .image-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
         .image-container {
-            text-align: center;
-            margin-bottom: 20px;
+            position: relative;
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
         }
 
-        .image-container img {
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .image-wrapper img {
             max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 400px;
+            display: block;
+            border-radius: 8px;
+            transition: opacity 0.3s;
+        }
+
+        .image-wrapper img.loading {
+            opacity: 0.3;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .loader.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .image-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .url-container {
-            background: #f3f4f6;
-            margin-top: 10px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 13px;
+            background: #2d3748;
+            margin-top: 15px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
             word-break: break-all;
-            text-align: left;
+            color: #48bb78;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .url-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .url-container::-webkit-scrollbar-track {
+            background: #1a202c;
+            border-radius: 4px;
+        }
+
+        .url-container::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 4px;
+        }
+
+        .transformations-section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
         }
 
         .transformations {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 20px 0;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
         }
 
         .transform-option {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .transform-option:hover {
+            border-color: #cbd5e0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .transform-option.active {
+            border-color: #667eea;
+            background: #f0f4ff;
         }
 
         .transform-option label {
             font-weight: 600;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
+            color: #2d3748;
+            font-size: 0.95em;
         }
 
-        .transform-option input[type="range"],
-        .transform-option input[type="number"] {
-            width: 100%;
-            margin-top: 4px;
-        }
-
-        .transform-btn {
-            width: 100%;
-            padding: 12px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
+        .transform-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
             cursor: pointer;
-            transition: background 0.2s;
+            accent-color: #667eea;
         }
 
-        .transform-btn:hover {
-            background: #1e4db7;
+        .transform-option input[type="range"] {
+            width: 100%;
+            margin-top: 8px;
+            accent-color: #667eea;
+        }
+
+        .transform-option input[type="number"] {
+            padding: 6px 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .slider-value {
+            display: inline-block;
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .image-section {
+                grid-template-columns: 1fr;
+            }
+
+            .security-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .transformations {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -129,21 +334,54 @@
 <body>
     <div class="container">
         <h1>Filestack Transformations Playground</h1>
+        <p class="subtitle">Experiment with image transformations in real-time</p>
 
-        <div class="handle-input">
-            <input type="text" id="handleInput" placeholder="Enter Filestack handle" />
-            <button id="setHandleBtn">Load</button>
-        </div>
-
-        <div class="image-container">
-            <img id="mainImage" src="https://via.placeholder.com/600x400.png?text=Upload+or+Enter+Handle+to+Begin"
-                alt="Transformed Image" />
-            <div class="url-container">
-                <code id="transformationUrl">No image loaded</code>
+        <div class="input-section">
+            <h3>Image Configuration</h3>
+            <div class="input-group">
+                <input type="text" id="handleInput" placeholder="Enter Filestack handle" />
+                <button id="setHandleBtn">Load Image</button>
+            </div>
+            <div class="security-fields">
+                <input type="text" id="policyInput" placeholder="Security Policy (optional)" />
+                <input type="text" id="signatureInput" placeholder="Signature (optional)" />
             </div>
         </div>
 
-        <div class="transformations" id="transformationsList"></div>
+        <div class="image-section">
+            <div class="image-container">
+                <div class="image-label">Original Image</div>
+                <div class="image-wrapper">
+                    <img id="originalImage" src="https://via.placeholder.com/400x300.png?text=No+Image+Loaded"
+                        alt="Original Image" />
+                    <div class="loader" id="originalLoader">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+                <div class="url-container">
+                    <code id="originalUrl">No image loaded</code>
+                </div>
+            </div>
+
+            <div class="image-container">
+                <div class="image-label">Transformed Image</div>
+                <div class="image-wrapper">
+                    <img id="mainImage" src="https://via.placeholder.com/400x300.png?text=Apply+Transformations"
+                        alt="Transformed Image" />
+                    <div class="loader" id="transformedLoader">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+                <div class="url-container">
+                    <code id="transformationUrl">No transformations applied</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="transformations-section">
+            <h3>Transformations</h3>
+            <div class="transformations" id="transformationsList"></div>
+        </div>
 
     </div>
 
