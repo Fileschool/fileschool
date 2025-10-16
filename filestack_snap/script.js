@@ -223,6 +223,10 @@ class CodeGeneratorEnhanced {
                 return this.generateWorkflowsCode(tab, options);
             case 'webhooks':
                 return this.generateWebhooksCode(tab, options);
+            case 'video-processing':
+                return this.generateVideoProcessingCode(tab, options);
+            case 'audio-processing':
+                return this.generateAudioProcessingCode(tab, options);
             default:
                 return null;
         }
@@ -1631,6 +1635,413 @@ Webhook URL: ${url}${secret ? `\nSecret Key: ${secret}` : ''}${eventsNote}
 // Webhook URL: ${url}${secret ? `\n// Secret Key: ${secret}` : ''}${eventsNote}`;
         }
     }
+
+    generateVideoProcessingCode(tab, options) {
+        const handle = options.handle || 'YOUR_VIDEO_HANDLE';
+        const preset = options.preset;
+        const customFormat = options.customFormat;
+
+        // Build transformation parameters
+        const params = [];
+
+        // Add preset or custom format
+        if (preset) {
+            params.push(`preset:${preset}`);
+        } else if (customFormat) {
+            params.push(`extname:${customFormat}`);
+        }
+
+        // Add dimensions
+        if (options.width) params.push(`width:${options.width}`);
+        if (options.height) params.push(`height:${options.height}`);
+        if (options.aspectMode) params.push(`aspect_mode:${options.aspectMode}`);
+
+        // Add quality settings
+        if (options.bitrate) params.push(`video_bitrate:${options.bitrate}`);
+        if (options.fps) params.push(`fps:${options.fps}`);
+
+        // Add clipping
+        if (options.clipLength) params.push(`clip_length:${options.clipLength}`);
+        if (options.clipOffset) params.push(`clip_offset:${options.clipOffset}`);
+
+        // Add watermark
+        if (options.watermarkType === 'text' && options.watermarkText) {
+            params.push(`watermark_text:'${options.watermarkText}'`);
+            if (options.watermarkTop) params.push(`watermark_top:${options.watermarkTop}`);
+            if (options.watermarkRight) params.push(`watermark_right:${options.watermarkRight}`);
+            if (options.watermarkBottom) params.push(`watermark_bottom:${options.watermarkBottom}`);
+        } else if (options.watermarkType === 'image' && options.watermarkUrl) {
+            params.push(`watermark_url:"${options.watermarkUrl}"`);
+            if (options.watermarkTop) params.push(`watermark_top:${options.watermarkTop}`);
+            if (options.watermarkRight) params.push(`watermark_right:${options.watermarkRight}`);
+            if (options.watermarkBottom) params.push(`watermark_bottom:${options.watermarkBottom}`);
+        }
+
+        // Add effects
+        if (options.title) params.push(`title:'${options.title}'`);
+        if (options.grayscale) params.push('video_grayscale');
+        if (options.noAudio) params.push('video_noaudio');
+
+        const paramsString = params.length > 0 ? params.join(',') : '';
+        const transformUrl = `https://cdn.filestackcontent.com/video_convert${paramsString ? '=' + paramsString : ''}/${handle}`;
+
+        switch (tab) {
+            case 'javascript':
+            case 'nodejs':
+                return `// Video Processing - Asynchronous Transformation
+// Note: video_convert returns a UUID immediately
+// Results are delivered via webhook
+
+const axios = require('axios'); // or use fetch
+
+// 1. Request video processing
+const videoUrl = '${transformUrl}';
+
+async function processVideo() {
+  try {
+    const response = await axios.get(videoUrl);
+    const data = response.data;
+
+    console.log('Video processing started');
+    console.log('UUID:', data.uuid);
+    console.log('Status:', data.status);
+    console.log('Timestamp:', data.timestamp);
+
+    // Save UUID for tracking
+    const jobId = data.uuid;
+
+    // 2. Wait for webhook notification
+    // Configure webhook at: https://dev.filestack.com
+    // Your webhook will receive the final result with:
+    // - data.url (processed video URL)
+    // - metadata.result (video specs)
+
+    return jobId;
+  } catch (error) {
+    console.error('Video processing error:', error);
+    throw error;
+  }
+}
+
+processVideo();
+
+// 3. Optional: Poll for status (alternative to webhooks)
+async function checkStatus(uuid) {
+  const statusUrl = \`https://cdn.filestackcontent.com/video_status=uuid:\${uuid}/${handle}\`;
+  const response = await axios.get(statusUrl);
+  return response.data;
+}`;
+
+            case 'react':
+                return `// Video Processing in React
+// Note: video_convert is asynchronous and requires webhooks
+
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const VideoProcessor = () => {
+  const [processing, setProcessing] = useState(false);
+  const [jobId, setJobId] = useState(null);
+  const [result, setResult] = useState(null);
+
+  const processVideo = async () => {
+    setProcessing(true);
+
+    try {
+      // 1. Start video processing
+      const response = await axios.get('${transformUrl}');
+      const { uuid, status } = response.data;
+
+      setJobId(uuid);
+      console.log('Processing started:', uuid);
+
+      // 2. Poll for completion (or use webhooks)
+      pollStatus(uuid);
+    } catch (error) {
+      console.error('Error:', error);
+      setProcessing(false);
+    }
+  };
+
+  const pollStatus = async (uuid) => {
+    const interval = setInterval(async () => {
+      try {
+        const statusUrl = \`https://cdn.filestackcontent.com/video_status=uuid:\${uuid}/${handle}\`;
+        const response = await axios.get(statusUrl);
+
+        if (response.data.status === 'completed') {
+          clearInterval(interval);
+          setResult(response.data.data.url);
+          setProcessing(false);
+          console.log('Video ready:', response.data.data.url);
+        }
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }, 5000); // Poll every 5 seconds
+  };
+
+  return (
+    <div>
+      <button onClick={processVideo} disabled={processing}>
+        {processing ? 'Processing...' : 'Process Video'}
+      </button>
+
+      {jobId && <p>Job ID: {jobId}</p>}
+
+      {result && (
+        <video src={result} controls style={{maxWidth: '100%'}} />
+      )}
+    </div>
+  );
+};
+
+export default VideoProcessor;`;
+
+            case 'url':
+                return `// Video Processing Transformation URL
+${transformUrl}
+
+// This URL initiates asynchronous video processing
+// Response format:
+{
+  "uuid": "unique-job-id",
+  "status": "started",
+  "timestamp": "1234567890",
+  "metadata": {}
+}
+
+// Final result delivered via webhook:
+{
+  "uuid": "unique-job-id",
+  "status": "completed",
+  "data": {
+    "url": "https://cdn.filestackcontent.com/PROCESSED_HANDLE",
+    "thumb": "https://cdn.filestackcontent.com/THUMBNAIL_HANDLE",
+    "thumb100x100": "...",
+    "thumb200x200": "...",
+    "thumb300x300": "..."
+  },
+  "metadata": {
+    "result": {
+      "duration": 5615,
+      "width": 1920,
+      "height": 1080,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "file_size": 150791,
+      // ... more metadata
+    }
+  }
+}
+
+// Configure webhooks at: https://dev.filestack.com`;
+
+            default:
+                return `// Video Processing URL
+${transformUrl}
+
+// Note: This is an asynchronous operation
+// Configure webhooks to receive the processed video URL`;
+        }
+    }
+
+    generateAudioProcessingCode(tab, options) {
+        const handle = options.handle || 'YOUR_AUDIO_OR_VIDEO_HANDLE';
+        const preset = options.preset;
+        const customFormat = options.customFormat;
+
+        // Build transformation parameters
+        const params = [];
+
+        // Add preset or custom format
+        if (preset) {
+            params.push(`preset:${preset}`);
+        } else if (customFormat) {
+            params.push(`extname:${customFormat}`);
+        }
+
+        // Add audio quality settings
+        if (options.codec) params.push(`audio_codec:${options.codec}`);
+        if (options.bitrate) params.push(`audio_bitrate:${options.bitrate}`);
+        if (options.sampleRate) params.push(`audio_sample_rate:${options.sampleRate}`);
+        if (options.channels) params.push(`audio_channels:${options.channels}`);
+
+        // Add clipping
+        if (options.clipLength) params.push(`clip_length:${options.clipLength}`);
+        if (options.clipOffset) params.push(`clip_offset:${options.clipOffset}`);
+
+        const paramsString = params.length > 0 ? params.join(',') : '';
+        const transformUrl = `https://cdn.filestackcontent.com/video_convert${paramsString ? '=' + paramsString : ''}/${handle}`;
+
+        switch (tab) {
+            case 'javascript':
+            case 'nodejs':
+                return `// Audio Processing - Asynchronous Transformation
+// Note: Uses video_convert task for audio files
+// Results are delivered via webhook
+
+const axios = require('axios'); // or use fetch
+
+// 1. Request audio processing
+const audioUrl = '${transformUrl}';
+
+async function processAudio() {
+  try {
+    const response = await axios.get(audioUrl);
+    const data = response.data;
+
+    console.log('Audio processing started');
+    console.log('UUID:', data.uuid);
+    console.log('Status:', data.status);
+
+    // Save UUID for tracking
+    const jobId = data.uuid;
+
+    // 2. Wait for webhook notification
+    // Configure webhook at: https://dev.filestack.com
+    // Webhook receives final result with processed audio URL
+
+    return jobId;
+  } catch (error) {
+    console.error('Audio processing error:', error);
+    throw error;
+  }
+}
+
+processAudio();
+
+// 3. Optional: Poll for status
+async function checkAudioStatus(uuid) {
+  const statusUrl = \`https://cdn.filestackcontent.com/video_status=uuid:\${uuid}/${handle}\`;
+  const response = await axios.get(statusUrl);
+
+  if (response.data.status === 'completed') {
+    console.log('Audio ready:', response.data.data.url);
+    return response.data.data.url;
+  }
+
+  return null;
+}`;
+
+            case 'react':
+                return `// Audio Processing in React
+
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const AudioProcessor = () => {
+  const [processing, setProcessing] = useState(false);
+  const [jobId, setJobId] = useState(null);
+  const [audioUrl, setAudioUrl] = useState(null);
+
+  const processAudio = async () => {
+    setProcessing(true);
+
+    try {
+      // 1. Start audio processing
+      const response = await axios.get('${transformUrl}');
+      const { uuid } = response.data;
+
+      setJobId(uuid);
+      console.log('Processing started:', uuid);
+
+      // 2. Poll for completion (or use webhooks)
+      pollForCompletion(uuid);
+    } catch (error) {
+      console.error('Error:', error);
+      setProcessing(false);
+    }
+  };
+
+  const pollForCompletion = async (uuid) => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const statusUrl = \`https://cdn.filestackcontent.com/video_status=uuid:\${uuid}/${handle}\`;
+        const res = await axios.get(statusUrl);
+
+        if (res.data.status === 'completed') {
+          clearInterval(pollInterval);
+          setAudioUrl(res.data.data.url);
+          setProcessing(false);
+          console.log('Audio ready:', res.data.data.url);
+        }
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }, 3000); // Poll every 3 seconds
+  };
+
+  return (
+    <div>
+      <button onClick={processAudio} disabled={processing}>
+        {processing ? 'Processing Audio...' : 'Convert Audio'}
+      </button>
+
+      {jobId && <p>Job ID: {jobId}</p>}
+
+      {audioUrl && (
+        <div>
+          <p>Processed Audio:</p>
+          <audio src={audioUrl} controls />
+          <a href={audioUrl} download>Download</a>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AudioProcessor;`;
+
+            case 'url':
+                return `// Audio Processing Transformation URL
+${transformUrl}
+
+// This URL initiates asynchronous audio processing
+// Can extract audio from video files or convert audio formats
+
+// Initial Response:
+{
+  "uuid": "unique-job-id",
+  "status": "started",
+  "timestamp": "1234567890"
+}
+
+// Final result via webhook:
+{
+  "uuid": "unique-job-id",
+  "status": "completed",
+  "conversion_type": "audio",
+  "data": {
+    "url": "https://cdn.filestackcontent.com/PROCESSED_AUDIO_HANDLE"
+  },
+  "metadata": {
+    "result": {
+      "audio_bitrate": ${options.bitrate || '192'},
+      "audio_channels": ${options.channels || '2'},
+      "audio_codec": "${options.codec || 'mp3'}",
+      "audio_sample_rate": ${options.sampleRate || '44100'},
+      "duration": 57182,
+      "file_size": 1373040,
+      "extname": "${customFormat || '.mp3'}",
+      // ... more metadata
+    },
+    "source": {
+      // Original file metadata
+    }
+  }
+}
+
+// Configure webhooks at: https://dev.filestack.com`;
+
+            default:
+                return `// Audio Processing URL
+${transformUrl}
+
+// Note: This is an asynchronous operation
+// Configure webhooks to receive the processed audio URL`;
+        }
+    }
 }
 
 // Initialize enhanced code generator
@@ -1803,6 +2214,12 @@ function generateCodeEnhanced(section, tab = 'javascript') {
                 break;
             case 'transform-chains':
                 options = collectTransformChainsOptions();
+                break;
+            case 'video-processing':
+                options = collectVideoProcessingOptions();
+                break;
+            case 'audio-processing':
+                options = collectAudioProcessingOptions();
                 break;
             default:
                 options = {};
@@ -2043,6 +2460,56 @@ function collectTransformChainsOptions() {
     } catch (error) {
         console.warn('Error collecting transform chains options:', error);
         return { handle: 'YOUR_FILE_HANDLE', chains: [] };
+    }
+}
+
+function collectVideoProcessingOptions() {
+    try {
+        const watermarkType = document.querySelector('input[name="videoWatermarkType"]:checked')?.value || 'none';
+
+        return {
+            handle: document.getElementById('videoProcessHandle')?.value || null,
+            preset: document.getElementById('videoPreset')?.value || null,
+            customFormat: document.getElementById('videoCustomFormat')?.value || null,
+            width: document.getElementById('videoWidth')?.value || null,
+            height: document.getElementById('videoHeight')?.value || null,
+            aspectMode: document.getElementById('videoAspectMode')?.value || null,
+            bitrate: document.getElementById('videoBitrate')?.value || null,
+            fps: document.getElementById('videoFps')?.value || null,
+            clipLength: document.getElementById('videoClipLength')?.value || null,
+            clipOffset: document.getElementById('videoClipOffset')?.value || null,
+            watermarkType: watermarkType,
+            watermarkText: watermarkType === 'text' ? document.getElementById('videoWatermarkText')?.value : null,
+            watermarkUrl: watermarkType === 'image' ? document.getElementById('videoWatermarkUrl')?.value : null,
+            watermarkTop: watermarkType !== 'none' ? document.getElementById('videoWatermarkTop')?.value : null,
+            watermarkRight: watermarkType !== 'none' ? document.getElementById('videoWatermarkRight')?.value : null,
+            watermarkBottom: watermarkType !== 'none' ? document.getElementById('videoWatermarkBottom')?.value : null,
+            grayscale: document.getElementById('videoGrayscale')?.checked || false,
+            noAudio: document.getElementById('videoNoAudio')?.checked || false,
+            title: document.getElementById('videoTitle')?.value || null
+        };
+    } catch (error) {
+        console.warn('Error collecting video processing options:', error);
+        return {};
+    }
+}
+
+function collectAudioProcessingOptions() {
+    try {
+        return {
+            handle: document.getElementById('audioProcessHandle')?.value || null,
+            preset: document.getElementById('audioPreset')?.value || null,
+            customFormat: document.getElementById('audioCustomFormat')?.value || null,
+            codec: document.getElementById('audioCodec')?.value || null,
+            bitrate: document.getElementById('audioBitrate')?.value || null,
+            sampleRate: document.getElementById('audioSampleRate')?.value || null,
+            channels: document.getElementById('audioChannels')?.value || null,
+            clipLength: document.getElementById('audioClipLength')?.value || null,
+            clipOffset: document.getElementById('audioClipOffset')?.value || null
+        };
+    } catch (error) {
+        console.warn('Error collecting audio processing options:', error);
+        return {};
     }
 }
 
@@ -2645,6 +3112,30 @@ function setupEventListeners() {
                 urlGroup.style.display = 'block';
             } else if (this.value === 'storage' && storageGroup) {
                 storageGroup.style.display = 'block';
+            }
+        });
+    });
+
+    // Setup video watermark type toggle
+    const videoWatermarkRadios = document.querySelectorAll('input[name="videoWatermarkType"]');
+    videoWatermarkRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const textGroup = document.getElementById('videoWatermarkTextGroup');
+            const imageGroup = document.getElementById('videoWatermarkImageGroup');
+            const positionGroup = document.getElementById('videoWatermarkPositionGroup');
+
+            // Hide all groups
+            if (textGroup) textGroup.style.display = 'none';
+            if (imageGroup) imageGroup.style.display = 'none';
+            if (positionGroup) positionGroup.style.display = 'none';
+
+            // Show selected group
+            if (this.value === 'text') {
+                if (textGroup) textGroup.style.display = 'block';
+                if (positionGroup) positionGroup.style.display = 'block';
+            } else if (this.value === 'image') {
+                if (imageGroup) imageGroup.style.display = 'block';
+                if (positionGroup) positionGroup.style.display = 'block';
             }
         });
     });

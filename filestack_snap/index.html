@@ -2254,68 +2254,228 @@
             <section id="video-processing" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-play-circle"></i> Video Processing</h2>
-                    <p>Transform and process videos with format conversion, resizing, compression, and watermarking.</p>
+                    <p>Transform and process videos with format conversion, resizing, compression, and advanced effects.</p>
+                    <a href="https://www.filestack.com/docs/api/video_processing/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
+                </div>
+
+                <div class="important-notice" style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;"><i class="fas fa-info-circle"></i> Asynchronous Processing</h4>
+                    <p style="margin: 0; color: #856404;">Video processing is asynchronous. The API returns a UUID immediately, and results are delivered via webhook. Configure webhooks in the <a href="https://dev.filestack.com" target="_blank" style="color: #856404; text-decoration: underline;">Developer Portal</a>.</p>
                 </div>
 
                 <div class="config-grid">
                     <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
 
                         <div class="form-group">
-                            <label for="videoProcessHandle">Video Handle or URL</label>
-                            <input type="text" id="videoProcessHandle" placeholder="Enter video handle or URL">
+                            <label for="videoProcessHandle">
+                                Video Handle <span style="color: #e63946;">*</span>
+                                <small style="color: #666; font-weight: normal;">(From uploaded file)</small>
+                            </label>
+                            <input type="text" id="videoProcessHandle" placeholder="e.g., xBfYjbEJT0Wpkh2s0MK0" class="track-changes">
                         </div>
 
                         <div class="form-group">
-                            <label for="videoFormat">Output Format</label>
-                            <select id="videoFormat">
-                                <option value="mp4">MP4</option>
-                                <option value="webm">WebM</option>
-                                <option value="avi">AVI</option>
-                                <option value="mov">MOV</option>
-                                <option value="mkv">MKV</option>
+                            <label for="videoPreset">
+                                Preset / Format
+                                <small style="color: #666; font-weight: normal;">(Choose preset or custom format)</small>
+                            </label>
+                            <select id="videoPreset" class="track-changes">
+                                <option value="">-- Custom Format --</option>
+                                <optgroup label="Video Formats">
+                                    <option value="h264">H.264 (MP4)</option>
+                                    <option value="h265.4K">H.265 4K</option>
+                                    <option value="webm.vp8">WebM VP8</option>
+                                    <option value="webm.vp9">WebM VP9</option>
+                                </optgroup>
+                                <optgroup label="Audio Extraction">
+                                    <option value="mp3">MP3 (Audio Only)</option>
+                                    <option value="aac">AAC (Audio Only)</option>
+                                    <option value="m4a">M4A (Audio Only)</option>
+                                </optgroup>
+                                <optgroup label="Streaming">
+                                    <option value="hls.variant.playlist">HLS Playlist (Adaptive)</option>
+                                    <option value="dash.variant.playlist">DASH Playlist (Adaptive)</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option value="thumbnail">Thumbnail (Image)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="videoCustomFormatGroup">
+                            <label for="videoCustomFormat">Custom Output Format (extname)</label>
+                            <select id="videoCustomFormat" class="track-changes">
+                                <option value="">(Use preset format)</option>
+                                <option value=".mp4">MP4 (.mp4)</option>
+                                <option value=".webm">WebM (.webm)</option>
+                                <option value=".avi">AVI (.avi)</option>
+                                <option value=".mov">MOV (.mov)</option>
+                                <option value=".mkv">MKV (.mkv)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-sliders-h"></i> Video Properties</h3>
+
+                        <div class="form-group">
+                            <label for="videoWidth">Width (pixels)</label>
+                            <input type="number" id="videoWidth" placeholder="e.g., 1920" class="track-changes">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="videoHeight">Height (pixels)</label>
+                            <input type="number" id="videoHeight" placeholder="e.g., 1080" class="track-changes">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="videoAspectMode">
+                                Aspect Mode
+                                <small style="color: #666; font-weight: normal;">(How to handle aspect ratio)</small>
+                            </label>
+                            <select id="videoAspectMode" class="track-changes">
+                                <option value="">Default (preserve)</option>
+                                <option value="preserve">Preserve - Keep original ratio</option>
+                                <option value="constrain">Constrain - No black bars</option>
+                                <option value="crop">Crop - Fill frame, crop excess</option>
+                                <option value="pad">Pad - Add black bars to fit</option>
+                                <option value="letterbox">Letterbox - Bars above/below only</option>
+                                <option value="stretch">Stretch - Ignore aspect ratio</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="videoResolution">Resolution</label>
-                            <select id="videoResolution">
-                                <option value="">Original</option>
-                                <option value="1920x1080">1920x1080 (1080p)</option>
-                                <option value="1280x720">1280x720 (720p)</option>
-                                <option value="854x480">854x480 (480p)</option>
-                                <option value="640x360">640x360 (360p)</option>
-                            </select>
+                            <label for="videoBitrate">Video Bitrate (kbps)</label>
+                            <input type="number" id="videoBitrate" placeholder="e.g., 1000" class="track-changes">
                         </div>
 
                         <div class="form-group">
-                            <label for="videoBitrate">Bitrate (kbps)</label>
-                            <input type="number" id="videoBitrate" placeholder="e.g., 1000">
+                            <label for="videoFps">Frame Rate (fps)</label>
+                            <input type="number" id="videoFps" placeholder="e.g., 30" class="track-changes">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-cut"></i> Trimming & Clipping</h3>
+
+                        <div class="form-group">
+                            <label for="videoClipLength">
+                                Clip Length
+                                <small style="color: #666; font-weight: normal;">(Format: hh:mm:ss)</small>
+                            </label>
+                            <input type="text" id="videoClipLength" placeholder="e.g., 00:00:30" class="track-changes">
                         </div>
 
                         <div class="form-group">
-                            <label for="videoWatermark">Watermark Text</label>
-                            <input type="text" id="videoWatermark" placeholder="Optional watermark text">
+                            <label for="videoClipOffset">
+                                Clip Offset (Start Time)
+                                <small style="color: #666; font-weight: normal;">(Format: hh:mm:ss)</small>
+                            </label>
+                            <input type="text" id="videoClipOffset" placeholder="e.g., 00:00:05" class="track-changes">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-copyright"></i> Watermark</h3>
+
+                        <div class="form-group">
+                            <label>Watermark Type</label>
+                            <div class="radio-group">
+                                <label class="radio-item">
+                                    <input type="radio" name="videoWatermarkType" value="none" checked class="track-changes">
+                                    <span>No Watermark</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="videoWatermarkType" value="text" class="track-changes">
+                                    <span>Text Watermark</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="videoWatermarkType" value="image" class="track-changes">
+                                    <span>Image Watermark</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="videoWatermarkTextGroup" style="display: none;">
+                            <label for="videoWatermarkText">Watermark Text</label>
+                            <input type="text" id="videoWatermarkText" placeholder="Your watermark text" class="track-changes">
+                        </div>
+
+                        <div class="form-group" id="videoWatermarkImageGroup" style="display: none;">
+                            <label for="videoWatermarkUrl">Watermark Image URL/Handle</label>
+                            <input type="text" id="videoWatermarkUrl" placeholder="Image handle or URL (in quotes)" class="track-changes">
+                        </div>
+
+                        <div id="videoWatermarkPositionGroup" style="display: none;">
+                            <div class="form-group">
+                                <label for="videoWatermarkTop">Top (pixels)</label>
+                                <input type="number" id="videoWatermarkTop" placeholder="e.g., 10" class="track-changes">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoWatermarkRight">Right (pixels)</label>
+                                <input type="number" id="videoWatermarkRight" placeholder="e.g., 10" class="track-changes">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoWatermarkBottom">Bottom (pixels)</label>
+                                <input type="number" id="videoWatermarkBottom" placeholder="e.g., 10" class="track-changes">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-magic"></i> Video Effects</h3>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="videoGrayscale" class="track-changes">
+                                <span>Grayscale (Black & White)</span>
+                            </label>
+
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="videoNoAudio" class="track-changes">
+                                <span>Remove Audio Track</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="videoTitle">Video Title (Metadata)</label>
+                            <input type="text" id="videoTitle" placeholder="My Video Title" class="track-changes">
                         </div>
                     </div>
 
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About Video Processing</h3>
-                        <p>Comprehensive video processing capabilities:</p>
+                        <p>Filestack video processing uses the <code>video_convert</code> task for asynchronous transcoding:</p>
 
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Format conversion (MP4, WebM, AVI, MOV)</li>
-                            <li><i class="fas fa-check"></i> Resolution scaling and optimization</li>
-                            <li><i class="fas fa-check"></i> Bitrate and quality control</li>
-                            <li><i class="fas fa-check"></i> Video compression</li>
-                            <li><i class="fas fa-check"></i> Watermark and overlay support</li>
-                            <li><i class="fas fa-check"></i> Thumbnail generation</li>
+                            <li><i class="fas fa-check"></i> <strong>Format Conversion</strong> - MP4, WebM, AVI, MOV, MKV and more</li>
+                            <li><i class="fas fa-check"></i> <strong>Resolution Control</strong> - Scale to any dimension with aspect modes</li>
+                            <li><i class="fas fa-check"></i> <strong>Quality Settings</strong> - Bitrate, FPS, and compression control</li>
+                            <li><i class="fas fa-check"></i> <strong>Clipping</strong> - Trim videos by length and offset</li>
+                            <li><i class="fas fa-check"></i> <strong>Watermarking</strong> - Add text or image watermarks</li>
+                            <li><i class="fas fa-check"></i> <strong>Effects</strong> - Grayscale, blur, brightness, contrast, and more</li>
+                            <li><i class="fas fa-check"></i> <strong>Streaming</strong> - Generate HLS/DASH playlists for adaptive bitrate</li>
+                            <li><i class="fas fa-check"></i> <strong>Thumbnails</strong> - Auto-generate video thumbnails</li>
                         </ul>
 
                         <div class="info-box">
                             <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Perfect for video streaming platforms, social media, e-learning, and applications
-                                requiring video optimization.</p>
+                            <p><strong>Video platforms:</strong> streaming services, social media, e-learning<br>
+                            <strong>Content management:</strong> automatic transcoding pipelines<br>
+                            <strong>Mobile apps:</strong> optimize videos for different devices</p>
+                        </div>
+
+                        <div class="info-box" style="background: #e7f3ff; border-color: #2196F3; margin-top: 1rem;">
+                            <h4 style="color: #1976D2;"><i class="fas fa-clock"></i> Response Flow</h4>
+                            <p style="margin: 0; color: #1565C0;">
+                                <strong>1.</strong> Send request → <strong>2.</strong> Receive UUID immediately →
+                                <strong>3.</strong> Wait for webhook with processed video URL
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -2325,92 +2485,173 @@
             <section id="audio-processing" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-music"></i> Audio Processing</h2>
-                    <p>Process and transform audio files with format conversion, quality adjustment, and effects.</p>
+                    <p>Extract and transform audio with format conversion, quality control, and professional effects.</p>
+                    <a href="https://www.filestack.com/docs/api/video_processing/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
+                </div>
+
+                <div class="important-notice" style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;"><i class="fas fa-info-circle"></i> Asynchronous Processing</h4>
+                    <p style="margin: 0; color: #856404;">Audio processing uses the same <code>video_convert</code> task. Results are delivered asynchronously via webhook. Configure in <a href="https://dev.filestack.com" target="_blank" style="color: #856404; text-decoration: underline;">Developer Portal</a>.</p>
                 </div>
 
                 <div class="config-grid">
                     <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
 
                         <div class="form-group">
-                            <label for="audioProcessHandle">Audio Handle or URL</label>
-                            <input type="text" id="audioProcessHandle" placeholder="Enter audio handle or URL">
+                            <label for="audioProcessHandle">
+                                Audio/Video Handle <span style="color: #e63946;">*</span>
+                                <small style="color: #666; font-weight: normal;">(Can extract audio from video)</small>
+                            </label>
+                            <input type="text" id="audioProcessHandle" placeholder="e.g., xBfYjbEJT0Wpkh2s0MK0" class="track-changes">
                         </div>
 
                         <div class="form-group">
-                            <label for="audioFormat">Output Format</label>
-                            <select id="audioFormat">
-                                <option value="mp3">MP3</option>
-                                <option value="wav">WAV</option>
-                                <option value="aac">AAC</option>
-                                <option value="ogg">OGG</option>
-                                <option value="flac">FLAC</option>
+                            <label for="audioPreset">
+                                Audio Preset
+                                <small style="color: #666; font-weight: normal;">(Choose preset or custom format)</small>
+                            </label>
+                            <select id="audioPreset" class="track-changes">
+                                <option value="">-- Custom Format --</option>
+                                <option value="mp3">MP3 (Lossy, Universal)</option>
+                                <option value="aac">AAC (Lossy, High Quality)</option>
+                                <option value="m4a">M4A (Apple/iTunes)</option>
+                                <option value="vorbis">Vorbis (OGG)</option>
+                                <option value="oga">OGA (Ogg Audio)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="audioCustomFormatGroup">
+                            <label for="audioCustomFormat">Custom Output Format (extname)</label>
+                            <select id="audioCustomFormat" class="track-changes">
+                                <option value="">(Use preset format)</option>
+                                <option value=".mp3">MP3 (.mp3)</option>
+                                <option value=".wav">WAV (.wav)</option>
+                                <option value=".aac">AAC (.aac)</option>
+                                <option value=".m4a">M4A (.m4a)</option>
+                                <option value=".ogg">OGG (.ogg)</option>
+                                <option value=".flac">FLAC (.flac)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-sliders-h"></i> Audio Quality</h3>
+
+                        <div class="form-group">
+                            <label for="audioCodec">
+                                Audio Codec
+                                <small style="color: #666; font-weight: normal;">(Advanced users only)</small>
+                            </label>
+                            <select id="audioCodec" class="track-changes">
+                                <option value="">Auto (based on format)</option>
+                                <option value="libmp3lame">libmp3lame (MP3)</option>
+                                <option value="libfdk_aac">libfdk_aac (AAC)</option>
+                                <option value="libvorbis">libvorbis (Vorbis)</option>
+                                <option value="pcm_s16le">pcm_s16le (WAV PCM)</option>
+                                <option value="ac3">AC3</option>
+                                <option value="eac3">EAC3</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="audioBitrate">Bitrate (kbps)</label>
-                            <select id="audioBitrate">
+                            <label for="audioBitrate">
+                                Audio Bitrate (kbps)
+                                <small style="color: #666; font-weight: normal;">(Higher = better quality)</small>
+                            </label>
+                            <select id="audioBitrate" class="track-changes">
                                 <option value="">Original</option>
-                                <option value="320">320 kbps (High Quality)</option>
-                                <option value="256">256 kbps</option>
-                                <option value="192">192 kbps (Standard)</option>
+                                <option value="320">320 kbps (Highest Quality)</option>
+                                <option value="256">256 kbps (Very High)</option>
+                                <option value="192">192 kbps (High - Standard)</option>
                                 <option value="128">128 kbps (Medium)</option>
                                 <option value="96">96 kbps (Low)</option>
+                                <option value="64">64 kbps (Voice/Podcast)</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="audioSampleRate">Sample Rate (Hz)</label>
-                            <select id="audioSampleRate">
+                            <label for="audioSampleRate">
+                                Sample Rate (Hz)
+                                <small style="color: #666; font-weight: normal;">(Higher = more detail)</small>
+                            </label>
+                            <select id="audioSampleRate" class="track-changes">
                                 <option value="">Original</option>
-                                <option value="48000">48000 Hz</option>
+                                <option value="48000">48000 Hz (Professional)</option>
                                 <option value="44100">44100 Hz (CD Quality)</option>
+                                <option value="32000">32000 Hz</option>
                                 <option value="22050">22050 Hz</option>
-                                <option value="16000">16000 Hz</option>
+                                <option value="16000">16000 Hz (Voice)</option>
+                                <option value="8000">8000 Hz (Telephony)</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label>Processing Options</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="audioNormalize">
-                                    <span>Normalize Volume</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="audioNoiseReduction">
-                                    <span>Noise Reduction</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="audioFadeIn">
-                                    <span>Fade In</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="audioFadeOut">
-                                    <span>Fade Out</span>
-                                </label>
-                            </div>
+                            <label for="audioChannels">
+                                Audio Channels
+                                <small style="color: #666; font-weight: normal;">(Stereo vs Mono)</small>
+                            </label>
+                            <select id="audioChannels" class="track-changes">
+                                <option value="">Original</option>
+                                <option value="1">1 - Mono</option>
+                                <option value="2">2 - Stereo</option>
+                                <option value="5">5 - 5.0 Surround</option>
+                                <option value="6">6 - 5.1 Surround</option>
+                                <option value="8">8 - 7.1 Surround</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-cut"></i> Audio Trimming</h3>
+
+                        <div class="form-group">
+                            <label for="audioClipLength">
+                                Clip Length
+                                <small style="color: #666; font-weight: normal;">(Format: hh:mm:ss)</small>
+                            </label>
+                            <input type="text" id="audioClipLength" placeholder="e.g., 00:03:30" class="track-changes">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="audioClipOffset">
+                                Clip Offset (Start Time)
+                                <small style="color: #666; font-weight: normal;">(Format: hh:mm:ss)</small>
+                            </label>
+                            <input type="text" id="audioClipOffset" placeholder="e.g., 00:00:10" class="track-changes">
                         </div>
                     </div>
 
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About Audio Processing</h3>
-                        <p>Professional audio processing features:</p>
+                        <p>Filestack audio processing uses <code>video_convert</code> with audio-specific parameters:</p>
 
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Format conversion (MP3, WAV, AAC, OGG, FLAC)</li>
-                            <li><i class="fas fa-check"></i> Quality and bitrate adjustment</li>
-                            <li><i class="fas fa-check"></i> Sample rate optimization</li>
-                            <li><i class="fas fa-check"></i> Volume normalization</li>
-                            <li><i class="fas fa-check"></i> Noise reduction and effects</li>
-                            <li><i class="fas fa-check"></i> Fade in/out transitions</li>
+                            <li><i class="fas fa-check"></i> <strong>Format Conversion</strong> - MP3, WAV, AAC, OGG, FLAC, M4A</li>
+                            <li><i class="fas fa-check"></i> <strong>Audio Extraction</strong> - Extract audio track from videos</li>
+                            <li><i class="fas fa-check"></i> <strong>Bitrate Control</strong> - 64-320 kbps for size/quality balance</li>
+                            <li><i class="fas fa-check"></i> <strong>Sample Rate</strong> - 8kHz to 48kHz for different use cases</li>
+                            <li><i class="fas fa-check"></i> <strong>Channel Config</strong> - Mono, Stereo, or Surround Sound</li>
+                            <li><i class="fas fa-check"></i> <strong>Codec Options</strong> - Choose specific audio codecs</li>
+                            <li><i class="fas fa-check"></i> <strong>Trimming</strong> - Extract specific audio segments</li>
                         </ul>
 
                         <div class="info-box">
                             <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Ideal for podcasts, music platforms, voice applications, and any service requiring audio
-                                optimization.</p>
+                            <p><strong>Podcasts:</strong> Convert to MP3 with consistent quality<br>
+                            <strong>Music platforms:</strong> High-quality AAC/FLAC conversion<br>
+                            <strong>Voice apps:</strong> Low-bitrate mono for bandwidth savings<br>
+                            <strong>Video extraction:</strong> Get audio track from video files</p>
+                        </div>
+
+                        <div class="info-box" style="background: #e8f5e9; border-color: #4CAF50; margin-top: 1rem;">
+                            <h4 style="color: #2E7D32;"><i class="fas fa-magic"></i> Pro Tip</h4>
+                            <p style="margin: 0; color: #1B5E20;">
+                                For podcasts use <strong>128kbps MP3 Mono</strong> (small size, good quality).<br>
+                                For music use <strong>256kbps AAC Stereo</strong> (excellent quality).
+                            </p>
                         </div>
                     </div>
                 </div>
