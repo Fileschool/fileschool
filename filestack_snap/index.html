@@ -32,142 +32,144 @@
         </div>
     </header>
 
+    <!-- API Key Section (Top Bar) -->
+    <div class="api-key-bar">
+        <div class="api-key-container">
+            <div class="form-group">
+                <label for="globalApikey">API Key</label>
+                <input type="text" id="globalApikey" placeholder="Enter your Filestack API key">
+            </div>
+            <div class="form-group">
+                <label for="securityPolicy">Security Policy</label>
+                <input type="text" id="securityPolicy" placeholder="Enter security policy">
+            </div>
+            <div class="form-group">
+                <label for="securitySignature">Security Signature</label>
+                <input type="text" id="securitySignature" placeholder="Enter security signature">
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Navigation Tabs (3 Tiers) -->
+    <nav class="top-nav-tabs">
+        <!-- Tier 1: Main Categories -->
+        <div class="nav-tier nav-tier-1">
+            <button class="tier-tab active" data-tier="uploads">
+                <i class="fas fa-upload"></i> Uploads
+            </button>
+            <button class="tier-tab" data-tier="transforms">
+                <i class="fas fa-magic"></i> Transforms
+            </button>
+            <button class="tier-tab" data-tier="intelligence">
+                <i class="fas fa-brain"></i> Intelligence
+            </button>
+            <button class="tier-tab" data-tier="media">
+                <i class="fas fa-video"></i> Media
+            </button>
+            <button class="tier-tab" data-tier="automation">
+                <i class="fas fa-sitemap"></i> Automation
+            </button>
+            <button class="tier-tab" data-tier="advanced">
+                <i class="fas fa-cog"></i> Advanced
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Uploads -->
+        <div class="nav-tier nav-tier-2 active" data-parent="uploads">
+            <button class="sub-tab active" data-section="picker">
+                <i class="fas fa-folder-open"></i> File Picker
+            </button>
+            <button class="sub-tab" data-section="upload">
+                <i class="fas fa-cloud-upload-alt"></i> Upload
+            </button>
+            <button class="sub-tab" data-section="dnd">
+                <i class="fas fa-hand-pointer"></i> Drag & Drop
+            </button>
+            <button class="sub-tab" data-section="download">
+                <i class="fas fa-download"></i> Download
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Transforms -->
+        <div class="nav-tier nav-tier-2" data-parent="transforms">
+            <button class="sub-tab" data-section="transform">
+                <i class="fas fa-images"></i> Image Transform
+            </button>
+            <button class="sub-tab" data-section="transform-chains">
+                <i class="fas fa-link"></i> Transform Chains
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Intelligence -->
+        <div class="nav-tier nav-tier-2" data-parent="intelligence">
+            <button class="sub-tab" data-section="sfw">
+                <i class="fas fa-shield-alt"></i> Safe for Work
+            </button>
+            <button class="sub-tab" data-section="tagging">
+                <i class="fas fa-tags"></i> Image Tagging
+            </button>
+            <button class="sub-tab" data-section="faces">
+                <i class="fas fa-user"></i> Face Detection
+            </button>
+            <button class="sub-tab" data-section="ocr">
+                <i class="fas fa-file-text"></i> OCR
+            </button>
+            <button class="sub-tab" data-section="caption">
+                <i class="fas fa-comment-alt"></i> Caption Generation
+            </button>
+            <button class="sub-tab" data-section="phishing">
+                <i class="fas fa-exclamation-triangle"></i> Phishing Detection
+            </button>
+            <button class="sub-tab" data-section="virus">
+                <i class="fas fa-bug"></i> Virus Detection
+            </button>
+            <button class="sub-tab" data-section="sentiment">
+                <i class="fas fa-smile"></i> Sentiment Analysis
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Media -->
+        <div class="nav-tier nav-tier-2" data-parent="media">
+            <button class="sub-tab" data-section="video-processing">
+                <i class="fas fa-play-circle"></i> Video Processing
+            </button>
+            <button class="sub-tab" data-section="audio-processing">
+                <i class="fas fa-music"></i> Audio Processing
+            </button>
+            <button class="sub-tab" data-section="video-tagging">
+                <i class="fas fa-video"></i> Video Tagging
+            </button>
+            <button class="sub-tab" data-section="video-sfw">
+                <i class="fas fa-film"></i> Video SFW
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Automation -->
+        <div class="nav-tier nav-tier-2" data-parent="automation">
+            <button class="sub-tab" data-section="workflows">
+                <i class="fas fa-sitemap"></i> Workflows
+            </button>
+            <button class="sub-tab" data-section="webhooks">
+                <i class="fas fa-webhook"></i> Webhooks
+            </button>
+            <button class="sub-tab" data-section="custom-source">
+                <i class="fas fa-plug"></i> Custom Source
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Advanced -->
+        <div class="nav-tier nav-tier-2" data-parent="advanced">
+            <button class="sub-tab" data-section="metadata">
+                <i class="fas fa-info-circle"></i> Metadata
+            </button>
+            <button class="sub-tab" data-section="security">
+                <i class="fas fa-lock"></i> Security
+            </button>
+        </div>
+    </nav>
+
     <!-- Main Container -->
     <div class="main-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>Features</h3>
-            </div>
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <h4>Core Features</h4>
-                    <div class="api-key-section">
-                        <div class="form-group">
-                            <label for="globalApikey">API Key</label>
-                            <input type="text" id="globalApikey" placeholder="Enter your Filestack API key">
-                        </div>
-                        <div class="form-group">
-                            <label for="securityPolicy">Security Policy</label>
-                            <input type="text" id="securityPolicy" placeholder="Enter security policy">
-                        </div>
-                        <div class="form-group">
-                            <label for="securitySignature">Security Signature</label>
-                            <input type="text" id="securitySignature" placeholder="Enter security signature">
-                        </div>
-                    </div>
-                    <a href="#picker" class="nav-item active" data-section="picker">
-                        <i class="fas fa-folder-open"></i>
-                        <span>File Picker</span>
-                    </a>
-                    <a href="#transform" class="nav-item" data-section="transform">
-                        <i class="fas fa-magic"></i>
-                        <span>Image Transform</span>
-                    </a>
-                    <a href="#upload" class="nav-item" data-section="upload">
-                        <i class="fas fa-upload"></i>
-                        <span>Upload</span>
-                    </a>
-                    <a href="#download" class="nav-item" data-section="download">
-                        <i class="fas fa-download"></i>
-                        <span>Download</span>
-                    </a>
-                    <a href="#dnd" class="nav-item" data-section="dnd">
-                        <i class="fas fa-hand-pointer"></i>
-                        <span>Drag & Drop</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <h4>Intelligence</h4>
-                    <a href="#sfw" class="nav-item" data-section="sfw">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Safe for Work</span>
-                    </a>
-                    <a href="#tagging" class="nav-item" data-section="tagging">
-                        <i class="fas fa-tags"></i>
-                        <span>Image Tagging</span>
-                    </a>
-                    <a href="#faces" class="nav-item" data-section="faces">
-                        <i class="fas fa-user"></i>
-                        <span>Face Detection</span>
-                    </a>
-                    <a href="#ocr" class="nav-item" data-section="ocr">
-                        <i class="fas fa-file-text"></i>
-                        <span>OCR</span>
-                    </a>
-                    <a href="#video-tagging" class="nav-item" data-section="video-tagging">
-                        <i class="fas fa-video"></i>
-                        <span>Video Tagging</span>
-                    </a>
-                    <a href="#video-sfw" class="nav-item" data-section="video-sfw">
-                        <i class="fas fa-film"></i>
-                        <span>Video SFW</span>
-                    </a>
-                    <a href="#caption" class="nav-item" data-section="caption">
-                        <i class="fas fa-comment-alt"></i>
-                        <span>Caption Generation</span>
-                    </a>
-                    <a href="#phishing" class="nav-item" data-section="phishing">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Phishing Detection</span>
-                    </a>
-                    <a href="#virus" class="nav-item" data-section="virus">
-                        <i class="fas fa-bug"></i>
-                        <span>Virus Detection</span>
-                    </a>
-                    <a href="#sentiment" class="nav-item" data-section="sentiment">
-                        <i class="fas fa-smile"></i>
-                        <span>Sentiment Analysis</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <h4>Video & Audio</h4>
-                    <a href="#video-processing" class="nav-item" data-section="video-processing">
-                        <i class="fas fa-play-circle"></i>
-                        <span>Video Processing</span>
-                    </a>
-                    <a href="#audio-processing" class="nav-item" data-section="audio-processing">
-                        <i class="fas fa-music"></i>
-                        <span>Audio Processing</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <h4>Automation</h4>
-                    <a href="#workflows" class="nav-item" data-section="workflows">
-                        <i class="fas fa-sitemap"></i>
-                        <span>Workflows</span>
-                    </a>
-                    <a href="#webhooks" class="nav-item" data-section="webhooks">
-                        <i class="fas fa-webhook"></i>
-                        <span>Webhooks</span>
-                    </a>
-                    <a href="#custom-source" class="nav-item" data-section="custom-source">
-                        <i class="fas fa-plug"></i>
-                        <span>Custom Source</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <h4>Advanced</h4>
-                    <a href="#metadata" class="nav-item" data-section="metadata">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Metadata</span>
-                    </a>
-                    <a href="#security" class="nav-item" data-section="security">
-                        <i class="fas fa-lock"></i>
-                        <span>Security</span>
-                    </a>
-                    <a href="#transform-chains" class="nav-item" data-section="transform-chains">
-                        <i class="fas fa-link"></i>
-                        <span>Transform Chains</span>
-                    </a>
-                </div>
-
-            </nav>
-        </aside>
 
         <!-- Main Content -->
         <main class="main-content">

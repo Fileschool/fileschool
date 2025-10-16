@@ -1897,11 +1897,43 @@ function initializeApp() {
 
 // Setup event listeners
 function setupEventListeners() {
-    // Navigation
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
+    // Top Navigation - Tier 1 (Main Categories)
+    document.querySelectorAll('.tier-tab').forEach(tab => {
+        tab.addEventListener('click', function () {
+            const tier = this.getAttribute('data-tier');
+
+            // Remove active class from all tier-1 tabs
+            document.querySelectorAll('.tier-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            // Hide all tier-2 sections
+            document.querySelectorAll('.nav-tier-2').forEach(t => t.classList.remove('active'));
+
+            // Show the corresponding tier-2 section
+            const tier2Section = document.querySelector(`.nav-tier-2[data-parent="${tier}"]`);
+            if (tier2Section) {
+                tier2Section.classList.add('active');
+
+                // Automatically click the first sub-tab in this category
+                const firstSubTab = tier2Section.querySelector('.sub-tab');
+                if (firstSubTab) {
+                    firstSubTab.click();
+                }
+            }
+        });
+    });
+
+    // Top Navigation - Tier 2 (Subcategories)
+    document.querySelectorAll('.sub-tab').forEach(tab => {
+        tab.addEventListener('click', function () {
             const section = this.getAttribute('data-section');
+
+            // Remove active class from all sub-tabs in the current tier-2
+            const parentTier2 = this.closest('.nav-tier-2');
+            parentTier2.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            // Show the corresponding content section
             showSection(section);
         });
     });
@@ -2168,12 +2200,8 @@ function showSection(sectionName) {
             generateBtn.title = 'Generate code for this section';
         }
 
-        // Auto-generate code when switching to a new section
-        if (typeof manualGenerateCode === 'function') {
-            setTimeout(() => {
-                manualGenerateCode();
-            }, 100);
-        }
+        // Don't auto-generate code when switching sections
+        // Users should click "Generate Code" button manually
     }
 }
 
@@ -2190,10 +2218,8 @@ function switchCodeTab(tabName) {
         activeTab.classList.add('active');
     }
 
-    // Automatically generate code when switching tabs
-    if (typeof manualGenerateCode === 'function') {
-        manualGenerateCode();
-    }
+    // Don't automatically generate code when switching tabs
+    // Users should click "Generate Code" button manually
 
     // Update code display with correct language
     const codeElement = document.getElementById('generatedCode');
