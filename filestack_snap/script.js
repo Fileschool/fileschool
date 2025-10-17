@@ -3786,6 +3786,16 @@ function showSection(sectionName) {
 
     currentSection = sectionName;
 
+    // Add class to main-content for upload section to allow sticky positioning
+    const mainContentEl = document.querySelector('.main-content');
+    if (mainContentEl) {
+        if (sectionName === 'upload') {
+            mainContentEl.classList.add('upload-section-active');
+        } else {
+            mainContentEl.classList.remove('upload-section-active');
+        }
+    }
+
     // Reset code tabs to JavaScript and generate appropriate code
     switchCodeTab('javascript');
 
@@ -3823,6 +3833,9 @@ function showSection(sectionName) {
     if (sectionName === 'upload') {
         generateFileApiCodePanel();
         return; // Exit early, custom code generation
+    } else {
+        // Restore normal code panel for non-upload sections
+        restoreNormalCodePanel();
     }
 
     // Define workflow-only sections (no code generation)
@@ -8479,6 +8492,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ========== FILE API CODE GENERATION ==========
 
+function restoreNormalCodePanel() {
+    // Restore code panel header
+    const codeHeader = document.querySelector('.code-header h3');
+    if (codeHeader) {
+        codeHeader.innerHTML = '<i class="fas fa-code"></i> Generated Code';
+    }
+
+    // Show code tabs again
+    const codeTabs = document.querySelector('.code-tabs');
+    if (codeTabs) codeTabs.style.display = 'flex';
+    
+    // Show generate button
+    const generateBtn = document.getElementById('generateCodeBtn');
+    if (generateBtn) generateBtn.style.display = 'inline-flex';
+
+    // Clear the REST API content and restore placeholder
+    const codeContent = document.querySelector('.code-content');
+    if (codeContent) {
+        codeContent.innerHTML = `
+            <div style="padding: 2rem; text-align: center; color: #666;">
+                <i class="fas fa-code" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Configure your options on the left</p>
+                <p style="font-size: 0.9rem;">Then click "Generate Code" to see the code</p>
+            </div>
+        `;
+    }
+}
+
 function generateFileApiCodePanel() {
     // Get user inputs
     const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
@@ -8508,13 +8549,30 @@ function generateFileApiCodePanel() {
 
     // Generate REST API commands organized by operation
     const restApiHtml = `
-        <div style="padding: 1rem;">
-            <p style="margin: 0 0 1.5rem 0; color: #666; font-size: 0.9rem;">
-                <i class="fas fa-info-circle"></i> Copy & paste these commands directly into your terminal
-            </p>
+        <div style="position: relative;">
+            <!-- Quick Nav in Right Panel (Sticky) -->
+            <div style="position: sticky; top: 0; z-index: 50; background: white; padding: 1rem; margin: -1rem -1rem 0 -1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 0.5rem; border-bottom: 2px solid #e0e0e0;">
+                <button onclick="document.getElementById('right-store').scrollIntoView({behavior: 'smooth'})" style="background: #4caf50; border: none; color: white; padding: 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    POST<br>Store
+                </button>
+                <button onclick="document.getElementById('right-metadata').scrollIntoView({behavior: 'smooth'})" style="background: #2196f3; border: none; color: white; padding: 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    GET<br>Metadata
+                </button>
+                <button onclick="document.getElementById('right-download').scrollIntoView({behavior: 'smooth'})" style="background: #00bcd4; border: none; color: white; padding: 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    GET<br>Download
+                </button>
+                <button onclick="document.getElementById('right-overwrite').scrollIntoView({behavior: 'smooth'})" style="background: #9c27b0; border: none; color: white; padding: 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    POST<br>Overwrite
+                </button>
+                <button onclick="document.getElementById('right-delete').scrollIntoView({behavior: 'smooth'})" style="background: #f44336; border: none; color: white; padding: 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    DELETE<br>Delete
+                </button>
+            </div>
+            
+            <div style="padding: 1rem;">
 
             <!-- STORE / UPLOAD -->
-            <div style="margin-bottom: 2rem; padding: 1rem; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 4px;">
+            <div id="right-store" style="margin-bottom: 2rem; padding: 1rem; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 4px;">
                 <h4 style="margin: 0 0 0.5rem 0; color: #2e7d32; font-size: 1rem;">
                     <span style="background: #4caf50; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem; font-weight: bold;">POST</span>
                     Store / Upload
@@ -8532,7 +8590,7 @@ function generateFileApiCodePanel() {
             </div>
 
             <!-- METADATA -->
-            <div style="margin-bottom: 2rem; padding: 1rem; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px;">
+            <div id="right-metadata" style="margin-bottom: 2rem; padding: 1rem; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 4px;">
                 <h4 style="margin: 0 0 0.75rem 0; color: #1565c0; font-size: 1rem;">
                     <span style="background: #2196f3; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem; font-weight: bold;">GET</span>
                     Get Metadata
@@ -8541,7 +8599,7 @@ function generateFileApiCodePanel() {
             </div>
 
             <!-- DOWNLOAD -->
-            <div style="margin-bottom: 2rem; padding: 1rem; background: #e0f7fa; border-left: 4px solid #00bcd4; border-radius: 4px;">
+            <div id="right-download" style="margin-bottom: 2rem; padding: 1rem; background: #e0f7fa; border-left: 4px solid #00bcd4; border-radius: 4px;">
                 <h4 style="margin: 0 0 0.5rem 0; color: #00838f; font-size: 1rem;">
                     <span style="background: #00bcd4; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem; font-weight: bold;">GET</span>
                     Download
@@ -8554,7 +8612,7 @@ function generateFileApiCodePanel() {
             </div>
 
             <!-- OVERWRITE -->
-            <div style="margin-bottom: 2rem; padding: 1rem; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 4px;">
+            <div id="right-overwrite" style="margin-bottom: 2rem; padding: 1rem; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 4px;">
                 <h4 style="margin: 0 0 0.75rem 0; color: #6a1b9a; font-size: 1rem;">
                     <span style="background: #9c27b0; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem; font-weight: bold;">POST</span>
                     Overwrite (requires auth)
@@ -8567,7 +8625,7 @@ function generateFileApiCodePanel() {
             </div>
 
             <!-- DELETE -->
-            <div style="margin-bottom: 1rem; padding: 1rem; background: #ffebee; border-left: 4px solid #f44336; border-radius: 4px;">
+            <div id="right-delete" style="margin-bottom: 1rem; padding: 1rem; background: #ffebee; border-left: 4px solid #f44336; border-radius: 4px;">
                 <h4 style="margin: 0 0 0.75rem 0; color: #c62828; font-size: 1rem;">
                     <span style="background: #f44336; color: white; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem; font-weight: bold;">DELETE</span>
                     Delete (requires auth)
@@ -8575,6 +8633,7 @@ function generateFileApiCodePanel() {
                 <pre style="background: #2d2d2d; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; overflow-x: auto; font-size: 0.8rem; margin: 0;"><code>curl -X DELETE \\
   -u "app:${appSecret}" \\
   "https://www.filestackapi.com/api/file/${handle}"</code></pre>
+            </div>
             </div>
         </div>
     `;

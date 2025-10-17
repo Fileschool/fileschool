@@ -1632,10 +1632,38 @@
                     </a>
                 </div>
 
+                <!-- Quick Navigation -->
+                <div class="config-card" style="position: -webkit-sticky; position: sticky; top: 80px; z-index: 100; align-self: flex-start; background: linear-gradient(135deg, #EF4A26 0%, #C63516 100%); color: white; border: none; padding: 1.5rem; box-shadow: 0 4px 12px rgba(239, 74, 38, 0.3); margin-bottom: 2rem;">
+                    <h3 style="margin: 0 0 1rem 0; color: white;"><i class="fas fa-list"></i> Available Operations</h3>
+                    <p style="margin: 0 0 1rem 0; opacity: 0.9; font-size: 0.9rem;">Click to jump to any operation:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+                        <button onclick="document.getElementById('api-store').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.75rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                            <span style="background: #4caf50; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold;">POST</span>
+                            Store / Upload
+                        </button>
+                        <button onclick="document.getElementById('api-metadata').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.75rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                            <span style="background: #2196f3; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold;">GET</span>
+                            Metadata
+                        </button>
+                        <button onclick="document.getElementById('api-download').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.75rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                            <span style="background: #00bcd4; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold;">GET</span>
+                            Download
+                        </button>
+                        <button onclick="document.getElementById('api-overwrite').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.75rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                            <span style="background: #9c27b0; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold;">POST</span>
+                            Overwrite
+                        </button>
+                        <button onclick="document.getElementById('api-delete').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.75rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                            <span style="background: #f44336; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold;">DELETE</span>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Interactive Configuration -->
                 <div class="config-card" style="background: #f0f7ff; border-left: 4px solid #1976d2;">
                     <h3><i class="fas fa-tools"></i> Your Configuration</h3>
-                    <p class="card-description">Enter your details to generate personalized curl commands</p>
+                    <p class="card-description">Enter your details once - all commands update automatically</p>
                     
                     <div class="form-row">
                         <div class="form-group">
@@ -1705,7 +1733,7 @@
                 <!-- ========== API ENDPOINTS (Swagger-style) ========== -->
                 
                 <!-- 1. STORE API -->
-                <div class="config-card" style="border-left: 4px solid #4caf50;">
+                <div id="api-store" class="config-card" style="border-left: 4px solid #4caf50; scroll-margin-top: 100px;">
                     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                         <span style="background: #4caf50; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">POST</span>
                         <code style="flex: 1; font-size: 1rem; color: #333;">/api/store/{provider}</code>
@@ -1797,7 +1825,7 @@
                 </div>
 
                 <!-- 2. METADATA API -->
-                <div class="config-card" style="border-left: 4px solid #2196f3; margin-top: 2rem;">
+                <div id="api-metadata" class="config-card" style="border-left: 4px solid #2196f3; margin-top: 2rem; scroll-margin-top: 100px;">
                     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                         <span style="background: #2196f3; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">GET</span>
                         <code style="flex: 1; font-size: 1rem; color: #333;">/api/file/{handle}/metadata</code>
@@ -1848,7 +1876,7 @@
                 </div>
 
                 <!-- 3. OVERWRITE API -->
-                <div class="config-card" style="border-left: 4px solid #9c27b0; margin-top: 2rem;">
+                <div id="api-overwrite" class="config-card" style="border-left: 4px solid #9c27b0; margin-top: 2rem; scroll-margin-top: 100px;">
                     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                         <span style="background: #9c27b0; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">POST</span>
                         <code style="flex: 1; font-size: 1rem; color: #333;">/api/file/{handle}</code>
@@ -1886,7 +1914,7 @@
                 </div>
 
                 <!-- 4. DELETE API -->
-                <div class="config-card" style="border-left: 4px solid #f44336; margin-top: 2rem;">
+                <div id="api-delete" class="config-card" style="border-left: 4px solid #f44336; margin-top: 2rem; scroll-margin-top: 100px;">
                     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                         <span style="background: #f44336; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">DELETE</span>
                         <code style="flex: 1; font-size: 1rem; color: #333;">/api/file/{handle}</code>
@@ -1910,7 +1938,7 @@
                 </div>
 
                 <!-- 5. DOWNLOAD API -->
-                <div class="config-card" style="border-left: 4px solid #00bcd4; margin-top: 2rem;">
+                <div id="api-download" class="config-card" style="border-left: 4px solid #00bcd4; margin-top: 2rem; scroll-margin-top: 100px;">
                     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                         <span style="background: #00bcd4; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">GET</span>
                         <code style="flex: 1; font-size: 1rem; color: #333;">/api/file/{handle}</code>

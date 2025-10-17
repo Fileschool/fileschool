@@ -285,9 +285,34 @@ body {
     overflow-y: auto;
 }
 
+/* Allow sticky positioning in upload section */
+#upload {
+    overflow: visible !important;
+}
+
+#upload.content-section.active {
+    overflow: visible !important;
+}
+
+/* Override main-content overflow for sticky to work */
+.main-content.upload-section-active {
+    overflow: visible !important;
+    max-height: none !important;
+}
+
+.main-content:has(#upload.active) {
+    overflow: visible !important;
+}
+
+/* Fallback for browsers that don't support :has() */
+body:has(#upload.active) .main-content {
+    overflow: visible !important;
+}
+
 .content-section {
     display: none;
     padding: 2rem;
+    overflow: visible;
 }
 
 .content-section.active {
