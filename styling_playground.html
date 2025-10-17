@@ -30,7 +30,7 @@
 
         body {
             overflow: hidden;
-            background: #fff7ed;
+            background: #ffffff;
         }
 
         /* Custom Scrollbar */
@@ -40,7 +40,7 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #ffedd5;
+            background: #f9fafb;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -64,9 +64,9 @@
 
         /* Input Styles */
         .style-input {
-            background: #fff7ed;
-            border: 1px solid #fdba74;
-            color: #9a3412;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            color: #374151;
             border-radius: 4px;
             padding: 6px 10px;
             transition: all 0.2s ease;
@@ -129,8 +129,8 @@
 
         /* Code Display */
         .css-output {
-            background: #ffedd5;
-            border: 1px solid #fdba74;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
             border-radius: 6px;
             padding: 16px;
             max-height: 300px;
@@ -157,8 +157,8 @@
 
         /* Element List Item */
         .element-item {
-            background: #ffedd5;
-            border: 1px solid #fdba74;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
             border-radius: 6px;
             padding: 12px;
             cursor: pointer;
@@ -167,27 +167,27 @@
 
         .element-item:hover {
             border-color: #f97316;
-            background: #fed7aa;
+            background: #fef3c7;
             transform: translateX(4px);
         }
 
         .element-item.active {
             border-color: #f97316;
-            background: #ea580c;
+            background: #f97316;
             color: white;
         }
 
         /* Property Group */
         .property-group {
-            background: #ffedd5;
-            border: 1px solid #fdba74;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
             border-radius: 6px;
             padding: 12px;
             margin-bottom: 12px;
         }
 
         .property-label {
-            color: #9a3412;
+            color: #374151;
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
@@ -350,25 +350,30 @@
     <style id="dynamic-styles"></style>
 </head>
 
-<body class="bg-orange-50 text-orange-950">
+<body class="bg-gray-50 text-gray-900">
     <div class="flex h-screen">
         <!-- Left Panel - Controls -->
-        <div id="left-panel" class="bg-orange-100 overflow-hidden flex flex-col" style="width: 450px;">
+        <div id="left-panel" class="bg-white overflow-hidden flex flex-col border-r border-gray-200"
+            style="width: 450px;">
             <!-- Header -->
-            <div class="p-6 border-b border-orange-300">
+            <div class="p-6 border-b border-gray-200">
                 <h1 class="text-2xl font-bold text-orange-600 mb-1">Filestack CSS Playground</h1>
-                <p class="text-sm text-orange-700">Style the file picker in real-time</p>
+                <p class="text-sm text-gray-600">Style the file picker in real-time</p>
             </div>
 
             <!-- Tabs -->
-            <div class="flex gap-2 px-6 py-3 border-b border-orange-300 bg-orange-50">
+            <div class="flex gap-2 px-6 py-3 border-b border-gray-200 bg-gray-50">
                 <button class="tab-button active px-4 py-2 rounded-md text-sm font-medium" data-tab="visual">
                     Visual Editor
                 </button>
-                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium bg-orange-200" data-tab="code">
+                <button
+                    class="tab-button px-4 py-2 rounded-md text-sm font-medium bg-white text-gray-700 border border-gray-200"
+                    data-tab="code">
                     CSS Code
                 </button>
-                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium bg-orange-200" data-tab="presets">
+                <button
+                    class="tab-button px-4 py-2 rounded-md text-sm font-medium bg-white text-gray-700 border border-gray-200"
+                    data-tab="presets">
                     Presets
                 </button>
             </div>
@@ -377,23 +382,23 @@
             <div class="flex-1 overflow-y-auto">
                 <!-- Visual Editor Tab -->
                 <div id="visual-tab" class="tab-content p-6">
+                    <!-- Instructions (only show when no element selected) - MOVED OUTSIDE STICKY AREA -->
+                    <div id="instructions-box" class="mb-4 p-3 bg-white border border-orange-300 rounded-lg shadow-sm">
+                        <div class="flex items-start gap-2">
+                            <div class="text-sm mt-0.5">💡</div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-semibold text-gray-800 mb-1">Quick Start:</h3>
+                                <p class="text-sm text-gray-700 leading-tight">Click any element below. It will light up
+                                    in the picker!</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Back Button - Always Visible -->
                     <div id="back-button-container" class="mb-4 hidden">
                         <button class="back-button" onclick="backToElementList()">
                             ← Back to Elements
                         </button>
-                    </div>
-
-                    <!-- Instructions (only show when no element selected) -->
-                    <div id="instructions-box" class="mb-4 p-3 bg-orange-200 border border-orange-400 rounded-lg">
-                        <div class="flex items-start gap-2">
-                            <div class="text-lg">💡</div>
-                            <div>
-                                <h3 class="text-xs font-semibold text-orange-800 mb-1">Quick Start:</h3>
-                                <p class="text-xs text-orange-900">Click any element below. It will light up with an
-                                    animated border in the picker on the right!</p>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Style Properties Editor (hidden initially) -->
@@ -410,7 +415,7 @@
                             <!-- Will be populated dynamically -->
                         </div>
 
-                        <label class="block text-sm font-semibold text-orange-800 mb-3">
+                        <label class="block text-sm font-semibold text-gray-800 mb-3">
                             Click an Element to Style:
                         </label>
                         <div id="element-list" class="space-y-2">
@@ -442,116 +447,109 @@
 
                 <!-- Presets Tab -->
                 <div id="presets-tab" class="tab-content p-6 hidden">
-                    <div class="mb-4 p-4 bg-orange-200 border border-orange-400 rounded-lg">
-                        <h3 class="text-sm font-semibold text-orange-800 mb-2">Quick Start with Presets:</h3>
-                        <p class="text-xs text-orange-900">
-                            Click any preset below to instantly apply a complete theme to the picker.
-                            You can then customize individual elements in the "Visual Editor" tab.
+                    <div class="mb-4 p-3 bg-white border border-orange-300 rounded-lg shadow-sm">
+                        <h3 class="text-sm font-semibold text-gray-800 mb-2">Quick Start</h3>
+                        <p class="text-sm text-gray-700">
+                            Click any preset to apply a theme.
                         </p>
                     </div>
-                    <h3 class="text-sm font-semibold text-orange-800 mb-4">Choose a Theme</h3>
+                    <h3 class="text-sm font-semibold text-gray-800 mb-4">Choose a Theme</h3>
                     <div class="space-y-3">
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="dark">
-                            <div class="font-semibold text-orange-600 mb-1">Dark Theme</div>
-                            <div class="text-xs text-orange-700">Modern dark color scheme</div>
+                            <div class="font-semibold text-gray-800 mb-1">Dark Theme</div>
+                            <div class="text-xs text-gray-600">Modern dark color scheme</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="minimal">
-                            <div class="font-semibold text-orange-900 mb-1">Minimalist</div>
-                            <div class="text-xs text-orange-700">Clean and simple design</div>
+                            <div class="font-semibold text-gray-800 mb-1">Minimalist</div>
+                            <div class="text-xs text-gray-600">Clean and simple design</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="vibrant">
                             <div class="font-semibold text-amber-400 mb-1">Vibrant</div>
-                            <div class="text-xs text-orange-700">Colorful amber/orange theme</div>
+                            <div class="text-xs text-gray-600">Colorful amber/orange theme</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
-                            data-preset="gradient">
-                            <div class="font-semibold text-purple-400 mb-1">Gradient Purple</div>
-                            <div class="text-xs text-orange-700">Purple gradient styles</div>
-                        </button>
-                        <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="ocean">
                             <div class="font-semibold text-sky-400 mb-1">Ocean</div>
-                            <div class="text-xs text-orange-700">Calm blue water vibes</div>
+                            <div class="text-xs text-gray-600">Calm blue water vibes</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="forest">
                             <div class="font-semibold text-green-400 mb-1">Forest</div>
-                            <div class="text-xs text-orange-700">Fresh green nature theme</div>
+                            <div class="text-xs text-gray-600">Fresh green nature theme</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="sunset">
                             <div class="font-semibold text-orange-400 mb-1">Sunset</div>
-                            <div class="text-xs text-orange-700">Warm sunset gradient</div>
+                            <div class="text-xs text-gray-600">Warm sunset gradient</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="neon">
                             <div class="font-semibold text-purple-300 mb-1">Neon</div>
-                            <div class="text-xs text-orange-700">Glowing neon dark theme</div>
+                            <div class="text-xs text-gray-600">Glowing neon dark theme</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="pastel">
                             <div class="font-semibold text-pink-300 mb-1">Pastel</div>
-                            <div class="text-xs text-orange-700">Soft pastel colors</div>
+                            <div class="text-xs text-gray-600">Soft pastel colors</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="corporate">
-                            <div class="font-semibold text-orange-600 mb-1">Corporate</div>
-                            <div class="text-xs text-orange-700">Professional business style</div>
+                            <div class="font-semibold text-gray-800 mb-1">Corporate</div>
+                            <div class="text-xs text-gray-600">Professional business style</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="cyberpunk">
                             <div class="font-semibold text-cyan-400 mb-1">Cyberpunk</div>
-                            <div class="text-xs text-orange-700">Futuristic neon cyberpunk</div>
+                            <div class="text-xs text-gray-600">Futuristic neon cyberpunk</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="nature">
                             <div class="font-semibold text-lime-400 mb-1">Nature</div>
-                            <div class="text-xs text-orange-700">Bright natural greens</div>
+                            <div class="text-xs text-gray-600">Bright natural greens</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="midnight">
                             <div class="font-semibold text-indigo-300 mb-1">Midnight</div>
-                            <div class="text-xs text-orange-700">Deep midnight blue</div>
+                            <div class="text-xs text-gray-600">Deep midnight blue</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="candy">
                             <div class="font-semibold text-pink-400 mb-1">Candy</div>
-                            <div class="text-xs text-orange-700">Sweet candy pink gradients</div>
+                            <div class="text-xs text-gray-600">Sweet candy pink gradients</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="autumn">
                             <div class="font-semibold text-red-400 mb-1">Autumn</div>
-                            <div class="text-xs text-orange-700">Warm autumn colors</div>
+                            <div class="text-xs text-gray-600">Warm autumn colors</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="arctic">
                             <div class="font-semibold text-cyan-300 mb-1">Arctic</div>
-                            <div class="text-xs text-orange-700">Cool arctic ice theme</div>
+                            <div class="text-xs text-gray-600">Cool arctic ice theme</div>
                         </button>
                         <button
-                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            class="preset-button w-full p-4 bg-white hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg text-left transition"
                             data-preset="retro">
                             <div class="font-semibold text-yellow-500 mb-1">Retro</div>
-                            <div class="text-xs text-orange-700">Vintage retro style</div>
+                            <div class="text-xs text-gray-600">Vintage retro style</div>
                         </button>
                     </div>
 
@@ -594,10 +592,13 @@
 
     <script>
         // Configuration
-        const API_KEY = 'y';
+        const API_KEY = 'api';
 
         // Element categories and selectors
         const elements = {
+            'Modal': [
+                { id: 'modal', label: 'Main Picker Container', selector: '.fsp-picker__modal-body', desc: 'The entire picker background' },
+            ],
             'Header': [
                 { id: 'header', label: 'Top Header Bar', selector: '.fsp-header', desc: 'Bar at the very top' },
                 { id: 'header-text', label: 'Header Text', selector: '.fsp-header-text', desc: 'Text in header' },
@@ -615,8 +616,8 @@
                 { id: 'drop-area-button', label: 'Browse Button', selector: '.fsp-drop-area__button', desc: '"Choose Files" button' },
             ],
             'Buttons': [
-                { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button--primary', desc: 'Main action button' },
-                { id: 'button-cancel', label: 'Cancel Button', selector: '.fsp-button--cancel', desc: 'Cancel/back button' },
+                { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button-upload', desc: 'Main action button', needsFiles: true },
+                { id: 'button-cancel', label: 'Cancel Button', selector: '.fsp-button--cancel', desc: 'Cancel/back button', needsFiles: true },
             ],
             'File Grid': [
                 { id: 'grid', label: 'File Grid', selector: '.fsp-grid', desc: 'Grid of files/folders' },
@@ -624,8 +625,8 @@
                 { id: 'grid-cell-selected', label: 'Selected Files', selector: '.fsp-grid__cell--selected', desc: 'Checked files' },
             ],
             'Footer': [
-                { id: 'footer', label: 'Bottom Footer', selector: '.fsp-footer', desc: 'Bar at the bottom' },
-                { id: 'footer-badge', label: 'File Count Badge', selector: '.fsp-badge', desc: 'Number badge on upload button' },
+                { id: 'footer', label: 'Bottom Footer', selector: '.fsp-footer', desc: 'Bar at the bottom', needsFiles: true },
+                { id: 'footer-badge', label: 'File Count Badge', selector: '.fsp-badge', desc: 'Number badge on upload button', needsFiles: true },
             ],
             'Summary View (File List)': [
                 { id: 'content', label: 'Main Content Area', selector: '.fsp-content', desc: 'Main content container for file list', needsFiles: true },
@@ -1065,7 +1066,7 @@
                 categoryDiv.id = `category-${category.replace(/\s+/g, '-').toLowerCase()}`;
 
                 const categoryLabel = document.createElement('div');
-                categoryLabel.className = 'text-xs font-semibold text-orange-700 mb-2 px-2';
+                categoryLabel.className = 'text-xs font-semibold text-gray-700 mb-2 px-2';
                 categoryLabel.textContent = category;
                 categoryDiv.appendChild(categoryLabel);
 
@@ -1081,7 +1082,7 @@
                             ? '<span class="category-badge bg-blue-500 text-white">Styled</span>'
                             : ''}
                             </div>
-                            <div class="text-xs text-orange-700">${element.desc || ''}</div>
+                            <div class="text-xs text-gray-600">${element.desc || ''}</div>
                         </div>
                     `;
                     item.addEventListener('click', () => selectElement(element.id));
