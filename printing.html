@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Workflow Diagram</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .mermaid-container {
+            background-color: #ffffff;
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #e4e4e7;
+        }
+        h1 {
+            text-align: center;
+            color: #18181b;
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mermaid-container">
+        <h1>Automated Print File Processing Workflow</h1>
+        <div class="mermaid">
+graph TD
+    A[User Uploads Print File] --> B[File Picker Upload]
+    B --> C[Get File Handle]
+
+    C --> D{File Type Check}
+    D -->|Image| E[Direct Processing Path]
+    D -->|Document/PDF| F[Document Processing]
+    D -->|Invalid| G[Show Error]
+
+    E --> H[Create Base Versions]
+    F --> H
+
+    H --> I[Thumbnail Version]
+    H --> J[High-Resolution Version]
+    H --> K[Print-Ready Base]
+
+    I --> I1["resize=w:300,h:300,fit:crop/<br/>quality=value:80/auto_image/store/HANDLE"]
+    J --> J1["enhance/store/HANDLE"]
+    K --> K1["enhance/output=colorspace:cmyk,<br/>quality:95/store/HANDLE"]
+
+    I1 --> L[Get Print Dimensions]
+    J1 --> L
+    K1 --> L
+
+    L --> L1["imagesize/PRINT_HANDLE<br/>Returns: width, height"]
+
+    L1 --> M{Size Validation}
+    M -->|Too Small| N[Show Size Warning]
+    M -->|Valid| O[Generate Print Options]
+
+    O --> P[Business Cards<br/>1050x600px CMYK TIFF]
+    O --> Q[Flyers<br/>2550x3300px CMYK TIFF]
+    O --> R[Posters<br/>Custom Size CMYK TIFF]
+    O --> S[Banners<br/>Custom Dimensions]
+
+    P --> P1["resize=w:1050,h:600,fit:crop/<br/>output=format:tiff,colorspace:cmyk,<br/>quality:95/PRINT_HANDLE"]
+    Q --> Q1["resize=w:2550,h:3300,fit:max/<br/>output=format:tiff,colorspace:cmyk,<br/>quality:95/PRINT_HANDLE"]
+    R --> R1["resize=w:calculated,h:calculated,<br/>fit:max/output=format:tiff,<br/>colorspace:cmyk,quality:95/PRINT_HANDLE"]
+    S --> S1["resize=w:custom,h:custom,fit:crop/<br/>output=format:png,quality:95/PRINT_HANDLE"]
+
+    P1 --> T[Store Final Versions]
+    Q1 --> T
+    R1 --> T
+    S1 --> T
+
+    T --> T1[File Output Manager]
+    T1 --> T2["Display All Generated Files:<br/>• Original Enhanced<br/>• Thumbnail Preview<br/>• Print Base CMYK<br/>• Business Cards<br/>• Flyers<br/>• Posters<br/>• Banners"]
+
+    T2 --> U[Add to Print Queue]
+    T2 --> U1[Download Gallery]
+    T2 --> U2[Preview All Formats]
+
+    %% Workflow Branch - Premium Features
+    C --> V[OPTIONAL: Premium Workflows]
+    V --> W[Content Quality Check]
+    V --> X[Advanced Enhancement]
+    V --> Y[Bulk Variations]
+
+    W --> W1["Workflow: Print Quality Assurance<br/>UUID: real-workflow-id-1"]
+    X --> X1["Workflow: AI Enhancement<br/>UUID: real-workflow-id-2"]
+    Y --> Y1["Workflow: Bulk Print Generator<br/>UUID: real-workflow-id-3"]
+
+    W1 --> Z[Background Processing]
+    X1 --> Z
+    Y1 --> Z
+
+    Z --> CC[Print Management System]
+
+    U --> CC
+    U1 --> CC
+    U2 --> CC
+
+    %% Light Mode Styling
+    classDef upload fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#1f2937
+    classDef process fill:#f8fafc,stroke:#7c3aed,stroke-width:3px,color:#1f2937
+    classDef url fill:#fefce8,stroke:#ca8a04,stroke-width:3px,color:#1f2937
+    classDef decision fill:#f0fdf4,stroke:#16a34a,stroke-width:3px,color:#1f2937
+    classDef print fill:#fdf2f8,stroke:#dc2626,stroke-width:3px,color:#1f2937
+    classDef workflow fill:#f0f9ff,stroke:#0891b2,stroke-width:3px,color:#1f2937
+    classDef error fill:#fef2f2,stroke:#ef4444,stroke-width:3px,color:#1f2937
+
+    class A,B,C,H upload
+    class E,F,L,T,T1,U,Z process
+    class I1,J1,K1,L1,P1,Q1,R1,S1 url
+    class D,M decision
+    class P,Q,R,S,T2,U1,U2,CC print
+    class V,W,X,Y,W1,X1,Y1 workflow
+    class G,N error
+        </div>
+    </div>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

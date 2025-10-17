@@ -1385,79 +1385,13 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* Icon tooltips */
-label i.fa-info-circle,
-i.fa-info-circle {
+label i.fa-info-circle {
     color: var(--info-color);
     font-size: 0.85rem;
     margin-left: 0.25rem;
     cursor: help;
     opacity: 0.7;
     transition: opacity 0.15s ease;
-}
-
-/* Ensure title tooltips work properly */
-i.fa-info-circle[title] {
-    position: relative;
-}
-
-/* Custom tooltip styling for title attribute */
-i.fa-info-circle[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #2c3e50;
-    color: #ffffff;
-    padding: 0.6rem 0.9rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    font-weight: 400;
-    line-height: 1.5;
-    white-space: normal;
-    word-wrap: break-word;
-    opacity: 1;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 10000;
-    min-width: 180px;
-    max-width: 260px;
-    text-align: left;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    margin-bottom: 0.5rem;
-}
-
-/* Tooltip arrow */
-i.fa-info-circle[title]:hover::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #2c3e50;
-    margin-bottom: -6px;
-    z-index: 10000;
-}
-
-/* Hide default browser tooltip */
-i.fa-info-circle[title] {
-    pointer-events: auto;
-}
-
-/* Prevent default browser tooltip from showing */
-i.fa-info-circle[title]:hover {
-    pointer-events: auto;
-}
-
-i.fa-info-circle[title] {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 
 label i.fa-info-circle:hover {
