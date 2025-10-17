@@ -32,134 +32,147 @@
         </div>
     </header>
 
+    <!-- API Key Section (Top Bar) -->
+    <div class="api-key-bar">
+        <div class="api-key-container">
+            <div class="form-group">
+                <label for="globalApikey">API Key</label>
+                <input type="text" id="globalApikey" placeholder="Enter your Filestack API key">
+            </div>
+            <div class="form-group">
+                <label for="securityPolicy">Security Policy</label>
+                <input type="text" id="securityPolicy" placeholder="Enter security policy">
+            </div>
+            <div class="form-group">
+                <label for="securitySignature">Security Signature</label>
+                <input type="text" id="securitySignature" placeholder="Enter security signature">
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Navigation Tabs (3 Tiers) -->
+    <nav class="top-nav-tabs">
+        <!-- Tier 1: Main Categories -->
+        <div class="nav-tier nav-tier-1">
+            <button class="tier-tab active" data-tier="uploads">
+                <i class="fas fa-upload"></i> Uploads
+            </button>
+            <button class="tier-tab" data-tier="transformations">
+                <i class="fas fa-magic"></i> Transformations
+            </button>
+            <button class="tier-tab" data-tier="intelligence">
+                <i class="fas fa-brain"></i> Intelligence
+            </button>
+            <button class="tier-tab" data-tier="media">
+                <i class="fas fa-video"></i> Media
+            </button>
+            <button class="tier-tab" data-tier="automation">
+                <i class="fas fa-sitemap"></i> Automation
+            </button>
+            <button class="tier-tab" data-tier="advanced">
+                <i class="fas fa-cog"></i> Advanced
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Uploads -->
+        <div class="nav-tier nav-tier-2 active" data-parent="uploads">
+            <button class="sub-tab active" data-section="picker">
+                <i class="fas fa-folder-open"></i> File Picker
+            </button>
+            <button class="sub-tab" data-section="upload">
+                <i class="fas fa-cloud-upload-alt"></i> Upload
+            </button>
+            <button class="sub-tab" data-section="dnd">
+                <i class="fas fa-hand-pointer"></i> Drag & Drop
+            </button>
+            <button class="sub-tab" data-section="download">
+                <i class="fas fa-download"></i> Download
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for transformations -->
+        <div class="nav-tier nav-tier-2" data-parent="transformations">
+            <button class="sub-tab" data-section="transform">
+                <i class="fas fa-images"></i> Image Transform
+            </button>
+            <button class="sub-tab" data-section="transform-chains">
+                <i class="fas fa-link"></i> Transform Chains
+            </button>
+            <button class="sub-tab" data-section="transform-playground">
+                <i class="fas fa-magic"></i> Live Playground
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Intelligence -->
+        <div class="nav-tier nav-tier-2" data-parent="intelligence">
+            <button class="sub-tab" data-section="sfw">
+                <i class="fas fa-shield-alt"></i> Safe for Work
+            </button>
+            <button class="sub-tab" data-section="tagging">
+                <i class="fas fa-tags"></i> Image Tagging
+            </button>
+            <button class="sub-tab" data-section="faces">
+                <i class="fas fa-user"></i> Face Detection
+            </button>
+            <button class="sub-tab" data-section="ocr">
+                <i class="fas fa-file-text"></i> OCR
+            </button>
+            <button class="sub-tab" data-section="caption">
+                <i class="fas fa-comment-alt"></i> Caption Generation
+            </button>
+            <button class="sub-tab" data-section="phishing">
+                <i class="fas fa-exclamation-triangle"></i> Phishing Detection
+            </button>
+            <button class="sub-tab" data-section="virus">
+                <i class="fas fa-bug"></i> Virus Detection
+            </button>
+            <button class="sub-tab" data-section="sentiment">
+                <i class="fas fa-smile"></i> Sentiment Analysis
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Media -->
+        <div class="nav-tier nav-tier-2" data-parent="media">
+            <button class="sub-tab" data-section="video-processing">
+                <i class="fas fa-play-circle"></i> Video Processing
+            </button>
+            <button class="sub-tab" data-section="audio-processing">
+                <i class="fas fa-music"></i> Audio Processing
+            </button>
+            <button class="sub-tab" data-section="video-tagging">
+                <i class="fas fa-video"></i> Video Tagging
+            </button>
+            <button class="sub-tab" data-section="video-sfw">
+                <i class="fas fa-film"></i> Video SFW
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Automation -->
+        <div class="nav-tier nav-tier-2" data-parent="automation">
+            <button class="sub-tab" data-section="workflows">
+                <i class="fas fa-sitemap"></i> Workflows
+            </button>
+            <button class="sub-tab" data-section="webhooks">
+                <i class="fas fa-webhook"></i> Webhooks
+            </button>
+            <button class="sub-tab" data-section="custom-source">
+                <i class="fas fa-plug"></i> Custom Source
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Advanced -->
+        <div class="nav-tier nav-tier-2" data-parent="advanced">
+            <button class="sub-tab" data-section="metadata">
+                <i class="fas fa-info-circle"></i> Metadata
+            </button>
+            <button class="sub-tab" data-section="security">
+                <i class="fas fa-lock"></i> Security
+            </button>
+        </div>
+    </nav>
+
     <!-- Main Container -->
     <div class="main-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>Features</h3>
-            </div>
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <h4>Core Features</h4>
-                    <div class="api-key-section">
-                        <div class="form-group">
-                            <label for="globalApikey">API Key</label>
-                            <input type="text" id="globalApikey" placeholder="Enter your Filestack API key">
-                        </div>
-                    </div>
-                    <a href="#picker" class="nav-item active" data-section="picker">
-                        <i class="fas fa-folder-open"></i>
-                        <span>File Picker</span>
-                    </a>
-                    <a href="#transform" class="nav-item" data-section="transform">
-                        <i class="fas fa-magic"></i>
-                        <span>Image Transform</span>
-                    </a>
-                    <a href="#upload" class="nav-item" data-section="upload">
-                        <i class="fas fa-upload"></i>
-                        <span>Upload</span>
-                    </a>
-                    <a href="#download" class="nav-item" data-section="download">
-                        <i class="fas fa-download"></i>
-                        <span>Download</span>
-                    </a>
-                    <a href="#dnd" class="nav-item" data-section="dnd">
-                        <i class="fas fa-hand-pointer"></i>
-                        <span>Drag & Drop</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <h4>Intelligence</h4>
-                    <a href="#sfw" class="nav-item" data-section="sfw">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Safe for Work</span>
-                    </a>
-                    <a href="#tagging" class="nav-item" data-section="tagging">
-                        <i class="fas fa-tags"></i>
-                        <span>Image Tagging</span>
-                    </a>
-                    <a href="#faces" class="nav-item" data-section="faces">
-                        <i class="fas fa-user"></i>
-                        <span>Face Detection</span>
-                    </a>
-                    <a href="#ocr" class="nav-item" data-section="ocr">
-                        <i class="fas fa-file-text"></i>
-                        <span>OCR</span>
-                    </a>
-                    <a href="#video-tagging" class="nav-item" data-section="video-tagging">
-                        <i class="fas fa-video"></i>
-                        <span>Video Tagging</span>
-                    </a>
-                    <a href="#video-sfw" class="nav-item" data-section="video-sfw">
-                        <i class="fas fa-film"></i>
-                        <span>Video SFW</span>
-                    </a>
-                    <a href="#caption" class="nav-item" data-section="caption">
-                        <i class="fas fa-comment-alt"></i>
-                        <span>Caption Generation</span>
-                    </a>
-                    <a href="#phishing" class="nav-item" data-section="phishing">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Phishing Detection</span>
-                    </a>
-                    <a href="#virus" class="nav-item" data-section="virus">
-                        <i class="fas fa-bug"></i>
-                        <span>Virus Detection</span>
-                    </a>
-                    <a href="#sentiment" class="nav-item" data-section="sentiment">
-                        <i class="fas fa-smile"></i>
-                        <span>Sentiment Analysis</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <h4>Video & Audio</h4>
-                    <a href="#video-processing" class="nav-item" data-section="video-processing">
-                        <i class="fas fa-play-circle"></i>
-                        <span>Video Processing</span>
-                    </a>
-                    <a href="#audio-processing" class="nav-item" data-section="audio-processing">
-                        <i class="fas fa-music"></i>
-                        <span>Audio Processing</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <h4>Automation</h4>
-                    <a href="#workflows" class="nav-item" data-section="workflows">
-                        <i class="fas fa-sitemap"></i>
-                        <span>Workflows</span>
-                    </a>
-                    <a href="#webhooks" class="nav-item" data-section="webhooks">
-                        <i class="fas fa-webhook"></i>
-                        <span>Webhooks</span>
-                    </a>
-                    <a href="#custom-source" class="nav-item" data-section="custom-source">
-                        <i class="fas fa-plug"></i>
-                        <span>Custom Source</span>
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <h4>Advanced</h4>
-                    <a href="#metadata" class="nav-item" data-section="metadata">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Metadata</span>
-                    </a>
-                    <a href="#security" class="nav-item" data-section="security">
-                        <i class="fas fa-lock"></i>
-                        <span>Security</span>
-                    </a>
-                    <a href="#transform-chains" class="nav-item" data-section="transform-chains">
-                        <i class="fas fa-link"></i>
-                        <span>Transform Chains</span>
-                    </a>
-                </div>
-
-            </nav>
-        </aside>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -171,31 +184,69 @@
                         transformations.</p>
                 </div>
 
-                <div class="config-grid">
-                    <!-- Basic Configuration -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
+                <!-- Quick Start Templates -->
+                <div class="config-card quick-start-card">
+                    <h3><i class="fas fa-rocket"></i> Quick Start Templates</h3>
+                    <p class="card-description">Load pre-configured settings optimized for common use cases. Click a template to auto-fill the configuration below.</p>
 
+                    <div class="template-grid">
+                        <button class="template-btn" onclick="loadTemplate('startup')">
+                            <i class="fas fa-building"></i>
+                            <span class="template-name">Startup / SaaS</span>
+                            <small>Profile photos, documents, team files</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('ecommerce')">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="template-name">E-Commerce</span>
+                            <small>Product images, invoices, receipts</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('edtech')">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span class="template-name">EdTech / Learning</span>
+                            <small>Assignments, PDFs, videos, presentations</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('printing')">
+                            <i class="fas fa-print"></i>
+                            <span class="template-name">Printing Service</span>
+                            <small>High-res images, PDFs, design files</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('healthcare')">
+                            <i class="fas fa-heartbeat"></i>
+                            <span class="template-name">Healthcare</span>
+                            <small>Medical records, images, secure docs</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTemplate('media')">
+                            <i class="fas fa-photo-video"></i>
+                            <span class="template-name">Media / Creative</span>
+                            <small>Photos, videos, audio, large files</small>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section Divider -->
+                <div class="section-divider">
+                    <span><i class="fas fa-wrench"></i> Configuration Options</span>
+                </div>
+
+                <!-- Basic Settings and File Acceptance Combined -->
+                <div class="config-card">
+                    <h3><i class="fas fa-cog"></i> Basic Settings</h3>
+                    <div class="form-row">
                         <div class="form-group">
-                            <label>Display Mode</label>
-                            <div class="radio-group">
-                                <label class="radio-item">
-                                    <input type="radio" name="displayMode" value="overlay" checked>
-                                    <span>Overlay</span>
-                                </label>
-                                <label class="radio-item">
-                                    <input type="radio" name="displayMode" value="inline">
-                                    <span>Inline</span>
-                                </label>
-                                <label class="radio-item">
-                                    <input type="radio" name="displayMode" value="dropPane">
-                                    <span>Drop Pane</span>
-                                </label>
+                            <label for="displayModeSelect">Display Mode</label>
+                            <select id="displayModeSelect" onchange="document.querySelector('input[name=displayMode][value=' + this.value + ']').checked = true">
+                                <option value="overlay" selected>Overlay</option>
+                                <option value="inline">Inline</option>
+                                <option value="dropPane">Drop Pane</option>
+                            </select>
+                            <div style="display: none;">
+                                <input type="radio" name="displayMode" value="overlay" checked>
+                                <input type="radio" name="displayMode" value="inline">
+                                <input type="radio" name="displayMode" value="dropPane">
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <label>Language</label>
+                            <label for="language">Language</label>
                             <select id="language">
                                 <option value="en">English</option>
                                 <option value="es">Spanish</option>
@@ -210,67 +261,92 @@
                             </select>
                         </div>
                     </div>
+                </div>
 
-                    <!-- File Acceptance -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-file-alt"></i> File Acceptance</h3>
-                        <p class="card-description">Select which file types are allowed. If none selected, all types are
-                            enabled.</p>
+                <!-- File Acceptance -->
+                <div class="config-card">
+                    <h3><i class="fas fa-file-alt"></i> File Acceptance</h3>
+                    <p class="card-description">Select which file types are allowed. If none selected, all types are enabled.</p>
 
-                        <div class="checkbox-grid">
-                            <label class="checkbox-item">
-                                <input type="checkbox" value=".pdf">
-                                <span>PDF Files</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="image/*">
-                                <span>All Images</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="image/jpeg">
-                                <span>JPEG Images</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="image/png">
-                                <span>PNG Images</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="image/gif">
-                                <span>GIF Images</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="image/webp">
-                                <span>WebP Images</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="video/*">
-                                <span>All Videos</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="audio/*">
-                                <span>All Audio</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="application/*">
-                                <span>All Applications</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="text/*">
-                                <span>All Text Files</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value=".doc,.docx">
-                                <span>Word Documents</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value=".xls,.xlsx">
-                                <span>Excel Files</span>
-                            </label>
+                    <div class="file-acceptance-grid">
+                        <div class="file-type-category">
+                            <h4><i class="fas fa-file-image"></i> Images</h4>
+                            <div class="checkbox-group-compact">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/*">
+                                    <span>All Images</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/jpeg">
+                                    <span>JPEG</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/png">
+                                    <span>PNG</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/gif">
+                                    <span>GIF</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/webp">
+                                    <span>WebP</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="file-type-category">
+                            <h4><i class="fas fa-file-pdf"></i> Documents</h4>
+                            <div class="checkbox-group-compact">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value=".pdf">
+                                    <span>PDF Files</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value=".doc,.docx">
+                                    <span>Word</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value=".xls,.xlsx">
+                                    <span>Excel</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="text/*">
+                                    <span>Text Files</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="file-type-category">
+                            <h4><i class="fas fa-file-video"></i> Media</h4>
+                            <div class="checkbox-group-compact">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="video/*">
+                                    <span>All Videos</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="audio/*">
+                                    <span>All Audio</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="file-type-category">
+                            <h4><i class="fas fa-file-code"></i> Other</h4>
+                            <div class="checkbox-group-compact">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="application/*">
+                                    <span>Applications</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="config-grid">
 
                     <!-- Sources -->
-                    <div class="config-card">
+                    <div class="config-card config-full-width">
                         <h3><i class="fas fa-cloud"></i> Sources</h3>
                         <p class="card-description">Select which sources users can upload from. If none selected, all
                             sources are enabled.</p>
@@ -343,9 +419,9 @@
                         </div>
                     </div>
 
-                    <!-- File Limits -->
+                    <!-- File Limits & Dimensions Combined -->
                     <div class="config-card">
-                        <h3><i class="fas fa-chart-bar"></i> File Limits</h3>
+                        <h3><i class="fas fa-chart-bar"></i> Limits & Constraints</h3>
 
                         <div class="form-row">
                             <div class="form-group">
@@ -358,28 +434,24 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="maxSize">Max File Size (MB)</label>
-                            <input type="number" id="maxSize" min="1" max="163840" placeholder="0">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="maxSize">Max File Size (MB)</label>
+                                <input type="number" id="maxSize" min="1" max="163840" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="concurrency">Upload Concurrency</label>
+                                <input type="number" id="concurrency" min="1" max="10" placeholder="4">
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="concurrency">Upload Concurrency</label>
-                            <input type="number" id="concurrency" min="1" max="10" placeholder="4">
-                        </div>
-                    </div>
-
-                    <!-- Image Dimensions -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-expand-arrows-alt"></i> Image Dimensions</h3>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="imageMaxDim">Max Dimensions (width, height)</label>
+                                <label for="imageMaxDim">Max Dimensions (w,h)</label>
                                 <input type="text" id="imageMaxDim" placeholder="1920,1080">
                             </div>
                             <div class="form-group">
-                                <label for="imageMinDim">Min Dimensions (width, height)</label>
+                                <label for="imageMinDim">Min Dimensions (w,h)</label>
                                 <input type="text" id="imageMinDim" placeholder="100,100">
                             </div>
                         </div>
@@ -460,9 +532,25 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="uploadTagsJson">Upload Tags (JSON object)</label>
-                            <textarea id="uploadTagsJson" rows="3"
-                                placeholder='{"foo":"bar","foo2":"bar2_filename"}'></textarea>
+                            <label>
+                                Upload Tags (Key-Value Pairs)
+                                <i class="fas fa-info-circle" title="Add up to 10 custom metadata tags to track uploads. Tags can be static values or dynamic callbacks. Great for associating userID, transactionID, or other identifiers."></i>
+                            </label>
+                            <div id="pickerUploadTagsContainer">
+                                <div class="upload-tag-row">
+                                    <input type="text" class="tag-key" placeholder="Key (e.g., userId)" maxlength="128">
+                                    <input type="text" class="tag-value" placeholder="Value (e.g., user123)" maxlength="256">
+                                    <button type="button" class="btn btn-small btn-secondary" onclick="removePickerUploadTag(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-small btn-secondary" onclick="addPickerUploadTag()" style="margin-top: 0.5rem;">
+                                <i class="fas fa-plus"></i> Add Tag
+                            </button>
+                            <small class="form-hint">
+                                <i class="fas fa-tags"></i> Upload tags help match files with your app data (userID, sessionID, etc.). Max 10 tags, keys up to 128 chars, values up to 256 chars. Tags can accept callbacks like <code>(file) => "value_" + file.name</code>
+                            </small>
                         </div>
 
                         <div class="checkbox-group">
@@ -505,70 +593,163 @@
             <!-- Drag & Drop Section -->
             <section id="dnd" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-hand-pointer"></i> Drag & Drop</h2>
-                    <p>Add drag-and-drop uploader using Filestack Drag-and-Drop (per structured docs).</p>
+                    <h2><i class="fas fa-hand-pointer"></i> Drag & Drop Upload</h2>
+                    <p>Add drag-and-drop file uploading to any element on your page with just 3 lines of code using the Filestack Drag-and-Drop library.</p>
+                    <a href="https://www.filestack.com/docs/uploads/dnd/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
                 </div>
 
-                <div class="config-grid">
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> DnD Configuration</h3>
+                <div class="config-card config-full-width">
+                    <h3><i class="fas fa-cog"></i> Drag & Drop Configuration</h3>
 
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="dndAccept">Accept (comma-separated patterns)</label>
-                            <input type="text" id="dndAccept" placeholder="image/*">
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="dndMaxSize">Max Size (units per docs)</label>
-                                <input type="number" id="dndMaxSize" min="0" placeholder="0">
-                            </div>
-                            <div class="form-group">
-                                <label for="dndMaxFiles">Max Files</label>
-                                <input type="number" id="dndMaxFiles" min="0" placeholder="0">
-                            </div>
-                        </div>
-
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="dndFailOverMaxFiles">
-                                <span>Fail Over Max Files</span>
+                            <label for="dndContainer">
+                                Drop Container Selector
+                                <i class="fas fa-info-circle" title="CSS selector for the HTML element that will handle drag & drop events (e.g., '.drop-container', '#upload-zone', '.file-dropzone')."></i>
                             </label>
-                        </div>
-                    </div>
-
-                    <div class="config-card">
-                        <h3><i class="fas fa-shield-alt"></i> SDK Config</h3>
-                        <p class="card-description">Optional client config for DnD (cname, security).</p>
-
-                        <div class="form-group">
-                            <label for="dndCname">CNAME</label>
-                            <input type="text" id="dndCname" placeholder="cname.example.com">
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="dndPolicy">Policy</label>
-                                <input type="text" id="dndPolicy" placeholder="policy_test">
-                            </div>
-                            <div class="form-group">
-                                <label for="dndSignature">Signature</label>
-                                <input type="text" id="dndSignature" placeholder="signature_test">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="config-card">
-                        <h3><i class="fas fa-square"></i> Drop Container</h3>
-                        <p class="card-description">Target element selector for DnD initialization.</p>
-                        <div class="form-group">
-                            <label for="dndContainer">Container Selector</label>
                             <input type="text" id="dndContainer" placeholder=".drop-container" value=".drop-container">
+                            <small class="form-hint">
+                                <i class="fas fa-crosshairs"></i> Any valid CSS selector. The element will become a drop zone for files.
+                            </small>
                         </div>
-                        <div class="drop-container"
-                            style="border:2px dashed #ccc; padding:24px; text-align:center; border-radius:8px; background:#0b0e17; color:#9aa1b2;">
-                            Drag and Drop
+
+                        <div class="form-group">
+                            <label for="dndAccept">
+                                Accept File Types (Optional)
+                                <i class="fas fa-info-circle" title="Comma-separated MIME types or patterns. Examples: 'image/*', 'application/pdf', 'image/jpeg,image/png'. Leave empty to accept all files."></i>
+                            </label>
+                            <input type="text" id="dndAccept" placeholder="image/*,application/pdf">
+                            <small class="form-hint">
+                                <i class="fas fa-filter"></i> Examples: <code>image/*</code> (all images), <code>video/*</code> (all videos), <code>application/pdf</code> (PDF only)
+                            </small>
                         </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dndMaxSize">
+                                Max File Size in Bytes (Optional)
+                                <i class="fas fa-info-circle" title="Maximum file size in bytes. 0 = no limit. Example: 10485760 = 10MB, 5242880 = 5MB, 1048576 = 1MB."></i>
+                            </label>
+                            <input type="number" id="dndMaxSize" min="0" placeholder="0">
+                            <small class="form-hint">
+                                <i class="fas fa-weight-hanging"></i> 0 = no limit. Common values: <code>1048576</code> (1MB), <code>10485760</code> (10MB)
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dndMaxFiles">
+                                Max Number of Files (Optional)
+                                <i class="fas fa-info-circle" title="Maximum number of files that can be dropped at once. 0 = no limit. Useful for restricting bulk uploads."></i>
+                            </label>
+                            <input type="number" id="dndMaxFiles" min="0" placeholder="0">
+                            <small class="form-hint">
+                                <i class="fas fa-list-ol"></i> 0 = no limit. Set to 1 for single file uploads, 5 for small batches, etc.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-item" style="margin-top: 1.8rem;">
+                                <input type="checkbox" id="dndFailOverMaxFiles">
+                                <span>Fail if Exceeds Max Files</span>
+                                <i class="fas fa-info-circle" title="If checked, reject all files when max files limit is exceeded. If unchecked, accept up to max files limit and ignore the rest."></i>
+                            </label>
+                            <small class="form-hint">
+                                <i class="fas fa-ban"></i> Controls behavior when user drops more files than allowed.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="section-divider" style="margin: 2rem 0 1.5rem 0;">
+                        <span><i class="fas fa-shield-alt"></i> Security Configuration (Optional)</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dndCname">
+                                Custom Domain (CNAME)
+                                <i class="fas fa-info-circle" title="Your custom domain configured with Filestack. Example: 'cdn.yourdomain.com'. Leave empty to use default Filestack domain."></i>
+                            </label>
+                            <input type="text" id="dndCname" placeholder="cdn.example.com">
+                            <small class="form-hint">
+                                <i class="fas fa-globe"></i> Optional custom domain for Filestack CDN. Requires setup in Filestack dashboard.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dndPolicy">
+                                Security Policy
+                                <i class="fas fa-info-circle" title="Base64-encoded JSON policy for authentication. Used with signature for secure uploads. Generate in Filestack dashboard."></i>
+                            </label>
+                            <input type="text" id="dndPolicy" placeholder="eyJleHBpcnkiOjE1ODI...">
+                            <small class="form-hint">
+                                <i class="fas fa-key"></i> Base64-encoded security policy. Required for private file access.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dndSignature">
+                                Security Signature
+                                <i class="fas fa-info-circle" title="HMAC signature for the policy. Works together with policy for secure authentication. Generate in Filestack dashboard."></i>
+                            </label>
+                            <input type="text" id="dndSignature" placeholder="abc123def456...">
+                            <small class="form-hint">
+                                <i class="fas fa-signature"></i> HMAC signature matching the policy above.
+                            </small>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="config-card config-full-width" style="margin-top: 1.5rem;">
+                    <h3><i class="fas fa-info-circle"></i> About Drag & Drop</h3>
+                    <p>The Filestack Drag-and-Drop library makes it incredibly easy to add file upload functionality to your web applications:</p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-rocket"></i> Quick Setup (Just 3 Lines!)</h4>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-check"></i> <strong>Add HTML Element:</strong> Create a div with class <code>.drop-container</code></li>
+                            <li><i class="fas fa-check"></i> <strong>Include Library:</strong> Load the filestack-drag-and-drop UMD module</li>
+                            <li><i class="fas fa-check"></i> <strong>Initialize:</strong> Call <code>new filestackDnD.init(apiKey, element, options)</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-magic"></i> Key Features</h4>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-check"></i> <strong>File Type Filtering:</strong> Accept only specific file types (images, PDFs, etc.)</li>
+                            <li><i class="fas fa-check"></i> <strong>Size Limits:</strong> Restrict file sizes to prevent large uploads</li>
+                            <li><i class="fas fa-check"></i> <strong>Multiple Elements:</strong> Add drag & drop to multiple elements on one page</li>
+                            <li><i class="fas fa-check"></i> <strong>Event Handling:</strong> Listen to progress, success, error events</li>
+                            <li><i class="fas fa-check"></i> <strong>Upload Control:</strong> Pause, resume, or cancel uploads programmatically</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
+                        <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>Profile Picture Upload:</strong> Single file drop zone for avatars</li>
+                            <li><strong>Document Management:</strong> Accept PDFs, Word docs, spreadsheets</li>
+                            <li><strong>Photo Gallery:</strong> Multi-file image uploads with previews</li>
+                            <li><strong>File Attachments:</strong> Email-style file attachment zones</li>
+                            <li><strong>Bulk Import:</strong> CSV, JSON, or data file uploads</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50;">
+                        <h4><i class="fas fa-graduation-cap"></i> Quick Tips</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><strong>Visual Feedback:</strong> Style your drop zone with hover effects and drag-over indicators</li>
+                            <li><strong>Accept Patterns:</strong> Use MIME types (<code>image/*</code>) for broader matching</li>
+                            <li><strong>Size in Bytes:</strong> Remember 1MB = 1048576 bytes, 10MB = 10485760 bytes</li>
+                            <li><strong>Multiple Zones:</strong> Use <code>setElements()</code> to add more drop zones after initialization</li>
+                            <li><strong>Event Listeners:</strong> Use <code>.on('uploadFileFinish', callback)</code> to track completed uploads</li>
+                            <li><strong>Security:</strong> Add policy/signature for private uploads or to enforce file restrictions server-side</li>
+                        </ul>
                     </div>
                 </div>
             </section>
@@ -578,6 +759,55 @@
                 <div class="section-header">
                     <h2><i class="fas fa-magic"></i> Image Transformations</h2>
                     <p>Apply advanced image transformations and filters to your uploaded images.</p>
+                </div>
+
+                <!-- Transformation Pipeline Templates -->
+                <div class="config-card quick-start-card">
+                    <h3><i class="fas fa-layer-group"></i> Transformation Pipelines</h3>
+                    <p class="card-description">Pre-built transformation chains for common image processing workflows. Click to auto-configure.</p>
+
+                    <div class="template-grid">
+                        <button class="template-btn" onclick="loadTransformPipeline('profile')">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="template-name">Profile Picture</span>
+                            <small>Square crop, resize 400x400, optimize</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('thumbnail')">
+                            <i class="fas fa-th"></i>
+                            <span class="template-name">Thumbnail</span>
+                            <small>Resize 200x200, compress, sharpen</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('product')">
+                            <i class="fas fa-box"></i>
+                            <span class="template-name">Product Image</span>
+                            <small>Resize 1200x1200, white background, watermark</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('social')">
+                            <i class="fas fa-share-alt"></i>
+                            <span class="template-name">Social Media</span>
+                            <small>1080x1080, enhance colors, compress</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('banner')">
+                            <i class="fas fa-image"></i>
+                            <span class="template-name">Hero Banner</span>
+                            <small>Resize 1920x600, blur background, overlay</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('print')">
+                            <i class="fas fa-print"></i>
+                            <span class="template-name">Print Ready</span>
+                            <small>High-res 3000px, 300 DPI, no compression</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('vintage')">
+                            <i class="fas fa-film"></i>
+                            <span class="template-name">Vintage Filter</span>
+                            <small>Sepia, vignette, noise, blur edges</small>
+                        </button>
+                        <button class="template-btn" onclick="loadTransformPipeline('modern')">
+                            <i class="fas fa-sparkles"></i>
+                            <span class="template-name">Modern & Clean</span>
+                            <small>Enhance, sharpen, auto-adjust, compress</small>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="transform-grid">
@@ -964,60 +1194,155 @@
                 <div class="section-header">
                     <h2><i class="fas fa-upload"></i> File Upload</h2>
                     <p>Configure direct file upload options and settings for your Filestack implementation.</p>
+                    <a href="https://www.filestack.com/docs/uploads/uploading/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
                 </div>
 
-                <div class="config-grid">
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Upload Configuration</h3>
+                <div class="config-card config-full-width">
+                    <h3><i class="fas fa-cog"></i> Upload Configuration</h3>
 
-                        <div class="form-group">
-                            <label for="uploadFile">Select File</label>
-                            <input type="file" id="uploadFile" accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="uploadPath">Upload Path</label>
-                            <input type="text" id="uploadPath" placeholder="e.g., /uploads/">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="uploadAccess">Access Control</label>
-                            <select id="uploadAccess">
-                                <option value="public">Public</option>
-                                <option value="private">Private</option>
-                                <option value="authenticated">Authenticated</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Upload Options</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="uploadWorkflows">
-                                    <span>Enable Workflows</span>
-                                </label>
-                            </div>
-                        </div>
-
+                    <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50; margin-bottom: 1rem;">
+                        <p style="margin: 0;"><i class="fas fa-info-circle"></i> <strong>Placeholder File:</strong> Using "sample-image.jpg" for demonstration purposes. File uploads are handled via the File Picker interface.</p>
                     </div>
 
-                    <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Upload</h3>
-                        <p>Direct file upload provides programmatic control over file uploads:</p>
+                    <div class="form-group">
+                        <label for="uploadPath">
+                            Upload Path (Optional)
+                            <i class="fas fa-info-circle" title="Specify a custom folder path in your storage (e.g., '/uploads/2024/' or '/user-content/'). Leave empty for root directory."></i>
+                        </label>
+                        <input type="text" id="uploadPath" placeholder="e.g., /uploads/user-files/">
+                        <small class="form-hint">
+                            <i class="fas fa-folder"></i> Organizes files in your storage bucket. Example: <code>/images/avatars/</code>
+                        </small>
+                    </div>
 
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Direct file upload to Filestack</li>
-                            <li><i class="fas fa-check"></i> Custom upload paths and naming</li>
-                            <li><i class="fas fa-check"></i> Access control and permissions</li>
-                            <li><i class="fas fa-check"></i> Progress tracking and callbacks</li>
-                            <li><i class="fas fa-check"></i> Integration with workflows</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Perfect for custom upload interfaces, batch processing, server-side uploads, and
-                                applications requiring fine-grained upload control.</p>
+                    <div class="form-group">
+                        <label>
+                            Upload Tags (Key-Value Pairs)
+                            <i class="fas fa-info-circle" title="Add up to 10 custom metadata tags to track uploads. Great for associating userID, transactionID, or other identifiers."></i>
+                        </label>
+                        <div id="uploadTagsContainer">
+                            <div class="upload-tag-row">
+                                <input type="text" class="tag-key" placeholder="Key (e.g., userId)" maxlength="128">
+                                <input type="text" class="tag-value" placeholder="Value (e.g., user123)" maxlength="256">
+                                <button type="button" class="btn btn-small btn-secondary" onclick="removeUploadTag(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                         </div>
+                        <button type="button" class="btn btn-small btn-secondary" onclick="addUploadTag()" style="margin-top: 0.5rem;">
+                            <i class="fas fa-plus"></i> Add Tag
+                        </button>
+                        <small class="form-hint">
+                            <i class="fas fa-tags"></i> Upload tags help match files with your app data (userID, sessionID, etc.). Max 10 tags, keys up to 128 chars, values up to 256 chars.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="config-card config-full-width" style="margin-top: 1.5rem;">
+                    <h3><i class="fas fa-info-circle"></i> About File Upload</h3>
+                    <p>Filestack provides multiple ways to upload files programmatically:</p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-book-open"></i> Upload Methods</h4>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-file-upload"></i> <strong>Basic Upload:</strong> Simple HTTP POST to <code>/api/store/S3</code> endpoint</li>
+                            <li><i class="fas fa-link"></i> <strong>Upload from URL:</strong> Import files from external URLs by passing <code>url</code> parameter</li>
+                            <li><i class="fas fa-puzzle-piece"></i> <strong>Multipart Upload:</strong> Robust upload flow for large files (via SDK clients)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box" style="background: #fff9e6; border-left: 4px solid #ffc107; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-code"></i> File Store API - POST Request</h4>
+                        <p style="margin: 0.5rem 0;">Upload files directly to Filestack storage using the File API:</p>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Endpoint:</strong>
+                            <code style="display: block; background: #f5f5f5; padding: 0.5rem; margin-top: 0.3rem; border-radius: 4px;">POST https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY</code>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Query Parameters:</strong>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                                <li><code>key</code> (required) - Your Filestack API key</li>
+                                <li><code>filename</code> - Name for the stored file</li>
+                                <li><code>mimetype</code> - File MIME type (e.g., image/jpeg, text/plain)</li>
+                                <li><code>path</code> - Custom storage path (e.g., /uploads/2024/)</li>
+                                <li><code>container</code> - Storage bucket/container name</li>
+                                <li><code>access</code> - S3 only: "public" or "private" (default)</li>
+                                <li><code>base64decode</code> - Decode base64 data before storing</li>
+                            </ul>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Upload from URL:</strong>
+                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X POST \
+  -d url="https://example.com/image.png" \
+  "https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY"</code></pre>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Upload Binary File:</strong>
+                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X POST \
+  --data-binary @filename.png \
+  --header "Content-Type:image/png" \
+  "https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY"</code></pre>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Response:</strong>
+                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>{
+  "url": "https://cdn.filestackcontent.com/s7tdGfE5RRKFUxwsZoYv",
+  "size": 8331,
+  "type": "image/png",
+  "filename": "watermark.png",
+  "key": "a1RyBxiglW92bS2SRmqM_watermark.png"
+}</code></pre>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Storage Providers:</strong>
+                            <p style="margin: 0.3rem 0; font-size: 0.9rem;">Default is S3. Other options: <code>azure</code>, <code>dropbox</code>, <code>rackspace</code>, <code>gcs</code>. Must be configured in your developer portal.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-tags"></i> Upload Tags</h4>
+                        <p style="margin: 0.5rem 0;">Pass custom key-value metadata with each upload to track files in your application:</p>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-check"></i> <strong>Max 10 tags per upload</strong></li>
+                            <li><i class="fas fa-check"></i> <strong>String pairs only:</strong> Both keys and values must be strings</li>
+                            <li><i class="fas fa-check"></i> <strong>Keys:</strong> Up to 128 Unicode characters, case-sensitive, must be unique</li>
+                            <li><i class="fas fa-check"></i> <strong>Values:</strong> Up to 256 Unicode characters</li>
+                        </ul>
+                        <small style="display: block; margin-top: 0.5rem; opacity: 0.9;">
+                            Tags appear in upload response and webhooks, perfect for matching files to userID, transactionID, etc.
+                        </small>
+                    </div>
+
+                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
+                        <h4><i class="fas fa-server"></i> Application-Level Features</h4>
+                        <p style="margin: 0.5rem 0;">These features are configured at the application level (not per-upload):</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>Content Ingestion Network (CIN):</strong> Global edge servers for faster uploads. Enabled in your Filestack application settings.</li>
+                            <li><strong>Intelligent Ingestion (FII):</strong> Auto-adjusts chunk sizes for poor network conditions. Contact sales to enable.</li>
+                            <li><strong>Cloud Uploads:</strong> Upload from cloud providers (Dropbox, Google Drive, etc.) - only via File Picker UI.</li>
+                        </ul>
+                        <small style="display: block; margin-top: 0.5rem; opacity: 0.9;">
+                            <strong>Note:</strong> Check upload status with <code>?metadata&upload_status=true</code> when using CIN.
+                        </small>
+                    </div>
+
+                    <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50;">
+                        <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>User Profiles:</strong> Avatar uploads with <code>userId</code> tag</li>
+                            <li><strong>Document Management:</strong> PDF uploads with custom <code>path</code> organization</li>
+                            <li><strong>E-commerce:</strong> Product images with <code>productId</code> and <code>sku</code> tags</li>
+                            <li><strong>Content Publishing:</strong> Media uploads with <code>authorId</code> and <code>postId</code> tags</li>
+                            <li><strong>Import Tools:</strong> Bulk uploads from external URLs</li>
+                        </ul>
                     </div>
                 </div>
             </section>
@@ -1084,6 +1409,9 @@
                 <div class="section-header">
                     <h2><i class="fas fa-shield-alt"></i> Safe for Work Detection</h2>
                     <p>Check if images are suitable for workplace environments using AI-powered content analysis.</p>
+                    <a href="https://www.filestack.com/docs/transformations/intelligence/sfw/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
                 </div>
 
                 <div class="config-grid">
@@ -1095,7 +1423,7 @@
                             <div class="radio-group">
                                 <label class="radio-item">
                                     <input type="radio" name="sfwInputType" value="handle" checked>
-                                    <span>Handle</span>
+                                    <span>File Handle</span>
                                 </label>
                                 <label class="radio-item">
                                     <input type="radio" name="sfwInputType" value="external">
@@ -1106,23 +1434,38 @@
                                     <span>Storage Alias</span>
                                 </label>
                             </div>
+                            <small style="color: #666; display: block; margin-top: 0.5rem;">
+                                Choose how to identify the image for content analysis
+                            </small>
                         </div>
 
                         <div class="form-group" id="sfwHandleGroup">
-                            <label for="sfwHandle">Image Handle</label>
-                            <input type="text" id="sfwHandle" placeholder="Enter image handle">
+                            <label for="sfwHandle">File Handle</label>
+                            <input type="text" id="sfwHandle" placeholder="e.g., H2swKXwhRxKFrylkjGcz">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                The handle returned after uploading to Filestack
+                            </small>
                         </div>
 
                         <div class="form-group" id="sfwExternalGroup" style="display: none;">
                             <label for="sfwExternalUrl">External Image URL</label>
                             <input type="text" id="sfwExternalUrl" placeholder="https://example.com/image.jpg">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                Direct URL to an image (requires API key in URL)
+                            </small>
                         </div>
 
                         <div class="form-group" id="sfwStorageGroup" style="display: none;">
                             <label for="sfwStorageAlias">Storage Alias</label>
-                            <input type="text" id="sfwStorageAlias" placeholder="my-storage-alias">
-                            <label for="sfwStoragePath">File Path</label>
+                            <input type="text" id="sfwStorageAlias" placeholder="e.g., my-s3-bucket">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                Custom storage configured in Developer Portal
+                            </small>
+                            <label for="sfwStoragePath" style="margin-top: 1rem;">File Path</label>
                             <input type="text" id="sfwStoragePath" placeholder="/path/to/image.jpg">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                Path to the file within your storage
+                            </small>
                         </div>
 
                         <div class="form-group">
@@ -1130,47 +1473,83 @@
                                 <input type="checkbox" id="sfwEnableChaining">
                                 <span>Chain with other transformations</span>
                             </label>
+                            <small style="color: #666; display: block; margin-top: 0.3rem; margin-left: 1.75rem;">
+                                Apply transformations before SFW detection (e.g., crop specific area)
+                            </small>
                         </div>
 
                         <div class="form-group" id="sfwChainingGroup" style="display: none;">
                             <label>Pre-SFW Transformations</label>
                             <div id="sfwPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addSfwPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addSfwPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                     </div>
 
                     <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Safe for Work</h3>
-                        <p>The Safe for Work (SFW) feature uses advanced AI to analyze images and determine if they are
-                            appropriate for workplace environments. It can detect:</p>
+                        <h3><i class="fas fa-info-circle"></i> What is Safe for Work?</h3>
+                        <p style="margin-bottom: 1rem;">Safe for Work (SFW) detection uses AI to analyze images and return a simple boolean indicating if content is appropriate for workplace environments.</p>
 
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Adult content</li>
-                            <li><i class="fas fa-check"></i> Violence</li>
-                            <li><i class="fas fa-check"></i> Drugs and alcohol</li>
-                            <li><i class="fas fa-check"></i> Hate symbols</li>
-                            <li><i class="fas fa-check"></i> Inappropriate text</li>
+                            <li><i class="fas fa-check"></i> <strong>Direct API</strong> - Synchronous operation (instant results)</li>
+                            <li><i class="fas fa-check"></i> <strong>Workflows</strong> - Also available for automated pipelines</li>
+                            <li><i class="fas fa-check"></i> <strong>Chainable</strong> - Combine with other transformations</li>
+                            <li><i class="fas fa-check"></i> <strong>Security Required</strong> - Needs policy & signature</li>
                         </ul>
 
                         <div class="info-box">
-                            <h4><i class="fas fa-lightbulb"></i> How it works</h4>
-                            <p>The SFW API returns a boolean value indicating if the image is safe for work.</p>
+                            <h4><i class="fas fa-code"></i> Response Format</h4>
+                            <p style="line-height: 1.8; margin: 0;">
+                                <strong>Safe Image:</strong> <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 3px;">{"sfw": true}</code><br>
+                                <strong>Unsafe Image:</strong> <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 3px;">{"sfw": false}</code>
+                            </p>
+                        </div>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-rocket"></i> Use Cases</h4>
+                            <p style="margin: 0; line-height: 1.6;">
+                                • <strong>User-Generated Content</strong> - Filter uploads automatically<br>
+                                • <strong>Moderation</strong> - Flag content for manual review<br>
+                                • <strong>Compliance</strong> - Ensure workplace-appropriate content<br>
+                                • <strong>Conditional Logic</strong> - Route files based on SFW status
+                            </p>
+                        </div>
+
+                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
+                            <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
+                            <p style="color: #856404; margin: 0;">
+                                SFW detection requires <strong>security policy and signature</strong>. Make sure to configure these in the API Key section at the top of the page.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1233,21 +1612,36 @@
                             <label>Pre-Tagging Transformations</label>
                             <div id="taggingPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addTaggingPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addTaggingPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                     </div>
@@ -1328,7 +1722,7 @@
             <section id="ocr" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-file-text"></i> OCR (Optical Character Recognition)</h2>
-                    <p>Extract text from images, PDFs, and documents using advanced OCR technology via URL transforms.
+                    <p>Extract text from images, PDFs, and documents using advanced OCR technology via URL transformations.
                     </p>
                 </div>
 
@@ -1417,21 +1811,36 @@
                             <label>Pre-OCR Transformations</label>
                             <div id="ocrPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addOcrPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addOcrPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                         <div class="form-group">
@@ -1445,7 +1854,7 @@
 
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About OCR</h3>
-                        <p>OCR is implemented as URL-based transforms that can be chained with other processing tasks:
+                        <p>OCR is implemented as URL-based transformations that can be chained with other processing tasks:
                         </p>
 
                         <ul class="feature-list">
@@ -1453,7 +1862,7 @@
                             <li><i class="fas fa-check"></i> Multi-language support</li>
                             <li><i class="fas fa-check"></i> Document detection preprocessing</li>
                             <li><i class="fas fa-check"></i> Works with external URLs</li>
-                            <li><i class="fas fa-check"></i> Chainable with other transforms</li>
+                            <li><i class="fas fa-check"></i> Chainable with other transformations</li>
                         </ul>
 
                         <div class="info-box">
@@ -1548,16 +1957,16 @@
                         <h3><i class="fas fa-cog"></i> Security Settings</h3>
 
                         <div class="form-group">
-                            <label for="securityPolicy">Security Policy (Base64 Encoded)</label>
-                            <textarea id="securityPolicy" placeholder="Enter your base64-encoded security policy JSON"
-                                rows="4"></textarea>
-                            <small class="form-help">Must be generated server-side and base64 encoded</small>
+                            <label>Security Policy (Base64 Encoded)</label>
+                            <textarea class="form-control" placeholder="Enter your base64-encoded security policy JSON"
+                                rows="4" readonly>Uses global security policy from sidebar</textarea>
+                            <small class="form-help">Configure in the sidebar under API Key section</small>
                         </div>
 
                         <div class="form-group">
-                            <label for="securitySignature">Security Signature (HMAC-SHA256)</label>
-                            <input type="text" id="securitySignature" placeholder="Enter your HMAC-SHA256 signature">
-                            <small class="form-help">Must be generated server-side using your app secret</small>
+                            <label>Security Signature (HMAC-SHA256)</label>
+                            <input type="text" class="form-control" placeholder="Enter your HMAC-SHA256 signature" readonly value="Uses global security signature from sidebar">
+                            <small class="form-help">Configure in the sidebar under API Key section</small>
                         </div>
 
                     </div>
@@ -1808,21 +2217,36 @@
                             <label>Pre-Caption Transformations</label>
                             <div id="captionPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addCaptionPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addCaptionPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                     </div>
@@ -2001,21 +2425,36 @@
                             <label>Pre-Sentiment Transformations</label>
                             <div id="sentimentPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
+                                    <div class="chain-step-header">
+                                        <select class="chain-operation">
+                                            <option value="">Select Operation</option>
+                                            <option value="resize">Resize</option>
+                                            <option value="crop">Crop</option>
+                                            <option value="rotate">Rotate</option>
+                                            <option value="blur">Blur</option>
+                                            <option value="sharpen">Sharpen</option>
+                                            <option value="sepia">Sepia</option>
+                                            <option value="blackwhite">Black & White</option>
+                                            <option value="flip">Flip</option>
+                                            <option value="flop">Flop</option>
+                                            <option value="negative">Negative</option>
+                                            <option value="circle">Circle</option>
+                                            <option value="rounded_corners">Rounded Corners</option>
+                                            <option value="vignette">Vignette</option>
+                                            <option value="shadow">Shadow</option>
+                                            <option value="border">Border</option>
+                                            <option value="watermark">Watermark</option>
+                                            <option value="upscale">Upscale</option>
+                                            <option value="quality">Quality</option>
+                                            <option value="convert">Convert Format</option>
+                                        </select>
+                                        <button type="button" class="btn-remove-step">×</button>
+                                    </div>
                                     <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                                    <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addSentimentPreStep" class="btn btn-secondary btn-small">Add Pre-Step</button>
+                            <button type="button" id="addSentimentPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
                     </div>
 
@@ -2044,68 +2483,228 @@
             <section id="video-processing" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-play-circle"></i> Video Processing</h2>
-                    <p>Transform and process videos with format conversion, resizing, compression, and watermarking.</p>
+                    <p>Transform and process videos with format conversion, resizing, compression, and advanced effects.</p>
+                    <a href="https://www.filestack.com/docs/api/video_processing/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
+                </div>
+
+                <div class="important-notice" style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;"><i class="fas fa-info-circle"></i> Asynchronous Processing</h4>
+                    <p style="margin: 0; color: #856404;">Video processing is asynchronous. The API returns a UUID immediately, and results are delivered via webhook. Configure webhooks in the <a href="https://dev.filestack.com" target="_blank" style="color: #856404; text-decoration: underline;">Developer Portal</a>.</p>
                 </div>
 
                 <div class="config-grid">
                     <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
 
                         <div class="form-group">
-                            <label for="videoProcessHandle">Video Handle or URL</label>
-                            <input type="text" id="videoProcessHandle" placeholder="Enter video handle or URL">
+                            <label for="videoProcessHandle">
+                                Video Handle <span style="color: #e63946;">*</span>
+                                <small style="color: #666; font-weight: normal;">(From uploaded file)</small>
+                            </label>
+                            <input type="text" id="videoProcessHandle" placeholder="e.g., xBfYjbEJT0Wpkh2s0MK0" class="track-changes">
                         </div>
 
                         <div class="form-group">
-                            <label for="videoFormat">Output Format</label>
-                            <select id="videoFormat">
-                                <option value="mp4">MP4</option>
-                                <option value="webm">WebM</option>
-                                <option value="avi">AVI</option>
-                                <option value="mov">MOV</option>
-                                <option value="mkv">MKV</option>
+                            <label for="videoPreset">
+                                Preset / Format
+                                <small style="color: #666; font-weight: normal;">(Choose preset or custom format)</small>
+                            </label>
+                            <select id="videoPreset" class="track-changes">
+                                <option value="">-- Custom Format --</option>
+                                <optgroup label="Video Formats">
+                                    <option value="h264">H.264 (MP4)</option>
+                                    <option value="h265.4K">H.265 4K</option>
+                                    <option value="webm.vp8">WebM VP8</option>
+                                    <option value="webm.vp9">WebM VP9</option>
+                                </optgroup>
+                                <optgroup label="Audio Extraction">
+                                    <option value="mp3">MP3 (Audio Only)</option>
+                                    <option value="aac">AAC (Audio Only)</option>
+                                    <option value="m4a">M4A (Audio Only)</option>
+                                </optgroup>
+                                <optgroup label="Streaming">
+                                    <option value="hls.variant.playlist">HLS Playlist (Adaptive)</option>
+                                    <option value="dash.variant.playlist">DASH Playlist (Adaptive)</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option value="thumbnail">Thumbnail (Image)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="videoCustomFormatGroup">
+                            <label for="videoCustomFormat">Custom Output Format (extname)</label>
+                            <select id="videoCustomFormat" class="track-changes">
+                                <option value="">(Use preset format)</option>
+                                <option value=".mp4">MP4 (.mp4)</option>
+                                <option value=".webm">WebM (.webm)</option>
+                                <option value=".avi">AVI (.avi)</option>
+                                <option value=".mov">MOV (.mov)</option>
+                                <option value=".mkv">MKV (.mkv)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-sliders-h"></i> Video Properties</h3>
+
+                        <div class="form-group">
+                            <label for="videoWidth">Width (pixels)</label>
+                            <input type="number" id="videoWidth" placeholder="e.g., 1920" class="track-changes">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="videoHeight">Height (pixels)</label>
+                            <input type="number" id="videoHeight" placeholder="e.g., 1080" class="track-changes">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="videoAspectMode">
+                                Aspect Mode
+                                <small style="color: #666; font-weight: normal;">(How to handle aspect ratio)</small>
+                            </label>
+                            <select id="videoAspectMode" class="track-changes">
+                                <option value="">Default (preserve)</option>
+                                <option value="preserve">Preserve - Keep original ratio</option>
+                                <option value="constrain">Constrain - No black bars</option>
+                                <option value="crop">Crop - Fill frame, crop excess</option>
+                                <option value="pad">Pad - Add black bars to fit</option>
+                                <option value="letterbox">Letterbox - Bars above/below only</option>
+                                <option value="stretch">Stretch - Ignore aspect ratio</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="videoResolution">Resolution</label>
-                            <select id="videoResolution">
-                                <option value="">Original</option>
-                                <option value="1920x1080">1920x1080 (1080p)</option>
-                                <option value="1280x720">1280x720 (720p)</option>
-                                <option value="854x480">854x480 (480p)</option>
-                                <option value="640x360">640x360 (360p)</option>
-                            </select>
+                            <label for="videoBitrate">Video Bitrate (kbps)</label>
+                            <input type="number" id="videoBitrate" placeholder="e.g., 1000" class="track-changes">
                         </div>
 
                         <div class="form-group">
-                            <label for="videoBitrate">Bitrate (kbps)</label>
-                            <input type="number" id="videoBitrate" placeholder="e.g., 1000">
+                            <label for="videoFps">Frame Rate (fps)</label>
+                            <input type="number" id="videoFps" placeholder="e.g., 30" class="track-changes">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-cut"></i> Trimming & Clipping</h3>
+
+                        <div class="form-group">
+                            <label for="videoClipLength">
+                                Clip Length
+                                <small style="color: #666; font-weight: normal;">(Format: hh:mm:ss)</small>
+                            </label>
+                            <input type="text" id="videoClipLength" placeholder="e.g., 00:00:30" class="track-changes">
                         </div>
 
                         <div class="form-group">
-                            <label for="videoWatermark">Watermark Text</label>
-                            <input type="text" id="videoWatermark" placeholder="Optional watermark text">
+                            <label for="videoClipOffset">
+                                Clip Offset (Start Time)
+                                <small style="color: #666; font-weight: normal;">(Format: hh:mm:ss)</small>
+                            </label>
+                            <input type="text" id="videoClipOffset" placeholder="e.g., 00:00:05" class="track-changes">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-copyright"></i> Watermark</h3>
+
+                        <div class="form-group">
+                            <label>Watermark Type</label>
+                            <div class="radio-group">
+                                <label class="radio-item">
+                                    <input type="radio" name="videoWatermarkType" value="none" checked class="track-changes">
+                                    <span>No Watermark</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="videoWatermarkType" value="text" class="track-changes">
+                                    <span>Text Watermark</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="videoWatermarkType" value="image" class="track-changes">
+                                    <span>Image Watermark</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="videoWatermarkTextGroup" style="display: none;">
+                            <label for="videoWatermarkText">Watermark Text</label>
+                            <input type="text" id="videoWatermarkText" placeholder="Your watermark text" class="track-changes">
+                        </div>
+
+                        <div class="form-group" id="videoWatermarkImageGroup" style="display: none;">
+                            <label for="videoWatermarkUrl">Watermark Image URL/Handle</label>
+                            <input type="text" id="videoWatermarkUrl" placeholder="Image handle or URL (in quotes)" class="track-changes">
+                        </div>
+
+                        <div id="videoWatermarkPositionGroup" style="display: none;">
+                            <div class="form-group">
+                                <label for="videoWatermarkTop">Top (pixels)</label>
+                                <input type="number" id="videoWatermarkTop" placeholder="e.g., 10" class="track-changes">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoWatermarkRight">Right (pixels)</label>
+                                <input type="number" id="videoWatermarkRight" placeholder="e.g., 10" class="track-changes">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoWatermarkBottom">Bottom (pixels)</label>
+                                <input type="number" id="videoWatermarkBottom" placeholder="e.g., 10" class="track-changes">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-magic"></i> Video Effects</h3>
+
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="videoGrayscale" class="track-changes">
+                                <span>Grayscale (Black & White)</span>
+                            </label>
+
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="videoNoAudio" class="track-changes">
+                                <span>Remove Audio Track</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="videoTitle">Video Title (Metadata)</label>
+                            <input type="text" id="videoTitle" placeholder="My Video Title" class="track-changes">
                         </div>
                     </div>
 
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About Video Processing</h3>
-                        <p>Comprehensive video processing capabilities:</p>
+                        <p>Filestack video processing uses the <code>video_convert</code> task for asynchronous transcoding:</p>
 
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Format conversion (MP4, WebM, AVI, MOV)</li>
-                            <li><i class="fas fa-check"></i> Resolution scaling and optimization</li>
-                            <li><i class="fas fa-check"></i> Bitrate and quality control</li>
-                            <li><i class="fas fa-check"></i> Video compression</li>
-                            <li><i class="fas fa-check"></i> Watermark and overlay support</li>
-                            <li><i class="fas fa-check"></i> Thumbnail generation</li>
+                            <li><i class="fas fa-check"></i> <strong>Format Conversion</strong> - MP4, WebM, AVI, MOV, MKV and more</li>
+                            <li><i class="fas fa-check"></i> <strong>Resolution Control</strong> - Scale to any dimension with aspect modes</li>
+                            <li><i class="fas fa-check"></i> <strong>Quality Settings</strong> - Bitrate, FPS, and compression control</li>
+                            <li><i class="fas fa-check"></i> <strong>Clipping</strong> - Trim videos by length and offset</li>
+                            <li><i class="fas fa-check"></i> <strong>Watermarking</strong> - Add text or image watermarks</li>
+                            <li><i class="fas fa-check"></i> <strong>Effects</strong> - Grayscale, blur, brightness, contrast, and more</li>
+                            <li><i class="fas fa-check"></i> <strong>Streaming</strong> - Generate HLS/DASH playlists for adaptive bitrate</li>
+                            <li><i class="fas fa-check"></i> <strong>Thumbnails</strong> - Auto-generate video thumbnails</li>
                         </ul>
 
                         <div class="info-box">
                             <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Perfect for video streaming platforms, social media, e-learning, and applications
-                                requiring video optimization.</p>
+                            <p><strong>Video platforms:</strong> streaming services, social media, e-learning<br>
+                            <strong>Content management:</strong> automatic transcoding pipelines<br>
+                            <strong>Mobile apps:</strong> optimize videos for different devices</p>
+                        </div>
+
+                        <div class="info-box" style="background: #e7f3ff; border-color: #2196F3; margin-top: 1rem;">
+                            <h4 style="color: #1976D2;"><i class="fas fa-clock"></i> Response Flow</h4>
+                            <p style="margin: 0; color: #1565C0;">
+                                <strong>1.</strong> Send request → <strong>2.</strong> Receive UUID immediately →
+                                <strong>3.</strong> Wait for webhook with processed video URL
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -2115,92 +2714,173 @@
             <section id="audio-processing" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-music"></i> Audio Processing</h2>
-                    <p>Process and transform audio files with format conversion, quality adjustment, and effects.</p>
+                    <p>Extract and transform audio with format conversion, quality control, and professional effects.</p>
+                    <a href="https://www.filestack.com/docs/api/video_processing/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
+                </div>
+
+                <div class="important-notice" style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;"><i class="fas fa-info-circle"></i> Asynchronous Processing</h4>
+                    <p style="margin: 0; color: #856404;">Audio processing uses the same <code>video_convert</code> task. Results are delivered asynchronously via webhook. Configure in <a href="https://dev.filestack.com" target="_blank" style="color: #856404; text-decoration: underline;">Developer Portal</a>.</p>
                 </div>
 
                 <div class="config-grid">
                     <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
 
                         <div class="form-group">
-                            <label for="audioProcessHandle">Audio Handle or URL</label>
-                            <input type="text" id="audioProcessHandle" placeholder="Enter audio handle or URL">
+                            <label for="audioProcessHandle">
+                                Audio/Video Handle <span style="color: #e63946;">*</span>
+                                <small style="color: #666; font-weight: normal;">(Can extract audio from video)</small>
+                            </label>
+                            <input type="text" id="audioProcessHandle" placeholder="e.g., xBfYjbEJT0Wpkh2s0MK0" class="track-changes">
                         </div>
 
                         <div class="form-group">
-                            <label for="audioFormat">Output Format</label>
-                            <select id="audioFormat">
-                                <option value="mp3">MP3</option>
-                                <option value="wav">WAV</option>
-                                <option value="aac">AAC</option>
-                                <option value="ogg">OGG</option>
-                                <option value="flac">FLAC</option>
+                            <label for="audioPreset">
+                                Audio Preset
+                                <small style="color: #666; font-weight: normal;">(Choose preset or custom format)</small>
+                            </label>
+                            <select id="audioPreset" class="track-changes">
+                                <option value="">-- Custom Format --</option>
+                                <option value="mp3">MP3 (Lossy, Universal)</option>
+                                <option value="aac">AAC (Lossy, High Quality)</option>
+                                <option value="m4a">M4A (Apple/iTunes)</option>
+                                <option value="vorbis">Vorbis (OGG)</option>
+                                <option value="oga">OGA (Ogg Audio)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="audioCustomFormatGroup">
+                            <label for="audioCustomFormat">Custom Output Format (extname)</label>
+                            <select id="audioCustomFormat" class="track-changes">
+                                <option value="">(Use preset format)</option>
+                                <option value=".mp3">MP3 (.mp3)</option>
+                                <option value=".wav">WAV (.wav)</option>
+                                <option value=".aac">AAC (.aac)</option>
+                                <option value=".m4a">M4A (.m4a)</option>
+                                <option value=".ogg">OGG (.ogg)</option>
+                                <option value=".flac">FLAC (.flac)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-sliders-h"></i> Audio Quality</h3>
+
+                        <div class="form-group">
+                            <label for="audioCodec">
+                                Audio Codec
+                                <small style="color: #666; font-weight: normal;">(Advanced users only)</small>
+                            </label>
+                            <select id="audioCodec" class="track-changes">
+                                <option value="">Auto (based on format)</option>
+                                <option value="libmp3lame">libmp3lame (MP3)</option>
+                                <option value="libfdk_aac">libfdk_aac (AAC)</option>
+                                <option value="libvorbis">libvorbis (Vorbis)</option>
+                                <option value="pcm_s16le">pcm_s16le (WAV PCM)</option>
+                                <option value="ac3">AC3</option>
+                                <option value="eac3">EAC3</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="audioBitrate">Bitrate (kbps)</label>
-                            <select id="audioBitrate">
+                            <label for="audioBitrate">
+                                Audio Bitrate (kbps)
+                                <small style="color: #666; font-weight: normal;">(Higher = better quality)</small>
+                            </label>
+                            <select id="audioBitrate" class="track-changes">
                                 <option value="">Original</option>
-                                <option value="320">320 kbps (High Quality)</option>
-                                <option value="256">256 kbps</option>
-                                <option value="192">192 kbps (Standard)</option>
+                                <option value="320">320 kbps (Highest Quality)</option>
+                                <option value="256">256 kbps (Very High)</option>
+                                <option value="192">192 kbps (High - Standard)</option>
                                 <option value="128">128 kbps (Medium)</option>
                                 <option value="96">96 kbps (Low)</option>
+                                <option value="64">64 kbps (Voice/Podcast)</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="audioSampleRate">Sample Rate (Hz)</label>
-                            <select id="audioSampleRate">
+                            <label for="audioSampleRate">
+                                Sample Rate (Hz)
+                                <small style="color: #666; font-weight: normal;">(Higher = more detail)</small>
+                            </label>
+                            <select id="audioSampleRate" class="track-changes">
                                 <option value="">Original</option>
-                                <option value="48000">48000 Hz</option>
+                                <option value="48000">48000 Hz (Professional)</option>
                                 <option value="44100">44100 Hz (CD Quality)</option>
+                                <option value="32000">32000 Hz</option>
                                 <option value="22050">22050 Hz</option>
-                                <option value="16000">16000 Hz</option>
+                                <option value="16000">16000 Hz (Voice)</option>
+                                <option value="8000">8000 Hz (Telephony)</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label>Processing Options</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="audioNormalize">
-                                    <span>Normalize Volume</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="audioNoiseReduction">
-                                    <span>Noise Reduction</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="audioFadeIn">
-                                    <span>Fade In</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="audioFadeOut">
-                                    <span>Fade Out</span>
-                                </label>
-                            </div>
+                            <label for="audioChannels">
+                                Audio Channels
+                                <small style="color: #666; font-weight: normal;">(Stereo vs Mono)</small>
+                            </label>
+                            <select id="audioChannels" class="track-changes">
+                                <option value="">Original</option>
+                                <option value="1">1 - Mono</option>
+                                <option value="2">2 - Stereo</option>
+                                <option value="5">5 - 5.0 Surround</option>
+                                <option value="6">6 - 5.1 Surround</option>
+                                <option value="8">8 - 7.1 Surround</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-cut"></i> Audio Trimming</h3>
+
+                        <div class="form-group">
+                            <label for="audioClipLength">
+                                Clip Length
+                                <small style="color: #666; font-weight: normal;">(Format: hh:mm:ss)</small>
+                            </label>
+                            <input type="text" id="audioClipLength" placeholder="e.g., 00:03:30" class="track-changes">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="audioClipOffset">
+                                Clip Offset (Start Time)
+                                <small style="color: #666; font-weight: normal;">(Format: hh:mm:ss)</small>
+                            </label>
+                            <input type="text" id="audioClipOffset" placeholder="e.g., 00:00:10" class="track-changes">
                         </div>
                     </div>
 
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About Audio Processing</h3>
-                        <p>Professional audio processing features:</p>
+                        <p>Filestack audio processing uses <code>video_convert</code> with audio-specific parameters:</p>
 
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Format conversion (MP3, WAV, AAC, OGG, FLAC)</li>
-                            <li><i class="fas fa-check"></i> Quality and bitrate adjustment</li>
-                            <li><i class="fas fa-check"></i> Sample rate optimization</li>
-                            <li><i class="fas fa-check"></i> Volume normalization</li>
-                            <li><i class="fas fa-check"></i> Noise reduction and effects</li>
-                            <li><i class="fas fa-check"></i> Fade in/out transitions</li>
+                            <li><i class="fas fa-check"></i> <strong>Format Conversion</strong> - MP3, WAV, AAC, OGG, FLAC, M4A</li>
+                            <li><i class="fas fa-check"></i> <strong>Audio Extraction</strong> - Extract audio track from videos</li>
+                            <li><i class="fas fa-check"></i> <strong>Bitrate Control</strong> - 64-320 kbps for size/quality balance</li>
+                            <li><i class="fas fa-check"></i> <strong>Sample Rate</strong> - 8kHz to 48kHz for different use cases</li>
+                            <li><i class="fas fa-check"></i> <strong>Channel Config</strong> - Mono, Stereo, or Surround Sound</li>
+                            <li><i class="fas fa-check"></i> <strong>Codec Options</strong> - Choose specific audio codecs</li>
+                            <li><i class="fas fa-check"></i> <strong>Trimming</strong> - Extract specific audio segments</li>
                         </ul>
 
                         <div class="info-box">
                             <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Ideal for podcasts, music platforms, voice applications, and any service requiring audio
-                                optimization.</p>
+                            <p><strong>Podcasts:</strong> Convert to MP3 with consistent quality<br>
+                            <strong>Music platforms:</strong> High-quality AAC/FLAC conversion<br>
+                            <strong>Voice apps:</strong> Low-bitrate mono for bandwidth savings<br>
+                            <strong>Video extraction:</strong> Get audio track from video files</p>
+                        </div>
+
+                        <div class="info-box" style="background: #e8f5e9; border-color: #4CAF50; margin-top: 1rem;">
+                            <h4 style="color: #2E7D32;"><i class="fas fa-magic"></i> Pro Tip</h4>
+                            <p style="margin: 0; color: #1B5E20;">
+                                For podcasts use <strong>128kbps MP3 Mono</strong> (small size, good quality).<br>
+                                For music use <strong>256kbps AAC Stereo</strong> (excellent quality).
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -2210,7 +2890,10 @@
             <section id="workflows" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-sitemap"></i> Workflows</h2>
-                    <p>Execute automated workflows for complex file processing pipelines and business logic.</p>
+                    <p>Automate file processing with conditional logic, transformations, and intelligent routing.</p>
+                    <a href="https://www.filestack.com/docs/api/workflows_api/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
                 </div>
 
                 <div class="config-grid">
@@ -2218,56 +2901,111 @@
                         <h3><i class="fas fa-cog"></i> Configuration</h3>
 
                         <div class="form-group">
-                            <label for="workflowId">Workflow ID</label>
-                            <input type="text" id="workflowId" placeholder="Enter workflow ID">
+                            <label for="workflowId">
+                                Workflow ID
+                                <span style="color: #666; font-weight: normal; font-size: 0.85rem;">
+                                    (Get from <a href="https://dev.filestack.com" target="_blank" style="color: var(--primary-orange);">Developer Portal</a>)
+                                </span>
+                            </label>
+                            <input type="text" id="workflowId" placeholder="e.g., 67d273c3-249c-4192-b228-9c3e1d003963">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                The UUID of your workflow created in the Developer Portal
+                            </small>
                         </div>
 
                         <div class="form-group">
-                            <label for="workflowSources">Source Files (comma-separated handles)</label>
-                            <textarea id="workflowSources" rows="2" placeholder="handle1, handle2, handle3"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="workflowWebhook">Webhook URL (optional)</label>
-                            <input type="text" id="workflowWebhook" placeholder="https://your-app.com/webhook">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Execution Options</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="workflowAsync" checked>
-                                    <span>Async Execution</span>
+                            <label>Source Type</label>
+                            <div class="radio-group">
+                                <label class="radio-item">
+                                    <input type="radio" name="workflowSourceType" value="handle" checked>
+                                    <span>File Handle</span>
                                 </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="workflowNotify">
-                                    <span>Email Notifications</span>
+                                <label class="radio-item">
+                                    <input type="radio" name="workflowSourceType" value="url">
+                                    <span>External URL</span>
                                 </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="workflowRetry">
-                                    <span>Auto Retry on Failure</span>
+                                <label class="radio-item">
+                                    <input type="radio" name="workflowSourceType" value="storage">
+                                    <span>Storage Alias</span>
                                 </label>
                             </div>
+                            <small style="color: #666; display: block; margin-top: 0.5rem;">
+                                Choose how to identify the file for workflow processing
+                            </small>
+                        </div>
+
+                        <div class="form-group" id="workflowHandleGroup">
+                            <label for="workflowHandle">File Handle</label>
+                            <input type="text" id="workflowHandle" placeholder="e.g., pR4oeS63QLmYIFNs2ZvZ">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                The handle returned after uploading a file to Filestack
+                            </small>
+                        </div>
+
+                        <div class="form-group" id="workflowUrlGroup" style="display: none;">
+                            <label for="workflowUrl">External File URL</label>
+                            <input type="text" id="workflowUrl" placeholder="https://example.com/image.jpg">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                Direct URL to a file hosted externally (requires API key)
+                            </small>
+                        </div>
+
+                        <div id="workflowStorageGroup" style="display: none;">
+                            <div class="form-group">
+                                <label for="workflowStorageAlias">Storage Alias</label>
+                                <input type="text" id="workflowStorageAlias" placeholder="e.g., my-s3-bucket">
+                                <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                    Your custom storage alias configured in Developer Portal
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="workflowStoragePath">File Path</label>
+                                <input type="text" id="workflowStoragePath" placeholder="/path/to/file.jpg">
+                                <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                    Path to the file within your storage location
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="workflowJobId">Job ID (Optional - For Status Check)</label>
+                            <input type="text" id="workflowJobId" placeholder="Enter job ID from workflow response">
+                            <small style="color: #666; display: block; margin-top: 0.3rem;">
+                                After running a workflow, use the returned Job ID to check processing status
+                            </small>
                         </div>
                     </div>
 
                     <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Workflows</h3>
-                        <p>Powerful workflow automation for complex processing:</p>
+                        <h3><i class="fas fa-info-circle"></i> What Are Workflows?</h3>
+                        <p style="margin-bottom: 1rem;">Workflows automate complex file processing with business rules and conditional logic. Create workflows in the Developer Portal to:</p>
 
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Multi-step processing pipelines</li>
-                            <li><i class="fas fa-check"></i> Conditional logic and branching</li>
-                            <li><i class="fas fa-check"></i> Async and sync execution</li>
-                            <li><i class="fas fa-check"></i> Webhook notifications</li>
-                            <li><i class="fas fa-check"></i> Error handling and retry logic</li>
-                            <li><i class="fas fa-check"></i> Status monitoring</li>
+                            <li><i class="fas fa-check"></i> <strong>Transformations</strong> - Image/video/audio processing</li>
+                            <li><i class="fas fa-check"></i> <strong>Intelligence</strong> - Tagging, SFW detection, OCR, virus scanning</li>
+                            <li><i class="fas fa-check"></i> <strong>Conditional Logic</strong> - Route files based on content or metadata</li>
+                            <li><i class="fas fa-check"></i> <strong>Webhooks</strong> - Receive results asynchronously</li>
+                            <li><i class="fas fa-check"></i> <strong>Multi-step</strong> - Chain multiple operations together</li>
                         </ul>
 
                         <div class="info-box">
-                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Essential for automated content processing, batch operations, and complex business
-                                workflows requiring multiple steps.</p>
+                            <h4><i class="fas fa-rocket"></i> How It Works</h4>
+                            <p style="line-height: 1.8;">
+                                <strong>1. Create Workflow</strong> - Build in <a href="https://dev.filestack.com" target="_blank" style="color: var(--primary-orange);">Developer Portal</a><br>
+                                <strong>2. Get UUID</strong> - Copy your Workflow ID<br>
+                                <strong>3. Run Workflow</strong> - Make GET request to start processing<br>
+                                <strong>4. Get Job ID</strong> - Response includes Job ID<br>
+                                <strong>5. Check Status</strong> - Poll for results or use webhooks
+                            </p>
+                        </div>
+
+                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
+                            <h4 style="color: #856404;"><i class="fas fa-exclamation-triangle"></i> Important Notes</h4>
+                            <p style="color: #856404; margin: 0; line-height: 1.6;">
+                                • Workflows are <strong>asynchronous</strong> - results come via webhook or status check<br>
+                                • Security: Requires <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">runWorkflow</code> and <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">convert</code> policy calls<br>
+                                • Each upload triggers one workflow job
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -2428,75 +3166,194 @@
                     <p>Create complex transformation pipelines by chaining multiple operations together.</p>
                 </div>
 
-                <div class="config-grid">
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                <!-- Transform Chain Pipeline Templates -->
+                <div class="config-card quick-start-card">
+                    <h3><i class="fas fa-project-diagram"></i> Chain Pipelines</h3>
+                    <p class="card-description">Pre-built multi-step transformation chains for complex workflows. Click to auto-configure.</p>
 
-                        <div class="form-group">
-                            <label for="chainHandle">Source Handle or URL</label>
-                            <input type="text" id="chainHandle" placeholder="Enter file handle or URL">
+                    <div class="template-grid">
+                        <button class="template-btn" onclick="loadChainPipeline('responsive')">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span class="template-name">Responsive Images</span>
+                            <small>Generate multiple sizes: 320, 768, 1024, 1920</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('watermark')">
+                            <i class="fas fa-copyright"></i>
+                            <span class="template-name">Watermark & Protect</span>
+                            <small>Resize, watermark, optimize, secure</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('ecommerce')">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="template-name">E-Commerce Suite</span>
+                            <small>Main, thumb, zoom images with optimization</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('social-pack')">
+                            <i class="fas fa-hashtag"></i>
+                            <span class="template-name">Social Media Pack</span>
+                            <small>Instagram, Facebook, Twitter formats</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('content-moderation')">
+                            <i class="fas fa-user-shield"></i>
+                            <span class="template-name">Content Moderation</span>
+                            <small>SFW check, blur faces, watermark</small>
+                        </button>
+                        <button class="template-btn" onclick="loadChainPipeline('artistic')">
+                            <i class="fas fa-palette"></i>
+                            <span class="template-name">Artistic Effects</span>
+                            <small>Filters, borders, vignette, color grading</small>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="config-card">
+                    <h3><i class="fas fa-cog"></i> Configuration</h3>
+
+                    <div class="form-group">
+                        <label for="chainHandle">Source Handle or URL</label>
+                        <input type="text" id="chainHandle" placeholder="Enter file handle or URL" class="track-changes">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Transform Chain Builder</label>
+                        <div id="chainBuilder" class="chain-builder">
+                            <div class="chain-step">
+                                <select class="chain-operation track-changes">
+                                    <option value="">Select Operation</option>
+                                    <option value="resize">Resize</option>
+                                    <option value="crop">Crop</option>
+                                    <option value="rotate">Rotate</option>
+                                    <option value="blur">Blur</option>
+                                    <option value="sharpen">Sharpen</option>
+                                    <option value="quality">Quality</option>
+                                    <option value="convert">Convert Format</option>
+                                    <option value="watermark">Watermark</option>
+                                </select>
+                                <input type="text" class="chain-params track-changes"
+                                    placeholder="Parameters (e.g., width:300,height:200)">
+                                <button type="button" class="btn-remove-step">×</button>
+                            </div>
+                        </div>
+                        <button type="button" id="addChainStep" class="btn btn-secondary btn-small">Add
+                            Step</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Conditional Logic</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="chainConditional" class="track-changes">
+                                <span>Enable Conditional transformations</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="chainOptimize" class="track-changes">
+                                <span>Auto-optimize Chain</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="chainFallback" class="track-changes">
+                                <span>Fallback on Error</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-card">
+                    <h3><i class="fas fa-info-circle"></i> About Transform Chains</h3>
+                    <p>Advanced transformation pipelines for complex processing:</p>
+
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Multi-step transformations</li>
+                        <li><i class="fas fa-check"></i> Conditional logic support</li>
+                        <li><i class="fas fa-check"></i> Chain optimization</li>
+                        <li><i class="fas fa-check"></i> Error handling and fallbacks</li>
+                        <li><i class="fas fa-check"></i> Performance optimization</li>
+                        <li><i class="fas fa-check"></i> Batch processing</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                        <p>Ideal for complex image processing workflows, automated content optimization, and
+                            sophisticated file transformation pipelines.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transform Playground Section -->
+            <section id="transform-playground" class="content-section">
+                <div class="playground-layout">
+                    <!-- Left side: Configuration and Transformations -->
+                    <div class="playground-left">
+                        <div class="section-header">
+                            <h2><i class="fas fa-magic"></i> Live Transformations Playground</h2>
+                            <p>Experiment with image transformations in real-time and see the results instantly.</p>
                         </div>
 
-                        <div class="form-group">
-                            <label>Transform Chain Builder</label>
-                            <div id="chainBuilder" class="chain-builder">
-                                <div class="chain-step">
-                                    <select class="chain-operation">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                        <option value="watermark">Watermark</option>
-                                    </select>
-                                    <input type="text" class="chain-params"
-                                        placeholder="Parameters (e.g., width:300,height:200)">
-                                    <button type="button" class="btn-remove-step">×</button>
+                        <div class="config-card">
+                            <h3><i class="fas fa-image"></i> Image Configuration</h3>
+                            <div class="form-group">
+                                <label for="playgroundHandle">Filestack Handle</label>
+                                <div class="input-with-button">
+                                    <input type="text" id="playgroundHandle" placeholder="Enter Filestack handle" class="track-changes">
+                                    <button type="button" id="playgroundLoadBtn" class="btn btn-primary btn-small">Load Image</button>
                                 </div>
                             </div>
-                            <button type="button" id="addChainStep" class="btn btn-secondary btn-small">Add
-                                Step</button>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="playgroundPolicy">Security Policy (optional)</label>
+                                    <input type="text" id="playgroundPolicy" placeholder="Security policy" class="track-changes">
+                                </div>
+                                <div class="form-group">
+                                    <label for="playgroundSignature">Signature (optional)</label>
+                                    <input type="text" id="playgroundSignature" placeholder="Signature" class="track-changes">
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Conditional Logic</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="chainConditional">
-                                    <span>Enable Conditional Transforms</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="chainOptimize">
-                                    <span>Auto-optimize Chain</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="chainFallback">
-                                    <span>Fallback on Error</span>
-                                </label>
-                            </div>
+                        <div class="config-card">
+                            <h3><i class="fas fa-sliders-h"></i> Transformations</h3>
+                            <div id="playgroundTransformsList" class="playground-transforms-grid"></div>
+                        </div>
+
+                        <div class="config-card">
+                            <h3><i class="fas fa-info-circle"></i> About Live Playground</h3>
+                            <p>This interactive playground allows you to:</p>
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check"></i> Apply transformations in real-time</li>
+                                <li><i class="fas fa-check"></i> See immediate visual feedback</li>
+                                <li><i class="fas fa-check"></i> Experiment with different parameter values</li>
+                                <li><i class="fas fa-check"></i> View the generated transformation URLs</li>
+                                <li><i class="fas fa-check"></i> Test with your own images</li>
+                            </ul>
                         </div>
                     </div>
 
-                    <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Transform Chains</h3>
-                        <p>Advanced transformation pipelines for complex processing:</p>
+                    <!-- Right side: Image Preview (replaces code panel) -->
+                    <div class="playground-right">
+                        <div class="playground-images-vertical">
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-magic"></i> Transformed Image</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="playgroundTransformed" src="https://via.placeholder.com/400x300.png?text=Apply+Transformations" alt="Transformed Image" />
+                                    <div class="image-loader" id="playgroundTransformedLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="playgroundTransformedUrl">No transformations applied</code>
+                                </div>
+                            </div>
 
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Multi-step transformations</li>
-                            <li><i class="fas fa-check"></i> Conditional logic support</li>
-                            <li><i class="fas fa-check"></i> Chain optimization</li>
-                            <li><i class="fas fa-check"></i> Error handling and fallbacks</li>
-                            <li><i class="fas fa-check"></i> Performance optimization</li>
-                            <li><i class="fas fa-check"></i> Batch processing</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Ideal for complex image processing workflows, automated content optimization, and
-                                sophisticated file transformation pipelines.</p>
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-image"></i> Original Image</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="playgroundOriginal" src="https://via.placeholder.com/400x300.png?text=No+Image+Loaded" alt="Original Image" />
+                                    <div class="image-loader" id="playgroundOriginalLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="playgroundOriginalUrl">No image loaded</code>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2507,7 +3364,17 @@
         <!-- Code Panel -->
         <aside class="code-panel">
             <div class="code-header">
-                <h3><i class="fas fa-code"></i> Generated Code</h3>
+                <div class="code-header-top">
+                    <h3><i class="fas fa-code"></i> Generated Code</h3>
+                    <div class="code-actions">
+                        <button id="generateCodeBtn" class="btn btn-primary btn-small" onclick="manualGenerateCode()">
+                            <i class="fas fa-play"></i> Generate Code
+                        </button>
+                        <button class="btn btn-secondary btn-small" onclick="copyCode()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
                 <div class="code-tabs">
                     <button class="tab-btn active" data-tab="javascript">JavaScript</button>
                     <button class="tab-btn" data-tab="react">React</button>
@@ -2516,15 +3383,12 @@
                     <button class="tab-btn" data-tab="nodejs">Node.js</button>
                     <button class="tab-btn" data-tab="url">URL</button>
                 </div>
-                <button class="btn btn-secondary btn-small" onclick="copyCode()">
-                    <i class="fas fa-copy"></i> Copy
-                </button>
             </div>
 
             <div class="code-content">
                 <pre><code class="language-javascript" id="generatedCode">
 // Your generated code will appear here
-// Select options and click "Generate Code" to see the result
+// Configure your options and click "Generate Code" button above
                 </code></pre>
             </div>
 

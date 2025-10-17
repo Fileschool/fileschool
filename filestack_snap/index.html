@@ -80,13 +80,10 @@
                 <i class="fas fa-folder-open"></i> File Picker
             </button>
             <button class="sub-tab" data-section="upload">
-                <i class="fas fa-cloud-upload-alt"></i> Upload
+                <i class="fas fa-cloud-upload-alt"></i> File API
             </button>
             <button class="sub-tab" data-section="dnd">
                 <i class="fas fa-hand-pointer"></i> Drag & Drop
-            </button>
-            <button class="sub-tab" data-section="download">
-                <i class="fas fa-download"></i> Download
             </button>
         </div>
 
@@ -228,26 +225,37 @@
                     <span><i class="fas fa-wrench"></i> Configuration Options</span>
                 </div>
 
-                <!-- Basic Settings and File Acceptance Combined -->
+                <!-- Basic Settings -->
                 <div class="config-card">
                     <h3><i class="fas fa-cog"></i> Basic Settings</h3>
+                    <p class="card-description">Configure the fundamental picker behavior and appearance.</p>
+                    
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="displayModeSelect">Display Mode</label>
-                            <select id="displayModeSelect" onchange="document.querySelector('input[name=displayMode][value=' + this.value + ']').checked = true">
-                                <option value="overlay" selected>Overlay</option>
-                                <option value="inline">Inline</option>
-                                <option value="dropPane">Drop Pane</option>
+                            <label for="displayModeSelect">
+                                Display Mode
+                                <i class="fas fa-info-circle" title="Choose how the picker appears: Overlay (modal), Inline (embedded), or Drop Pane (compact dropdown)."></i>
+                            </label>
+                            <select id="displayModeSelect" onchange="document.querySelector('input[name=displayMode][value=' + this.value + ']').checked = true" class="track-changes">
+                                <option value="overlay" selected>Overlay (Modal)</option>
+                                <option value="inline">Inline (Embedded)</option>
+                                <option value="dropPane">Drop Pane (Compact)</option>
                             </select>
                             <div style="display: none;">
                                 <input type="radio" name="displayMode" value="overlay" checked>
                                 <input type="radio" name="displayMode" value="inline">
                                 <input type="radio" name="displayMode" value="dropPane">
                             </div>
+                            <small class="form-hint">
+                                <i class="fas fa-desktop"></i> <strong>Overlay:</strong> Modal popup (recommended) | <strong>Inline:</strong> Embedded in page | <strong>Drop Pane:</strong> Compact dropdown
+                            </small>
                         </div>
                         <div class="form-group">
-                            <label for="language">Language</label>
-                            <select id="language">
+                            <label for="language">
+                                Language
+                                <i class="fas fa-info-circle" title="Select the language for the picker interface. Affects all text, buttons, and messages."></i>
+                            </label>
+                            <select id="language" class="track-changes">
                                 <option value="en">English</option>
                                 <option value="es">Spanish</option>
                                 <option value="fr">French</option>
@@ -259,7 +267,19 @@
                                 <option value="ko">Korean</option>
                                 <option value="zh">Chinese</option>
                             </select>
+                            <small class="form-hint">
+                                <i class="fas fa-globe"></i> Sets the UI language for all picker elements and messages.
+                            </small>
                         </div>
+                    </div>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
+                        <h4><i class="fas fa-lightbulb"></i> Display Mode Tips</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><strong>Overlay:</strong> Best for most use cases, doesn't affect page layout</li>
+                            <li><strong>Inline:</strong> Perfect for dedicated upload pages or admin panels</li>
+                            <li><strong>Drop Pane:</strong> Great for mobile apps or space-constrained interfaces</li>
+                        </ul>
                     </div>
                 </div>
 
@@ -267,6 +287,16 @@
                 <div class="config-card">
                     <h3><i class="fas fa-file-alt"></i> File Acceptance</h3>
                     <p class="card-description">Select which file types are allowed. If none selected, all types are enabled.</p>
+                    
+                    <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-exclamation-triangle"></i> File Type Validation</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><strong>MIME Types:</strong> Use <code>image/*</code> for all images, <code>application/pdf</code> for PDFs</li>
+                            <li><strong>Extensions:</strong> Use <code>.jpg,.png,.gif</code> for specific file extensions</li>
+                            <li><strong>Mixed:</strong> Combine MIME types and extensions: <code>image/*,.pdf,.doc</code></li>
+                            <li><strong>Client-side:</strong> This provides initial filtering - always validate on your server too</li>
+                        </ul>
+                    </div>
 
                     <div class="file-acceptance-grid">
                         <div class="file-type-category">
@@ -350,6 +380,16 @@
                         <h3><i class="fas fa-cloud"></i> Sources</h3>
                         <p class="card-description">Select which sources users can upload from. If none selected, all
                             sources are enabled.</p>
+                        
+                        <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50; margin-bottom: 1rem;">
+                            <h4><i class="fas fa-info-circle"></i> Cloud Integration Notes</h4>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                                <li><strong>OAuth Required:</strong> Google Drive, Dropbox, Box require user authorization</li>
+                                <li><strong>Custom OAuth:</strong> Use your own OAuth clients for custom branding (requires setup)</li>
+                                <li><strong>CNAME Users:</strong> Must use custom OAuth clients (contact Filestack support)</li>
+                                <li><strong>Mobile Sources:</strong> Webcam, Audio/Video recording work on supported devices</li>
+                            </ul>
+                        </div>
 
                         <div class="checkbox-grid">
                             <label class="checkbox-item">
@@ -422,112 +462,253 @@
                     <!-- File Limits & Dimensions Combined -->
                     <div class="config-card">
                         <h3><i class="fas fa-chart-bar"></i> Limits & Constraints</h3>
+                        <p class="card-description">Set file count, size limits, and image dimension constraints to control uploads.</p>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="maxFiles">Max Files</label>
-                                <input type="number" id="maxFiles" min="1" max="100" placeholder="0">
+                                <label for="maxFiles">
+                                    Max Files
+                                    <i class="fas fa-info-circle" title="Maximum number of files that can be selected/uploaded in one session. 0 = no limit."></i>
+                                </label>
+                                <input type="number" id="maxFiles" min="1" max="100" placeholder="0" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-list-ol"></i> 0 = unlimited. Common values: 1 (single file), 5 (small batch), 10 (large batch)
+                                </small>
                             </div>
                             <div class="form-group">
-                                <label for="minFiles">Min Files</label>
-                                <input type="number" id="minFiles" min="1" max="100" placeholder="0">
+                                <label for="minFiles">
+                                    Min Files
+                                    <i class="fas fa-info-circle" title="Minimum number of files required before upload can proceed. 0 = no minimum."></i>
+                                </label>
+                                <input type="number" id="minFiles" min="1" max="100" placeholder="0" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-exclamation-circle"></i> Forces users to select at least this many files
+                                </small>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="maxSize">Max File Size (MB)</label>
-                                <input type="number" id="maxSize" min="1" max="163840" placeholder="0">
+                                <label for="maxSize">
+                                    Max File Size (MB)
+                                    <i class="fas fa-info-circle" title="Maximum file size in megabytes. 0 = no limit. Max supported: 163,840 MB (160 GB)."></i>
+                                </label>
+                                <input type="number" id="maxSize" min="1" max="163840" placeholder="0" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-weight-hanging"></i> 0 = unlimited. Common limits: 10MB (documents), 100MB (images), 1GB (videos)
+                                </small>
                             </div>
                             <div class="form-group">
-                                <label for="concurrency">Upload Concurrency</label>
-                                <input type="number" id="concurrency" min="1" max="10" placeholder="4">
+                                <label for="concurrency">
+                                    Upload Concurrency
+                                    <i class="fas fa-info-circle" title="Number of files that can be uploaded simultaneously. Higher values = faster uploads but more bandwidth usage."></i>
+                                </label>
+                                <input type="number" id="concurrency" min="1" max="10" placeholder="4" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-tachometer-alt"></i> 1-3 (slow/stable), 4-6 (balanced), 7-10 (fast/aggressive)
+                                </small>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="imageMaxDim">Max Dimensions (w,h)</label>
-                                <input type="text" id="imageMaxDim" placeholder="1920,1080">
+                                <label for="imageMaxDim">
+                                    Max Dimensions (w,h)
+                                    <i class="fas fa-info-circle" title="Maximum image dimensions in pixels. Format: 'width,height' (e.g., '1920,1080'). Leave empty for no limit."></i>
+                                </label>
+                                <input type="text" id="imageMaxDim" placeholder="1920,1080" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-expand-arrows-alt"></i> Prevents oversized images. Example: <code>1920,1080</code> for HD limit
+                                </small>
                             </div>
                             <div class="form-group">
-                                <label for="imageMinDim">Min Dimensions (w,h)</label>
-                                <input type="text" id="imageMinDim" placeholder="100,100">
+                                <label for="imageMinDim">
+                                    Min Dimensions (w,h)
+                                    <i class="fas fa-info-circle" title="Minimum image dimensions in pixels. Format: 'width,height' (e.g., '100,100'). Leave empty for no minimum."></i>
+                                </label>
+                                <input type="text" id="imageMinDim" placeholder="100,100" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-compress-arrows-alt"></i> Ensures minimum quality. Example: <code>100,100</code> for thumbnail minimum
+                                </small>
                             </div>
+                        </div>
+
+                        <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-top: 1rem;">
+                            <h4><i class="fas fa-calculator"></i> Size Calculation Tips</h4>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                                <li><strong>1 MB</strong> = 1,048,576 bytes (binary) or 1,000,000 bytes (decimal)</li>
+                                <li><strong>10 MB</strong> = 10,485,760 bytes (good for documents)</li>
+                                <li><strong>100 MB</strong> = 104,857,600 bytes (good for high-res images)</li>
+                                <li><strong>1 GB</strong> = 1,073,741,824 bytes (good for videos)</li>
+                                <li><strong>Dimensions:</strong> Always use format <code>width,height</code> (e.g., <code>1920,1080</code>)</li>
+                            </ul>
                         </div>
                     </div>
 
                     <!-- Advanced Options -->
                     <div class="config-card">
                         <h3><i class="fas fa-sliders-h"></i> Advanced Options</h3>
+                        <p class="card-description">Fine-tune picker behavior with advanced settings for specific use cases.</p>
 
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
-                                <!-- To allow multiple file uploads, set maxFiles > 1 -->
-                                <input type="checkbox" id="multipleFileUpload" disabled>
-                                <span>Multiple File Upload</span>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <input type="checkbox" id="multipleFileUpload" disabled class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                        <span style="font-weight: 500; margin-right: 0.5rem;">Multiple File Upload</span>
+                                        <i class="fas fa-info-circle" title="Enable multiple file selection. Automatically enabled when maxFiles > 1." style="color: #666;"></i>
+                                    </div>
+                                    <small class="form-hint">
+                                        <i class="fas fa-magic"></i> Auto-enabled when Max Files > 1
+                                    </small>
+                                </div>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="hideModalWhenUploading">
-                                <span>Hide Modal When Uploading</span>
+                            
+                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <input type="checkbox" id="hideModalWhenUploading" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                        <span style="font-weight: 500; margin-right: 0.5rem;">Hide Modal When Uploading</span>
+                                        <i class="fas fa-info-circle" title="Automatically close the picker modal once upload starts. Good for background uploads." style="color: #666;"></i>
+                                    </div>
+                                    <small class="form-hint">
+                                        <i class="fas fa-eye-slash"></i> Closes picker automatically when upload begins
+                                    </small>
+                                </div>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="uploadInBackground">
-                                <span>Upload in Background</span>
+                            
+                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <input type="checkbox" id="uploadInBackground" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                        <span style="font-weight: 500; margin-right: 0.5rem;">Upload in Background</span>
+                                        <i class="fas fa-info-circle" title="Upload files in the background without blocking the UI. Users can continue using your app." style="color: #666;"></i>
+                                    </div>
+                                    <small class="form-hint">
+                                        <i class="fas fa-clock"></i> Non-blocking uploads for better UX
+                                    </small>
+                                </div>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="cleanupImageExif">
-                                <span>Cleanup Image EXIF</span>
+                            
+                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <input type="checkbox" id="cleanupImageExif" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                        <span style="font-weight: 500; margin-right: 0.5rem;">Cleanup Image EXIF</span>
+                                        <i class="fas fa-info-circle" title="Remove EXIF data from images for privacy and smaller file sizes. Removes location, camera info, etc." style="color: #666;"></i>
+                                    </div>
+                                    <small class="form-hint">
+                                        <i class="fas fa-shield-alt"></i> Removes metadata for privacy and smaller files
+                                    </small>
+                                </div>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="exposeOriginalFile">
-                                <span>Expose Original File</span>
+                            
+                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <input type="checkbox" id="exposeOriginalFile" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                        <span style="font-weight: 500; margin-right: 0.5rem;">Expose Original File</span>
+                                        <i class="fas fa-info-circle" title="Include the original file object in upload responses. Useful for advanced file processing." style="color: #666;"></i>
+                                    </div>
+                                    <small class="form-hint">
+                                        <i class="fas fa-code"></i> Includes original file object in callbacks
+                                    </small>
+                                </div>
                             </label>
+                        </div>
+
+                        <div class="info-box" style="background: #e1f5fe; border-left: 4px solid #03a9f4; margin-top: 1rem;">
+                            <h4><i class="fas fa-cogs"></i> Advanced Options Guide</h4>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                                <li><strong>Hide Modal:</strong> Best for quick uploads or mobile apps</li>
+                                <li><strong>Background Upload:</strong> Perfect for large files or slow connections</li>
+                                <li><strong>EXIF Cleanup:</strong> Essential for user privacy and GDPR compliance</li>
+                                <li><strong>Original File:</strong> Needed for custom file processing or validation</li>
+                            </ul>
                         </div>
                     </div>
 
                     <!-- Store Options -->
                     <div class="config-card">
                         <h3><i class="fas fa-database"></i> Store Options</h3>
-                        <p class="card-description">Configure storage destination and workflows (structured_docs: Picker
-                            Store Options, Workflows).</p>
+                        <p class="card-description">Configure storage destination and workflows for automated file processing.</p>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="storeLocation">Location</label>
-                                <select id="storeLocation">
-                                    <option value="">Default (S3)</option>
-                                    <option value="azure">Azure</option>
-                                    <option value="gcs">GCS</option>
+                                <label for="storeLocation">
+                                    Storage Location
+                                    <i class="fas fa-info-circle" title="Choose where files are stored. Default uses Filestack's S3, or select your own cloud storage."></i>
+                                </label>
+                                <select id="storeLocation" class="track-changes">
+                                    <option value="">Default (Filestack S3)</option>
+                                    <option value="azure">Azure Blob Storage</option>
+                                    <option value="gcs">Google Cloud Storage</option>
                                     <option value="dropbox">Dropbox</option>
                                 </select>
+                                <small class="form-hint">
+                                    <i class="fas fa-cloud"></i> Custom storage requires setup in Filestack dashboard
+                                </small>
                             </div>
                             <div class="form-group">
-                                <label for="storePath">Path</label>
-                                <input type="text" id="storePath" placeholder="/site_uploads/">
+                                <label for="storePath">
+                                    Storage Path
+                                    <i class="fas fa-info-circle" title="Organize files in folders. Use forward slashes for path structure (e.g., '/uploads/2024/', '/user-content/')."></i>
+                                </label>
+                                <input type="text" id="storePath" placeholder="/site_uploads/" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-folder"></i> Example: <code>/uploads/2024/</code> or <code>/user-content/</code>
+                                </small>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="storeWorkflows">Workflows (comma-separated IDs)</label>
-                            <input type="text" id="storeWorkflows" placeholder="e.g. 46c8344b-...,448d6764-...">
+                            <label for="storeWorkflows">
+                                Workflows (Optional)
+                                <i class="fas fa-info-circle" title="Trigger automated file processing workflows. Enter comma-separated workflow IDs from your Filestack dashboard."></i>
+                            </label>
+                            <input type="text" id="storeWorkflows" placeholder="e.g. 46c8344b-...,448d6764-..." class="track-changes">
+                            <small class="form-hint">
+                                <i class="fas fa-cogs"></i> Workflow IDs from your Filestack dashboard. Triggers after upload completion.
+                            </small>
+                        </div>
+
+                        <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-top: 1rem;">
+                            <h4><i class="fas fa-lightbulb"></i> Storage & Workflow Tips</h4>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                                <li><strong>Default S3:</strong> Fastest setup, managed by Filestack</li>
+                                <li><strong>Custom Storage:</strong> Use your own cloud for compliance or cost control</li>
+                                <li><strong>Path Organization:</strong> Use dates, user IDs, or categories in paths</li>
+                                <li><strong>Workflows:</strong> Perfect for image processing, virus scanning, or notifications</li>
+                                <li><strong>Workflow IDs:</strong> Found in your Filestack dashboard under "Workflows"</li>
+                            </ul>
                         </div>
                     </div>
 
                     <!-- Upload Options -->
                     <div class="config-card">
                         <h3><i class="fas fa-upload"></i> Upload Options</h3>
-                        <p class="card-description">Retry, timeout and tags (structured_docs: Upload Options, Upload
-                            Tags).</p>
+                        <p class="card-description">Configure upload reliability, timeout settings, and metadata tagging for better file management.</p>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="uploadRetry">Retry</label>
-                                <input type="number" id="uploadRetry" min="0" max="10" placeholder="5">
+                                <label for="uploadRetry">
+                                    Upload Retry Count
+                                    <i class="fas fa-info-circle" title="Number of times to retry failed uploads. Higher values = more reliable but slower for failed uploads."></i>
+                                </label>
+                                <input type="number" id="uploadRetry" min="0" max="10" placeholder="5" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-redo"></i> 0-3 (fast), 4-6 (balanced), 7-10 (very reliable)
+                                </small>
                             </div>
                             <div class="form-group">
-                                <label for="uploadTimeout">Timeout (ms)</label>
-                                <input type="number" id="uploadTimeout" min="0" max="600000" placeholder="60000">
+                                <label for="uploadTimeout">
+                                    Upload Timeout (ms)
+                                    <i class="fas fa-info-circle" title="Maximum time to wait for upload completion in milliseconds. 0 = no timeout. 60000ms = 1 minute."></i>
+                                </label>
+                                <input type="number" id="uploadTimeout" min="0" max="600000" placeholder="60000" class="track-changes">
+                                <small class="form-hint">
+                                    <i class="fas fa-clock"></i> 60000ms = 1min, 300000ms = 5min, 600000ms = 10min
+                                </small>
                             </div>
                         </div>
 
@@ -568,22 +749,57 @@
                     <!-- Callbacks -->
                     <div class="config-card">
                         <h3><i class="fas fa-code"></i> Picker Callbacks</h3>
-                        <p class="card-description">Enable documented callbacks (structured_docs: Callbacks,
-                            onUploadDone, onFileSelected, acceptFn).</p>
+                        <p class="card-description">Enable JavaScript callbacks to handle picker events and customize file validation behavior.</p>
 
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="enableOnUploadDone" checked>
-                                <span>onUploadDone</span>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <input type="checkbox" id="enableOnUploadDone" checked class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                        <span style="font-weight: 500; margin-right: 0.5rem;">onUploadDone Callback</span>
+                                        <i class="fas fa-info-circle" title="Triggered when all files finish uploading. Receives array of uploaded files with handles and URLs." style="color: #666;"></i>
+                                    </div>
+                                    <small class="form-hint">
+                                        <i class="fas fa-check-circle"></i> Essential for handling successful uploads
+                                    </small>
+                                </div>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="enableOnFileSelected">
-                                <span>onFileSelected (size check example)</span>
+                            
+                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <input type="checkbox" id="enableOnFileSelected" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                        <span style="font-weight: 500; margin-right: 0.5rem;">onFileSelected Callback</span>
+                                        <i class="fas fa-info-circle" title="Triggered when files are selected but before upload. Perfect for custom validation or file processing." style="color: #666;"></i>
+                                    </div>
+                                    <small class="form-hint">
+                                        <i class="fas fa-search"></i> Validate files before upload starts
+                                    </small>
+                                </div>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="enableAcceptFn">
-                                <span>acceptFn (magic bytes example)</span>
+                            
+                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                <input type="checkbox" id="enableAcceptFn" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                        <span style="font-weight: 500; margin-right: 0.5rem;">acceptFn Custom Validation</span>
+                                        <i class="fas fa-info-circle" title="Custom function to validate files using magic bytes, file content, or complex business logic." style="color: #666;"></i>
+                                    </div>
+                                    <small class="form-hint">
+                                        <i class="fas fa-magic"></i> Advanced file validation beyond MIME types
+                                    </small>
+                                </div>
                             </label>
+                        </div>
+
+                        <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50; margin-top: 1rem;">
+                            <h4><i class="fas fa-lightbulb"></i> Callback Examples</h4>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                                <li><strong>onUploadDone:</strong> Save file handles to database, show success message</li>
+                                <li><strong>onFileSelected:</strong> Check file size, validate image dimensions, show preview</li>
+                                <li><strong>acceptFn:</strong> Validate file headers, check for specific file formats, business rules</li>
+                                <li><strong>Error Handling:</strong> All callbacks include error parameters for failure scenarios</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -600,51 +816,42 @@
                     </a>
                 </div>
 
-                <div class="config-card config-full-width">
-                    <h3><i class="fas fa-cog"></i> Drag & Drop Configuration</h3>
-
+                <!-- Basic Configuration -->
+                <div class="config-card">
+                    <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
+                    <p class="card-description">Configure the essential settings for your drag & drop upload zone.</p>
+                    
                     <div class="form-row">
                         <div class="form-group">
                             <label for="dndContainer">
                                 Drop Container Selector
                                 <i class="fas fa-info-circle" title="CSS selector for the HTML element that will handle drag & drop events (e.g., '.drop-container', '#upload-zone', '.file-dropzone')."></i>
                             </label>
-                            <input type="text" id="dndContainer" placeholder=".drop-container" value=".drop-container">
+                            <input type="text" id="dndContainer" placeholder=".drop-container" value=".drop-container" class="track-changes">
                             <small class="form-hint">
                                 <i class="fas fa-crosshairs"></i> Any valid CSS selector. The element will become a drop zone for files.
                             </small>
                         </div>
 
                         <div class="form-group">
-                            <label for="dndAccept">
-                                Accept File Types (Optional)
-                                <i class="fas fa-info-circle" title="Comma-separated MIME types or patterns. Examples: 'image/*', 'application/pdf', 'image/jpeg,image/png'. Leave empty to accept all files."></i>
+                            <label for="dndMaxSize">
+                                Max File Size (Optional)
+                                <i class="fas fa-info-circle" title="Maximum file size in bytes. 0 = no limit. Example: 10485760 = 10MB, 5242880 = 5MB, 1048576 = 1MB."></i>
                             </label>
-                            <input type="text" id="dndAccept" placeholder="image/*,application/pdf">
+                            <input type="number" id="dndMaxSize" min="0" placeholder="0" class="track-changes">
                             <small class="form-hint">
-                                <i class="fas fa-filter"></i> Examples: <code>image/*</code> (all images), <code>video/*</code> (all videos), <code>application/pdf</code> (PDF only)
+                                <i class="fas fa-weight-hanging"></i> 0 = no limit. Common values: <code>1048576</code> (1MB), <code>10485760</code> (10MB)
                             </small>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="dndMaxSize">
-                                Max File Size in Bytes (Optional)
-                                <i class="fas fa-info-circle" title="Maximum file size in bytes. 0 = no limit. Example: 10485760 = 10MB, 5242880 = 5MB, 1048576 = 1MB."></i>
-                            </label>
-                            <input type="number" id="dndMaxSize" min="0" placeholder="0">
-                            <small class="form-hint">
-                                <i class="fas fa-weight-hanging"></i> 0 = no limit. Common values: <code>1048576</code> (1MB), <code>10485760</code> (10MB)
-                            </small>
-                        </div>
-
-                        <div class="form-group">
                             <label for="dndMaxFiles">
                                 Max Number of Files (Optional)
                                 <i class="fas fa-info-circle" title="Maximum number of files that can be dropped at once. 0 = no limit. Useful for restricting bulk uploads."></i>
                             </label>
-                            <input type="number" id="dndMaxFiles" min="0" placeholder="0">
+                            <input type="number" id="dndMaxFiles" min="0" placeholder="0" class="track-changes">
                             <small class="form-hint">
                                 <i class="fas fa-list-ol"></i> 0 = no limit. Set to 1 for single file uploads, 5 for small batches, etc.
                             </small>
@@ -652,7 +859,7 @@
 
                         <div class="form-group">
                             <label class="checkbox-item" style="margin-top: 1.8rem;">
-                                <input type="checkbox" id="dndFailOverMaxFiles">
+                                <input type="checkbox" id="dndFailOverMaxFiles" class="track-changes">
                                 <span>Fail if Exceeds Max Files</span>
                                 <i class="fas fa-info-circle" title="If checked, reject all files when max files limit is exceeded. If unchecked, accept up to max files limit and ignore the rest."></i>
                             </label>
@@ -661,22 +868,172 @@
                             </small>
                         </div>
                     </div>
+                </div>
 
-                    <div class="section-divider" style="margin: 2rem 0 1.5rem 0;">
-                        <span><i class="fas fa-shield-alt"></i> Security Configuration (Optional)</span>
+                <!-- File Type Acceptance -->
+                <div class="config-card">
+                    <h3><i class="fas fa-filter"></i> File Type Acceptance</h3>
+                    <p class="card-description">Select which file types are allowed. If none selected, all types are enabled.</p>
+                    
+                    <div class="file-acceptance-grid">
+                        <div class="file-type-category">
+                            <h4><i class="fas fa-file-image"></i> Images</h4>
+                            <div class="checkbox-group-compact">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/*" class="dnd-accept-checkbox track-changes">
+                                    <span>All Images</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/jpeg" class="dnd-accept-checkbox track-changes">
+                                    <span>JPEG</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/png" class="dnd-accept-checkbox track-changes">
+                                    <span>PNG</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/gif" class="dnd-accept-checkbox track-changes">
+                                    <span>GIF</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="image/webp" class="dnd-accept-checkbox track-changes">
+                                    <span>WebP</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="file-type-category">
+                            <h4><i class="fas fa-file-pdf"></i> Documents</h4>
+                            <div class="checkbox-group-compact">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="application/pdf" class="dnd-accept-checkbox track-changes">
+                                    <span>PDF Files</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value=".doc,.docx" class="dnd-accept-checkbox track-changes">
+                                    <span>Word</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value=".xls,.xlsx" class="dnd-accept-checkbox track-changes">
+                                    <span>Excel</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="text/*" class="dnd-accept-checkbox track-changes">
+                                    <span>Text Files</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="file-type-category">
+                            <h4><i class="fas fa-file-video"></i> Media</h4>
+                            <div class="checkbox-group-compact">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="video/*" class="dnd-accept-checkbox track-changes">
+                                    <span>All Videos</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="audio/*" class="dnd-accept-checkbox track-changes">
+                                    <span>All Audio</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="file-type-category">
+                            <h4><i class="fas fa-file-code"></i> Other</h4>
+                            <div class="checkbox-group-compact">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="application/*" class="dnd-accept-checkbox track-changes">
+                                    <span>Applications</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-hint" style="margin-top: 1rem; text-align: center; padding: 0.75rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                        <i class="fas fa-lightbulb"></i> <strong>Pro Tip:</strong> Leave all unchecked to accept any file type, or select specific types to restrict uploads.
+                    </div>
+                </div>
+
+                <!-- Upload Options -->
+                <div class="config-card">
+                    <h3><i class="fas fa-upload"></i> Upload Options</h3>
+                    <p class="card-description">Configure additional upload settings and store options.</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dndUploadPath">
+                                Upload Path (Optional)
+                                <i class="fas fa-info-circle" title="Specify a custom folder path in your storage (e.g., '/uploads/2024/' or '/user-content/'). Leave empty for root directory."></i>
+                            </label>
+                            <input type="text" id="dndUploadPath" placeholder="/uploads/dnd-files/" class="track-changes">
+                            <small class="form-hint">
+                                <i class="fas fa-folder"></i> Organizes files in your storage bucket. Example: <code>/images/avatars/</code>
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dndStoreLocation">
+                                Store Location
+                                <i class="fas fa-info-circle" title="Choose where to store uploaded files. 's3' for Amazon S3, 'gcs' for Google Cloud Storage, 'azure' for Azure Blob, 'rackspace' for Rackspace."></i>
+                            </label>
+                            <select id="dndStoreLocation" class="track-changes">
+                                <option value="">Default (Filestack Storage)</option>
+                                <option value="s3">Amazon S3</option>
+                                <option value="gcs">Google Cloud Storage</option>
+                                <option value="azure">Azure Blob Storage</option>
+                                <option value="rackspace">Rackspace Cloud Files</option>
+                            </select>
+                            <small class="form-hint">
+                                <i class="fas fa-cloud"></i> Choose your preferred cloud storage provider.
+                            </small>
+                        </div>
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dndUploadTags">
+                                Upload Tags (Optional)
+                                <i class="fas fa-info-circle" title="Add custom metadata tags to track uploads. Format: 'key1:value1,key2:value2'"></i>
+                            </label>
+                            <input type="text" id="dndUploadTags" placeholder="userId:123,source:dnd" class="track-changes">
+                            <small class="form-hint">
+                                <i class="fas fa-tags"></i> Comma-separated key-value pairs for metadata tracking.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-item" style="margin-top: 1.8rem;">
+                                <input type="checkbox" id="dndStoreOnly" class="track-changes">
+                                <span>Store Only (No CDN)</span>
+                                <i class="fas fa-info-circle" title="If checked, files are stored but not accessible via CDN. Useful for private storage."></i>
+                            </label>
+                            <small class="form-hint">
+                                <i class="fas fa-lock"></i> Files stored but not accessible via public CDN URLs.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SDK Configuration -->
+                <div class="config-card">
+                    <h3><i class="fas fa-cogs"></i> SDK Configuration</h3>
+                    <p class="card-description">Configure the Filestack SDK settings and security parameters.</p>
+                    
                     <div class="form-row">
                         <div class="form-group">
                             <label for="dndCname">
                                 Custom Domain (CNAME)
                                 <i class="fas fa-info-circle" title="Your custom domain configured with Filestack. Example: 'cdn.yourdomain.com'. Leave empty to use default Filestack domain."></i>
                             </label>
-                            <input type="text" id="dndCname" placeholder="cdn.example.com">
+                            <input type="text" id="dndCname" placeholder="cdn.example.com" class="track-changes">
                             <small class="form-hint">
                                 <i class="fas fa-globe"></i> Optional custom domain for Filestack CDN. Requires setup in Filestack dashboard.
                             </small>
                         </div>
+                    </div>
+
+                    <div class="section-divider" style="margin: 1.5rem 0 1rem 0;">
+                        <span><i class="fas fa-shield-alt"></i> Security Settings</span>
                     </div>
 
                     <div class="form-row">
@@ -685,7 +1042,7 @@
                                 Security Policy
                                 <i class="fas fa-info-circle" title="Base64-encoded JSON policy for authentication. Used with signature for secure uploads. Generate in Filestack dashboard."></i>
                             </label>
-                            <input type="text" id="dndPolicy" placeholder="eyJleHBpcnkiOjE1ODI...">
+                            <input type="text" id="dndPolicy" placeholder="eyJleHBpcnkiOjE1ODI..." class="track-changes">
                             <small class="form-hint">
                                 <i class="fas fa-key"></i> Base64-encoded security policy. Required for private file access.
                             </small>
@@ -696,13 +1053,89 @@
                                 Security Signature
                                 <i class="fas fa-info-circle" title="HMAC signature for the policy. Works together with policy for secure authentication. Generate in Filestack dashboard."></i>
                             </label>
-                            <input type="text" id="dndSignature" placeholder="abc123def456...">
+                            <input type="text" id="dndSignature" placeholder="abc123def456..." class="track-changes">
                             <small class="form-hint">
                                 <i class="fas fa-signature"></i> HMAC signature matching the policy above.
                             </small>
                         </div>
                     </div>
 
+                    <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-top: 1rem;">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Security Notes</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><strong>Policy & Signature:</strong> Both are required together for secure uploads</li>
+                            <li><strong>Generate in Dashboard:</strong> Create these in your Filestack application settings</li>
+                            <li><strong>Server-Side Validation:</strong> Always validate uploads on your backend</li>
+                            <li><strong>CNAME Setup:</strong> Configure custom domain in your DNS and Filestack dashboard</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Event Configuration -->
+                <div class="config-card">
+                    <h3><i class="fas fa-broadcast-tower"></i> Event Configuration</h3>
+                    <p class="card-description">Configure event handlers for drag & drop interactions and upload progress.</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="dndEnableProgress" class="track-changes" checked>
+                                <span>Enable Progress Events</span>
+                                <i class="fas fa-info-circle" title="Listen to upload progress events to show progress bars or status updates."></i>
+                            </label>
+                            <small class="form-hint">
+                                <i class="fas fa-chart-line"></i> Track upload progress with real-time updates.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="dndEnableDragEvents" class="track-changes" checked>
+                                <span>Enable Drag Events</span>
+                                <i class="fas fa-info-circle" title="Listen to dragover, dragleave, and drop events for visual feedback."></i>
+                            </label>
+                            <small class="form-hint">
+                                <i class="fas fa-mouse-pointer"></i> Visual feedback during drag operations.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="dndEnableErrorHandling" class="track-changes" checked>
+                                <span>Enable Error Handling</span>
+                                <i class="fas fa-info-circle" title="Listen to error events for file validation failures and upload errors."></i>
+                            </label>
+                            <small class="form-hint">
+                                <i class="fas fa-exclamation-circle"></i> Handle file validation and upload errors gracefully.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="dndEnableSuccessEvents" class="track-changes" checked>
+                                <span>Enable Success Events</span>
+                                <i class="fas fa-info-circle" title="Listen to success events when files are successfully uploaded."></i>
+                            </label>
+                            <small class="form-hint">
+                                <i class="fas fa-check-circle"></i> Handle successful uploads with callbacks.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
+                        <h4><i class="fas fa-code"></i> Available Events</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><strong>successReadFile:</strong> File selected and ready for upload</li>
+                            <li><strong>progress:</strong> Upload progress updates (percentage, bytes)</li>
+                            <li><strong>dragover:</strong> File dragged over drop zone</li>
+                            <li><strong>dragleave:</strong> File dragged away from drop zone</li>
+                            <li><strong>drop:</strong> File dropped on zone</li>
+                            <li><strong>uploadFileFinish:</strong> Upload completed successfully</li>
+                            <li><strong>error:</strong> Upload failed or validation error</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="config-card config-full-width" style="margin-top: 1.5rem;">
@@ -1189,217 +1622,330 @@
 
 
 
-            <!-- Upload Section -->
+            <!-- File API Section -->
             <section id="upload" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-upload"></i> File Upload</h2>
-                    <p>Configure direct file upload options and settings for your Filestack implementation.</p>
-                    <a href="https://www.filestack.com/docs/uploads/uploading/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
-                        <i class="fas fa-book"></i> View Documentation
+                    <h2><i class="fas fa-server"></i> File API - Interactive REST API Reference</h2>
+                    <p>Input your credentials and file handles below to generate ready-to-use curl commands for all File API operations.</p>
+                    <a href="https://www.filestack.com/docs/api/file/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Official File API Documentation
                     </a>
                 </div>
 
-                <div class="config-card config-full-width">
-                    <h3><i class="fas fa-cog"></i> Upload Configuration</h3>
-
-                    <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50; margin-bottom: 1rem;">
-                        <p style="margin: 0;"><i class="fas fa-info-circle"></i> <strong>Placeholder File:</strong> Using "sample-image.jpg" for demonstration purposes. File uploads are handled via the File Picker interface.</p>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="uploadPath">
-                            Upload Path (Optional)
-                            <i class="fas fa-info-circle" title="Specify a custom folder path in your storage (e.g., '/uploads/2024/' or '/user-content/'). Leave empty for root directory."></i>
-                        </label>
-                        <input type="text" id="uploadPath" placeholder="e.g., /uploads/user-files/">
-                        <small class="form-hint">
-                            <i class="fas fa-folder"></i> Organizes files in your storage bucket. Example: <code>/images/avatars/</code>
-                        </small>
-                    </div>
-
-                    <div class="form-group">
-                        <label>
-                            Upload Tags (Key-Value Pairs)
-                            <i class="fas fa-info-circle" title="Add up to 10 custom metadata tags to track uploads. Great for associating userID, transactionID, or other identifiers."></i>
-                        </label>
-                        <div id="uploadTagsContainer">
-                            <div class="upload-tag-row">
-                                <input type="text" class="tag-key" placeholder="Key (e.g., userId)" maxlength="128">
-                                <input type="text" class="tag-value" placeholder="Value (e.g., user123)" maxlength="256">
-                                <button type="button" class="btn btn-small btn-secondary" onclick="removeUploadTag(this)">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
+                <!-- Interactive Configuration -->
+                <div class="config-card" style="background: #f0f7ff; border-left: 4px solid #1976d2;">
+                    <h3><i class="fas fa-tools"></i> Your Configuration</h3>
+                    <p class="card-description">Enter your details to generate personalized curl commands</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fileApiHandle">
+                                File Handle
+                                <i class="fas fa-info-circle" title="Your Filestack file handle (e.g., hGdfDXDSSNyVhVa0UeiB)"></i>
+                            </label>
+                            <input type="text" id="fileApiHandle" placeholder="hGdfDXDSSNyVhVa0UeiB" class="track-changes" oninput="generateFileApiCode()">
+                            <small class="form-hint">
+                                <i class="fas fa-link"></i> The unique identifier for your file
+                            </small>
                         </div>
-                        <button type="button" class="btn btn-small btn-secondary" onclick="addUploadTag()" style="margin-top: 0.5rem;">
-                            <i class="fas fa-plus"></i> Add Tag
-                        </button>
+                        <div class="form-group">
+                            <label for="fileApiFilename">
+                                Filename (for uploads)
+                                <i class="fas fa-info-circle" title="Custom filename for store operations"></i>
+                            </label>
+                            <input type="text" id="fileApiFilename" placeholder="myfile.png" class="track-changes" oninput="generateFileApiCode()">
+                            <small class="form-hint">
+                                <i class="fas fa-file"></i> Optional: Custom filename
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fileApiProvider">
+                                Storage Provider
+                                <i class="fas fa-info-circle" title="Where to store files"></i>
+                            </label>
+                            <select id="fileApiProvider" class="track-changes" onchange="generateFileApiCode()">
+                                <option value="S3">S3 (Default)</option>
+                                <option value="azure">Azure</option>
+                                <option value="dropbox">Dropbox</option>
+                                <option value="rackspace">Rackspace</option>
+                                <option value="gcs">Google Cloud Storage</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fileApiLocalFile">
+                                Local File Path
+                                <i class="fas fa-info-circle" title="Path to your local file for upload/overwrite"></i>
+                            </label>
+                            <input type="text" id="fileApiLocalFile" placeholder="./path/to/file.png" class="track-changes" oninput="generateFileApiCode()">
+                            <small class="form-hint">
+                                <i class="fas fa-folder-open"></i> For binary uploads
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fileApiUrl">
+                            Source URL (for URL uploads)
+                            <i class="fas fa-info-circle" title="Public URL to upload from"></i>
+                        </label>
+                        <input type="text" id="fileApiUrl" placeholder="https://example.com/image.png" class="track-changes" oninput="generateFileApiCode()">
                         <small class="form-hint">
-                            <i class="fas fa-tags"></i> Upload tags help match files with your app data (userID, sessionID, etc.). Max 10 tags, keys up to 128 chars, values up to 256 chars.
+                            <i class="fas fa-globe"></i> Upload file from URL
                         </small>
+                    </div>
+
+                    <div class="info-box" style="background: #fff; border-left: 4px solid #4caf50; margin-top: 1rem;">
+                        <p style="margin: 0; font-size: 0.9rem;"><i class="fas fa-lightbulb"></i> <strong>API Key from top bar:</strong> The API key you entered at the top of the page will be used in all generated commands.</p>
                     </div>
                 </div>
 
-                <div class="config-card config-full-width" style="margin-top: 1.5rem;">
-                    <h3><i class="fas fa-info-circle"></i> About File Upload</h3>
-                    <p>Filestack provides multiple ways to upload files programmatically:</p>
-
-                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-book-open"></i> Upload Methods</h4>
-                        <ul class="feature-list" style="margin: 0.5rem 0;">
-                            <li><i class="fas fa-file-upload"></i> <strong>Basic Upload:</strong> Simple HTTP POST to <code>/api/store/S3</code> endpoint</li>
-                            <li><i class="fas fa-link"></i> <strong>Upload from URL:</strong> Import files from external URLs by passing <code>url</code> parameter</li>
-                            <li><i class="fas fa-puzzle-piece"></i> <strong>Multipart Upload:</strong> Robust upload flow for large files (via SDK clients)</li>
-                        </ul>
+                <!-- ========== API ENDPOINTS (Swagger-style) ========== -->
+                
+                <!-- 1. STORE API -->
+                <div class="config-card" style="border-left: 4px solid #4caf50;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="background: #4caf50; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">POST</span>
+                        <code style="flex: 1; font-size: 1rem; color: #333;">/api/store/{provider}</code>
                     </div>
-
-                    <div class="info-box" style="background: #fff9e6; border-left: 4px solid #ffc107; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-code"></i> File Store API - POST Request</h4>
-                        <p style="margin: 0.5rem 0;">Upload files directly to Filestack storage using the File API:</p>
-
-                        <div style="margin: 1rem 0;">
-                            <strong>Endpoint:</strong>
-                            <code style="display: block; background: #f5f5f5; padding: 0.5rem; margin-top: 0.3rem; border-radius: 4px;">POST https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY</code>
+                    <h3 style="margin-top: 0;"><i class="fas fa-cloud-upload-alt"></i> Store / Upload File</h3>
+                    <p class="card-description">Uploads a file directly to any supported storage backend. Returns JSON metadata including a Filestack URL.</p>
+                    
+                    <!-- Generated Command -->
+                    <div style="margin-top: 1.5rem; background: #e8f5e9; padding: 1rem; border-radius: 4px; border-left: 4px solid #4caf50;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <h4 style="font-size: 1rem; margin: 0;"><i class="fas fa-bolt"></i> Your Generated Command</h4>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('storeFromUrl')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
                         </div>
-
-                        <div style="margin: 1rem 0;">
-                            <strong>Query Parameters:</strong>
-                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                                <li><code>key</code> (required) - Your Filestack API key</li>
-                                <li><code>filename</code> - Name for the stored file</li>
-                                <li><code>mimetype</code> - File MIME type (e.g., image/jpeg, text/plain)</li>
-                                <li><code>path</code> - Custom storage path (e.g., /uploads/2024/)</li>
-                                <li><code>container</code> - Storage bucket/container name</li>
-                                <li><code>access</code> - S3 only: "public" or "private" (default)</li>
-                                <li><code>base64decode</code> - Decode base64 data before storing</li>
-                            </ul>
-                        </div>
-
-                        <div style="margin: 1rem 0;">
-                            <strong>Upload from URL:</strong>
-                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X POST \
+                        <p style="margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem;">Upload from URL:</p>
+                        <pre id="storeFromUrl" style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; margin-bottom: 1rem;"><code>curl -X POST \
   -d url="https://example.com/image.png" \
   "https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY"</code></pre>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <p style="margin: 0; font-weight: 500; font-size: 0.9rem;">Upload Binary File:</p>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('storeBinary')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
                         </div>
-
-                        <div style="margin: 1rem 0;">
-                            <strong>Upload Binary File:</strong>
-                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X POST \
-  --data-binary @filename.png \
+                        <pre id="storeBinary" style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X POST \
+  --data-binary @file.png \
   --header "Content-Type:image/png" \
   "https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY"</code></pre>
-                        </div>
+                    </div>
 
-                        <div style="margin: 1rem 0;">
-                            <strong>Response:</strong>
-                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>{
+                    <!-- Parameters Reference -->
+                    <details style="margin-top: 1.5rem;">
+                        <summary style="cursor: pointer; font-weight: 600; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
+                            <i class="fas fa-cog"></i> Available Parameters
+                        </summary>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 0.5rem;">
+                            <thead>
+                                <tr style="background: #f5f5f5;">
+                                    <th style="padding: 0.6rem; text-align: left; border: 1px solid #ddd;">Parameter</th>
+                                    <th style="padding: 0.6rem; text-align: left; border: 1px solid #ddd;">Type</th>
+                                    <th style="padding: 0.6rem; text-align: left; border: 1px solid #ddd;">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;"><code>key</code> <span style="color: #f44336;">*</span></td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">string</td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">Filestack API key (required)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;"><code>filename</code></td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">string</td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">Name for stored file</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;"><code>path</code></td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">string</td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">Path within bucket</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;"><code>container</code></td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">string</td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">Bucket/container name</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;"><code>access</code></td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">string</td>
+                                    <td style="padding: 0.6rem; border: 1px solid #ddd;">S3: "public" or "private"</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </details>
+
+                    <!-- Response Example -->
+                    <details style="margin-top: 1rem;">
+                        <summary style="cursor: pointer; font-weight: 600; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
+                            <i class="fas fa-check-circle"></i> Example Response (200 OK)
+                        </summary>
+                        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; margin-top: 0.5rem;"><code>{
   "url": "https://cdn.filestackcontent.com/s7tdGfE5RRKFUxwsZoYv",
   "size": 8331,
   "type": "image/png",
   "filename": "watermark.png",
   "key": "a1RyBxiglW92bS2SRmqM_watermark.png"
 }</code></pre>
-                        </div>
-
-                        <div style="margin: 1rem 0;">
-                            <strong>Storage Providers:</strong>
-                            <p style="margin: 0.3rem 0; font-size: 0.9rem;">Default is S3. Other options: <code>azure</code>, <code>dropbox</code>, <code>rackspace</code>, <code>gcs</code>. Must be configured in your developer portal.</p>
-                        </div>
-                    </div>
-
-                    <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-tags"></i> Upload Tags</h4>
-                        <p style="margin: 0.5rem 0;">Pass custom key-value metadata with each upload to track files in your application:</p>
-                        <ul class="feature-list" style="margin: 0.5rem 0;">
-                            <li><i class="fas fa-check"></i> <strong>Max 10 tags per upload</strong></li>
-                            <li><i class="fas fa-check"></i> <strong>String pairs only:</strong> Both keys and values must be strings</li>
-                            <li><i class="fas fa-check"></i> <strong>Keys:</strong> Up to 128 Unicode characters, case-sensitive, must be unique</li>
-                            <li><i class="fas fa-check"></i> <strong>Values:</strong> Up to 256 Unicode characters</li>
-                        </ul>
-                        <small style="display: block; margin-top: 0.5rem; opacity: 0.9;">
-                            Tags appear in upload response and webhooks, perfect for matching files to userID, transactionID, etc.
-                        </small>
-                    </div>
-
-                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
-                        <h4><i class="fas fa-server"></i> Application-Level Features</h4>
-                        <p style="margin: 0.5rem 0;">These features are configured at the application level (not per-upload):</p>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
-                            <li><strong>Content Ingestion Network (CIN):</strong> Global edge servers for faster uploads. Enabled in your Filestack application settings.</li>
-                            <li><strong>Intelligent Ingestion (FII):</strong> Auto-adjusts chunk sizes for poor network conditions. Contact sales to enable.</li>
-                            <li><strong>Cloud Uploads:</strong> Upload from cloud providers (Dropbox, Google Drive, etc.) - only via File Picker UI.</li>
-                        </ul>
-                        <small style="display: block; margin-top: 0.5rem; opacity: 0.9;">
-                            <strong>Note:</strong> Check upload status with <code>?metadata&upload_status=true</code> when using CIN.
-                        </small>
-                    </div>
-
-                    <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50;">
-                        <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
-                            <li><strong>User Profiles:</strong> Avatar uploads with <code>userId</code> tag</li>
-                            <li><strong>Document Management:</strong> PDF uploads with custom <code>path</code> organization</li>
-                            <li><strong>E-commerce:</strong> Product images with <code>productId</code> and <code>sku</code> tags</li>
-                            <li><strong>Content Publishing:</strong> Media uploads with <code>authorId</code> and <code>postId</code> tags</li>
-                            <li><strong>Import Tools:</strong> Bulk uploads from external URLs</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Download Section -->
-            <section id="download" class="content-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-download"></i> File Download</h2>
-                    <p>Configure file download options and settings for retrieving files from Filestack.</p>
+                    </details>
                 </div>
 
-                <div class="config-grid">
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Download Configuration</h3>
-
-                        <div class="form-group">
-                            <label for="downloadHandle">File Handle or URL</label>
-                            <input type="text" id="downloadHandle" placeholder="Enter file handle or URL">
+                <!-- 2. METADATA API -->
+                <div class="config-card" style="border-left: 4px solid #2196f3; margin-top: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="background: #2196f3; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">GET</span>
+                        <code style="flex: 1; font-size: 1rem; color: #333;">/api/file/{handle}/metadata</code>
+                    </div>
+                    <h3 style="margin-top: 0;"><i class="fas fa-info-circle"></i> Get File Metadata</h3>
+                    <p class="card-description">Retrieves JSON metadata for an uploaded file. Use your file handle from the configuration above.</p>
+                    
+                    <!-- Generated Command -->
+                    <div style="margin-top: 1.5rem; background: #e3f2fd; padding: 1rem; border-radius: 4px; border-left: 4px solid #2196f3;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <h4 style="font-size: 1rem; margin: 0;"><i class="fas fa-bolt"></i> Your Generated Command</h4>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('metadataCmd')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
                         </div>
-
-                        <div class="form-group">
-                            <label for="downloadFilename">Download Filename</label>
-                            <input type="text" id="downloadFilename" placeholder="Custom filename (optional)">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="downloadFormat">Download Format</label>
-                            <select id="downloadFormat">
-                                <option value="original">Original Format</option>
-                                <option value="jpg">JPEG</option>
-                                <option value="png">PNG</option>
-                                <option value="webp">WebP</option>
-                                <option value="pdf">PDF</option>
-                            </select>
-                        </div>
-
-
-
+                        <pre id="metadataCmd" style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X GET "https://www.filestackapi.com/api/file/YOUR_HANDLE/metadata"</code></pre>
                     </div>
 
-                    <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Download</h3>
-                        <p>File download provides programmatic access to files stored in Filestack:</p>
-
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Direct file download from Filestack</li>
-                            <li><i class="fas fa-check"></i> Custom filename and format options</li>
-                            <li><i class="fas fa-check"></i> Transform integration for processed files</li>
-                            <li><i class="fas fa-check"></i> Secure download with authentication</li>
-                            <li><i class="fas fa-check"></i> Progress tracking and error handling</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                            <p>Ideal for file management systems, content delivery, backup solutions, and applications
-                                requiring programmatic file access.</p>
+                    <!-- Parameters Reference -->
+                    <details style="margin-top: 1.5rem;">
+                        <summary style="cursor: pointer; font-weight: 600; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
+                            <i class="fas fa-cog"></i> Available Parameters
+                        </summary>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                            <p><strong>Common:</strong> <code>size</code>, <code>mimetype</code>, <code>filename</code>, <code>uploaded</code>, <code>writeable</code>, <code>location</code>, <code>path</code>, <code>container</code></p>
+                            <p><strong>Hashing:</strong> <code>md5</code>, <code>sha1</code>, <code>sha224</code>, <code>sha256</code>, <code>sha384</code>, <code>sha512</code></p>
+                            <p style="margin-top: 0.5rem;"><strong>Example:</strong> <code>?size=true&mimetype=true&filename=true</code></p>
                         </div>
+                    </details>
+
+                    <!-- Response Example -->
+                    <details style="margin-top: 1rem;">
+                        <summary style="cursor: pointer; font-weight: 600; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
+                            <i class="fas fa-check-circle"></i> Example Response (200 OK)
+                        </summary>
+                        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; margin-top: 0.5rem;"><code>{
+  "mimetype": "image/png",
+  "uploaded": 1431950945811.783,
+  "container": "fp-documentation-assets",
+  "writeable": true,
+  "filename": "dtKZNd1J.png",
+  "location": "S3",
+  "key": "kWg7nloGTWmHFi5nlbF9_dtKZNd1J.png",
+  "path": "kWg7nloGTWmHFi5nlbF9_dtKZNd1J.png",
+  "size": 270
+}</code></pre>
+                    </details>
+                </div>
+
+                <!-- 3. OVERWRITE API -->
+                <div class="config-card" style="border-left: 4px solid #9c27b0; margin-top: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="background: #9c27b0; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">POST</span>
+                        <code style="flex: 1; font-size: 1rem; color: #333;">/api/file/{handle}</code>
+                    </div>
+                    <h3 style="margin-top: 0;"><i class="fas fa-edit"></i> Overwrite File</h3>
+                    <p class="card-description">Overwrites existing file with new content. <strong>Requires security (Basic Auth with app secret from top bar).</strong></p>
+                    
+                    <!-- Generated Command -->
+                    <div style="margin-top: 1.5rem; background: #f3e5f5; padding: 1rem; border-radius: 4px; border-left: 4px solid #9c27b0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <h4 style="font-size: 1rem; margin: 0;"><i class="fas fa-bolt"></i> Your Generated Command</h4>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('overwriteCmd')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre id="overwriteCmd" style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X POST \
+  --data-binary @file.txt \
+  --header "Content-Type:text/plain" \
+  -u "app:YOUR_APP_SECRET" \
+  "https://www.filestackapi.com/api/file/YOUR_HANDLE"</code></pre>
+                    </div>
+
+                    <details style="margin-top: 1rem;">
+                        <summary style="cursor: pointer; font-weight: 600; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
+                            <i class="fas fa-check-circle"></i> Example Response (200 OK)
+                        </summary>
+                        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; margin-top: 0.5rem;"><code>{
+  "url": "https://cdn.filestackcontent.com/Bc2FQwXReueTsaeXB6rO",
+  "mimetype": "plain/text",
+  "isWriteable": true,
+  "size": 19,
+  "filename": "filename.txt"
+}</code></pre>
+                    </details>
+                </div>
+
+                <!-- 4. DELETE API -->
+                <div class="config-card" style="border-left: 4px solid #f44336; margin-top: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="background: #f44336; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">DELETE</span>
+                        <code style="flex: 1; font-size: 1rem; color: #333;">/api/file/{handle}</code>
+                    </div>
+                    <h3 style="margin-top: 0;"><i class="fas fa-trash"></i> Delete File</h3>
+                    <p class="card-description">Deletes a file permanently. <strong>Requires security (Basic Auth with app secret).</strong></p>
+                    
+                    <!-- Generated Command -->
+                    <div style="margin-top: 1.5rem; background: #ffebee; padding: 1rem; border-radius: 4px; border-left: 4px solid #f44336;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <h4 style="font-size: 1rem; margin: 0;"><i class="fas fa-bolt"></i> Your Generated Command</h4>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('deleteCmd')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre id="deleteCmd" style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X DELETE \
+  -u "app:YOUR_APP_SECRET" \
+  "https://www.filestackapi.com/api/file/YOUR_HANDLE"</code></pre>
+                        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #666;"><strong>Tip:</strong> Add <code>?skip_storage=true</code> to remove from Filestack but keep in storage.</p>
+                    </div>
+                </div>
+
+                <!-- 5. DOWNLOAD API -->
+                <div class="config-card" style="border-left: 4px solid #00bcd4; margin-top: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="background: #00bcd4; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold; font-size: 0.9rem;">GET</span>
+                        <code style="flex: 1; font-size: 1rem; color: #333;">/api/file/{handle}</code>
+                    </div>
+                    <h3 style="margin-top: 0;"><i class="fas fa-download"></i> Download File</h3>
+                    <p class="card-description"><strong>Recommended:</strong> Use CDN URLs for better performance and lower costs.</p>
+                    
+                    <!-- Generated Commands -->
+                    <div style="margin-top: 1.5rem; background: #e0f7fa; padding: 1rem; border-radius: 4px; border-left: 4px solid #00bcd4;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                            <h4 style="font-size: 1rem; margin: 0;"><i class="fas fa-bolt"></i> Your Generated URLs</h4>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('cdnUrl')">
+                                <i class="fas fa-copy"></i> Copy CDN
+                            </button>
+                        </div>
+                        
+                        <p style="margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem;">CDN URL (Recommended):</p>
+                        <pre id="cdnUrl" style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; margin-bottom: 1rem;"><code>https://cdn.filestackcontent.com/YOUR_HANDLE</code></pre>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <p style="margin: 0; font-weight: 500; font-size: 0.9rem;">CDN with Force Download:</p>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('cdnDownloadUrl')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre id="cdnDownloadUrl" style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem; margin-bottom: 1rem;"><code>https://cdn.filestackcontent.com/YOUR_HANDLE?dl=true</code></pre>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <p style="margin: 0; font-weight: 500; font-size: 0.9rem;">API Download (curl):</p>
+                            <button class="btn btn-small btn-secondary" onclick="copyToClipboard('apiDownloadCmd')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre id="apiDownloadCmd" style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X GET "https://www.filestackapi.com/api/file/YOUR_HANDLE" \
+  --output file.jpg</code></pre>
                     </div>
                 </div>
             </section>
@@ -3420,6 +3966,35 @@
     </div>
 
     <script src="script.js"></script>
+    
+    <script>
+        // Fix tooltip display for info icons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add custom tooltip functionality to all info icons
+            const infoIcons = document.querySelectorAll('i.fa-info-circle[title]');
+            
+            infoIcons.forEach(icon => {
+                // Store the original title
+                const originalTitle = icon.getAttribute('title');
+                
+                // Remove the title attribute to prevent browser tooltip
+                icon.removeAttribute('title');
+                
+                // Add data attribute for custom tooltip
+                icon.setAttribute('data-tooltip', originalTitle);
+                icon.classList.add('tooltip');
+                
+                // Add hover effects
+                icon.addEventListener('mouseenter', function() {
+                    this.style.opacity = '1';
+                });
+                
+                icon.addEventListener('mouseleave', function() {
+                    this.style.opacity = '0.7';
+                });
+            });
+        });
+    </script>
 
 </body>
 
