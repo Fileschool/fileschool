@@ -1342,7 +1342,7 @@ GET ${statusUrl}
         console.log('generateTransformChainsCode called with:', { tab, options });
         const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
         const handle = options.handle || 'YOUR_FILE_HANDLE';
-        const chains = options.chains || [];
+        const chains = options.steps || [];
         console.log('Chains collected:', chains);
 
         if (chains.length === 0) {
@@ -1351,8 +1351,17 @@ GET ${statusUrl}
 
         // Build URL-based chain
         const chainUrl = chains.map(c => {
-            if (c.params) {
-                return `${c.operation}=${c.params}`;
+            if (c.params && Object.keys(c.params).length > 0) {
+                // Convert params object to string format: key1:value1,key2:value2
+                const paramsStr = Object.entries(c.params)
+                    .map(([key, value]) => {
+                        if (Array.isArray(value)) {
+                            return `${key}:[${value.join(',')}]`;
+                        }
+                        return `${key}:${value}`;
+                    })
+                    .join(',');
+                return `${c.operation}=${paramsStr}`;
             }
             return c.operation;
         }).join('/');
@@ -1512,7 +1521,20 @@ fetch(transformUrl)
 ${fullUrl}
 
 # Individual transformation steps:
-${chains.map((c, i) => `${i + 1}. ${c.operation}${c.params ? ` - ${c.params}` : ''}`).join('\n')}
+${chains.map((c, i) => {
+    let paramsDisplay = '';
+    if (c.params && Object.keys(c.params).length > 0) {
+        paramsDisplay = ' - ' + Object.entries(c.params)
+            .map(([key, value]) => {
+                if (Array.isArray(value)) {
+                    return `${key}:[${value.join(',')}]`;
+                }
+                return `${key}:${value}`;
+            })
+            .join(',');
+    }
+    return `${i + 1}. ${c.operation}${paramsDisplay}`;
+}).join('\n')}
 
 # Use this URL directly in your application
 # Or fetch it to download the transformed file`;
@@ -3268,6 +3290,36 @@ function showSection(sectionName) {
     // Reset code tabs to JavaScript and generate appropriate code
     switchCodeTab('javascript');
 
+    // Get code panel and main container
+    const codePanel = document.querySelector('.code-panel');
+    const mainContainer = document.querySelector('.main-container');
+    const mainContent = document.querySelector('.main-content');
+
+    // Hide code panel for transform-playground and make content full-width
+    if (sectionName === 'transform-playground') {
+        if (codePanel) {
+            codePanel.style.display = 'none';
+        }
+        if (mainContainer) {
+            mainContainer.style.gridTemplateColumns = '1fr';
+        }
+        if (mainContent) {
+            mainContent.style.maxWidth = '100%';
+        }
+        return; // Exit early, no code generation needed
+    } else {
+        // Show code panel for other sections and restore normal layout
+        if (codePanel) {
+            codePanel.style.display = 'flex';
+        }
+        if (mainContainer) {
+            mainContainer.style.gridTemplateColumns = '1fr 600px';
+        }
+        if (mainContent) {
+            mainContent.style.maxWidth = 'none';
+        }
+    }
+
     // Define workflow-only sections (no code generation)
     const workflowOnlySections = ['video-tagging', 'video-sfw', 'phishing', 'virus'];
     const isWorkflowOnly = workflowOnlySections.includes(sectionName);
@@ -3573,17 +3625,26 @@ function collectPickerOptions() {
     // Upload Options with validation
     const retry = validateIntegerInput('uploadRetry');
     const timeout = validateIntegerInput('uploadTimeout');
-    const tagsJson = document.getElementById('uploadTagsJson')?.value;
-    if (retry !== null || timeout !== null || (tagsJson && tagsJson.trim() !== '')) {
+
+    // Collect upload tags from picker upload tags container
+    const pickerTagsContainer = document.getElementById('pickerUploadTagsContainer');
+    const pickerTags = {};
+    if (pickerTagsContainer) {
+        pickerTagsContainer.querySelectorAll('.upload-tag-row').forEach(row => {
+            const key = row.querySelector('.tag-key')?.value.trim();
+            const value = row.querySelector('.tag-value')?.value.trim();
+            if (key && value) {
+                pickerTags[key] = value;
+            }
+        });
+    }
+
+    if (retry !== null || timeout !== null || Object.keys(pickerTags).length > 0) {
         options.uploadConfig = {};
         if (retry !== null) options.uploadConfig.retry = retry;
         if (timeout !== null) options.uploadConfig.timeout = timeout;
-        if (tagsJson && tagsJson.trim() !== '') {
-            try {
-                options.uploadConfig.tags = JSON.parse(tagsJson);
-            } catch (e) {
-                // ignore invalid JSON, UI will still show code without tags
-            }
+        if (Object.keys(pickerTags).length > 0) {
+            options.uploadConfig.tags = pickerTags;
         }
     }
 
@@ -5278,7 +5339,7 @@ function generateMetadataCode() {
     updateCodeDisplay(code, tab);
 }
 
-// Drag & Drop (Drop Pane via Picker)
+// Drag & Drop Functions
 function generateDndCode() {
     const accept = document.getElementById('dndAccept')?.value || '';
     const maxSize = validateIntegerInput('dndMaxSize');
@@ -5288,28 +5349,282 @@ function generateDndCode() {
     const policy = document.getElementById('dndPolicy')?.value || '';
     const signature = document.getElementById('dndSignature')?.value || '';
     const cname = document.getElementById('dndCname')?.value || '';
+
     const config = {};
     if (accept) config.accept = accept.split(',').map(s => s.trim());
     if (maxSize !== null) config.maxSize = maxSize;
     if (maxFiles !== null) config.maxFiles = maxFiles;
     if (failOver) config.failOverMaxFiles = true;
-    const sdkConfigParts = [];
-    if (cname) sdkConfigParts.push(`cname: '${cname}'`);
-    if (policy && signature) sdkConfigParts.push(`security: { policy: '${policy}', signature: '${signature}' }`);
-    const sdkConfig = sdkConfigParts.length ? `const sdkConfig = { ${sdkConfigParts.join(', ')} }\n\n` : '';
+
+    const sdkConfig = {};
+    if (cname) sdkConfig.cname = cname;
+    if (policy && signature) {
+        sdkConfig.security = { policy, signature };
+    }
+
     const tab = getCurrentTab();
     let code = '';
-    const base = `${sdkConfig}const filestackDnDInstance = new filestackDnD.init('YOUR_APIKEY', document.querySelector('${container}')${Object.keys(config).length ? `, ${JSON.stringify(config, null, 2)}` : ''}${sdkConfigParts.length ? `, null, null, sdkConfig` : ''});`;
+
     if (tab === 'javascript') {
-        code = base;
+        code = generateJavaScriptDndCode(config, sdkConfig, container);
     } else if (tab === 'react') {
-        code = `// Include filestack-drag-and-drop script in index.html\n// Then use in componentDidMount / useEffect:\n${base}`;
+        code = generateReactDndCode(config, sdkConfig, container);
     } else if (tab === 'vue') {
-        code = `<!-- Include filestack-drag-and-drop script in index.html -->\n<script>\nexport default {\n  mounted(){\n    ${base}\n  }\n}\n</script>`;
+        code = generateVueDndCode(config, sdkConfig, container);
     } else if (tab === 'url') {
-        code = `// Drag & Drop is a JS library initialization, not a URL.`;
+        code = `// Drag & Drop is a client-side JavaScript library, not a URL-based API.
+// It must be initialized in your frontend code after including the library.
+
+// 1. Include the library in your HTML:
+// <script src="https://static.filestackapi.com/filestack-drag-and-drop/1.x.x/filestack-drag-and-drop.min.js"></script>
+
+// 2. Then initialize it in your JavaScript (see other tabs for code examples)`;
     }
+
     updateCodeDisplay(code, tab);
+}
+
+function generateJavaScriptDndCode(config, sdkConfig, container) {
+    const hasConfig = Object.keys(config).length > 0;
+    const hasSdkConfig = Object.keys(sdkConfig).length > 0;
+
+    let code = `// Step 1: Include the Filestack Drag & Drop library in your HTML
+// <script src="https://static.filestackapi.com/filestack-drag-and-drop/1.x.x/filestack-drag-and-drop.min.js"></script>
+
+// Step 2: Create your drop container element
+// <div class="drop-container">Drag and Drop Files Here</div>
+
+// Step 3: Initialize Filestack Drag & Drop
+`;
+
+    if (hasSdkConfig) {
+        code += `// SDK configuration for security and custom domain
+const sdkConfig = ${JSON.stringify(sdkConfig, null, 2)};
+
+`;
+    }
+
+    if (hasConfig) {
+        code += `// Drop zone configuration
+const dndConfig = ${JSON.stringify(config, null, 2)};
+${config.accept ? '// Accept: Restrict file types (e.g., image/*, application/pdf)\n' : ''}${config.maxSize ? `// Max Size: ${config.maxSize} bytes (${(config.maxSize / 1048576).toFixed(2)}MB)\n` : ''}${config.maxFiles ? `// Max Files: Maximum ${config.maxFiles} file(s) at once\n` : ''}${config.failOverMaxFiles ? '// Fail Over Max Files: Reject all if limit exceeded\n' : ''}
+`;
+    }
+
+    code += `// Initialize the drag and drop instance
+const filestackDnDInstance = new filestackDnD.init(
+    'YOUR_APIKEY',
+    document.querySelector('${container}')${hasConfig ? `,
+    dndConfig` : ''}${hasSdkConfig ? `,
+    null,
+    null,
+    sdkConfig` : ''}
+);
+
+// Listen to upload events
+filestackDnDInstance.on('uploadFileFinish', (file) => {
+    console.log('Upload successful:', file);
+    // file contains: url, handle, filename, size, mimetype, etc.
+});
+
+filestackDnDInstance.on('error', (error) => {
+    console.error('Upload error:', error);
+    // Handle errors (file too large, wrong type, etc.)
+});
+
+filestackDnDInstance.on('progress', (progress) => {
+    console.log(\`Upload progress: \${progress.totalPercent}%\`);
+    // Update progress bar UI
+});
+
+// Optional: Control uploads programmatically
+// filestackDnDInstance.emit('pause', fileId);  // Pause upload
+// filestackDnDInstance.emit('resume', fileId); // Resume upload
+// filestackDnDInstance.emit('cancel', fileId); // Cancel upload`;
+
+    return code;
+}
+
+function generateReactDndCode(config, sdkConfig, container) {
+    const hasConfig = Object.keys(config).length > 0;
+    const hasSdkConfig = Object.keys(sdkConfig).length > 0;
+
+    return `import React, { useEffect, useRef } from 'react';
+// Note: Include filestack-drag-and-drop script in public/index.html
+// <script src="https://static.filestackapi.com/filestack-drag-and-drop/1.x.x/filestack-drag-and-drop.min.js"></script>
+
+const DragDropUploader = () => {
+    const dropZoneRef = useRef(null);
+    const dndInstanceRef = useRef(null);
+
+    useEffect(() => {
+        if (!dropZoneRef.current) return;
+
+        ${hasSdkConfig ? `// SDK configuration
+        const sdkConfig = ${JSON.stringify(sdkConfig, null, 2)};
+
+        ` : ''}${hasConfig ? `// Drop zone configuration
+        const dndConfig = ${JSON.stringify(config, null, 2)};
+
+        ` : ''}// Initialize Filestack Drag & Drop
+        dndInstanceRef.current = new window.filestackDnD.init(
+            'YOUR_APIKEY',
+            dropZoneRef.current${hasConfig ? ',\n            dndConfig' : ''}${hasSdkConfig ? ',\n            null,\n            null,\n            sdkConfig' : ''}
+        );
+
+        // Event listeners
+        dndInstanceRef.current.on('uploadFileFinish', (file) => {
+            console.log('Upload successful:', file);
+            // Update your React state with the uploaded file
+        });
+
+        dndInstanceRef.current.on('error', (error) => {
+            console.error('Upload error:', error);
+            // Show error message to user
+        });
+
+        dndInstanceRef.current.on('progress', (progress) => {
+            console.log(\`Progress: \${progress.totalPercent}%\`);
+            // Update progress bar
+        });
+
+        // Cleanup on unmount
+        return () => {
+            // Cleanup if needed
+        };
+    }, []);
+
+    return (
+        <div
+            ref={dropZoneRef}
+            style={{
+                border: '2px dashed #ccc',
+                borderRadius: '8px',
+                padding: '48px 24px',
+                textAlign: 'center',
+                backgroundColor: '#f8f9fa',
+                cursor: 'pointer'
+            }}
+        >
+            <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>
+                Drag & Drop Files Here
+            </p>
+            <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                or click to browse
+            </p>
+        </div>
+    );
+};
+
+export default DragDropUploader;`;
+}
+
+function generateVueDndCode(config, sdkConfig, container) {
+    const hasConfig = Object.keys(config).length > 0;
+    const hasSdkConfig = Object.keys(sdkConfig).length > 0;
+
+    return `<template>
+    <div
+        ref="dropZone"
+        class="drop-zone"
+    >
+        <p class="drop-text">Drag & Drop Files Here</p>
+        <p class="drop-subtext">or click to browse</p>
+    </div>
+</template>
+
+<script>
+// Note: Include filestack-drag-and-drop script in public/index.html
+// <script src="https://static.filestackapi.com/filestack-drag-and-drop/1.x.x/filestack-drag-and-drop.min.js"></script>
+
+export default {
+    name: 'DragDropUploader',
+    data() {
+        return {
+            dndInstance: null
+        };
+    },
+    mounted() {
+        this.initializeDragDrop();
+    },
+    methods: {
+        initializeDragDrop() {
+            ${hasSdkConfig ? `// SDK configuration
+            const sdkConfig = ${JSON.stringify(sdkConfig, null, 2)};
+
+            ` : ''}${hasConfig ? `// Drop zone configuration
+            const dndConfig = ${JSON.stringify(config, null, 2)};
+
+            ` : ''}// Initialize Filestack Drag & Drop
+            this.dndInstance = new window.filestackDnD.init(
+                'YOUR_APIKEY',
+                this.$refs.dropZone${hasConfig ? ',\n                dndConfig' : ''}${hasSdkConfig ? ',\n                null,\n                null,\n                sdkConfig' : ''}
+            );
+
+            // Event listeners
+            this.dndInstance.on('uploadFileFinish', (file) => {
+                console.log('Upload successful:', file);
+                this.$emit('file-uploaded', file);
+            });
+
+            this.dndInstance.on('error', (error) => {
+                console.error('Upload error:', error);
+                this.$emit('upload-error', error);
+            });
+
+            this.dndInstance.on('progress', (progress) => {
+                console.log(\`Progress: \${progress.totalPercent}%\`);
+                this.$emit('upload-progress', progress);
+            });
+        }
+    },
+    beforeDestroy() {
+        // Cleanup if needed
+    }
+};
+</script>
+
+<style scoped>
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 48px 24px;
+    text-align: center;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.drop-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.drop-subtext {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.drop-zone:hover {
+    border-color: #EF4A26;
+    background-color: #fff;
+}
+</style>`;
+}
+
+function testDnd() {
+    const container = document.getElementById('dndContainer')?.value || '.drop-container';
+    const accept = document.getElementById('dndAccept')?.value || 'all files';
+    const maxSize = validateIntegerInput('dndMaxSize');
+    const maxFiles = validateIntegerInput('dndMaxFiles');
+
+    let config = `Drop Container: ${container}\n`;
+    config += `Accept: ${accept}\n`;
+    config += `Max Size: ${maxSize ? (maxSize / 1048576).toFixed(2) + 'MB' : 'No limit'}\n`;
+    config += `Max Files: ${maxFiles || 'No limit'}`;
+
+    showNotification('Drag & Drop configuration validated. Add your API key and include the filestack-drag-and-drop library to test actual uploads.', 'success');
+    console.log('Drag & Drop Test Configuration:', config);
 }
 
 // Video Tagging (Workflow-only)
@@ -5539,49 +5854,358 @@ function generateUploadCode() {
 }
 
 function collectUploadOptions() {
-    const options = {};
+    const uploadConfig = {};
 
-    const uploadPath = document.getElementById('uploadPath').value;
+    const uploadPath = document.getElementById('uploadPath')?.value;
     if (uploadPath) {
-        options.path = uploadPath;
+        uploadConfig.path = uploadPath;
     }
 
-    const uploadAccess = document.getElementById('uploadAccess').value;
-    if (uploadAccess !== 'public') {
-        options.access = uploadAccess;
+    // Collect upload tags (documented feature)
+    const tags = {};
+    const tagRows = document.querySelectorAll('#uploadTagsContainer .upload-tag-row');
+    tagRows.forEach(row => {
+        const key = row.querySelector('.tag-key')?.value.trim();
+        const value = row.querySelector('.tag-value')?.value.trim();
+        if (key && value) {
+            tags[key] = value;
+        }
+    });
+    if (Object.keys(tags).length > 0) {
+        uploadConfig.tags = tags;
     }
 
-    if (document.getElementById('uploadWorkflows').checked) {
-        options.workflows = true;
+    return uploadConfig;
+}
+
+// Helper functions for upload tags UI
+function addUploadTag() {
+    const container = document.getElementById('uploadTagsContainer');
+    if (!container) return;
+
+    const tagRows = container.querySelectorAll('.upload-tag-row');
+
+    if (tagRows.length >= 10) {
+        showNotification('Maximum 10 upload tags allowed', 'warning');
+        return;
     }
 
-    return options;
+    const newRow = document.createElement('div');
+    newRow.className = 'upload-tag-row';
+    newRow.innerHTML = `
+        <input type="text" class="tag-key" placeholder="Key (e.g., userId)" maxlength="128">
+        <input type="text" class="tag-value" placeholder="Value (e.g., user123)" maxlength="256">
+        <button type="button" class="btn btn-small btn-secondary" onclick="removeUploadTag(this)">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    container.appendChild(newRow);
 }
 
-function generateJavaScriptUploadCode(options) {
-    return `// Upload file to Filestack\nconst file = document.getElementById('uploadFile').files[0];\nif (!file) {\n    console.error('Please select a file');\n    return;\n}\n\nconst client = filestack.init('YOUR_APIKEY');\n\nclient.upload(file, ${JSON.stringify(options, null, 2)})\n    .then(response => {\n        console.log('Upload successful:', response);\n        // Handle successful upload\n    })\n    .catch(error => {\n        console.error('Upload failed:', error);\n        // Handle upload error\n    });`;
+function removeUploadTag(button) {
+    const container = document.getElementById('uploadTagsContainer');
+    if (!container) return;
+
+    const tagRows = container.querySelectorAll('.upload-tag-row');
+
+    if (tagRows.length > 1) {
+        button.closest('.upload-tag-row').remove();
+    } else {
+        // Clear the inputs instead of removing the last row
+        const row = button.closest('.upload-tag-row');
+        row.querySelector('.tag-key').value = '';
+        row.querySelector('.tag-value').value = '';
+    }
 }
 
-function generateReactUploadCode(options) {
-    return `import { filestack } from 'filestack-react';\n\nconst UploadComponent = () => {\n    const client = filestack.init('YOUR_APIKEY');\n    \n    const handleUpload = async (file) => {\n        try {\n            const response = await client.upload(file, ${JSON.stringify(options, null, 2)});\n            console.log('Upload successful:', response);\n            // Handle successful upload\n        } catch (error) {\n            console.error('Upload failed:', error);\n            // Handle upload error\n        }\n    };\n    \n    return (\n        <input \n            type="file" \n            onChange={(e) => handleUpload(e.target.files[0])}\n            accept="image/*,video/*,audio/*,.pdf,.doc,.docx"\n        />\n    );\n};`;
+// Helper functions for picker upload tags UI
+function addPickerUploadTag() {
+    const container = document.getElementById('pickerUploadTagsContainer');
+    if (!container) return;
+
+    const tagRows = container.querySelectorAll('.upload-tag-row');
+
+    if (tagRows.length >= 10) {
+        showNotification('Maximum 10 upload tags allowed', 'warning');
+        return;
+    }
+
+    const newRow = document.createElement('div');
+    newRow.className = 'upload-tag-row';
+    newRow.innerHTML = `
+        <input type="text" class="tag-key" placeholder="Key (e.g., userId)" maxlength="128">
+        <input type="text" class="tag-value" placeholder="Value (e.g., user123)" maxlength="256">
+        <button type="button" class="btn btn-small btn-secondary" onclick="removePickerUploadTag(this)">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    container.appendChild(newRow);
 }
 
-function generateVueUploadCode(options) {
-    return `<template>\n    <input \n        type="file" \n        @change="handleUpload"\n        accept="image/*,video/*,audio/*,.pdf,.doc,.docx"\n    />\n</template>\n\n<script>\nimport { filestack } from 'filestack-js';\n\nexport default {\n    methods: {\n        async handleUpload(event) {\n            const file = event.target.files[0];\n            if (!file) return;\n            \n            const client = filestack.init('YOUR_APIKEY');\n            \n            try {\n                const response = await client.upload(file, ${JSON.stringify(options, null, 2)});\n                console.log('Upload successful:', response);\n                // Handle successful upload\n            } catch (error) {\n                console.error('Upload failed:', error);\n                // Handle upload error\n            }\n        }\n    }\n};\n</script>`;
+function removePickerUploadTag(button) {
+    const container = document.getElementById('pickerUploadTagsContainer');
+    if (!container) return;
+
+    const tagRows = container.querySelectorAll('.upload-tag-row');
+
+    if (tagRows.length > 1) {
+        button.closest('.upload-tag-row').remove();
+    } else {
+        // Clear the inputs instead of removing the last row
+        const row = button.closest('.upload-tag-row');
+        row.querySelector('.tag-key').value = '';
+        row.querySelector('.tag-value').value = '';
+    }
 }
 
-function generateURLUploadCode(options) {
-    return `// Direct upload URL\nconst uploadUrl = 'https://www.filestackapi.com/api/store/S3?key=YOUR_APIKEY${Object.entries(options).map(([key, value]) => `&${key}=${encodeURIComponent(value)}`).join('')}';\n\n// Use with fetch or XMLHttpRequest\nfetch(uploadUrl, {\n    method: 'POST',\n    body: formData\n})\n.then(response => response.json())\n.then(data => console.log('Upload successful:', data))\n.catch(error => console.error('Upload failed:', error));`;
+function generateJavaScriptUploadCode(uploadConfig) {
+    let code = `// Upload file to Filestack
+const file = document.getElementById('uploadFile').files[0];
+if (!file) {
+    console.error('Please select a file');
+    return;
+}
+
+const client = filestack.init('YOUR_APIKEY');
+`;
+
+    if (uploadConfig.tags) {
+        code += `
+// Upload with custom tags to track file metadata
+`;
+    }
+
+    const optionsStr = Object.keys(uploadConfig).length > 0
+        ? JSON.stringify(uploadConfig, null, 2)
+        : '{}';
+
+    code += `
+// Upload configuration
+const uploadOptions = ${optionsStr};
+${uploadConfig.path ? '// path: Organizes files in custom folder\n' : ''}${uploadConfig.tags ? '// tags: Custom metadata returned in response and webhooks\n' : ''}
+client.upload(file, uploadOptions)
+    .then(response => {
+        console.log('Upload successful:', response);
+        // Response contains: url, handle, filename, size, mimetype, key, status
+        ${uploadConfig.tags ? '// Upload tags available in response.upload_tags' : ''}
+
+        // Use the filelink immediately
+        console.log('File URL:', response.url);
+    })
+    .catch(error => {
+        console.error('Upload failed:', error);
+        // Handle upload error with retry logic if needed
+    });`;
+
+    return code;
+}
+
+function generateReactUploadCode(uploadConfig) {
+    const optionsStr = Object.keys(uploadConfig).length > 0
+        ? JSON.stringify(uploadConfig, null, 2).split('\n').join('\n            ')
+        : '{}';
+
+    return `import React, { useState } from 'react';
+import * as filestack from 'filestack-js';
+
+const UploadComponent = () => {
+    const [uploading, setUploading] = useState(false);
+    const [uploadedFile, setUploadedFile] = useState(null);
+    const client = filestack.init('YOUR_APIKEY');
+
+    const handleUpload = async (file) => {
+        if (!file) return;
+
+        setUploading(true);
+
+        try {
+            const uploadOptions = ${optionsStr};
+
+            const response = await client.upload(file, uploadOptions);
+            console.log('Upload successful:', response);
+            setUploadedFile(response);
+            ${uploadConfig.tags ? `
+            // Upload tags are available in response.upload_tags
+            console.log('Tags:', response.upload_tags);
+            ` : ''}
+        } catch (error) {
+            console.error('Upload failed:', error);
+            alert('Upload failed: ' + error.message);
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    return (
+        <div>
+            <input
+                type="file"
+                onChange={(e) => handleUpload(e.target.files[0])}
+                accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
+                disabled={uploading}
+            />
+            {uploading && <p>Uploading...</p>}
+            {uploadedFile && (
+                <div>
+                    <p>File uploaded successfully!</p>
+                    <a href={uploadedFile.url} target="_blank" rel="noopener noreferrer">
+                        View File
+                    </a>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default UploadComponent;`;
+}
+
+function generateVueUploadCode(uploadConfig) {
+    const optionsStr = Object.keys(uploadConfig).length > 0
+        ? JSON.stringify(uploadConfig, null, 2).split('\n').join('\n                ')
+        : '{}';
+
+    return `<template>
+    <div>
+        <input
+            type="file"
+            @change="handleUpload"
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
+            :disabled="uploading"
+        />
+        <p v-if="uploading">Uploading...</p>
+        <div v-if="uploadedFile">
+            <p>File uploaded successfully!</p>
+            <a :href="uploadedFile.url" target="_blank">View File</a>
+        </div>
+    </div>
+</template>
+
+<script>
+import * as filestack from 'filestack-js';
+
+export default {
+    data() {
+        return {
+            uploading: false,
+            uploadedFile: null,
+            client: filestack.init('YOUR_APIKEY')
+        };
+    },
+    methods: {
+        async handleUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            this.uploading = true;
+
+            try {
+                const uploadOptions = ${optionsStr};
+
+                const response = await this.client.upload(file, uploadOptions);
+                console.log('Upload successful:', response);
+                this.uploadedFile = response;
+                ${uploadConfig.tags ? `
+                // Upload tags available in response.upload_tags
+                console.log('Tags:', response.upload_tags);
+                ` : ''}
+            } catch (error) {
+                console.error('Upload failed:', error);
+                alert('Upload failed: ' + error.message);
+            } finally {
+                this.uploading = false;
+            }
+        }
+    }
+};
+</script>`;
+}
+
+function generateURLUploadCode(uploadConfig) {
+    const queryParams = [];
+    if (uploadConfig.path) queryParams.push(`path=${encodeURIComponent(uploadConfig.path)}`);
+
+    const queryString = queryParams.length > 0 ? '&' + queryParams.join('&') : '';
+
+    return `// Direct HTTP Upload to Filestack
+// This method uses the Filestack File API for basic uploads
+// Note: Upload tags are not supported via direct HTTP uploads (use SDK for tags)
+
+// Method 1: Upload file via HTTP POST
+const uploadFile = async (file) => {
+    const uploadUrl = 'https://www.filestackapi.com/api/store/S3?key=YOUR_APIKEY${queryString}';
+
+    const formData = new FormData();
+    formData.append('fileUpload', file);
+
+    try {
+        const response = await fetch(uploadUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': file.type
+            },
+            body: file
+        });
+
+        const data = await response.json();
+        console.log('Upload successful:', data);
+        // Response: { url, size, type, filename, key }
+        return data;
+    } catch (error) {
+        console.error('Upload failed:', error);
+        throw error;
+    }
+};
+
+// Method 2: Upload from external URL
+const uploadFromURL = async (sourceUrl) => {
+    const uploadUrl = 'https://www.filestackapi.com/api/store/S3?key=YOUR_APIKEY${queryString}';
+
+    const formData = new FormData();
+    formData.append('url', sourceUrl);
+
+    try {
+        const response = await fetch(uploadUrl, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        console.log('Upload from URL successful:', data);
+        return data;
+    } catch (error) {
+        console.error('Upload from URL failed:', error);
+        throw error;
+    }
+};
+
+// Example usage:
+// const fileInput = document.querySelector('input[type="file"]');
+// fileInput.addEventListener('change', (e) => {
+//     uploadFile(e.target.files[0]);
+// });
+
+// Or upload from URL:
+// uploadFromURL('https://example.com/image.jpg');`;
 }
 
 function testUpload() {
     const fileInput = document.getElementById('uploadFile');
-    if (!fileInput.files[0]) {
+    if (!fileInput || !fileInput.files[0]) {
         showNotification('Please select a file to upload', 'error');
         return;
     }
 
-    showNotification('Upload functionality would be tested here with a real API key', 'info');
+    const file = fileInput.files[0];
+    const uploadConfig = collectUploadOptions();
+
+    // Display upload configuration
+    let message = `File: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+    message += uploadConfig.path ? `\nPath: ${uploadConfig.path}` : '';
+    message += uploadConfig.tags ? `\nTags: ${Object.keys(uploadConfig.tags).length} tag(s)` : '';
+
+    showNotification('Upload configuration validated. Add your API key to test actual uploads.', 'success');
+    console.log('Upload Test:', { file, config: uploadConfig });
 }
 
 // Download Functions
@@ -6789,3 +7413,319 @@ const transformUrl = '${transformUrl}';
 // Or as CSS background:
 // background-image: url('\${transformUrl}');`;
 }
+
+// ===== Transform Playground Functionality =====
+class TransformPlayground {
+    constructor() {
+        this.baseUrl = 'https://cdn.filestackcontent.com';
+        this.currentHandle = '';
+        this.policy = '';
+        this.signature = '';
+
+        // Transformations configuration matching the demo
+        this.transformations = {
+            'Rotate': { template: (v) => `rotate=deg:${v}`, type: 'range', min: 0, max: 360, value: 180 },
+            'Blur': { template: (v) => `blur=amount:${v}`, type: 'range', min: 1, max: 20, value: 8 },
+            'Oil Paint': { template: (v) => `oil_paint=amount:${v}`, type: 'range', min: 1, max: 10, value: 4 },
+            'Sepia': { template: (v) => `sepia=tone:${v}`, type: 'range', min: 0, max: 100, value: 80 },
+            'Rounded': { template: (v) => `rounded_corners=radius:${v}`, type: 'range', min: 0, max: 200, value: 100 },
+            'Resize': {
+                template: (w, h) => `resize=width:${w},height:${h},fit:crop`,
+                type: 'dimensions',
+                width: 400, height: 400
+            },
+            'Detect Faces': { template: () => `detect_faces=minsize:0.25,maxsize:0.55,color:red`, type: 'checkbox' },
+            'Polaroid': { template: () => `polaroid`, type: 'checkbox' },
+            'Monochrome': { template: () => `monochrome`, type: 'checkbox' }
+        };
+
+        this.initializeElements();
+        this.renderTransformOptions();
+        this.initializeEventListeners();
+    }
+
+    initializeElements() {
+        this.playgroundOriginal = document.getElementById('playgroundOriginal');
+        this.playgroundTransformed = document.getElementById('playgroundTransformed');
+        this.playgroundOriginalUrl = document.getElementById('playgroundOriginalUrl');
+        this.playgroundTransformedUrl = document.getElementById('playgroundTransformedUrl');
+        this.playgroundHandle = document.getElementById('playgroundHandle');
+        this.playgroundPolicy = document.getElementById('playgroundPolicy');
+        this.playgroundSignature = document.getElementById('playgroundSignature');
+        this.playgroundLoadBtn = document.getElementById('playgroundLoadBtn');
+        this.playgroundTransformsList = document.getElementById('playgroundTransformsList');
+        this.playgroundOriginalLoader = document.getElementById('playgroundOriginalLoader');
+        this.playgroundTransformedLoader = document.getElementById('playgroundTransformedLoader');
+    }
+
+    renderTransformOptions() {
+        if (!this.playgroundTransformsList) return;
+
+        this.playgroundTransformsList.innerHTML = '';
+        for (const [name, config] of Object.entries(this.transformations)) {
+            const container = document.createElement('div');
+            container.className = 'playground-transform-option';
+            container.dataset.name = name;
+
+            let html = `<label><input type="checkbox" data-name="${name}" /> ${name}</label>`;
+
+            if (config.type === 'range') {
+                html += `
+          <div style="display:flex; align-items:center; gap:8px; margin-top: 8px;">
+            <input type="range" min="${config.min}" max="${config.max}" value="${config.value}" data-name="${name}" disabled />
+            <span class="playground-slider-value" data-value="${name}">${config.value}</span>
+          </div>
+        `;
+            } else if (config.type === 'dimensions') {
+                html += `
+          <div style="display:flex; gap:6px; align-items:center; margin-top: 8px;">
+            W: <input type="number" value="${config.width}" min="50" max="1000" data-dim="width" data-name="${name}" style="width:70px;" disabled />
+            H: <input type="number" value="${config.height}" min="50" max="1000" data-dim="height" data-name="${name}" style="width:70px;" disabled />
+          </div>
+        `;
+            }
+
+            container.innerHTML = html;
+            this.playgroundTransformsList.appendChild(container);
+        }
+
+        // Checkbox change events
+        this.playgroundTransformsList.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                const name = e.target.dataset.name;
+                const container = e.target.closest('.playground-transform-option');
+                const config = this.transformations[name];
+
+                // Enable/disable related inputs
+                if (config.type === 'range') {
+                    const slider = container.querySelector(`input[type="range"][data-name="${name}"]`);
+                    slider.disabled = !e.target.checked;
+                } else if (config.type === 'dimensions') {
+                    const inputs = container.querySelectorAll(`input[type="number"][data-name="${name}"]`);
+                    inputs.forEach(input => input.disabled = !e.target.checked);
+                }
+
+                // Toggle active class
+                if (e.target.checked) {
+                    container.classList.add('active');
+                } else {
+                    container.classList.remove('active');
+                }
+
+                this.loadTransformedImage();
+            });
+        });
+
+        // Live slider value updates
+        this.playgroundTransformsList.querySelectorAll('input[type="range"]').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const name = e.target.dataset.name;
+                const valueDisplay = this.playgroundTransformsList.querySelector(`.playground-slider-value[data-value="${name}"]`);
+                if (valueDisplay) valueDisplay.textContent = e.target.value;
+                this.loadTransformedImage();
+            });
+        });
+
+        // Live dimension updates
+        this.playgroundTransformsList.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', () => this.loadTransformedImage());
+        });
+    }
+
+    initializeEventListeners() {
+        if (!this.playgroundLoadBtn) return;
+
+        this.playgroundLoadBtn.addEventListener('click', () => {
+            const handle = this.playgroundHandle.value.trim();
+
+            // Validate handle is not empty
+            if (!handle) {
+                this.playgroundOriginalUrl.textContent = 'Please enter a Filestack handle';
+                this.playgroundTransformedUrl.textContent = 'Please enter a Filestack handle';
+                showNotification('Please enter a Filestack handle to load an image', 'error');
+                return;
+            }
+
+            this.currentHandle = handle;
+            this.policy = this.playgroundPolicy.value.trim();
+            this.signature = this.playgroundSignature.value.trim();
+            this.loadOriginalImage();
+            this.loadTransformedImage();
+        });
+
+        // Allow Enter key to load image
+        this.playgroundHandle.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.playgroundLoadBtn.click();
+            }
+        });
+
+        // Update policy and signature on input change
+        this.playgroundPolicy.addEventListener('input', () => {
+            if (this.currentHandle) {
+                this.policy = this.playgroundPolicy.value.trim();
+                this.loadOriginalImage();
+                this.loadTransformedImage();
+            }
+        });
+
+        this.playgroundSignature.addEventListener('input', () => {
+            if (this.currentHandle) {
+                this.signature = this.playgroundSignature.value.trim();
+                this.loadOriginalImage();
+                this.loadTransformedImage();
+            }
+        });
+    }
+
+    getSelectedTransformations() {
+        const selected = [];
+        const checkboxes = this.playgroundTransformsList.querySelectorAll('input[type="checkbox"]:checked');
+
+        checkboxes.forEach((cb) => {
+            const name = cb.dataset.name;
+            const config = this.transformations[name];
+
+            if (config.type === 'range') {
+                const slider = this.playgroundTransformsList.querySelector(`input[type="range"][data-name="${name}"]`);
+                selected.push(config.template(slider.value));
+            } else if (config.type === 'dimensions') {
+                const widthInput = this.playgroundTransformsList.querySelector(`input[data-dim="width"][data-name="${name}"]`);
+                const heightInput = this.playgroundTransformsList.querySelector(`input[data-dim="height"][data-name="${name}"]`);
+                selected.push(config.template(widthInput.value, heightInput.value));
+            } else {
+                selected.push(config.template());
+            }
+        });
+
+        return selected;
+    }
+
+    getOriginalUrl() {
+        if (!this.currentHandle) {
+            return '';
+        }
+
+        let url = this.baseUrl;
+
+        // Add security parameters if both are present
+        if (this.policy && this.signature) {
+            url += `/security=policy:${this.policy},signature:${this.signature}`;
+        }
+
+        url += `/${this.currentHandle}`;
+        return url;
+    }
+
+    getCurrentTransformationUrl() {
+        if (!this.currentHandle) {
+            return '';
+        }
+
+        let url = this.baseUrl;
+
+        // Add security parameters if both are present
+        if (this.policy && this.signature) {
+            url += `/security=policy:${this.policy},signature:${this.signature}`;
+        }
+
+        // Add transformations
+        const selected = this.getSelectedTransformations();
+        if (selected.length > 0) {
+            const chain = selected.join('/');
+            url += `/${chain}`;
+        }
+
+        url += `/${this.currentHandle}`;
+        return url;
+    }
+
+    showLoader(loaderElement, imageElement) {
+        if (loaderElement) loaderElement.classList.add('active');
+        if (imageElement) imageElement.classList.add('loading');
+    }
+
+    hideLoader(loaderElement, imageElement) {
+        if (loaderElement) loaderElement.classList.remove('active');
+        if (imageElement) imageElement.classList.remove('loading');
+    }
+
+    loadOriginalImage() {
+        const url = this.getOriginalUrl();
+        if (!url) return;
+
+        this.showLoader(this.playgroundOriginalLoader, this.playgroundOriginal);
+        this.playgroundLoadBtn.disabled = true;
+
+        const img = new Image();
+        img.onload = () => {
+            this.playgroundOriginal.src = url;
+            this.playgroundOriginalUrl.textContent = url;
+            this.hideLoader(this.playgroundOriginalLoader, this.playgroundOriginal);
+            this.playgroundLoadBtn.disabled = false;
+        };
+
+        img.onerror = () => {
+            this.hideLoader(this.playgroundOriginalLoader, this.playgroundOriginal);
+
+            // Check if security is being used
+            const hasSecurityParams = this.policy || this.signature;
+            const securityNote = hasSecurityParams
+                ? ' If your account has security enabled, please verify that your Policy and Signature are correctly configured.'
+                : ' If your account requires security, please add your Policy and Signature.';
+
+            const errorMsg = `Error: Failed to load image. Please check that the handle is correct.${securityNote}`;
+            this.playgroundOriginalUrl.textContent = errorMsg;
+
+            showNotification('Failed to load image. Check handle and security credentials.', 'error');
+            this.playgroundLoadBtn.disabled = false;
+        };
+
+        img.src = url;
+    }
+
+    loadTransformedImage() {
+        const url = this.getCurrentTransformationUrl();
+        if (!url) return;
+
+        const selected = this.getSelectedTransformations();
+
+        // If no transformations are selected, show original
+        if (selected.length === 0) {
+            this.playgroundTransformed.src = this.playgroundOriginal.src;
+            this.playgroundTransformedUrl.textContent = 'No transformations applied';
+            return;
+        }
+
+        this.showLoader(this.playgroundTransformedLoader, this.playgroundTransformed);
+
+        const img = new Image();
+        img.onload = () => {
+            this.playgroundTransformed.src = url;
+            this.playgroundTransformedUrl.textContent = url;
+            this.hideLoader(this.playgroundTransformedLoader, this.playgroundTransformed);
+        };
+
+        img.onerror = () => {
+            this.hideLoader(this.playgroundTransformedLoader, this.playgroundTransformed);
+
+            // Check if security is being used
+            const hasSecurityParams = this.policy || this.signature;
+            const securityNote = hasSecurityParams
+                ? ' If your account has security enabled, please verify that your Policy and Signature are correctly configured.'
+                : ' If your account requires security, please add your Policy and Signature.';
+
+            const errorMsg = `Error: Failed to load transformed image. Please check that the handle is correct and transformations are valid.${securityNote}`;
+            this.playgroundTransformedUrl.textContent = errorMsg;
+
+            showNotification('Failed to load transformed image. Check configuration.', 'error');
+        };
+
+        img.src = url;
+    }
+}
+
+// Initialize playground when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.transformPlayground = new TransformPlayground();
+});
