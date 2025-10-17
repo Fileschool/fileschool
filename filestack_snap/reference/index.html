@@ -79,8 +79,14 @@
             <button class="sub-tab active" data-section="picker">
                 <i class="fas fa-folder-open"></i> File Picker
             </button>
+            <button class="sub-tab" data-section="upload">
+                <i class="fas fa-cloud-upload-alt"></i> Upload
+            </button>
             <button class="sub-tab" data-section="dnd">
                 <i class="fas fa-hand-pointer"></i> Drag & Drop
+            </button>
+            <button class="sub-tab" data-section="download">
+                <i class="fas fa-download"></i> Download
             </button>
         </div>
 
@@ -222,37 +228,26 @@
                     <span><i class="fas fa-wrench"></i> Configuration Options</span>
                 </div>
 
-                <!-- Basic Settings -->
+                <!-- Basic Settings and File Acceptance Combined -->
                 <div class="config-card">
                     <h3><i class="fas fa-cog"></i> Basic Settings</h3>
-                    <p class="card-description">Configure the fundamental picker behavior and appearance.</p>
-                    
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="displayModeSelect">
-                                Display Mode
-                                <i class="fas fa-info-circle" title="Choose how the picker appears: Overlay (modal), Inline (embedded), or Drop Pane (compact dropdown)."></i>
-                            </label>
-                            <select id="displayModeSelect" onchange="document.querySelector('input[name=displayMode][value=' + this.value + ']').checked = true" class="track-changes">
-                                <option value="overlay" selected>Overlay (Modal)</option>
-                                <option value="inline">Inline (Embedded)</option>
-                                <option value="dropPane">Drop Pane (Compact)</option>
+                            <label for="displayModeSelect">Display Mode</label>
+                            <select id="displayModeSelect" onchange="document.querySelector('input[name=displayMode][value=' + this.value + ']').checked = true">
+                                <option value="overlay" selected>Overlay</option>
+                                <option value="inline">Inline</option>
+                                <option value="dropPane">Drop Pane</option>
                             </select>
                             <div style="display: none;">
                                 <input type="radio" name="displayMode" value="overlay" checked>
                                 <input type="radio" name="displayMode" value="inline">
                                 <input type="radio" name="displayMode" value="dropPane">
                             </div>
-                            <small class="form-hint">
-                                <i class="fas fa-desktop"></i> <strong>Overlay:</strong> Modal popup (recommended) | <strong>Inline:</strong> Embedded in page | <strong>Drop Pane:</strong> Compact dropdown
-                            </small>
                         </div>
                         <div class="form-group">
-                            <label for="language">
-                                Language
-                                <i class="fas fa-info-circle" title="Select the language for the picker interface. Affects all text, buttons, and messages."></i>
-                            </label>
-                            <select id="language" class="track-changes">
+                            <label for="language">Language</label>
+                            <select id="language">
                                 <option value="en">English</option>
                                 <option value="es">Spanish</option>
                                 <option value="fr">French</option>
@@ -264,19 +259,7 @@
                                 <option value="ko">Korean</option>
                                 <option value="zh">Chinese</option>
                             </select>
-                            <small class="form-hint">
-                                <i class="fas fa-globe"></i> Sets the UI language for all picker elements and messages.
-                            </small>
                         </div>
-                    </div>
-
-                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
-                        <h4><i class="fas fa-lightbulb"></i> Display Mode Tips</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>Overlay:</strong> Best for most use cases, doesn't affect page layout</li>
-                            <li><strong>Inline:</strong> Perfect for dedicated upload pages or admin panels</li>
-                            <li><strong>Drop Pane:</strong> Great for mobile apps or space-constrained interfaces</li>
-                        </ul>
                     </div>
                 </div>
 
@@ -284,16 +267,6 @@
                 <div class="config-card">
                     <h3><i class="fas fa-file-alt"></i> File Acceptance</h3>
                     <p class="card-description">Select which file types are allowed. If none selected, all types are enabled.</p>
-                    
-                    <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-exclamation-triangle"></i> File Type Validation</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>MIME Types:</strong> Use <code>image/*</code> for all images, <code>application/pdf</code> for PDFs</li>
-                            <li><strong>Extensions:</strong> Use <code>.jpg,.png,.gif</code> for specific file extensions</li>
-                            <li><strong>Mixed:</strong> Combine MIME types and extensions: <code>image/*,.pdf,.doc</code></li>
-                            <li><strong>Client-side:</strong> This provides initial filtering - always validate on your server too</li>
-                        </ul>
-                    </div>
 
                     <div class="file-acceptance-grid">
                         <div class="file-type-category">
@@ -377,16 +350,6 @@
                         <h3><i class="fas fa-cloud"></i> Sources</h3>
                         <p class="card-description">Select which sources users can upload from. If none selected, all
                             sources are enabled.</p>
-                        
-                        <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50; margin-bottom: 1rem;">
-                            <h4><i class="fas fa-info-circle"></i> Cloud Integration Notes</h4>
-                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                                <li><strong>OAuth Required:</strong> Google Drive, Dropbox, Box require user authorization</li>
-                                <li><strong>Custom OAuth:</strong> Use your own OAuth clients for custom branding (requires setup)</li>
-                                <li><strong>CNAME Users:</strong> Must use custom OAuth clients (contact Filestack support)</li>
-                                <li><strong>Mobile Sources:</strong> Webcam, Audio/Video recording work on supported devices</li>
-                            </ul>
-                        </div>
 
                         <div class="checkbox-grid">
                             <label class="checkbox-item">
@@ -459,253 +422,112 @@
                     <!-- File Limits & Dimensions Combined -->
                     <div class="config-card">
                         <h3><i class="fas fa-chart-bar"></i> Limits & Constraints</h3>
-                        <p class="card-description">Set file count, size limits, and image dimension constraints to control uploads.</p>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="maxFiles">
-                                    Max Files
-                                    <i class="fas fa-info-circle" title="Maximum number of files that can be selected/uploaded in one session. 0 = no limit."></i>
-                                </label>
-                                <input type="number" id="maxFiles" min="1" max="100" placeholder="0" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-list-ol"></i> 0 = unlimited. Common values: 1 (single file), 5 (small batch), 10 (large batch)
-                                </small>
+                                <label for="maxFiles">Max Files</label>
+                                <input type="number" id="maxFiles" min="1" max="100" placeholder="0">
                             </div>
                             <div class="form-group">
-                                <label for="minFiles">
-                                    Min Files
-                                    <i class="fas fa-info-circle" title="Minimum number of files required before upload can proceed. 0 = no minimum."></i>
-                                </label>
-                                <input type="number" id="minFiles" min="1" max="100" placeholder="0" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-exclamation-circle"></i> Forces users to select at least this many files
-                                </small>
+                                <label for="minFiles">Min Files</label>
+                                <input type="number" id="minFiles" min="1" max="100" placeholder="0">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="maxSize">
-                                    Max File Size (MB)
-                                    <i class="fas fa-info-circle" title="Maximum file size in megabytes. 0 = no limit. Max supported: 163,840 MB (160 GB)."></i>
-                                </label>
-                                <input type="number" id="maxSize" min="1" max="163840" placeholder="0" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-weight-hanging"></i> 0 = unlimited. Common limits: 10MB (documents), 100MB (images), 1GB (videos)
-                                </small>
+                                <label for="maxSize">Max File Size (MB)</label>
+                                <input type="number" id="maxSize" min="1" max="163840" placeholder="0">
                             </div>
                             <div class="form-group">
-                                <label for="concurrency">
-                                    Upload Concurrency
-                                    <i class="fas fa-info-circle" title="Number of files that can be uploaded simultaneously. Higher values = faster uploads but more bandwidth usage."></i>
-                                </label>
-                                <input type="number" id="concurrency" min="1" max="10" placeholder="4" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-tachometer-alt"></i> 1-3 (slow/stable), 4-6 (balanced), 7-10 (fast/aggressive)
-                                </small>
+                                <label for="concurrency">Upload Concurrency</label>
+                                <input type="number" id="concurrency" min="1" max="10" placeholder="4">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="imageMaxDim">
-                                    Max Dimensions (w,h)
-                                    <i class="fas fa-info-circle" title="Maximum image dimensions in pixels. Format: 'width,height' (e.g., '1920,1080'). Leave empty for no limit."></i>
-                                </label>
-                                <input type="text" id="imageMaxDim" placeholder="1920,1080" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-expand-arrows-alt"></i> Prevents oversized images. Example: <code>1920,1080</code> for HD limit
-                                </small>
+                                <label for="imageMaxDim">Max Dimensions (w,h)</label>
+                                <input type="text" id="imageMaxDim" placeholder="1920,1080">
                             </div>
                             <div class="form-group">
-                                <label for="imageMinDim">
-                                    Min Dimensions (w,h)
-                                    <i class="fas fa-info-circle" title="Minimum image dimensions in pixels. Format: 'width,height' (e.g., '100,100'). Leave empty for no minimum."></i>
-                                </label>
-                                <input type="text" id="imageMinDim" placeholder="100,100" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-compress-arrows-alt"></i> Ensures minimum quality. Example: <code>100,100</code> for thumbnail minimum
-                                </small>
+                                <label for="imageMinDim">Min Dimensions (w,h)</label>
+                                <input type="text" id="imageMinDim" placeholder="100,100">
                             </div>
-                        </div>
-
-                        <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-top: 1rem;">
-                            <h4><i class="fas fa-calculator"></i> Size Calculation Tips</h4>
-                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                                <li><strong>1 MB</strong> = 1,048,576 bytes (binary) or 1,000,000 bytes (decimal)</li>
-                                <li><strong>10 MB</strong> = 10,485,760 bytes (good for documents)</li>
-                                <li><strong>100 MB</strong> = 104,857,600 bytes (good for high-res images)</li>
-                                <li><strong>1 GB</strong> = 1,073,741,824 bytes (good for videos)</li>
-                                <li><strong>Dimensions:</strong> Always use format <code>width,height</code> (e.g., <code>1920,1080</code>)</li>
-                            </ul>
                         </div>
                     </div>
 
                     <!-- Advanced Options -->
                     <div class="config-card">
                         <h3><i class="fas fa-sliders-h"></i> Advanced Options</h3>
-                        <p class="card-description">Fine-tune picker behavior with advanced settings for specific use cases.</p>
 
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <input type="checkbox" id="multipleFileUpload" disabled class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                                        <span style="font-weight: 500; margin-right: 0.5rem;">Multiple File Upload</span>
-                                        <i class="fas fa-info-circle" title="Enable multiple file selection. Automatically enabled when maxFiles > 1." style="color: #666;"></i>
-                                    </div>
-                                    <small class="form-hint">
-                                        <i class="fas fa-magic"></i> Auto-enabled when Max Files > 1
-                                    </small>
-                                </div>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <!-- To allow multiple file uploads, set maxFiles > 1 -->
+                                <input type="checkbox" id="multipleFileUpload" disabled>
+                                <span>Multiple File Upload</span>
                             </label>
-                            
-                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <input type="checkbox" id="hideModalWhenUploading" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                                        <span style="font-weight: 500; margin-right: 0.5rem;">Hide Modal When Uploading</span>
-                                        <i class="fas fa-info-circle" title="Automatically close the picker modal once upload starts. Good for background uploads." style="color: #666;"></i>
-                                    </div>
-                                    <small class="form-hint">
-                                        <i class="fas fa-eye-slash"></i> Closes picker automatically when upload begins
-                                    </small>
-                                </div>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="hideModalWhenUploading">
+                                <span>Hide Modal When Uploading</span>
                             </label>
-                            
-                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <input type="checkbox" id="uploadInBackground" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                                        <span style="font-weight: 500; margin-right: 0.5rem;">Upload in Background</span>
-                                        <i class="fas fa-info-circle" title="Upload files in the background without blocking the UI. Users can continue using your app." style="color: #666;"></i>
-                                    </div>
-                                    <small class="form-hint">
-                                        <i class="fas fa-clock"></i> Non-blocking uploads for better UX
-                                    </small>
-                                </div>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="uploadInBackground">
+                                <span>Upload in Background</span>
                             </label>
-                            
-                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <input type="checkbox" id="cleanupImageExif" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                                        <span style="font-weight: 500; margin-right: 0.5rem;">Cleanup Image EXIF</span>
-                                        <i class="fas fa-info-circle" title="Remove EXIF data from images for privacy and smaller file sizes. Removes location, camera info, etc." style="color: #666;"></i>
-                                    </div>
-                                    <small class="form-hint">
-                                        <i class="fas fa-shield-alt"></i> Removes metadata for privacy and smaller files
-                                    </small>
-                                </div>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="cleanupImageExif">
+                                <span>Cleanup Image EXIF</span>
                             </label>
-                            
-                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <input type="checkbox" id="exposeOriginalFile" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                                        <span style="font-weight: 500; margin-right: 0.5rem;">Expose Original File</span>
-                                        <i class="fas fa-info-circle" title="Include the original file object in upload responses. Useful for advanced file processing." style="color: #666;"></i>
-                                    </div>
-                                    <small class="form-hint">
-                                        <i class="fas fa-code"></i> Includes original file object in callbacks
-                                    </small>
-                                </div>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="exposeOriginalFile">
+                                <span>Expose Original File</span>
                             </label>
-                        </div>
-
-                        <div class="info-box" style="background: #e1f5fe; border-left: 4px solid #03a9f4; margin-top: 1rem;">
-                            <h4><i class="fas fa-cogs"></i> Advanced Options Guide</h4>
-                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                                <li><strong>Hide Modal:</strong> Best for quick uploads or mobile apps</li>
-                                <li><strong>Background Upload:</strong> Perfect for large files or slow connections</li>
-                                <li><strong>EXIF Cleanup:</strong> Essential for user privacy and GDPR compliance</li>
-                                <li><strong>Original File:</strong> Needed for custom file processing or validation</li>
-                            </ul>
                         </div>
                     </div>
 
                     <!-- Store Options -->
                     <div class="config-card">
                         <h3><i class="fas fa-database"></i> Store Options</h3>
-                        <p class="card-description">Configure storage destination and workflows for automated file processing.</p>
+                        <p class="card-description">Configure storage destination and workflows (structured_docs: Picker
+                            Store Options, Workflows).</p>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="storeLocation">
-                                    Storage Location
-                                    <i class="fas fa-info-circle" title="Choose where files are stored. Default uses Filestack's S3, or select your own cloud storage."></i>
-                                </label>
-                                <select id="storeLocation" class="track-changes">
-                                    <option value="">Default (Filestack S3)</option>
-                                    <option value="azure">Azure Blob Storage</option>
-                                    <option value="gcs">Google Cloud Storage</option>
+                                <label for="storeLocation">Location</label>
+                                <select id="storeLocation">
+                                    <option value="">Default (S3)</option>
+                                    <option value="azure">Azure</option>
+                                    <option value="gcs">GCS</option>
                                     <option value="dropbox">Dropbox</option>
                                 </select>
-                                <small class="form-hint">
-                                    <i class="fas fa-cloud"></i> Custom storage requires setup in Filestack dashboard
-                                </small>
                             </div>
                             <div class="form-group">
-                                <label for="storePath">
-                                    Storage Path
-                                    <i class="fas fa-info-circle" title="Organize files in folders. Use forward slashes for path structure (e.g., '/uploads/2024/', '/user-content/')."></i>
-                                </label>
-                                <input type="text" id="storePath" placeholder="/site_uploads/" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-folder"></i> Example: <code>/uploads/2024/</code> or <code>/user-content/</code>
-                                </small>
+                                <label for="storePath">Path</label>
+                                <input type="text" id="storePath" placeholder="/site_uploads/">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="storeWorkflows">
-                                Workflows (Optional)
-                                <i class="fas fa-info-circle" title="Trigger automated file processing workflows. Enter comma-separated workflow IDs from your Filestack dashboard."></i>
-                            </label>
-                            <input type="text" id="storeWorkflows" placeholder="e.g. 46c8344b-...,448d6764-..." class="track-changes">
-                            <small class="form-hint">
-                                <i class="fas fa-cogs"></i> Workflow IDs from your Filestack dashboard. Triggers after upload completion.
-                            </small>
-                        </div>
-
-                        <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-top: 1rem;">
-                            <h4><i class="fas fa-lightbulb"></i> Storage & Workflow Tips</h4>
-                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                                <li><strong>Default S3:</strong> Fastest setup, managed by Filestack</li>
-                                <li><strong>Custom Storage:</strong> Use your own cloud for compliance or cost control</li>
-                                <li><strong>Path Organization:</strong> Use dates, user IDs, or categories in paths</li>
-                                <li><strong>Workflows:</strong> Perfect for image processing, virus scanning, or notifications</li>
-                                <li><strong>Workflow IDs:</strong> Found in your Filestack dashboard under "Workflows"</li>
-                            </ul>
+                            <label for="storeWorkflows">Workflows (comma-separated IDs)</label>
+                            <input type="text" id="storeWorkflows" placeholder="e.g. 46c8344b-...,448d6764-...">
                         </div>
                     </div>
 
                     <!-- Upload Options -->
                     <div class="config-card">
                         <h3><i class="fas fa-upload"></i> Upload Options</h3>
-                        <p class="card-description">Configure upload reliability, timeout settings, and metadata tagging for better file management.</p>
+                        <p class="card-description">Retry, timeout and tags (structured_docs: Upload Options, Upload
+                            Tags).</p>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="uploadRetry">
-                                    Upload Retry Count
-                                    <i class="fas fa-info-circle" title="Number of times to retry failed uploads. Higher values = more reliable but slower for failed uploads."></i>
-                                </label>
-                                <input type="number" id="uploadRetry" min="0" max="10" placeholder="5" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-redo"></i> 0-3 (fast), 4-6 (balanced), 7-10 (very reliable)
-                                </small>
+                                <label for="uploadRetry">Retry</label>
+                                <input type="number" id="uploadRetry" min="0" max="10" placeholder="5">
                             </div>
                             <div class="form-group">
-                                <label for="uploadTimeout">
-                                    Upload Timeout (ms)
-                                    <i class="fas fa-info-circle" title="Maximum time to wait for upload completion in milliseconds. 0 = no timeout. 60000ms = 1 minute."></i>
-                                </label>
-                                <input type="number" id="uploadTimeout" min="0" max="600000" placeholder="60000" class="track-changes">
-                                <small class="form-hint">
-                                    <i class="fas fa-clock"></i> 60000ms = 1min, 300000ms = 5min, 600000ms = 10min
-                                </small>
+                                <label for="uploadTimeout">Timeout (ms)</label>
+                                <input type="number" id="uploadTimeout" min="0" max="600000" placeholder="60000">
                             </div>
                         </div>
 
@@ -746,57 +568,22 @@
                     <!-- Callbacks -->
                     <div class="config-card">
                         <h3><i class="fas fa-code"></i> Picker Callbacks</h3>
-                        <p class="card-description">Enable JavaScript callbacks to handle picker events and customize file validation behavior.</p>
+                        <p class="card-description">Enable documented callbacks (structured_docs: Callbacks,
+                            onUploadDone, onFileSelected, acceptFn).</p>
 
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <input type="checkbox" id="enableOnUploadDone" checked class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                                        <span style="font-weight: 500; margin-right: 0.5rem;">onUploadDone Callback</span>
-                                        <i class="fas fa-info-circle" title="Triggered when all files finish uploading. Receives array of uploaded files with handles and URLs." style="color: #666;"></i>
-                                    </div>
-                                    <small class="form-hint">
-                                        <i class="fas fa-check-circle"></i> Essential for handling successful uploads
-                                    </small>
-                                </div>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="enableOnUploadDone" checked>
+                                <span>onUploadDone</span>
                             </label>
-                            
-                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <input type="checkbox" id="enableOnFileSelected" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                                        <span style="font-weight: 500; margin-right: 0.5rem;">onFileSelected Callback</span>
-                                        <i class="fas fa-info-circle" title="Triggered when files are selected but before upload. Perfect for custom validation or file processing." style="color: #666;"></i>
-                                    </div>
-                                    <small class="form-hint">
-                                        <i class="fas fa-search"></i> Validate files before upload starts
-                                    </small>
-                                </div>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="enableOnFileSelected">
+                                <span>onFileSelected (size check example)</span>
                             </label>
-                            
-                            <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <input type="checkbox" id="enableAcceptFn" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                                        <span style="font-weight: 500; margin-right: 0.5rem;">acceptFn Custom Validation</span>
-                                        <i class="fas fa-info-circle" title="Custom function to validate files using magic bytes, file content, or complex business logic." style="color: #666;"></i>
-                                    </div>
-                                    <small class="form-hint">
-                                        <i class="fas fa-magic"></i> Advanced file validation beyond MIME types
-                                    </small>
-                                </div>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="enableAcceptFn">
+                                <span>acceptFn (magic bytes example)</span>
                             </label>
-                        </div>
-
-                        <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50; margin-top: 1rem;">
-                            <h4><i class="fas fa-lightbulb"></i> Callback Examples</h4>
-                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                                <li><strong>onUploadDone:</strong> Save file handles to database, show success message</li>
-                                <li><strong>onFileSelected:</strong> Check file size, validate image dimensions, show preview</li>
-                                <li><strong>acceptFn:</strong> Validate file headers, check for specific file formats, business rules</li>
-                                <li><strong>Error Handling:</strong> All callbacks include error parameters for failure scenarios</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -813,42 +600,51 @@
                     </a>
                 </div>
 
-                <!-- Basic Configuration -->
-                <div class="config-card">
-                    <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
-                    <p class="card-description">Configure the essential settings for your drag & drop upload zone.</p>
-                    
+                <div class="config-card config-full-width">
+                    <h3><i class="fas fa-cog"></i> Drag & Drop Configuration</h3>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="dndContainer">
                                 Drop Container Selector
                                 <i class="fas fa-info-circle" title="CSS selector for the HTML element that will handle drag & drop events (e.g., '.drop-container', '#upload-zone', '.file-dropzone')."></i>
                             </label>
-                            <input type="text" id="dndContainer" placeholder=".drop-container" value=".drop-container" class="track-changes">
+                            <input type="text" id="dndContainer" placeholder=".drop-container" value=".drop-container">
                             <small class="form-hint">
                                 <i class="fas fa-crosshairs"></i> Any valid CSS selector. The element will become a drop zone for files.
                             </small>
                         </div>
 
                         <div class="form-group">
-                            <label for="dndMaxSize">
-                                Max File Size (Optional)
-                                <i class="fas fa-info-circle" title="Maximum file size in bytes. 0 = no limit. Example: 10485760 = 10MB, 5242880 = 5MB, 1048576 = 1MB."></i>
+                            <label for="dndAccept">
+                                Accept File Types (Optional)
+                                <i class="fas fa-info-circle" title="Comma-separated MIME types or patterns. Examples: 'image/*', 'application/pdf', 'image/jpeg,image/png'. Leave empty to accept all files."></i>
                             </label>
-                            <input type="number" id="dndMaxSize" min="0" placeholder="0" class="track-changes">
+                            <input type="text" id="dndAccept" placeholder="image/*,application/pdf">
                             <small class="form-hint">
-                                <i class="fas fa-weight-hanging"></i> 0 = no limit. Common values: <code>1048576</code> (1MB), <code>10485760</code> (10MB)
+                                <i class="fas fa-filter"></i> Examples: <code>image/*</code> (all images), <code>video/*</code> (all videos), <code>application/pdf</code> (PDF only)
                             </small>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
+                            <label for="dndMaxSize">
+                                Max File Size in Bytes (Optional)
+                                <i class="fas fa-info-circle" title="Maximum file size in bytes. 0 = no limit. Example: 10485760 = 10MB, 5242880 = 5MB, 1048576 = 1MB."></i>
+                            </label>
+                            <input type="number" id="dndMaxSize" min="0" placeholder="0">
+                            <small class="form-hint">
+                                <i class="fas fa-weight-hanging"></i> 0 = no limit. Common values: <code>1048576</code> (1MB), <code>10485760</code> (10MB)
+                            </small>
+                        </div>
+
+                        <div class="form-group">
                             <label for="dndMaxFiles">
                                 Max Number of Files (Optional)
                                 <i class="fas fa-info-circle" title="Maximum number of files that can be dropped at once. 0 = no limit. Useful for restricting bulk uploads."></i>
                             </label>
-                            <input type="number" id="dndMaxFiles" min="0" placeholder="0" class="track-changes">
+                            <input type="number" id="dndMaxFiles" min="0" placeholder="0">
                             <small class="form-hint">
                                 <i class="fas fa-list-ol"></i> 0 = no limit. Set to 1 for single file uploads, 5 for small batches, etc.
                             </small>
@@ -856,7 +652,7 @@
 
                         <div class="form-group">
                             <label class="checkbox-item" style="margin-top: 1.8rem;">
-                                <input type="checkbox" id="dndFailOverMaxFiles" class="track-changes">
+                                <input type="checkbox" id="dndFailOverMaxFiles">
                                 <span>Fail if Exceeds Max Files</span>
                                 <i class="fas fa-info-circle" title="If checked, reject all files when max files limit is exceeded. If unchecked, accept up to max files limit and ignore the rest."></i>
                             </label>
@@ -865,172 +661,22 @@
                             </small>
                         </div>
                     </div>
-                </div>
 
-                <!-- File Type Acceptance -->
-                <div class="config-card">
-                    <h3><i class="fas fa-filter"></i> File Type Acceptance</h3>
-                    <p class="card-description">Select which file types are allowed. If none selected, all types are enabled.</p>
-                    
-                    <div class="file-acceptance-grid">
-                        <div class="file-type-category">
-                            <h4><i class="fas fa-file-image"></i> Images</h4>
-                            <div class="checkbox-group-compact">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="image/*" class="dnd-accept-checkbox track-changes">
-                                    <span>All Images</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="image/jpeg" class="dnd-accept-checkbox track-changes">
-                                    <span>JPEG</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="image/png" class="dnd-accept-checkbox track-changes">
-                                    <span>PNG</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="image/gif" class="dnd-accept-checkbox track-changes">
-                                    <span>GIF</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="image/webp" class="dnd-accept-checkbox track-changes">
-                                    <span>WebP</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="file-type-category">
-                            <h4><i class="fas fa-file-pdf"></i> Documents</h4>
-                            <div class="checkbox-group-compact">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="application/pdf" class="dnd-accept-checkbox track-changes">
-                                    <span>PDF Files</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value=".doc,.docx" class="dnd-accept-checkbox track-changes">
-                                    <span>Word</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value=".xls,.xlsx" class="dnd-accept-checkbox track-changes">
-                                    <span>Excel</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="text/*" class="dnd-accept-checkbox track-changes">
-                                    <span>Text Files</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="file-type-category">
-                            <h4><i class="fas fa-file-video"></i> Media</h4>
-                            <div class="checkbox-group-compact">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="video/*" class="dnd-accept-checkbox track-changes">
-                                    <span>All Videos</span>
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="audio/*" class="dnd-accept-checkbox track-changes">
-                                    <span>All Audio</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="file-type-category">
-                            <h4><i class="fas fa-file-code"></i> Other</h4>
-                            <div class="checkbox-group-compact">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="application/*" class="dnd-accept-checkbox track-changes">
-                                    <span>Applications</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-hint" style="margin-top: 1rem; text-align: center; padding: 0.75rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
-                        <i class="fas fa-lightbulb"></i> <strong>Pro Tip:</strong> Leave all unchecked to accept any file type, or select specific types to restrict uploads.
-                    </div>
-                </div>
-
-                <!-- Upload Options -->
-                <div class="config-card">
-                    <h3><i class="fas fa-upload"></i> Upload Options</h3>
-                    <p class="card-description">Configure additional upload settings and store options.</p>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="dndUploadPath">
-                                Upload Path (Optional)
-                                <i class="fas fa-info-circle" title="Specify a custom folder path in your storage (e.g., '/uploads/2024/' or '/user-content/'). Leave empty for root directory."></i>
-                            </label>
-                            <input type="text" id="dndUploadPath" placeholder="/uploads/dnd-files/" class="track-changes">
-                            <small class="form-hint">
-                                <i class="fas fa-folder"></i> Organizes files in your storage bucket. Example: <code>/images/avatars/</code>
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="dndStoreLocation">
-                                Store Location
-                                <i class="fas fa-info-circle" title="Choose where to store uploaded files. 's3' for Amazon S3, 'gcs' for Google Cloud Storage, 'azure' for Azure Blob, 'rackspace' for Rackspace."></i>
-                            </label>
-                            <select id="dndStoreLocation" class="track-changes">
-                                <option value="">Default (Filestack Storage)</option>
-                                <option value="s3">Amazon S3</option>
-                                <option value="gcs">Google Cloud Storage</option>
-                                <option value="azure">Azure Blob Storage</option>
-                                <option value="rackspace">Rackspace Cloud Files</option>
-                            </select>
-                            <small class="form-hint">
-                                <i class="fas fa-cloud"></i> Choose your preferred cloud storage provider.
-                            </small>
-                        </div>
+                    <div class="section-divider" style="margin: 2rem 0 1.5rem 0;">
+                        <span><i class="fas fa-shield-alt"></i> Security Configuration (Optional)</span>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="dndUploadTags">
-                                Upload Tags (Optional)
-                                <i class="fas fa-info-circle" title="Add custom metadata tags to track uploads. Format: 'key1:value1,key2:value2'"></i>
-                            </label>
-                            <input type="text" id="dndUploadTags" placeholder="userId:123,source:dnd" class="track-changes">
-                            <small class="form-hint">
-                                <i class="fas fa-tags"></i> Comma-separated key-value pairs for metadata tracking.
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="checkbox-item" style="margin-top: 1.8rem;">
-                                <input type="checkbox" id="dndStoreOnly" class="track-changes">
-                                <span>Store Only (No CDN)</span>
-                                <i class="fas fa-info-circle" title="If checked, files are stored but not accessible via CDN. Useful for private storage."></i>
-                            </label>
-                            <small class="form-hint">
-                                <i class="fas fa-lock"></i> Files stored but not accessible via public CDN URLs.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SDK Configuration -->
-                <div class="config-card">
-                    <h3><i class="fas fa-cogs"></i> SDK Configuration</h3>
-                    <p class="card-description">Configure the Filestack SDK settings and security parameters.</p>
-                    
                     <div class="form-row">
                         <div class="form-group">
                             <label for="dndCname">
                                 Custom Domain (CNAME)
                                 <i class="fas fa-info-circle" title="Your custom domain configured with Filestack. Example: 'cdn.yourdomain.com'. Leave empty to use default Filestack domain."></i>
                             </label>
-                            <input type="text" id="dndCname" placeholder="cdn.example.com" class="track-changes">
+                            <input type="text" id="dndCname" placeholder="cdn.example.com">
                             <small class="form-hint">
                                 <i class="fas fa-globe"></i> Optional custom domain for Filestack CDN. Requires setup in Filestack dashboard.
                             </small>
                         </div>
-                    </div>
-
-                    <div class="section-divider" style="margin: 1.5rem 0 1rem 0;">
-                        <span><i class="fas fa-shield-alt"></i> Security Settings</span>
                     </div>
 
                     <div class="form-row">
@@ -1039,7 +685,7 @@
                                 Security Policy
                                 <i class="fas fa-info-circle" title="Base64-encoded JSON policy for authentication. Used with signature for secure uploads. Generate in Filestack dashboard."></i>
                             </label>
-                            <input type="text" id="dndPolicy" placeholder="eyJleHBpcnkiOjE1ODI..." class="track-changes">
+                            <input type="text" id="dndPolicy" placeholder="eyJleHBpcnkiOjE1ODI...">
                             <small class="form-hint">
                                 <i class="fas fa-key"></i> Base64-encoded security policy. Required for private file access.
                             </small>
@@ -1050,89 +696,13 @@
                                 Security Signature
                                 <i class="fas fa-info-circle" title="HMAC signature for the policy. Works together with policy for secure authentication. Generate in Filestack dashboard."></i>
                             </label>
-                            <input type="text" id="dndSignature" placeholder="abc123def456..." class="track-changes">
+                            <input type="text" id="dndSignature" placeholder="abc123def456...">
                             <small class="form-hint">
                                 <i class="fas fa-signature"></i> HMAC signature matching the policy above.
                             </small>
                         </div>
                     </div>
 
-                    <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-top: 1rem;">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Security Notes</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>Policy & Signature:</strong> Both are required together for secure uploads</li>
-                            <li><strong>Generate in Dashboard:</strong> Create these in your Filestack application settings</li>
-                            <li><strong>Server-Side Validation:</strong> Always validate uploads on your backend</li>
-                            <li><strong>CNAME Setup:</strong> Configure custom domain in your DNS and Filestack dashboard</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Event Configuration -->
-                <div class="config-card">
-                    <h3><i class="fas fa-broadcast-tower"></i> Event Configuration</h3>
-                    <p class="card-description">Configure event handlers for drag & drop interactions and upload progress.</p>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="dndEnableProgress" class="track-changes" checked>
-                                <span>Enable Progress Events</span>
-                                <i class="fas fa-info-circle" title="Listen to upload progress events to show progress bars or status updates."></i>
-                            </label>
-                            <small class="form-hint">
-                                <i class="fas fa-chart-line"></i> Track upload progress with real-time updates.
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="dndEnableDragEvents" class="track-changes" checked>
-                                <span>Enable Drag Events</span>
-                                <i class="fas fa-info-circle" title="Listen to dragover, dragleave, and drop events for visual feedback."></i>
-                            </label>
-                            <small class="form-hint">
-                                <i class="fas fa-mouse-pointer"></i> Visual feedback during drag operations.
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="dndEnableErrorHandling" class="track-changes" checked>
-                                <span>Enable Error Handling</span>
-                                <i class="fas fa-info-circle" title="Listen to error events for file validation failures and upload errors."></i>
-                            </label>
-                            <small class="form-hint">
-                                <i class="fas fa-exclamation-circle"></i> Handle file validation and upload errors gracefully.
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="dndEnableSuccessEvents" class="track-changes" checked>
-                                <span>Enable Success Events</span>
-                                <i class="fas fa-info-circle" title="Listen to success events when files are successfully uploaded."></i>
-                            </label>
-                            <small class="form-hint">
-                                <i class="fas fa-check-circle"></i> Handle successful uploads with callbacks.
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
-                        <h4><i class="fas fa-code"></i> Available Events</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>successReadFile:</strong> File selected and ready for upload</li>
-                            <li><strong>progress:</strong> Upload progress updates (percentage, bytes)</li>
-                            <li><strong>dragover:</strong> File dragged over drop zone</li>
-                            <li><strong>dragleave:</strong> File dragged away from drop zone</li>
-                            <li><strong>drop:</strong> File dropped on zone</li>
-                            <li><strong>uploadFileFinish:</strong> Upload completed successfully</li>
-                            <li><strong>error:</strong> Upload failed or validation error</li>
-                        </ul>
-                    </div>
                 </div>
 
                 <div class="config-card config-full-width" style="margin-top: 1.5rem;">
@@ -1619,96 +1189,301 @@
 
 
 
+            <!-- Upload Section -->
+            <section id="upload" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-upload"></i> File Upload</h2>
+                    <p>Configure direct file upload options and settings for your Filestack implementation.</p>
+                    <a href="https://www.filestack.com/docs/uploads/uploading/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                        <i class="fas fa-book"></i> View Documentation
+                    </a>
+                </div>
 
-            <!-- Intelligence Section: Safe for Work Detection -->
+                <div class="config-card config-full-width">
+                    <h3><i class="fas fa-cog"></i> Upload Configuration</h3>
+
+                    <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50; margin-bottom: 1rem;">
+                        <p style="margin: 0;"><i class="fas fa-info-circle"></i> <strong>Placeholder File:</strong> Using "sample-image.jpg" for demonstration purposes. File uploads are handled via the File Picker interface.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="uploadPath">
+                            Upload Path (Optional)
+                            <i class="fas fa-info-circle" title="Specify a custom folder path in your storage (e.g., '/uploads/2024/' or '/user-content/'). Leave empty for root directory."></i>
+                        </label>
+                        <input type="text" id="uploadPath" placeholder="e.g., /uploads/user-files/">
+                        <small class="form-hint">
+                            <i class="fas fa-folder"></i> Organizes files in your storage bucket. Example: <code>/images/avatars/</code>
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Upload Tags (Key-Value Pairs)
+                            <i class="fas fa-info-circle" title="Add up to 10 custom metadata tags to track uploads. Great for associating userID, transactionID, or other identifiers."></i>
+                        </label>
+                        <div id="uploadTagsContainer">
+                            <div class="upload-tag-row">
+                                <input type="text" class="tag-key" placeholder="Key (e.g., userId)" maxlength="128">
+                                <input type="text" class="tag-value" placeholder="Value (e.g., user123)" maxlength="256">
+                                <button type="button" class="btn btn-small btn-secondary" onclick="removeUploadTag(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-small btn-secondary" onclick="addUploadTag()" style="margin-top: 0.5rem;">
+                            <i class="fas fa-plus"></i> Add Tag
+                        </button>
+                        <small class="form-hint">
+                            <i class="fas fa-tags"></i> Upload tags help match files with your app data (userID, sessionID, etc.). Max 10 tags, keys up to 128 chars, values up to 256 chars.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="config-card config-full-width" style="margin-top: 1.5rem;">
+                    <h3><i class="fas fa-info-circle"></i> About File Upload</h3>
+                    <p>Filestack provides multiple ways to upload files programmatically:</p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-book-open"></i> Upload Methods</h4>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-file-upload"></i> <strong>Basic Upload:</strong> Simple HTTP POST to <code>/api/store/S3</code> endpoint</li>
+                            <li><i class="fas fa-link"></i> <strong>Upload from URL:</strong> Import files from external URLs by passing <code>url</code> parameter</li>
+                            <li><i class="fas fa-puzzle-piece"></i> <strong>Multipart Upload:</strong> Robust upload flow for large files (via SDK clients)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box" style="background: #fff9e6; border-left: 4px solid #ffc107; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-code"></i> File Store API - POST Request</h4>
+                        <p style="margin: 0.5rem 0;">Upload files directly to Filestack storage using the File API:</p>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Endpoint:</strong>
+                            <code style="display: block; background: #f5f5f5; padding: 0.5rem; margin-top: 0.3rem; border-radius: 4px;">POST https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY</code>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Query Parameters:</strong>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                                <li><code>key</code> (required) - Your Filestack API key</li>
+                                <li><code>filename</code> - Name for the stored file</li>
+                                <li><code>mimetype</code> - File MIME type (e.g., image/jpeg, text/plain)</li>
+                                <li><code>path</code> - Custom storage path (e.g., /uploads/2024/)</li>
+                                <li><code>container</code> - Storage bucket/container name</li>
+                                <li><code>access</code> - S3 only: "public" or "private" (default)</li>
+                                <li><code>base64decode</code> - Decode base64 data before storing</li>
+                            </ul>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Upload from URL:</strong>
+                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X POST \
+  -d url="https://example.com/image.png" \
+  "https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY"</code></pre>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Upload Binary File:</strong>
+                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>curl -X POST \
+  --data-binary @filename.png \
+  --header "Content-Type:image/png" \
+  "https://www.filestackapi.com/api/store/S3?key=YOUR_API_KEY"</code></pre>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Response:</strong>
+                            <pre style="background: #f5f5f5; padding: 0.75rem; margin-top: 0.3rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"><code>{
+  "url": "https://cdn.filestackcontent.com/s7tdGfE5RRKFUxwsZoYv",
+  "size": 8331,
+  "type": "image/png",
+  "filename": "watermark.png",
+  "key": "a1RyBxiglW92bS2SRmqM_watermark.png"
+}</code></pre>
+                        </div>
+
+                        <div style="margin: 1rem 0;">
+                            <strong>Storage Providers:</strong>
+                            <p style="margin: 0.3rem 0; font-size: 0.9rem;">Default is S3. Other options: <code>azure</code>, <code>dropbox</code>, <code>rackspace</code>, <code>gcs</code>. Must be configured in your developer portal.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-tags"></i> Upload Tags</h4>
+                        <p style="margin: 0.5rem 0;">Pass custom key-value metadata with each upload to track files in your application:</p>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-check"></i> <strong>Max 10 tags per upload</strong></li>
+                            <li><i class="fas fa-check"></i> <strong>String pairs only:</strong> Both keys and values must be strings</li>
+                            <li><i class="fas fa-check"></i> <strong>Keys:</strong> Up to 128 Unicode characters, case-sensitive, must be unique</li>
+                            <li><i class="fas fa-check"></i> <strong>Values:</strong> Up to 256 Unicode characters</li>
+                        </ul>
+                        <small style="display: block; margin-top: 0.5rem; opacity: 0.9;">
+                            Tags appear in upload response and webhooks, perfect for matching files to userID, transactionID, etc.
+                        </small>
+                    </div>
+
+                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
+                        <h4><i class="fas fa-server"></i> Application-Level Features</h4>
+                        <p style="margin: 0.5rem 0;">These features are configured at the application level (not per-upload):</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>Content Ingestion Network (CIN):</strong> Global edge servers for faster uploads. Enabled in your Filestack application settings.</li>
+                            <li><strong>Intelligent Ingestion (FII):</strong> Auto-adjusts chunk sizes for poor network conditions. Contact sales to enable.</li>
+                            <li><strong>Cloud Uploads:</strong> Upload from cloud providers (Dropbox, Google Drive, etc.) - only via File Picker UI.</li>
+                        </ul>
+                        <small style="display: block; margin-top: 0.5rem; opacity: 0.9;">
+                            <strong>Note:</strong> Check upload status with <code>?metadata&upload_status=true</code> when using CIN.
+                        </small>
+                    </div>
+
+                    <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50;">
+                        <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>User Profiles:</strong> Avatar uploads with <code>userId</code> tag</li>
+                            <li><strong>Document Management:</strong> PDF uploads with custom <code>path</code> organization</li>
+                            <li><strong>E-commerce:</strong> Product images with <code>productId</code> and <code>sku</code> tags</li>
+                            <li><strong>Content Publishing:</strong> Media uploads with <code>authorId</code> and <code>postId</code> tags</li>
+                            <li><strong>Import Tools:</strong> Bulk uploads from external URLs</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Download Section -->
+            <section id="download" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-download"></i> File Download</h2>
+                    <p>Configure file download options and settings for retrieving files from Filestack.</p>
+                </div>
+
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3><i class="fas fa-cog"></i> Download Configuration</h3>
+
+                        <div class="form-group">
+                            <label for="downloadHandle">File Handle or URL</label>
+                            <input type="text" id="downloadHandle" placeholder="Enter file handle or URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="downloadFilename">Download Filename</label>
+                            <input type="text" id="downloadFilename" placeholder="Custom filename (optional)">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="downloadFormat">Download Format</label>
+                            <select id="downloadFormat">
+                                <option value="original">Original Format</option>
+                                <option value="jpg">JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                                <option value="pdf">PDF</option>
+                            </select>
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-info-circle"></i> About Download</h3>
+                        <p>File download provides programmatic access to files stored in Filestack:</p>
+
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Direct file download from Filestack</li>
+                            <li><i class="fas fa-check"></i> Custom filename and format options</li>
+                            <li><i class="fas fa-check"></i> Transform integration for processed files</li>
+                            <li><i class="fas fa-check"></i> Secure download with authentication</li>
+                            <li><i class="fas fa-check"></i> Progress tracking and error handling</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Ideal for file management systems, content delivery, backup solutions, and applications
+                                requiring programmatic file access.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Intelligence Section -->
             <section id="sfw" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-shield-alt"></i> Safe for Work Detection</h2>
-                    <p>AI-powered image content moderation that analyzes images and determines if they contain appropriate content for workplace environments. Returns a simple boolean response in real-time.</p>
+                    <p>Check if images are suitable for workplace environments using AI-powered content analysis.</p>
                     <a href="https://www.filestack.com/docs/transformations/intelligence/sfw/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
                         <i class="fas fa-book"></i> View Documentation
                     </a>
                 </div>
 
                 <div class="config-grid">
-                    <!-- Configuration Panel -->
                     <div class="config-card">
                         <h3><i class="fas fa-cog"></i> Configuration</h3>
 
                         <div class="form-group">
-                            <label><strong>Input Type</strong></label>
+                            <label>Input Type</label>
                             <div class="radio-group">
-                                <label class="radio-item" title="Use a file handle from an uploaded file">
+                                <label class="radio-item">
                                     <input type="radio" name="sfwInputType" value="handle" checked>
                                     <span>File Handle</span>
                                 </label>
-                                <label class="radio-item" title="Analyze an image from any public URL">
+                                <label class="radio-item">
                                     <input type="radio" name="sfwInputType" value="external">
                                     <span>External URL</span>
                                 </label>
-                                <label class="radio-item" title="Use a custom storage location configured in your portal">
+                                <label class="radio-item">
                                     <input type="radio" name="sfwInputType" value="storage">
                                     <span>Storage Alias</span>
                                 </label>
                             </div>
                             <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to identify the image for content analysis
+                                Choose how to identify the image for content analysis
                             </small>
                         </div>
 
-                        <!-- Handle Input -->
                         <div class="form-group" id="sfwHandleGroup">
-                            <label for="sfwHandle"><i class="fas fa-file"></i> File Handle</label>
-                            <input type="text" id="sfwHandle" placeholder="e.g., H2swKXwhRxKFrylkjGcz" title="Enter the file handle returned after uploading to Filestack">
+                            <label for="sfwHandle">File Handle</label>
+                            <input type="text" id="sfwHandle" placeholder="e.g., H2swKXwhRxKFrylkjGcz">
                             <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The unique handle returned after uploading a file to Filestack (most common method)
+                                The handle returned after uploading to Filestack
                             </small>
                         </div>
 
-                        <!-- External URL Input -->
                         <div class="form-group" id="sfwExternalGroup" style="display: none;">
-                            <label for="sfwExternalUrl"><i class="fas fa-link"></i> External Image URL</label>
-                            <input type="text" id="sfwExternalUrl" placeholder="https://example.com/image.jpg" title="Enter the full URL to a publicly accessible image">
+                            <label for="sfwExternalUrl">External Image URL</label>
+                            <input type="text" id="sfwExternalUrl" placeholder="https://example.com/image.jpg">
                             <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Direct URL to any publicly accessible image (requires API key in the generated URL)
+                                Direct URL to an image (requires API key in URL)
                             </small>
                         </div>
 
-                        <!-- Storage Alias Input -->
                         <div class="form-group" id="sfwStorageGroup" style="display: none;">
-                            <label for="sfwStorageAlias"><i class="fas fa-database"></i> Storage Alias</label>
-                            <input type="text" id="sfwStorageAlias" placeholder="e.g., my-s3-bucket" title="Enter your storage alias name">
+                            <label for="sfwStorageAlias">Storage Alias</label>
+                            <input type="text" id="sfwStorageAlias" placeholder="e.g., my-s3-bucket">
                             <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Custom storage alias configured in the Developer Portal (e.g., S3, Azure, GCS)
+                                Custom storage configured in Developer Portal
                             </small>
-                            <label for="sfwStoragePath" style="margin-top: 1rem;"><i class="fas fa-folder"></i> File Path</label>
-                            <input type="text" id="sfwStoragePath" placeholder="/path/to/image.jpg" title="Enter the full path to the file in your storage">
+                            <label for="sfwStoragePath" style="margin-top: 1rem;">File Path</label>
+                            <input type="text" id="sfwStoragePath" placeholder="/path/to/image.jpg">
                             <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The full path to the file within your storage location
+                                Path to the file within your storage
                             </small>
                         </div>
 
-                        <!-- Advanced Options -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <label class="checkbox-item" title="Apply transformations before analyzing the image">
+                        <div class="form-group">
+                            <label class="checkbox-item">
                                 <input type="checkbox" id="sfwEnableChaining">
-                                <span><strong>Chain with Transformations</strong></span>
+                                <span>Chain with other transformations</span>
                             </label>
                             <small style="color: #666; display: block; margin-top: 0.3rem; margin-left: 1.75rem;">
-                                <i class="fas fa-magic"></i> Apply image transformations before SFW detection (e.g., crop specific area, resize, or blur portions)
+                                Apply transformations before SFW detection (e.g., crop specific area)
                             </small>
                         </div>
 
-                        <!-- Transformation Chain Builder -->
                         <div class="form-group" id="sfwChainingGroup" style="display: none;">
-                            <label><i class="fas fa-layer-group"></i> Pre-SFW Transformations</label>
-                            <small style="color: #666; display: block; margin-bottom: 0.5rem;">
-                                Transformations are applied in order before SFW analysis
-                            </small>
+                            <label>Pre-SFW Transformations</label>
                             <div id="sfwPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
                                     <div class="chain-step-header">
-                                        <select class="chain-operation" title="Select a transformation to apply">
+                                        <select class="chain-operation">
                                             <option value="">Select Operation</option>
                                             <option value="resize">Resize</option>
                                             <option value="crop">Crop</option>
@@ -1730,79 +1505,50 @@
                                             <option value="quality">Quality</option>
                                             <option value="convert">Convert Format</option>
                                         </select>
-                                        <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
+                                        <button type="button" class="btn-remove-step">×</button>
                                     </div>
-                                    <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)" title="Enter transformation parameters">
+                                    <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
                                     <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addSfwPreStep" class="btn btn-secondary btn-small">
-                                <i class="fas fa-plus"></i> Add Transformation
-                            </button>
+                            <button type="button" id="addSfwPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
                     </div>
 
-                    <!-- Information Panel -->
                     <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Safe for Work Detection</h3>
-                        <p style="margin-bottom: 1rem; line-height: 1.7;">
-                            Safe for Work (SFW) detection is an AI-powered intelligence service that analyzes image content and returns a boolean value indicating whether the image contains appropriate content for workplace environments.
-                        </p>
+                        <h3><i class="fas fa-info-circle"></i> What is Safe for Work?</h3>
+                        <p style="margin-bottom: 1rem;">Safe for Work (SFW) detection uses AI to analyze images and return a simple boolean indicating if content is appropriate for workplace environments.</p>
 
-                        <div class="info-box" style="background: #e8f4f8; border-color: #17a2b8;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-brain"></i> How It Works</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.7;">
-                                The AI model analyzes visual content including objects, people, context, and scenes to determine if the image contains inappropriate content such as adult content, violence, or other NSFW material. The analysis happens in real-time and returns instant results.
-                            </p>
-                        </div>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> <strong>Direct API</strong> - Synchronous operation (instant results)</li>
+                            <li><i class="fas fa-check"></i> <strong>Workflows</strong> - Also available for automated pipelines</li>
+                            <li><i class="fas fa-check"></i> <strong>Chainable</strong> - Combine with other transformations</li>
+                            <li><i class="fas fa-check"></i> <strong>Security Required</strong> - Needs policy & signature</li>
+                        </ul>
 
                         <div class="info-box">
                             <h4><i class="fas fa-code"></i> Response Format</h4>
                             <p style="line-height: 1.8; margin: 0;">
-                                <strong style="color: #28a745;">✓ Safe Image:</strong> <code style="background: #d4edda; padding: 4px 8px; border-radius: 3px; color: #155724;">{"sfw": true}</code><br>
-                                <strong style="color: #dc3545;">✗ Unsafe Image:</strong> <code style="background: #f8d7da; padding: 4px 8px; border-radius: 3px; color: #721c24;">{"sfw": false}</code>
+                                <strong>Safe Image:</strong> <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 3px;">{"sfw": true}</code><br>
+                                <strong>Unsafe Image:</strong> <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 3px;">{"sfw": false}</code>
                             </p>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                Simple boolean response makes it easy to implement conditional logic in your application
-                            </small>
                         </div>
 
-                        <ul class="feature-list">
-                            <li><i class="fas fa-bolt"></i> <strong>Real-Time Processing</strong> - Synchronous API with instant results</li>
-                            <li><i class="fas fa-link"></i> <strong>Workflows Compatible</strong> - Can be used in automated workflows</li>
-                            <li><i class="fas fa-layer-group"></i> <strong>Chainable</strong> - Combine with other transformations in a single URL</li>
-                            <li><i class="fas fa-lock"></i> <strong>Security Required</strong> - Needs policy & signature for protection</li>
-                            <li><i class="fas fa-images"></i> <strong>Universal Support</strong> - Works with handles, external URLs, and storage aliases</li>
-                        </ul>
-
                         <div class="info-box">
-                            <h4><i class="fas fa-rocket"></i> Common Use Cases</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                • <strong>User-Generated Content Filtering</strong> - Automatically flag inappropriate uploads<br>
-                                • <strong>Content Moderation Queues</strong> - Route unsafe content for manual review<br>
-                                • <strong>Compliance & Safety</strong> - Ensure all displayed images meet workplace standards<br>
-                                • <strong>Workflow Automation</strong> - Create conditional logic based on SFW status<br>
-                                • <strong>Profile Image Validation</strong> - Verify user avatars before publishing<br>
-                                • <strong>Marketplace & E-Commerce</strong> - Screen product images before listing
+                            <h4><i class="fas fa-rocket"></i> Use Cases</h4>
+                            <p style="margin: 0; line-height: 1.6;">
+                                • <strong>User-Generated Content</strong> - Filter uploads automatically<br>
+                                • <strong>Moderation</strong> - Flag content for manual review<br>
+                                • <strong>Compliance</strong> - Ensure workplace-appropriate content<br>
+                                • <strong>Conditional Logic</strong> - Route files based on SFW status
                             </p>
                         </div>
 
                         <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
                             <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
-                            <p style="color: #856404; margin: 0; line-height: 1.7;">
-                                SFW detection requires a <strong>security policy and signature</strong> to prevent unauthorized usage. Configure these credentials in the API Key section at the top of the page. Learn more about <a href="https://www.filestack.com/docs/security/policies/" target="_blank" style="color: #856404; text-decoration: underline;">security policies</a>.
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #d1ecf1; border-color: #bee5eb;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-lightbulb"></i> Pro Tips</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.8;">
-                                • Combine with <strong>tagging</strong> for more detailed content analysis<br>
-                                • Use <strong>crop</strong> transformation to check specific areas of an image<br>
-                                • Implement <strong>retry logic</strong> for handling temporary failures<br>
-                                • Cache results to reduce API calls for the same images<br>
-                                • Use in workflows to automatically move unsafe files to quarantine
+                            <p style="color: #856404; margin: 0;">
+                                SFW detection requires <strong>security policy and signature</strong>. Make sure to configure these in the API Key section at the top of the page.
                             </p>
                         </div>
                     </div>
@@ -1812,92 +1558,62 @@
             <!-- Image Tagging Section -->
             <section id="tagging" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-tags"></i> Image Tagging & Recognition</h2>
-                    <p>AI-powered image analysis that automatically identifies objects, scenes, activities, and concepts in images. Returns detailed tags with confidence scores in real-time.</p>
-                    <a href="https://www.filestack.com/docs/transformations/intelligence/tagging/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
-                        <i class="fas fa-book"></i> View Documentation
-                    </a>
+                    <h2><i class="fas fa-tags"></i> Image Tagging</h2>
+                    <p>Automatically detect and tag objects, scenes, and concepts in your images using AI.</p>
                 </div>
 
                 <div class="config-grid">
-                    <!-- Configuration Panel -->
                     <div class="config-card">
                         <h3><i class="fas fa-cog"></i> Configuration</h3>
 
                         <div class="form-group">
-                            <label><strong>Input Type</strong></label>
+                            <label>Input Type</label>
                             <div class="radio-group">
-                                <label class="radio-item" title="Use a file handle from an uploaded file">
+                                <label class="radio-item">
                                     <input type="radio" name="taggingInputType" value="handle" checked>
-                                    <span>File Handle</span>
+                                    <span>Handle</span>
                                 </label>
-                                <label class="radio-item" title="Analyze an image from any public URL">
+                                <label class="radio-item">
                                     <input type="radio" name="taggingInputType" value="external">
                                     <span>External URL</span>
                                 </label>
-                                <label class="radio-item" title="Use a custom storage location">
+                                <label class="radio-item">
                                     <input type="radio" name="taggingInputType" value="storage">
                                     <span>Storage Alias</span>
                                 </label>
                             </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to identify the image for tagging analysis
-                            </small>
                         </div>
 
-                        <!-- Handle Input -->
                         <div class="form-group" id="taggingHandleGroup">
-                            <label for="taggingHandle"><i class="fas fa-file"></i> Image Handle</label>
-                            <input type="text" id="taggingHandle" placeholder="e.g., fyR6gNKmQ8OGntKuNnrs" title="Enter the file handle returned after uploading to Filestack">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The unique handle returned after uploading an image to Filestack
-                            </small>
+                            <label for="taggingHandle">Image Handle</label>
+                            <input type="text" id="taggingHandle" placeholder="Enter image handle">
                         </div>
 
-                        <!-- External URL Input -->
                         <div class="form-group" id="taggingExternalGroup" style="display: none;">
-                            <label for="taggingExternalUrl"><i class="fas fa-link"></i> External Image URL</label>
-                            <input type="text" id="taggingExternalUrl" placeholder="https://example.com/image.jpg" title="Enter the full URL to a publicly accessible image">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Direct URL to any publicly accessible image (requires API key in the generated URL)
-                            </small>
+                            <label for="taggingExternalUrl">External Image URL</label>
+                            <input type="text" id="taggingExternalUrl" placeholder="https://example.com/image.jpg">
                         </div>
 
-                        <!-- Storage Alias Input -->
                         <div class="form-group" id="taggingStorageGroup" style="display: none;">
-                            <label for="taggingStorageAlias"><i class="fas fa-database"></i> Storage Alias</label>
-                            <input type="text" id="taggingStorageAlias" placeholder="e.g., my-s3-bucket" title="Enter your storage alias name">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Custom storage alias configured in the Developer Portal
-                            </small>
-                            <label for="taggingStoragePath" style="margin-top: 1rem;"><i class="fas fa-folder"></i> File Path</label>
-                            <input type="text" id="taggingStoragePath" placeholder="/path/to/image.jpg" title="Enter the full path to the file">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The full path to the file within your storage location
-                            </small>
+                            <label for="taggingStorageAlias">Storage Alias</label>
+                            <input type="text" id="taggingStorageAlias" placeholder="my-storage-alias">
+                            <label for="taggingStoragePath">File Path</label>
+                            <input type="text" id="taggingStoragePath" placeholder="/path/to/image.jpg">
                         </div>
 
-                        <!-- Advanced Options -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <label class="checkbox-item" title="Apply transformations before tagging">
+                        <div class="form-group">
+                            <label class="checkbox-item">
                                 <input type="checkbox" id="taggingEnableChaining">
-                                <span><strong>Chain with Transformations</strong></span>
+                                <span>Chain with other transformations</span>
                             </label>
-                            <small style="color: #666; display: block; margin-top: 0.3rem; margin-left: 1.75rem;">
-                                <i class="fas fa-magic"></i> Apply image transformations before tagging (e.g., crop, resize, enhance contrast)
-                            </small>
                         </div>
 
-                        <!-- Transformation Chain Builder -->
                         <div class="form-group" id="taggingChainingGroup" style="display: none;">
-                            <label><i class="fas fa-layer-group"></i> Pre-Tagging Transformations</label>
-                            <small style="color: #666; display: block; margin-bottom: 0.5rem;">
-                                Transformations are applied in order before tagging analysis
-                            </small>
+                            <label>Pre-Tagging Transformations</label>
                             <div id="taggingPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
                                     <div class="chain-step-header">
-                                        <select class="chain-operation" title="Select a transformation to apply">
+                                        <select class="chain-operation">
                                             <option value="">Select Operation</option>
                                             <option value="resize">Resize</option>
                                             <option value="crop">Crop</option>
@@ -1919,102 +1635,26 @@
                                             <option value="quality">Quality</option>
                                             <option value="convert">Convert Format</option>
                                         </select>
-                                        <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
+                                        <button type="button" class="btn-remove-step">×</button>
                                     </div>
-                                    <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)" title="Enter transformation parameters">
+                                    <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
                                     <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addTaggingPreStep" class="btn btn-secondary btn-small">
-                                <i class="fas fa-plus"></i> Add Transformation
-                            </button>
+                            <button type="button" id="addTaggingPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
                         </div>
 
-                        <!-- Test Button -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <button type="button" id="testTaggingBtn" class="btn btn-primary" style="width: 100%;" onclick="testTagging()">
-                                <i class="fas fa-play"></i> Test Image Tagging
-                            </button>
-                            <small style="color: #666; display: block; margin-top: 0.5rem; text-align: center;">
-                                Requires valid API credentials and an image handle
-                            </small>
-                        </div>
-
-                        <!-- Test Result Display -->
-                        <div id="taggingTestResult" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 5px;"></div>
                     </div>
 
-                    <!-- Information Panel -->
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About Image Tagging</h3>
-                        <p style="margin-bottom: 1rem; line-height: 1.7;">
-                            Image Tagging is an AI-powered intelligence service that analyzes image content and returns descriptive tags with confidence scores. It can identify objects, scenes, activities, concepts, and more.
-                        </p>
-
-                        <div class="info-box" style="background: #e8f4f8; border-color: #17a2b8;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-brain"></i> How It Works</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.7;">
-                                The AI model analyzes visual elements in the image including objects (e.g., "umbrella", "car"), scenes (e.g., "outdoor", "street"), activities (e.g., "concert", "travel"), and abstract concepts. Each tag comes with a confidence score from 0-100.
-                            </p>
-                        </div>
+                        <p>Image tagging uses machine learning to automatically identify and categorize content in your
+                            images.</p>
 
                         <div class="info-box">
-                            <h4><i class="fas fa-code"></i> Response Format</h4>
-                            <p style="line-height: 1.6; margin: 0; font-family: monospace; font-size: 0.9em;">
-                                <code style="background: #f8f9fa; padding: 8px; border-radius: 3px; display: block; white-space: pre-wrap;">{
-  "tags": {
-    "auto": {
-      "people": 96,
-      "concert": 88,
-      "outdoor": 90,
-      "music": 84,
-      "umbrella": 97
-    }
-  }
-}</code>
-                            </p>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                Tags are sorted by relevance with confidence scores (0-100)
-                            </small>
-                        </div>
-
-                        <ul class="feature-list">
-                            <li><i class="fas fa-bolt"></i> <strong>Real-Time Analysis</strong> - Synchronous API with instant results</li>
-                            <li><i class="fas fa-chart-line"></i> <strong>Confidence Scores</strong> - Each tag includes accuracy percentage</li>
-                            <li><i class="fas fa-link"></i> <strong>Workflows Compatible</strong> - Use in automated pipelines</li>
-                            <li><i class="fas fa-layer-group"></i> <strong>Chainable</strong> - Combine with transformations</li>
-                            <li><i class="fas fa-lock"></i> <strong>Security Required</strong> - Needs policy & signature</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-rocket"></i> Common Use Cases</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                • <strong>Content Discovery</strong> - Build search functionality based on image content<br>
-                                • <strong>Auto-Categorization</strong> - Organize photos into categories automatically<br>
-                                • <strong>Content Moderation</strong> - Flag specific types of content for review<br>
-                                • <strong>Metadata Enhancement</strong> - Add rich metadata to images<br>
-                                • <strong>E-commerce</strong> - Auto-tag product images for better searchability<br>
-                                • <strong>Social Media</strong> - Suggest hashtags based on image content<br>
-                                • <strong>DAM Systems</strong> - Improve digital asset management workflows
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
-                            <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
-                            <p style="color: #856404; margin: 0; line-height: 1.7;">
-                                Image Tagging requires a <strong>security policy and signature</strong>. Configure these in the API Key section at the top of the page.
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #d1ecf1; border-color: #bee5eb;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-lightbulb"></i> Pro Tips</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.8;">
-                                • Use <strong>version:2</strong> parameter for the latest tagging model<br>
-                                • Combine with <strong>SFW detection</strong> for comprehensive content analysis<br>
-                                • Filter tags by confidence score for better accuracy<br>
-                                • Cache results to reduce API calls for duplicate images<br>
-                                • Use <strong>sharpen</strong> transformation before tagging for better accuracy
-                            </p>
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Perfect for content moderation, image organization, search functionality, and automated
+                                content categorization.</p>
                         </div>
                     </div>
                 </div>
@@ -2024,231 +1664,49 @@
             <!-- Face Detection Section -->
             <section id="faces" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-user-friends"></i> Face Detection & Analysis</h2>
-                    <p>AI-powered face detection that identifies and analyzes human faces in images. Detect face locations, count faces, and optionally pixelate or blur detected faces for privacy protection.</p>
-                    <a href="https://www.filestack.com/docs/api/processing/#detect-faces" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
-                        <i class="fas fa-book"></i> View Documentation
-                    </a>
+                    <h2><i class="fas fa-user"></i> Face Detection</h2>
+                    <p>Detect and analyze faces in images with detailed attributes and characteristics.</p>
                 </div>
 
                 <div class="config-grid">
-                    <!-- Configuration Panel -->
                     <div class="config-card">
                         <h3><i class="fas fa-cog"></i> Configuration</h3>
 
                         <div class="form-group">
-                            <label><strong>Input Type</strong></label>
-                            <div class="radio-group">
-                                <label class="radio-item" title="Use a file handle from an uploaded file">
-                                    <input type="radio" name="facesInputType" value="handle" checked>
-                                    <span>File Handle</span>
-                                </label>
-                                <label class="radio-item" title="Analyze an image from any public URL">
-                                    <input type="radio" name="facesInputType" value="external">
-                                    <span>External URL</span>
-                                </label>
-                                <label class="radio-item" title="Use a custom storage location">
-                                    <input type="radio" name="facesInputType" value="storage">
-                                    <span>Storage Alias</span>
-                                </label>
-                            </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to identify the image for face detection
-                            </small>
-                        </div>
-
-                        <!-- Handle Input -->
-                        <div class="form-group" id="facesHandleGroup">
-                            <label for="facesHandle"><i class="fas fa-file"></i> File Handle</label>
-                            <input type="text" id="facesHandle" placeholder="e.g., ABC123xyz789" title="Enter the file handle returned after uploading to Filestack">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The unique handle returned after uploading an image to Filestack
-                            </small>
-                        </div>
-
-                        <!-- External URL Input -->
-                        <div class="form-group" id="facesExternalGroup" style="display: none;">
-                            <label for="facesExternalUrl"><i class="fas fa-link"></i> External Image URL</label>
-                            <input type="text" id="facesExternalUrl" placeholder="https://example.com/photo.jpg" title="Enter the full URL to a publicly accessible image">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Direct URL to any publicly accessible image (requires API key in the generated URL)
-                            </small>
-                        </div>
-
-                        <!-- Storage Alias Input -->
-                        <div class="form-group" id="facesStorageGroup" style="display: none;">
-                            <label for="facesStorageAlias"><i class="fas fa-database"></i> Storage Alias</label>
-                            <input type="text" id="facesStorageAlias" placeholder="e.g., my-s3-bucket" title="Enter your storage alias name">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Custom storage alias configured in the Developer Portal
-                            </small>
-                            <label for="facesStoragePath" style="margin-top: 1rem;"><i class="fas fa-folder"></i> File Path</label>
-                            <input type="text" id="facesStoragePath" placeholder="/path/to/photo.jpg" title="Enter the full path to the file">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The full path to the file within your storage location
-                            </small>
-                        </div>
-
-                        <!-- Detection Parameters -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <label for="facesMinSize"><i class="fas fa-search-minus"></i> Minimum Face Size</label>
-                            <input type="number" id="facesMinSize" min="0.01" max="1" step="0.01" placeholder="0.25" title="Minimum face size as proportion of image (0.01 - 1.0)">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Minimum face size as a proportion of image dimensions (0.01 - 1.0). Lower values detect smaller faces. Default: 0.25
-                            </small>
+                            <label for="facesHandle">File Handle or URL</label>
+                            <input type="text" id="facesHandle" placeholder="Enter file handle or URL">
                         </div>
 
                         <div class="form-group">
-                            <label for="facesMaxSize"><i class="fas fa-search-plus"></i> Maximum Face Size</label>
-                            <input type="number" id="facesMaxSize" min="0.01" max="1" step="0.01" placeholder="0.55" title="Maximum face size as proportion of image (0.01 - 1.0)">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Maximum face size as a proportion of image dimensions (0.01 - 1.0). Higher values detect larger faces. Default: 0.55
-                            </small>
+                            <label for="facesMinSize">Minimum Face Size</label>
+                            <input type="number" id="facesMinSize" min="0.01" max="10000" step="0.01"
+                                placeholder="0.35">
                         </div>
 
                         <div class="form-group">
-                            <label for="facesColor"><i class="fas fa-palette"></i> Highlight Color</label>
-                            <select id="facesColor" title="Color for face detection boxes">
-                                <option value="">No highlighting</option>
-                                <option value="red" selected>Red</option>
-                                <option value="green">Green</option>
-                                <option value="blue">Blue</option>
-                                <option value="yellow">Yellow</option>
-                                <option value="white">White</option>
-                                <option value="black">Black</option>
-                            </select>
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Draw colored boxes around detected faces (for visualization)
-                            </small>
+                            <label for="facesMaxSize">Maximum Face Size</label>
+                            <input type="number" id="facesMaxSize" min="0.01" max="10000" step="0.01"
+                                placeholder="0.35">
                         </div>
 
-                        <!-- Detection Options -->
-                        <div class="form-group">
-                            <label><strong>Detection Options</strong></label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item" title="Return face coordinates as JSON data">
-                                    <input type="checkbox" id="facesExport">
-                                    <span>Export Face Data (JSON)</span>
-                                </label>
-                                <label class="checkbox-item" title="Return number of faces detected">
-                                    <input type="checkbox" id="facesCountOnly">
-                                    <span>Count Faces Only</span>
-                                </label>
-                                <label class="checkbox-item" title="Blur detected faces for privacy">
-                                    <input type="checkbox" id="facesBlur">
-                                    <span>Blur Faces</span>
-                                </label>
-                                <label class="checkbox-item" title="Pixelate detected faces for privacy">
-                                    <input type="checkbox" id="facesPixelate">
-                                    <span>Pixelate Faces</span>
-                                </label>
-                            </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to process and return face detection results
-                            </small>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="facesExport">
+                                <span>Export face objects to JSON</span>
+                            </label>
                         </div>
-
-                        <!-- Blur/Pixelate Amount -->
-                        <div class="form-group" id="facesPrivacyAmountGroup" style="display: none;">
-                            <label for="facesPrivacyAmount"><i class="fas fa-sliders-h"></i> Privacy Effect Amount</label>
-                            <input type="range" id="facesPrivacyAmount" min="1" max="20" value="10" style="width: 100%;" 
-                                   oninput="document.getElementById('facesPrivacyAmountValue').value = this.value">
-                            <output id="facesPrivacyAmountValue" style="display: block; text-align: center; font-weight: bold; color: var(--primary-orange);">10</output>
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Intensity of blur or pixelation effect (1-20, higher = stronger effect)
-                            </small>
-                        </div>
-                        
-                        <script>
-                            // Show/hide privacy amount based on blur or pixelate checkbox
-                            document.getElementById('facesBlur').addEventListener('change', function() {
-                                const group = document.getElementById('facesPrivacyAmountGroup');
-                                const pixelate = document.getElementById('facesPixelate');
-                                group.style.display = (this.checked || pixelate.checked) ? 'block' : 'none';
-                                if (this.checked && pixelate.checked) {
-                                    pixelate.checked = false; // Only one can be active
-                                }
-                            });
-                            
-                            document.getElementById('facesPixelate').addEventListener('change', function() {
-                                const group = document.getElementById('facesPrivacyAmountGroup');
-                                const blur = document.getElementById('facesBlur');
-                                group.style.display = (this.checked || blur.checked) ? 'block' : 'none';
-                                if (this.checked && blur.checked) {
-                                    blur.checked = false; // Only one can be active
-                                }
-                            });
-                        </script>
 
                     </div>
 
-                    <!-- Information Panel -->
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About Face Detection</h3>
-                        <p style="margin-bottom: 1rem; line-height: 1.7;">
-                            Face Detection is an AI-powered service that identifies and locates human faces in images. It can detect multiple faces, return coordinates, count faces, or apply privacy effects like blurring or pixelation.
-                        </p>
-
-                        <div class="info-box" style="background: #e8f4f8; border-color: #17a2b8;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-brain"></i> How It Works</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.7;">
-                                The AI model scans the image for human faces using advanced computer vision. It returns bounding box coordinates for each face, allowing you to highlight, count, blur, pixelate, or extract face regions. You can control the size range of faces to detect.
-                            </p>
-                        </div>
+                        <p>Advanced face detection can identify and analyze human faces in images with detailed
+                            information.</p>
 
                         <div class="info-box">
-                            <h4><i class="fas fa-code"></i> Detection Tasks</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                <strong style="color: var(--primary-orange);">detect_faces</strong> - Detect and mark faces<br>
-                                <strong style="color: var(--primary-orange);">pixelate_faces</strong> - Pixelate detected faces<br>
-                                <strong style="color: var(--primary-orange);">blur_faces</strong> - Blur detected faces<br>
-                                <strong style="color: var(--primary-orange);">faces (export)</strong> - Return JSON with face data
-                            </p>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                All tasks can be combined with other transformations in a processing chain
-                            </small>
-                        </div>
-
-                        <ul class="feature-list">
-                            <li><i class="fas fa-eye"></i> <strong>Multiple Faces</strong> - Detect unlimited faces per image</li>
-                            <li><i class="fas fa-crosshairs"></i> <strong>Precise Coordinates</strong> - Get exact bounding box positions</li>
-                            <li><i class="fas fa-shield-alt"></i> <strong>Privacy Protection</strong> - Blur or pixelate faces automatically</li>
-                            <li><i class="fas fa-chart-bar"></i> <strong>Count & Statistics</strong> - Get face count and locations</li>
-                            <li><i class="fas fa-sliders-h"></i> <strong>Configurable</strong> - Control size range and detection parameters</li>
-                            <li><i class="fas fa-lock"></i> <strong>Security Required</strong> - Needs policy & signature</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-rocket"></i> Common Use Cases</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                • <strong>Photo Organization</strong> - Automatically tag and sort photos with people<br>
-                                • <strong>Privacy Compliance</strong> - Blur faces in photos for GDPR/privacy laws<br>
-                                • <strong>Access Control</strong> - Verify presence of faces for authentication<br>
-                                • <strong>Content Moderation</strong> - Detect and review images with people<br>
-                                • <strong>Social Media</strong> - Auto-tag friends or suggest tags<br>
-                                • <strong>Analytics</strong> - Count people in crowd photos<br>
-                                • <strong>Security</strong> - Surveillance and monitoring applications<br>
-                                • <strong>Publishing</strong> - Automatically blur bystander faces
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
-                            <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
-                            <p style="color: #856404; margin: 0; line-height: 1.7;">
-                                Face Detection requires a <strong>security policy and signature</strong>. Configure these in the API Key section at the top of the page.
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #d1ecf1; border-color: #bee5eb;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-lightbulb"></i> Pro Tips</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.8;">
-                                • Adjust <strong>minsize/maxsize</strong> to focus on specific face sizes<br>
-                                • Use <strong>detect_faces with color</strong> for visual debugging<br>
-                                • Combine with <strong>crop</strong> to extract individual faces<br>
-                                • Use <strong>pixelate_faces</strong> for stronger privacy protection<br>
-                                • Export face data to build face recognition systems<br>
-                                • Chain with <strong>resize</strong> for faster processing on large images
-                            </p>
+                            <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
+                            <p>Perfect for photo organization, user authentication, content moderation, demographic
+                                analysis, and social media applications.</p>
                         </div>
                     </div>
                 </div>
@@ -2263,114 +1721,98 @@
             <!-- OCR Section -->
             <section id="ocr" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-file-alt"></i> OCR - Optical Character Recognition</h2>
-                    <p>AI-powered text extraction that detects and extracts both printed and handwritten text from images and documents. Returns detailed JSON with text content, coordinates, lines, and words.</p>
-                    <a href="https://www.filestack.com/docs/transformations/intelligence/ocr/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
-                        <i class="fas fa-book"></i> View Documentation
-                    </a>
+                    <h2><i class="fas fa-file-text"></i> OCR (Optical Character Recognition)</h2>
+                    <p>Extract text from images, PDFs, and documents using advanced OCR technology via URL transformations.
+                    </p>
                 </div>
 
                 <div class="config-grid">
-                    <!-- Configuration Panel -->
                     <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
+                        <h3><i class="fas fa-cog"></i> OCR Configuration</h3>
 
                         <div class="form-group">
-                            <label><strong>Input Type</strong></label>
+                            <label>Input Type</label>
                             <div class="radio-group">
-                                <label class="radio-item" title="Use a file handle from an uploaded file">
+                                <label class="radio-item">
                                     <input type="radio" name="ocrInputType" value="handle" checked>
-                                    <span>File Handle</span>
+                                    <span>Handle</span>
                                 </label>
-                                <label class="radio-item" title="Analyze a document from any public URL">
+                                <label class="radio-item">
                                     <input type="radio" name="ocrInputType" value="external">
                                     <span>External URL</span>
                                 </label>
-                                <label class="radio-item" title="Use a custom storage location">
+                                <label class="radio-item">
                                     <input type="radio" name="ocrInputType" value="storage">
                                     <span>Storage Alias</span>
                                 </label>
                             </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to identify the document for OCR processing
-                            </small>
                         </div>
 
-                        <!-- Handle Input -->
                         <div class="form-group" id="ocrHandleGroup">
-                            <label for="ocrHandle"><i class="fas fa-file"></i> File Handle</label>
-                            <input type="text" id="ocrHandle" placeholder="e.g., T1pEX4QKSPW99Oi73OlW" title="Enter the file handle returned after uploading to Filestack">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The unique handle returned after uploading an image or document to Filestack
-                            </small>
+                            <label for="ocrHandle">File Handle</label>
+                            <input type="text" id="ocrHandle" placeholder="Enter file handle">
                         </div>
 
-                        <!-- External URL Input -->
                         <div class="form-group" id="ocrExternalGroup" style="display: none;">
-                            <label for="ocrExternalUrl"><i class="fas fa-link"></i> External File URL</label>
-                            <input type="text" id="ocrExternalUrl" placeholder="https://example.com/document.pdf" title="Enter the full URL to a publicly accessible document">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Direct URL to any publicly accessible image or PDF (requires API key in the generated URL)
-                            </small>
+                            <label for="ocrExternalUrl">External File URL</label>
+                            <input type="text" id="ocrExternalUrl" placeholder="https://example.com/document.pdf">
                         </div>
 
-                        <!-- Storage Alias Input -->
                         <div class="form-group" id="ocrStorageGroup" style="display: none;">
-                            <label for="ocrStorageAlias"><i class="fas fa-database"></i> Storage Alias</label>
-                            <input type="text" id="ocrStorageAlias" placeholder="e.g., my-s3-bucket" title="Enter your storage alias name">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Custom storage alias configured in the Developer Portal
-                            </small>
-                            <label for="ocrStoragePath" style="margin-top: 1rem;"><i class="fas fa-folder"></i> File Path</label>
-                            <input type="text" id="ocrStoragePath" placeholder="/documents/invoice.pdf" title="Enter the full path to the file">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The full path to the file within your storage location
-                            </small>
+                            <label for="ocrStorageAlias">Storage Alias</label>
+                            <input type="text" id="ocrStorageAlias" placeholder="my-storage-alias">
+                            <label for="ocrStoragePath">File Path</label>
+                            <input type="text" id="ocrStoragePath" placeholder="/path/to/document.pdf">
                         </div>
 
-                        <!-- OCR Options -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <label><strong>OCR Options</strong></label>
+                        <div class="form-group">
+                            <label for="ocrLanguage">Language (Optional)</label>
+                            <select id="ocrLanguage">
+                                <option value="">Auto-detect</option>
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="it">Italian</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="ru">Russian</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ko">Korean</option>
+                                <option value="zh">Chinese</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>OCR Options</label>
                             <div class="checkbox-group">
-                                <label class="checkbox-item" title="Apply document detection before OCR for better accuracy">
+                                <label class="checkbox-item">
                                     <input type="checkbox" id="ocrWithDocDetection">
-                                    <span>Document Detection Preprocessing</span>
+                                    <span>Use with Document Detection</span>
                                 </label>
-                                <label class="checkbox-item" title="Return bounding box coordinates for all detected text">
+                                <label class="checkbox-item">
                                     <input type="checkbox" id="ocrCoordinates" checked>
-                                    <span>Include Text Coordinates</span>
+                                    <span>Include Coordinates</span>
                                 </label>
-                                <label class="checkbox-item" title="Preprocess document for better text extraction">
+                                <label class="checkbox-item">
                                     <input type="checkbox" id="ocrPreprocess">
-                                    <span>Auto-Preprocess Document</span>
+                                    <span>Preprocess Document</span>
                                 </label>
                             </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Enhance OCR accuracy with preprocessing and coordinate detection
-                            </small>
                         </div>
 
-                        <!-- Advanced Options -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <label class="checkbox-item" title="Apply transformations before OCR">
+                        <div class="form-group">
+                            <label class="checkbox-item">
                                 <input type="checkbox" id="ocrEnableChaining">
-                                <span><strong>Chain with Transformations</strong></span>
+                                <span>Chain with other transformations</span>
                             </label>
-                            <small style="color: #666; display: block; margin-top: 0.3rem; margin-left: 1.75rem;">
-                                <i class="fas fa-magic"></i> Apply image transformations before OCR (e.g., rotate, sharpen, convert format)
-                            </small>
                         </div>
 
-                        <!-- Transformation Chain Builder -->
                         <div class="form-group" id="ocrChainingGroup" style="display: none;">
-                            <label><i class="fas fa-layer-group"></i> Pre-OCR Transformations</label>
-                            <small style="color: #666; display: block; margin-bottom: 0.5rem;">
-                                Transformations are applied in order before OCR processing
-                            </small>
+                            <label>Pre-OCR Transformations</label>
                             <div id="ocrPreChainBuilder" class="chain-builder">
                                 <div class="chain-step">
                                     <div class="chain-step-header">
-                                        <select class="chain-operation" title="Select a transformation to apply">
+                                        <select class="chain-operation">
                                             <option value="">Select Operation</option>
                                             <option value="resize">Resize</option>
                                             <option value="crop">Crop</option>
@@ -2392,98 +1834,49 @@
                                             <option value="quality">Quality</option>
                                             <option value="convert">Convert Format</option>
                                         </select>
-                                        <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
+                                        <button type="button" class="btn-remove-step">×</button>
                                     </div>
-                                    <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)" title="Enter transformation parameters">
+                                    <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)">
                                     <div class="chain-param-hint" style="display:none;"></div>
                                 </div>
                             </div>
-                            <button type="button" id="addOcrPreStep" class="btn btn-secondary btn-small">
-                                <i class="fas fa-plus"></i> Add Transformation
-                            </button>
+                            <button type="button" id="addOcrPreStep" class="btn btn-secondary btn-small">Add Transformation</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ocrSecurity">Security Policy & Signature</label>
+                            <textarea id="ocrSecurity" placeholder="p:POLICY,s:SIGNATURE" rows="2"></textarea>
+                            <small class="form-help">Required for OCR. Format:
+                                p:&lt;base64_policy&gt;,s:&lt;signature&gt;</small>
                         </div>
 
                     </div>
 
-                    <!-- Information Panel -->
                     <div class="config-card">
                         <h3><i class="fas fa-info-circle"></i> About OCR</h3>
-                        <p style="margin-bottom: 1rem; line-height: 1.7;">
-                            Optical Character Recognition (OCR) is an AI-powered intelligence service that extracts both printed and handwritten text from images and documents. It returns detailed JSON with extracted text, bounding box coordinates, line-by-line analysis, and word-level detection.
+                        <p>OCR is implemented as URL-based transformations that can be chained with other processing tasks:
                         </p>
 
-                        <div class="info-box" style="background: #e8f4f8; border-color: #17a2b8;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-brain"></i> How It Works</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.7;">
-                                The AI model analyzes the document to detect text areas, then breaks them down into lines and individual words. Each element includes bounding box coordinates (x, y positions) allowing you to locate and extract specific text regions. Works with printed text, handwriting, images, PDFs, and scanned documents.
-                            </p>
-                        </div>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-code"></i> Response Format</h4>
-                            <p style="line-height: 1.6; margin: 0; font-family: monospace; font-size: 0.85em;">
-                                <code style="background: #f8f9fa; padding: 8px; border-radius: 3px; display: block; white-space: pre-wrap;">{
-  "document": {
-    "text_areas": [{
-      "text": "Extracted text",
-      "bounding_box": [{x, y}],
-      "lines": [{
-        "text": "Line text",
-        "words": [{
-          "text": "word",
-          "bounding_box": [...]
-        }]
-      }]
-    }]
-  },
-  "text": "Full extracted text",
-  "text_area_percentage": 23.4
-}</code>
-                            </p>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                Returns hierarchical text structure with precise coordinates
-                            </small>
-                        </div>
-
                         <ul class="feature-list">
-                            <li><i class="fas fa-file-alt"></i> <strong>Text Extraction</strong> - Extract printed & handwritten text</li>
-                            <li><i class="fas fa-crosshairs"></i> <strong>Coordinate Detection</strong> - Get bounding boxes for all text</li>
-                            <li><i class="fas fa-language"></i> <strong>Multi-Language</strong> - Supports multiple languages</li>
-                            <li><i class="fas fa-layer-group"></i> <strong>Hierarchical Data</strong> - Text areas, lines, and words</li>
-                            <li><i class="fas fa-file-pdf"></i> <strong>Universal Support</strong> - Images, PDFs, and documents</li>
-                            <li><i class="fas fa-lock"></i> <strong>Security Required</strong> - Needs policy & signature</li>
+                            <li><i class="fas fa-check"></i> Extract text from images and PDFs</li>
+                            <li><i class="fas fa-check"></i> Multi-language support</li>
+                            <li><i class="fas fa-check"></i> Document detection preprocessing</li>
+                            <li><i class="fas fa-check"></i> Works with external URLs</li>
+                            <li><i class="fas fa-check"></i> Chainable with other transformations</li>
                         </ul>
 
                         <div class="info-box">
-                            <h4><i class="fas fa-rocket"></i> Common Use Cases</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                • <strong>Document Digitization</strong> - Convert paper documents to digital text<br>
-                                • <strong>Invoice Processing</strong> - Extract data from invoices and receipts<br>
-                                • <strong>ID Verification</strong> - Read text from driver's licenses and passports<br>
-                                • <strong>Form Processing</strong> - Extract data from forms and applications<br>
-                                • <strong>Business Card Scanning</strong> - Digitize contact information<br>
-                                • <strong>License Plate Recognition</strong> - Extract vehicle plate numbers<br>
-                                • <strong>Archive Digitization</strong> - Convert historical documents to searchable text<br>
-                                • <strong>Content Indexing</strong> - Make scanned documents searchable
+                            <h4><i class="fas fa-lightbulb"></i> URL Transform Examples</h4>
+                            <p><strong>Basic OCR:</strong><br>
+                                <code>/security=p:POLICY,s:SIGNATURE/ocr/HANDLE</code>
                             </p>
-                        </div>
 
-                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
-                            <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
-                            <p style="color: #856404; margin: 0; line-height: 1.7;">
-                                OCR requires a <strong>security policy and signature</strong>. Configure these in the API Key section at the top of the page.
+                            <p><strong>With Document Detection:</strong><br>
+                                <code>/doc_detection=coords:false,preprocess:true/ocr/HANDLE</code>
                             </p>
-                        </div>
 
-                        <div class="info-box" style="background: #d1ecf1; border-color: #bee5eb;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-lightbulb"></i> Pro Tips</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.8;">
-                                • Use <strong>doc_detection</strong> preprocessing for better accuracy on documents<br>
-                                • Apply <strong>sharpen</strong> transformation before OCR for blurry images<br>
-                                • Use <strong>rotate</strong> to correct document orientation<br>
-                                • <strong>Convert to grayscale</strong> for faster processing on large documents<br>
-                                • Parse the hierarchical response to extract specific text regions<br>
-                                • Use <strong>text_area_percentage</strong> to validate document has text
+                            <p><strong>External URL:</strong><br>
+                                <code>/APIKEY/security=p:POLICY,s:SIGNATURE/ocr/EXTERNAL_URL</code>
                             </p>
                         </div>
                     </div>
@@ -4027,35 +3420,6 @@
     </div>
 
     <script src="script.js"></script>
-    
-    <script>
-        // Fix tooltip display for info icons
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add custom tooltip functionality to all info icons
-            const infoIcons = document.querySelectorAll('i.fa-info-circle[title]');
-            
-            infoIcons.forEach(icon => {
-                // Store the original title
-                const originalTitle = icon.getAttribute('title');
-                
-                // Remove the title attribute to prevent browser tooltip
-                icon.removeAttribute('title');
-                
-                // Add data attribute for custom tooltip
-                icon.setAttribute('data-tooltip', originalTitle);
-                icon.classList.add('tooltip');
-                
-                // Add hover effects
-                icon.addEventListener('mouseenter', function() {
-                    this.style.opacity = '1';
-                });
-                
-                icon.addEventListener('mouseleave', function() {
-                    this.style.opacity = '0.7';
-                });
-            });
-        });
-    </script>
 
 </body>
 
