@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filestack CSS Playground - Interactive Styling Tool</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Filestack JS -->
+    <script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+
+        body {
+            overflow: hidden;
+            background: #fff7ed;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #ffedd5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #fb923c;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f97316;
+        }
+
+        /* Tab Styles */
+        .tab-button {
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+            background: #f97316;
+            color: white;
+        }
+
+        /* Input Styles */
+        .style-input {
+            background: #fff7ed;
+            border: 1px solid #fdba74;
+            color: #9a3412;
+            border-radius: 4px;
+            padding: 6px 10px;
+            transition: all 0.2s ease;
+        }
+
+        .style-input:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        /* Resizer */
+        #resizer {
+            width: 4px;
+            background: #fed7aa;
+            cursor: col-resize;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        #resizer:hover {
+            background: #f97316;
+        }
+
+        #resizer::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            right: -4px;
+            top: 0;
+            bottom: 0;
+        }
+
+        /* Animation for preview updates */
+        @keyframes pulse-border {
+
+            0%,
+            100% {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: #3b82f6;
+            }
+        }
+
+        .preview-updated {
+            animation: pulse-border 0.5s ease-in-out;
+        }
+
+        /* Category Badge */
+        .category-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Code Display */
+        .css-output {
+            background: #ffedd5;
+            border: 1px solid #fdba74;
+            border-radius: 6px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .css-selector {
+            color: #f472b6;
+        }
+
+        .css-property {
+            color: #60a5fa;
+        }
+
+        .css-value {
+            color: #34d399;
+        }
+
+        .css-brace {
+            color: #cbd5e1;
+        }
+
+        /* Element List Item */
+        .element-item {
+            background: #ffedd5;
+            border: 1px solid #fdba74;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .element-item:hover {
+            border-color: #f97316;
+            background: #fed7aa;
+            transform: translateX(4px);
+        }
+
+        .element-item.active {
+            border-color: #f97316;
+            background: #ea580c;
+            color: white;
+        }
+
+        /* Property Group */
+        .property-group {
+            background: #ffedd5;
+            border: 1px solid #fdba74;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .property-label {
+            color: #9a3412;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        /* Color Picker */
+        input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #334155;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle-switch.active {
+            background: #3b82f6;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.2s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+
+        /* Highlight selected element in picker */
+        .picker-highlight {
+            position: relative !important;
+            z-index: 1000 !important;
+            outline: 4px solid #3b82f6 !important;
+            outline-offset: -4px !important;
+            animation: snake-border-colors 3s ease-in-out infinite !important;
+        }
+
+        @keyframes snake-border-colors {
+            0% {
+                outline-color: #3b82f6;
+                filter: drop-shadow(0 0 8px #3b82f6);
+            }
+
+            25% {
+                outline-color: #06b6d4;
+                filter: drop-shadow(0 0 8px #06b6d4);
+            }
+
+            50% {
+                outline-color: #10b981;
+                filter: drop-shadow(0 0 8px #10b981);
+            }
+
+            75% {
+                outline-color: #f59e0b;
+                filter: drop-shadow(0 0 8px #f59e0b);
+            }
+
+            100% {
+                outline-color: #3b82f6;
+                filter: drop-shadow(0 0 8px #3b82f6);
+            }
+        }
+
+        /* Back button style - Sticky */
+        #back-button-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #fff7ed;
+            padding: 16px 0;
+            margin: -24px -24px 16px -24px;
+            padding-left: 24px;
+            padding-right: 24px;
+            border-bottom: 2px solid #fdba74;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #fb923c;
+            color: white;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .back-button:hover {
+            background: #f97316;
+            transform: translateX(-2px);
+        }
+
+        /* Category Navigation Bar - Sticky */
+        #category-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #fff7ed;
+            padding: 12px 0;
+            margin: -24px -24px 16px -24px;
+            padding-left: 24px;
+            padding-right: 24px;
+            border-bottom: 2px solid #fdba74;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .category-nav-item {
+            padding: 6px 12px;
+            background: #ffedd5;
+            color: #9a3412;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #fdba74;
+            white-space: nowrap;
+        }
+
+        .category-nav-item:hover {
+            background: #fed7aa;
+            color: #7c2d12;
+            border-color: #fb923c;
+        }
+
+        .category-nav-item.active {
+            background: #f97316;
+            color: white;
+            border-color: #f97316;
+        }
+    </style>
+
+    <!-- Dynamic styles injected here -->
+    <style id="dynamic-styles"></style>
+</head>
+
+<body class="bg-orange-50 text-orange-950">
+    <div class="flex h-screen">
+        <!-- Left Panel - Controls -->
+        <div id="left-panel" class="bg-orange-100 overflow-hidden flex flex-col" style="width: 450px;">
+            <!-- Header -->
+            <div class="p-6 border-b border-orange-300">
+                <h1 class="text-2xl font-bold text-orange-600 mb-1">Filestack CSS Playground</h1>
+                <p class="text-sm text-orange-700">Style the file picker in real-time</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex gap-2 px-6 py-3 border-b border-orange-300 bg-orange-50">
+                <button class="tab-button active px-4 py-2 rounded-md text-sm font-medium" data-tab="visual">
+                    Visual Editor
+                </button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium bg-orange-200" data-tab="code">
+                    CSS Code
+                </button>
+                <button class="tab-button px-4 py-2 rounded-md text-sm font-medium bg-orange-200" data-tab="presets">
+                    Presets
+                </button>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="flex-1 overflow-y-auto">
+                <!-- Visual Editor Tab -->
+                <div id="visual-tab" class="tab-content p-6">
+                    <!-- Back Button - Always Visible -->
+                    <div id="back-button-container" class="mb-4 hidden">
+                        <button class="back-button" onclick="backToElementList()">
+                            ← Back to Elements
+                        </button>
+                    </div>
+
+                    <!-- Instructions (only show when no element selected) -->
+                    <div id="instructions-box" class="mb-4 p-3 bg-orange-200 border border-orange-400 rounded-lg">
+                        <div class="flex items-start gap-2">
+                            <div class="text-lg">💡</div>
+                            <div>
+                                <h3 class="text-xs font-semibold text-orange-800 mb-1">Quick Start:</h3>
+                                <p class="text-xs text-orange-900">Click any element below. It will light up with an
+                                    animated border in the picker on the right!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Style Properties Editor (hidden initially) -->
+                    <div id="style-editor" class="hidden">
+                        <div id="style-properties" class="space-y-4">
+                            <!-- Will be populated based on selected element -->
+                        </div>
+                    </div>
+
+                    <!-- Element Selector -->
+                    <div id="element-selector">
+                        <!-- Category Navigation Bar -->
+                        <div id="category-nav">
+                            <!-- Will be populated dynamically -->
+                        </div>
+
+                        <label class="block text-sm font-semibold text-orange-800 mb-3">
+                            Click an Element to Style:
+                        </label>
+                        <div id="element-list" class="space-y-2">
+                            <!-- Elements will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CSS Code Tab -->
+                <div id="code-tab" class="tab-content p-6 hidden">
+                    <div class="mb-4 p-4 bg-orange-200 border border-orange-400 rounded-lg">
+                        <h3 class="text-sm font-semibold text-orange-800 mb-2">Export Your Styles:</h3>
+                        <p class="text-xs text-orange-900">
+                            This is the CSS code generated from your customizations.
+                            Click "Copy CSS" to paste it into your website's stylesheet.
+                        </p>
+                    </div>
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="text-sm font-semibold text-orange-800">Generated CSS</h3>
+                        <button id="copy-css"
+                            class="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded-md transition">
+                            📋 Copy CSS
+                        </button>
+                    </div>
+                    <div id="css-output" class="css-output code-font">
+                        <div class="text-orange-600 text-center py-8">No styles applied yet</div>
+                    </div>
+                </div>
+
+                <!-- Presets Tab -->
+                <div id="presets-tab" class="tab-content p-6 hidden">
+                    <div class="mb-4 p-4 bg-orange-200 border border-orange-400 rounded-lg">
+                        <h3 class="text-sm font-semibold text-orange-800 mb-2">Quick Start with Presets:</h3>
+                        <p class="text-xs text-orange-900">
+                            Click any preset below to instantly apply a complete theme to the picker.
+                            You can then customize individual elements in the "Visual Editor" tab.
+                        </p>
+                    </div>
+                    <h3 class="text-sm font-semibold text-orange-800 mb-4">Choose a Theme</h3>
+                    <div class="space-y-3">
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="dark">
+                            <div class="font-semibold text-orange-600 mb-1">Dark Theme</div>
+                            <div class="text-xs text-orange-700">Modern dark color scheme</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="minimal">
+                            <div class="font-semibold text-orange-900 mb-1">Minimalist</div>
+                            <div class="text-xs text-orange-700">Clean and simple design</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="vibrant">
+                            <div class="font-semibold text-amber-400 mb-1">Vibrant</div>
+                            <div class="text-xs text-orange-700">Colorful amber/orange theme</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="gradient">
+                            <div class="font-semibold text-purple-400 mb-1">Gradient Purple</div>
+                            <div class="text-xs text-orange-700">Purple gradient styles</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="ocean">
+                            <div class="font-semibold text-sky-400 mb-1">Ocean</div>
+                            <div class="text-xs text-orange-700">Calm blue water vibes</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="forest">
+                            <div class="font-semibold text-green-400 mb-1">Forest</div>
+                            <div class="text-xs text-orange-700">Fresh green nature theme</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="sunset">
+                            <div class="font-semibold text-orange-400 mb-1">Sunset</div>
+                            <div class="text-xs text-orange-700">Warm sunset gradient</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="neon">
+                            <div class="font-semibold text-purple-300 mb-1">Neon</div>
+                            <div class="text-xs text-orange-700">Glowing neon dark theme</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="pastel">
+                            <div class="font-semibold text-pink-300 mb-1">Pastel</div>
+                            <div class="text-xs text-orange-700">Soft pastel colors</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="corporate">
+                            <div class="font-semibold text-orange-600 mb-1">Corporate</div>
+                            <div class="text-xs text-orange-700">Professional business style</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="cyberpunk">
+                            <div class="font-semibold text-cyan-400 mb-1">Cyberpunk</div>
+                            <div class="text-xs text-orange-700">Futuristic neon cyberpunk</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="nature">
+                            <div class="font-semibold text-lime-400 mb-1">Nature</div>
+                            <div class="text-xs text-orange-700">Bright natural greens</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="midnight">
+                            <div class="font-semibold text-indigo-300 mb-1">Midnight</div>
+                            <div class="text-xs text-orange-700">Deep midnight blue</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="candy">
+                            <div class="font-semibold text-pink-400 mb-1">Candy</div>
+                            <div class="text-xs text-orange-700">Sweet candy pink gradients</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="autumn">
+                            <div class="font-semibold text-red-400 mb-1">Autumn</div>
+                            <div class="text-xs text-orange-700">Warm autumn colors</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="arctic">
+                            <div class="font-semibold text-cyan-300 mb-1">Arctic</div>
+                            <div class="text-xs text-orange-700">Cool arctic ice theme</div>
+                        </button>
+                        <button
+                            class="preset-button w-full p-4 bg-orange-200 hover:bg-orange-300 rounded-lg text-left transition"
+                            data-preset="retro">
+                            <div class="font-semibold text-yellow-500 mb-1">Retro</div>
+                            <div class="text-xs text-orange-700">Vintage retro style</div>
+                        </button>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-orange-300">
+                        <button id="reset-all"
+                            class="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition">
+                            Reset All Styles
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resizer -->
+        <div id="resizer"></div>
+
+        <!-- Right Panel - Preview -->
+        <div id="right-panel" class="flex-1 bg-white flex flex-col p-8 overflow-hidden">
+            <!-- Picker View Tabs -->
+            <div class="flex gap-2 mb-4">
+                <button id="tab-empty"
+                    class="px-4 py-2 bg-orange-600 text-white rounded-md text-sm font-semibold transition hover:bg-orange-700">
+                    Drop Zone View
+                </button>
+                <button id="tab-files"
+                    class="px-4 py-2 bg-orange-200 text-orange-900 rounded-md text-sm font-semibold transition hover:bg-orange-300">
+                    File List View
+                </button>
+            </div>
+
+            <!-- Picker Container -->
+            <div class="flex-1 flex items-center justify-center overflow-hidden">
+                <div id="picker-container"
+                    style="width: 900px; height: 600px; transform-origin: center; overflow: hidden;">
+                    <!-- Filestack picker will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_KEY = 'api_key_here';
+
+        // Element categories and selectors
+        const elements = {
+            'Header': [
+                { id: 'header', label: 'Top Header Bar', selector: '.fsp-header', desc: 'Bar at the very top' },
+                { id: 'header-text', label: 'Header Text', selector: '.fsp-header-text', desc: 'Text in header' },
+            ],
+            'Sidebar': [
+                { id: 'source-list', label: 'Left Sidebar', selector: '.fsp-source-list', desc: 'List of sources (Computer, URL, etc)' },
+                { id: 'source-item', label: 'Source Items', selector: '.fsp-source-list__item', desc: 'Computer, URL, Instagram items' },
+                { id: 'source-item-active', label: 'Active Source Item', selector: '.fsp-source-list__item--active', desc: 'The selected source' },
+            ],
+            'Drop Area': [
+                { id: 'drop-area-container', label: 'Whole Upload Area', selector: '.fsp-drop-area-container', desc: 'Full background area' },
+                { id: 'drop-area', label: 'Drop Zone Box', selector: '.fsp-drop-area', desc: 'Dashed box "Drag and drop..."' },
+                { id: 'drop-area-title', label: 'Drop Title Text', selector: '.fsp-drop-area__title', desc: '"Drag and drop..." text' },
+                { id: 'drop-area-subtitle', label: 'Drop Subtitle', selector: '.fsp-drop-area__subtitle', desc: '"or click to browse" text' },
+                { id: 'drop-area-button', label: 'Browse Button', selector: '.fsp-drop-area__button', desc: '"Choose Files" button' },
+            ],
+            'Buttons': [
+                { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button--primary', desc: 'Main action button' },
+                { id: 'button-cancel', label: 'Cancel Button', selector: '.fsp-button--cancel', desc: 'Cancel/back button' },
+            ],
+            'File Grid': [
+                { id: 'grid', label: 'File Grid', selector: '.fsp-grid', desc: 'Grid of files/folders' },
+                { id: 'grid-cell', label: 'File/Folder Items', selector: '.fsp-grid__cell', desc: 'Individual file boxes' },
+                { id: 'grid-cell-selected', label: 'Selected Files', selector: '.fsp-grid__cell--selected', desc: 'Checked files' },
+            ],
+            'Footer': [
+                { id: 'footer', label: 'Bottom Footer', selector: '.fsp-footer', desc: 'Bar at the bottom' },
+                { id: 'footer-badge', label: 'File Count Badge', selector: '.fsp-badge', desc: 'Number badge on upload button' },
+            ],
+            'Summary View (File List)': [
+                { id: 'content', label: 'Main Content Area', selector: '.fsp-content', desc: 'Main content container for file list', needsFiles: true },
+                { id: 'summary-title', label: 'Selected Files Title', selector: '.fsp-summary .filestack-text-center', desc: '"Selected Files" heading text', needsFiles: true },
+                { id: 'summary-body', label: 'Summary Container', selector: '.fsp-summary__body', desc: 'Container for file list', needsFiles: true },
+                { id: 'summary-item', label: 'File Item Row', selector: '.fsp-summary__item', desc: 'Each file in the list', needsFiles: true },
+                { id: 'summary-item-name', label: 'File Name', selector: '.fsp-summary__item-name', desc: 'File name text', needsFiles: true },
+                { id: 'summary-thumbnail', label: 'File Thumbnail', selector: '.fsp-summary__thumbnail-container', desc: 'File icon container', needsFiles: true },
+                { id: 'summary-size', label: 'File Size', selector: '.fsp-summary__size', desc: 'File size text', needsFiles: true },
+                { id: 'summary-remove', label: 'Delete Button', selector: '.fsp-summary__action--remove', desc: 'Remove file button', needsFiles: true },
+                { id: 'summary-actions', label: 'Actions Container', selector: '.fsp-summary__actions-container', desc: 'File action buttons area', needsFiles: true },
+            ],
+        };
+
+        // Style properties for the visual editor
+        const styleProperties = {
+            colors: [
+                { id: 'background', label: 'Background', type: 'color', cssProperty: 'background-color' },
+                { id: 'text-color', label: 'Text Color', type: 'color', cssProperty: 'color' },
+                { id: 'border-color', label: 'Border Color', type: 'color', cssProperty: 'border-color' },
+            ],
+            layout: [
+                { id: 'padding', label: 'Padding', type: 'text', cssProperty: 'padding', unit: 'px' },
+                { id: 'margin', label: 'Margin', type: 'text', cssProperty: 'margin', unit: 'px' },
+                { id: 'border-radius', label: 'Border Radius', type: 'text', cssProperty: 'border-radius', unit: 'px' },
+            ],
+            border: [
+                { id: 'border-width', label: 'Border Width', type: 'text', cssProperty: 'border-width', unit: 'px' },
+                { id: 'border-style', label: 'Border Style', type: 'select', cssProperty: 'border-style', options: ['none', 'solid', 'dashed', 'dotted'] },
+            ],
+            typography: [
+                { id: 'font-size', label: 'Font Size', type: 'text', cssProperty: 'font-size', unit: 'px' },
+                { id: 'font-weight', label: 'Font Weight', type: 'select', cssProperty: 'font-weight', options: ['normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900'] },
+                { id: 'text-align', label: 'Text Align', type: 'select', cssProperty: 'text-align', options: ['left', 'center', 'right'] },
+            ],
+            effects: [
+                { id: 'opacity', label: 'Opacity', type: 'range', cssProperty: 'opacity', min: 0, max: 1, step: 0.1 },
+                { id: 'box-shadow', label: 'Box Shadow', type: 'text', cssProperty: 'box-shadow', placeholder: '0 4px 6px rgba(0,0,0,0.1)' },
+            ]
+        };
+
+        // Preset themes
+        const presets = {
+            dark: {
+                'modal': { 'background-color': '#1e293b', 'color': '#e2e8f0' },
+                'header': { 'background-color': '#0f172a', 'color': '#e2e8f0', 'border-bottom': '1px solid #334155' },
+                'source-list': { 'background-color': '#0f172a', 'border-right': '1px solid #334155' },
+                'source-item': { 'color': '#94a3b8' },
+                'source-item-active': { 'background-color': '#3b82f6', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#1e293b' },
+                'drop-area': { 'background-color': '#334155', 'border': '2px dashed #64748b', 'border-radius': '8px' },
+                'button-primary': { 'background-color': '#3b82f6', 'color': '#ffffff', 'border-radius': '6px' },
+                'button-cancel': { 'background-color': '#475569', 'color': '#e2e8f0', 'border-radius': '6px' },
+                'footer': { 'background-color': '#0f172a', 'border-top': '1px solid #334155' },
+                'content': { 'background-color': '#1e293b' },
+                'summary-body': { 'background-color': '#1e293b' },
+                'summary-item': { 'background-color': '#334155', 'color': '#e2e8f0', 'border-radius': '6px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#e2e8f0' },
+                'summary-size': { 'color': '#94a3b8' },
+                'summary-remove': { 'color': '#ef4444' },
+            },
+            minimal: {
+                'modal': { 'background-color': '#ffffff', 'border-radius': '0px' },
+                'header': { 'background-color': '#ffffff', 'border-bottom': '1px solid #e5e7eb' },
+                'source-list': { 'background-color': '#fafafa', 'border-right': '1px solid #e5e7eb' },
+                'source-item-active': { 'background-color': '#000000', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#ffffff' },
+                'drop-area': { 'border': '1px solid #d1d5db', 'border-radius': '0px' },
+                'button-primary': { 'background-color': '#000000', 'color': '#ffffff', 'border-radius': '0px' },
+                'button-cancel': { 'background-color': '#ffffff', 'color': '#000000', 'border': '1px solid #000000', 'border-radius': '0px' },
+                'content': { 'background-color': '#ffffff' },
+                'summary-body': { 'background-color': '#ffffff' },
+                'summary-item': { 'background-color': '#fafafa', 'color': '#000000', 'border': '1px solid #e5e7eb', 'border-radius': '0px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#000000' },
+                'summary-size': { 'color': '#6b7280' },
+                'summary-remove': { 'color': '#000000' },
+            },
+            vibrant: {
+                'modal': { 'background-color': '#fef3c7', 'color': '#78350f' },
+                'header': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                'source-list': { 'background-color': '#fef3c7' },
+                'source-item-active': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#fef3c7' },
+                'drop-area': { 'background-color': '#fef3c7', 'border': '2px dashed #f59e0b', 'border-radius': '12px' },
+                'button-primary': { 'background-color': '#f59e0b', 'color': '#ffffff', 'border-radius': '20px' },
+                'button-cancel': { 'background-color': '#fef3c7', 'color': '#78350f', 'border': '2px solid #f59e0b', 'border-radius': '20px' },
+                'content': { 'background-color': '#fef3c7' },
+                'summary-body': { 'background-color': '#fef3c7' },
+                'summary-item': { 'background-color': '#fed7aa', 'color': '#78350f', 'border-radius': '12px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#78350f', 'font-weight': '600' },
+                'summary-size': { 'color': '#92400e' },
+                'summary-remove': { 'color': '#dc2626' },
+            },
+            gradient: {
+                'modal': { 'background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'color': '#ffffff' },
+                'header': { 'background': 'rgba(255, 255, 255, 0.1)', 'color': '#ffffff', 'border-bottom': '1px solid rgba(255, 255, 255, 0.2)' },
+                'source-list': { 'background': 'rgba(255, 255, 255, 0.05)' },
+                'source-item': { 'color': '#ffffff' },
+                'source-item-active': { 'background': 'rgba(255, 255, 255, 0.2)', 'color': '#ffffff' },
+                'drop-area-container': { 'background': 'rgba(255, 255, 255, 0.05)' },
+                'drop-area': { 'background': 'rgba(255, 255, 255, 0.1)', 'border': '2px dashed rgba(255, 255, 255, 0.5)', 'border-radius': '12px', 'color': '#ffffff' },
+                'button-primary': { 'background': 'linear-gradient(45deg, #ff6b6b, #ee5a24)', 'color': '#ffffff', 'border': 'none', 'border-radius': '20px' },
+                'button-cancel': { 'background': 'transparent', 'color': '#ffffff', 'border': '2px solid rgba(255, 255, 255, 0.5)', 'border-radius': '20px' },
+                'footer': { 'background': 'rgba(255, 255, 255, 0.1)', 'border-top': '1px solid rgba(255, 255, 255, 0.2)' },
+                'content': { 'background': 'rgba(255, 255, 255, 0.05)' },
+                'summary-body': { 'background': 'rgba(255, 255, 255, 0.05)' },
+                'summary-item': { 'background': 'rgba(255, 255, 255, 0.15)', 'color': '#ffffff', 'border-radius': '12px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#ffffff', 'font-weight': '500' },
+                'summary-size': { 'color': 'rgba(255, 255, 255, 0.7)' },
+                'summary-remove': { 'color': '#ff6b6b' },
+            },
+            ocean: {
+                'modal': { 'background-color': '#e0f2fe', 'color': '#164e63' },
+                'header': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                'source-list': { 'background-color': '#bae6fd', 'border-right': '1px solid #7dd3fc' },
+                'source-item': { 'color': '#0c4a6e' },
+                'source-item-active': { 'background-color': '#0284c7', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#e0f2fe' },
+                'drop-area': { 'background-color': '#bae6fd', 'border': '2px dashed #0ea5e9', 'border-radius': '10px' },
+                'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff', 'border-radius': '8px' },
+                'button-cancel': { 'background-color': '#e0f2fe', 'color': '#0c4a6e', 'border': '2px solid #0ea5e9', 'border-radius': '8px' },
+                'footer': { 'background-color': '#bae6fd', 'border-top': '1px solid #7dd3fc' },
+                'content': { 'background-color': '#e0f2fe' },
+                'summary-body': { 'background-color': '#e0f2fe' },
+                'summary-item': { 'background-color': '#bae6fd', 'color': '#164e63', 'border-radius': '10px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#0c4a6e', 'font-weight': '500' },
+                'summary-size': { 'color': '#0369a1' },
+                'summary-remove': { 'color': '#0ea5e9' },
+            },
+            forest: {
+                'modal': { 'background-color': '#dcfce7', 'color': '#14532d' },
+                'header': { 'background-color': '#22c55e', 'color': '#ffffff' },
+                'source-list': { 'background-color': '#bbf7d0', 'border-right': '1px solid #86efac' },
+                'source-item': { 'color': '#166534' },
+                'source-item-active': { 'background-color': '#16a34a', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#dcfce7' },
+                'drop-area': { 'background-color': '#bbf7d0', 'border': '2px dashed #22c55e', 'border-radius': '12px' },
+                'button-primary': { 'background-color': '#22c55e', 'color': '#ffffff', 'border-radius': '8px' },
+                'button-cancel': { 'background-color': '#dcfce7', 'color': '#166534', 'border': '2px solid #22c55e', 'border-radius': '8px' },
+                'footer': { 'background-color': '#bbf7d0', 'border-top': '1px solid #86efac' },
+                'content': { 'background-color': '#dcfce7' },
+                'summary-body': { 'background-color': '#dcfce7' },
+                'summary-item': { 'background-color': '#bbf7d0', 'color': '#14532d', 'border-radius': '12px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#166534', 'font-weight': '600' },
+                'summary-size': { 'color': '#15803d' },
+                'summary-remove': { 'color': '#dc2626' },
+            },
+            sunset: {
+                'modal': { 'background': 'linear-gradient(135deg, #fecaca 0%, #fde68a 50%, #fbcfe8 100%)', 'color': '#7c2d12' },
+                'header': { 'background-color': '#f97316', 'color': '#ffffff' },
+                'source-list': { 'background': 'rgba(254, 202, 202, 0.7)' },
+                'source-item': { 'color': '#7c2d12' },
+                'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
+                'drop-area-container': { 'background': 'rgba(254, 202, 202, 0.5)' },
+                'drop-area': { 'background': 'rgba(254, 202, 202, 0.8)', 'border': '2px dashed #f97316', 'border-radius': '15px' },
+                'button-primary': { 'background': 'linear-gradient(90deg, #f97316, #ef4444)', 'color': '#ffffff', 'border-radius': '25px' },
+                'button-cancel': { 'background': 'transparent', 'color': '#7c2d12', 'border': '2px solid #f97316', 'border-radius': '25px' },
+                'footer': { 'background': 'rgba(254, 202, 202, 0.7)', 'border-top': '1px solid #f97316' },
+                'content': { 'background': 'rgba(254, 202, 202, 0.5)' },
+                'summary-body': { 'background': 'rgba(254, 202, 202, 0.5)' },
+                'summary-item': { 'background': 'rgba(254, 202, 202, 0.8)', 'color': '#7c2d12', 'border-radius': '15px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#7c2d12', 'font-weight': '600' },
+                'summary-size': { 'color': '#9a3412' },
+                'summary-remove': { 'color': '#ef4444' },
+            },
+            neon: {
+                'modal': { 'background-color': '#18181b', 'color': '#fafafa' },
+                'header': { 'background-color': '#09090b', 'color': '#a78bfa', 'border-bottom': '2px solid #a78bfa' },
+                'source-list': { 'background-color': '#27272a', 'border-right': '2px solid #6366f1' },
+                'source-item': { 'color': '#d4d4d8' },
+                'source-item-active': { 'background-color': '#6366f1', 'color': '#ffffff', 'box-shadow': '0 0 20px rgba(99, 102, 241, 0.5)' },
+                'drop-area-container': { 'background-color': '#18181b' },
+                'drop-area': { 'background-color': '#27272a', 'border': '2px solid #a78bfa', 'border-radius': '8px', 'box-shadow': '0 0 30px rgba(167, 139, 250, 0.3)' },
+                'button-primary': { 'background-color': '#a78bfa', 'color': '#18181b', 'border-radius': '6px', 'box-shadow': '0 0 15px rgba(167, 139, 250, 0.5)' },
+                'button-cancel': { 'background-color': '#27272a', 'color': '#a78bfa', 'border': '2px solid #a78bfa', 'border-radius': '6px' },
+                'footer': { 'background-color': '#09090b', 'border-top': '2px solid #6366f1' },
+                'content': { 'background-color': '#18181b' },
+                'summary-body': { 'background-color': '#18181b' },
+                'summary-item': { 'background-color': '#27272a', 'color': '#fafafa', 'border': '2px solid #a78bfa', 'border-radius': '8px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#a78bfa', 'font-weight': '600' },
+                'summary-size': { 'color': '#d4d4d8' },
+                'summary-remove': { 'color': '#ef4444', 'box-shadow': '0 0 10px rgba(239, 68, 68, 0.5)' },
+            },
+            pastel: {
+                'modal': { 'background-color': '#fef3f2', 'color': '#7c2d12' },
+                'header': { 'background-color': '#fce7f3', 'color': '#831843', 'border-bottom': '1px solid #fbcfe8' },
+                'source-list': { 'background-color': '#f5f3ff', 'border-right': '1px solid #e9d5ff' },
+                'source-item': { 'color': '#581c87' },
+                'source-item-active': { 'background-color': '#f0abfc', 'color': '#701a75' },
+                'drop-area-container': { 'background-color': '#fef3f2' },
+                'drop-area': { 'background-color': '#fce7f3', 'border': '2px dashed #f9a8d4', 'border-radius': '16px' },
+                'button-primary': { 'background-color': '#f0abfc', 'color': '#701a75', 'border-radius': '16px' },
+                'button-cancel': { 'background-color': '#fef3f2', 'color': '#831843', 'border': '2px solid #f9a8d4', 'border-radius': '16px' },
+                'footer': { 'background-color': '#fce7f3', 'border-top': '1px solid #fbcfe8' },
+                'content': { 'background-color': '#fef3f2' },
+                'summary-body': { 'background-color': '#fef3f2' },
+                'summary-item': { 'background-color': '#fce7f3', 'color': '#831843', 'border-radius': '16px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#701a75', 'font-weight': '600' },
+                'summary-size': { 'color': '#9f1239' },
+                'summary-remove': { 'color': '#e11d48' },
+            },
+            corporate: {
+                'modal': { 'background-color': '#f8fafc', 'color': '#1e293b' },
+                'header': { 'background-color': '#1e40af', 'color': '#ffffff', 'border-bottom': 'none' },
+                'source-list': { 'background-color': '#eff6ff', 'border-right': '1px solid #dbeafe' },
+                'source-item': { 'color': '#1e3a8a' },
+                'source-item-active': { 'background-color': '#2563eb', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#f8fafc' },
+                'drop-area': { 'background-color': '#f1f5f9', 'border': '2px solid #cbd5e1', 'border-radius': '6px' },
+                'button-primary': { 'background-color': '#1e40af', 'color': '#ffffff', 'border-radius': '4px' },
+                'button-cancel': { 'background-color': '#f8fafc', 'color': '#1e40af', 'border': '2px solid #1e40af', 'border-radius': '4px' },
+                'footer': { 'background-color': '#eff6ff', 'border-top': '1px solid #dbeafe' },
+                'content': { 'background-color': '#f8fafc' },
+                'summary-body': { 'background-color': '#f8fafc' },
+                'summary-item': { 'background-color': '#eff6ff', 'color': '#1e293b', 'border': '1px solid #dbeafe', 'border-radius': '6px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#1e3a8a', 'font-weight': '600' },
+                'summary-size': { 'color': '#475569' },
+                'summary-remove': { 'color': '#dc2626' },
+            },
+            cyberpunk: {
+                'modal': { 'background-color': '#0a0a0a', 'color': '#00ff9f' },
+                'header': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'border-bottom': '2px solid #00ff9f' },
+                'source-list': { 'background-color': '#1a1a1a', 'border-right': '2px solid #ff00ff' },
+                'source-item': { 'color': '#00ffff' },
+                'source-item-active': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000' },
+                'drop-area-container': { 'background-color': '#0a0a0a' },
+                'drop-area': { 'background-color': '#1a1a1a', 'border': '3px solid #00ff9f', 'border-radius': '0px', 'box-shadow': '0 0 25px rgba(0, 255, 159, 0.4)' },
+                'button-primary': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'border-radius': '0px', 'box-shadow': '0 0 15px rgba(255, 0, 255, 0.5)' },
+                'button-cancel': { 'background-color': '#1a1a1a', 'color': '#00ff9f', 'border': '2px solid #00ff9f', 'border-radius': '0px' },
+                'footer': { 'background-color': '#1a1a1a', 'border-top': '2px solid #ff00ff' },
+                'content': { 'background-color': '#0a0a0a' },
+                'summary-body': { 'background-color': '#0a0a0a' },
+                'summary-item': { 'background-color': '#1a1a1a', 'color': '#00ff9f', 'border': '3px solid #00ff9f', 'border-radius': '0px', 'padding': '12px', 'box-shadow': '0 0 15px rgba(0, 255, 159, 0.3)' },
+                'summary-item-name': { 'color': '#00ffff', 'font-weight': '700' },
+                'summary-size': { 'color': '#ff00ff' },
+                'summary-remove': { 'color': '#ff00ff', 'box-shadow': '0 0 10px rgba(255, 0, 255, 0.5)' },
+            },
+            nature: {
+                'modal': { 'background-color': '#f0fdf4', 'color': '#14532d' },
+                'header': { 'background': 'linear-gradient(135deg, #84cc16, #059669)', 'color': '#ffffff' },
+                'source-list': { 'background-color': '#ecfccb', 'border-right': '1px solid #bef264' },
+                'source-item': { 'color': '#365314' },
+                'source-item-active': { 'background-color': '#65a30d', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#f0fdf4' },
+                'drop-area': { 'background-color': '#dcfce7', 'border': '2px dashed #16a34a', 'border-radius': '20px' },
+                'button-primary': { 'background': 'linear-gradient(90deg, #84cc16, #22c55e)', 'color': '#ffffff', 'border-radius': '30px' },
+                'button-cancel': { 'background-color': '#ecfccb', 'color': '#365314', 'border': '2px solid #84cc16', 'border-radius': '30px' },
+                'footer': { 'background-color': '#ecfccb', 'border-top': '1px solid #bef264' },
+                'content': { 'background-color': '#f0fdf4' },
+                'summary-body': { 'background-color': '#f0fdf4' },
+                'summary-item': { 'background-color': '#dcfce7', 'color': '#14532d', 'border-radius': '20px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#166534', 'font-weight': '600' },
+                'summary-size': { 'color': '#15803d' },
+                'summary-remove': { 'color': '#dc2626' },
+            },
+            midnight: {
+                'modal': { 'background-color': '#0c1445', 'color': '#e0e7ff' },
+                'header': { 'background-color': '#1e1b4b', 'color': '#c7d2fe', 'border-bottom': '1px solid #312e81' },
+                'source-list': { 'background-color': '#1e1b4b', 'border-right': '1px solid #312e81' },
+                'source-item': { 'color': '#a5b4fc' },
+                'source-item-active': { 'background-color': '#4338ca', 'color': '#e0e7ff' },
+                'drop-area-container': { 'background-color': '#0c1445' },
+                'drop-area': { 'background-color': '#1e1b4b', 'border': '2px dashed #6366f1', 'border-radius': '10px' },
+                'button-primary': { 'background-color': '#4f46e5', 'color': '#ffffff', 'border-radius': '8px' },
+                'button-cancel': { 'background-color': '#1e1b4b', 'color': '#c7d2fe', 'border': '2px solid #4338ca', 'border-radius': '8px' },
+                'footer': { 'background-color': '#1e1b4b', 'border-top': '1px solid #312e81' },
+                'content': { 'background-color': '#0c1445' },
+                'summary-body': { 'background-color': '#0c1445' },
+                'summary-item': { 'background-color': '#1e1b4b', 'color': '#e0e7ff', 'border-radius': '10px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#c7d2fe', 'font-weight': '600' },
+                'summary-size': { 'color': '#a5b4fc' },
+                'summary-remove': { 'color': '#f87171' },
+            },
+            candy: {
+                'modal': { 'background': 'linear-gradient(135deg, #fae8ff 0%, #fce7f3 50%, #fbcfe8 100%)', 'color': '#831843' },
+                'header': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
+                'source-list': { 'background-color': '#fdf4ff' },
+                'source-item': { 'color': '#9f1239' },
+                'source-item-active': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
+                'drop-area-container': { 'background': 'linear-gradient(135deg, #fae8ff, #fce7f3)' },
+                'drop-area': { 'background-color': '#fdf4ff', 'border': '3px dashed #ec4899', 'border-radius': '24px' },
+                'button-primary': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6, #a855f7)', 'color': '#ffffff', 'border-radius': '30px' },
+                'button-cancel': { 'background-color': '#fdf4ff', 'color': '#9f1239', 'border': '2px solid #ec4899', 'border-radius': '30px' },
+                'footer': { 'background-color': '#fdf4ff', 'border-top': '2px solid #f9a8d4' },
+                'content': { 'background': 'linear-gradient(135deg, #fae8ff, #fce7f3)' },
+                'summary-body': { 'background': 'linear-gradient(135deg, #fae8ff, #fce7f3)' },
+                'summary-item': { 'background-color': '#fdf4ff', 'color': '#831843', 'border-radius': '24px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#9f1239', 'font-weight': '600' },
+                'summary-size': { 'color': '#be123c' },
+                'summary-remove': { 'color': '#ec4899' },
+            },
+            autumn: {
+                'modal': { 'background-color': '#fef2f2', 'color': '#7c2d12' },
+                'header': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c)', 'color': '#ffffff' },
+                'source-list': { 'background-color': '#fed7aa', 'border-right': '1px solid #fdba74' },
+                'source-item': { 'color': '#9a3412' },
+                'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#fef2f2' },
+                'drop-area': { 'background-color': '#fed7aa', 'border': '2px dashed #dc2626', 'border-radius': '12px' },
+                'button-primary': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c, #f97316)', 'color': '#ffffff', 'border-radius': '10px' },
+                'button-cancel': { 'background-color': '#fed7aa', 'color': '#9a3412', 'border': '2px solid #ea580c', 'border-radius': '10px' },
+                'footer': { 'background-color': '#fed7aa', 'border-top': '1px solid #fdba74' },
+                'content': { 'background-color': '#fef2f2' },
+                'summary-body': { 'background-color': '#fef2f2' },
+                'summary-item': { 'background-color': '#fed7aa', 'color': '#7c2d12', 'border-radius': '12px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#9a3412', 'font-weight': '600' },
+                'summary-size': { 'color': '#c2410c' },
+                'summary-remove': { 'color': '#dc2626' },
+            },
+            arctic: {
+                'modal': { 'background-color': '#f0f9ff', 'color': '#0c4a6e' },
+                'header': { 'background-color': '#7dd3fc', 'color': '#0c4a6e' },
+                'source-list': { 'background-color': '#e0f2fe', 'border-right': '1px solid #bae6fd' },
+                'source-item': { 'color': '#075985' },
+                'source-item-active': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                'drop-area-container': { 'background-color': '#f0f9ff' },
+                'drop-area': { 'background-color': '#e0f2fe', 'border': '2px dashed #38bdf8', 'border-radius': '8px' },
+                'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff', 'border-radius': '6px' },
+                'button-cancel': { 'background-color': '#e0f2fe', 'color': '#075985', 'border': '2px solid #0ea5e9', 'border-radius': '6px' },
+                'footer': { 'background-color': '#e0f2fe', 'border-top': '1px solid #bae6fd' },
+                'content': { 'background-color': '#f0f9ff' },
+                'summary-body': { 'background-color': '#f0f9ff' },
+                'summary-item': { 'background-color': '#e0f2fe', 'color': '#0c4a6e', 'border-radius': '8px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#075985', 'font-weight': '600' },
+                'summary-size': { 'color': '#0369a1' },
+                'summary-remove': { 'color': '#0ea5e9' },
+            },
+            retro: {
+                'modal': { 'background-color': '#fffbeb', 'color': '#78350f' },
+                'header': { 'background-color': '#fbbf24', 'color': '#78350f', 'border-bottom': '3px solid #78350f' },
+                'source-list': { 'background-color': '#fef3c7', 'border-right': '3px solid #78350f' },
+                'source-item': { 'color': '#92400e' },
+                'source-item-active': { 'background-color': '#78350f', 'color': '#fbbf24' },
+                'drop-area-container': { 'background-color': '#fffbeb' },
+                'drop-area': { 'background-color': '#fef3c7', 'border': '3px solid #78350f', 'border-radius': '0px' },
+                'button-primary': { 'background-color': '#78350f', 'color': '#fbbf24', 'border-radius': '0px', 'border': '3px solid #78350f' },
+                'button-cancel': { 'background-color': '#fffbeb', 'color': '#78350f', 'border': '3px solid #78350f', 'border-radius': '0px' },
+                'footer': { 'background-color': '#fef3c7', 'border-top': '3px solid #78350f' },
+                'content': { 'background-color': '#fffbeb' },
+                'summary-body': { 'background-color': '#fffbeb' },
+                'summary-item': { 'background-color': '#fef3c7', 'color': '#78350f', 'border': '3px solid #78350f', 'border-radius': '0px', 'padding': '12px' },
+                'summary-item-name': { 'color': '#78350f', 'font-weight': '700' },
+                'summary-size': { 'color': '#92400e' },
+                'summary-remove': { 'color': '#dc2626' },
+            }
+        };
+
+        // State
+        let appliedStyles = {};
+        let currentElement = null;
+        let pickerInstance = null;
+        let currentView = 'empty'; // 'empty' or 'files'
+
+        // Initialize Filestack picker
+        function initPicker() {
+            if (!API_KEY || API_KEY === 'YOUR_API_KEY') {
+                document.getElementById('picker-container').innerHTML = `
+                    <div class="flex items-center justify-center h-full">
+                        <div class="text-center p-8">
+                            <h2 class="text-2xl font-bold text-red-600 mb-4">API Key Required</h2>
+                            <p class="text-gray-600">Please set a valid Filestack API key</p>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            const client = filestack.init(API_KEY);
+
+            pickerInstance = client.picker({
+                container: '#picker-container',
+                displayMode: 'inline',
+                maxFiles: 20,
+                uploadInBackground: false,
+                storeTo: {
+                    location: 's3',
+                },
+                onFileSelected: (file) => {
+                    console.log('File selected:', file);
+                },
+                onUploadDone: (res) => {
+                    console.log('Upload done:', res);
+                },
+            }).open();
+        }
+
+        // Load dummy files to show summary view
+        let filesLoaded = false;
+        function loadDummyFiles() {
+            if (filesLoaded) return; // Only load once
+
+            setTimeout(() => {
+                try {
+                    const dummyFiles = [
+                        new File(['Sample content 1'], 'document.txt', { type: 'text/plain' }),
+                        new File(['Sample content 2'], 'presentation.pdf', { type: 'application/pdf' }),
+                        new File(['Sample content 3'], 'spreadsheet.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+                    ];
+
+                    // This will show the summary view with dummy files
+                    const fileInput = document.querySelector('.fsp-drop-pane__input, input[type="file"]');
+                    if (fileInput) {
+                        const dataTransfer = new DataTransfer();
+                        dummyFiles.forEach(file => dataTransfer.items.add(file));
+                        fileInput.files = dataTransfer.files;
+
+                        const event = new Event('change', { bubbles: true });
+                        fileInput.dispatchEvent(event);
+                        filesLoaded = true;
+                    }
+                } catch (e) {
+                    console.log('Could not auto-add dummy files');
+                }
+            }, 100);
+        }
+
+        // Render element list
+        function renderElementList() {
+            const container = document.getElementById('element-list');
+            const navContainer = document.getElementById('category-nav');
+            container.innerHTML = '';
+            navContainer.innerHTML = '';
+
+            // Render category navigation
+            Object.keys(elements).forEach((category, index) => {
+                const navItem = document.createElement('span');
+                navItem.className = 'category-nav-item';
+                navItem.textContent = category;
+                navItem.dataset.category = category;
+                navItem.addEventListener('click', () => scrollToCategory(category));
+                navContainer.appendChild(navItem);
+            });
+
+            // Render element list
+            Object.entries(elements).forEach(([category, items]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'mb-4';
+                categoryDiv.id = `category-${category.replace(/\s+/g, '-').toLowerCase()}`;
+
+                const categoryLabel = document.createElement('div');
+                categoryLabel.className = 'text-xs font-semibold text-orange-700 mb-2 px-2';
+                categoryLabel.textContent = category;
+                categoryDiv.appendChild(categoryLabel);
+
+                items.forEach(element => {
+                    const item = document.createElement('div');
+                    item.className = 'element-item';
+                    item.dataset.elementId = element.id;
+                    item.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-medium">${element.label}</span>
+                                ${appliedStyles[element.id] && Object.keys(appliedStyles[element.id]).length > 0
+                            ? '<span class="category-badge bg-blue-500 text-white">Styled</span>'
+                            : ''}
+                            </div>
+                            <div class="text-xs text-slate-500">${element.desc || ''}</div>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => selectElement(element.id));
+                    categoryDiv.appendChild(item);
+                });
+
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        // Scroll to category
+        function scrollToCategory(category) {
+            const categoryId = `category-${category.replace(/\s+/g, '-').toLowerCase()}`;
+            const categoryElement = document.getElementById(categoryId);
+
+            if (categoryElement) {
+                // Update active state on nav items
+                document.querySelectorAll('.category-nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.category === category) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Scroll to category with offset for sticky header
+                const container = document.getElementById('visual-tab').parentElement;
+                const categoryNav = document.getElementById('category-nav');
+                const visualTab = document.getElementById('visual-tab');
+
+                // Get the actual offset from the top of the scrollable container
+                const categoryOffsetTop = categoryElement.offsetTop - visualTab.offsetTop;
+                const navHeight = categoryNav.offsetHeight + 20; // Add some padding
+
+                container.scrollTo({
+                    top: categoryOffsetTop - navHeight,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Select element
+        function selectElement(elementId) {
+            currentElement = elementId;
+            document.querySelectorAll('.element-item').forEach(el => el.classList.remove('active'));
+            document.querySelector(`[data-element-id="${elementId}"]`)?.classList.add('active');
+
+            // Show back button and style editor, hide element selector
+            document.getElementById('back-button-container').classList.remove('hidden');
+            document.getElementById('style-editor').classList.remove('hidden');
+            document.getElementById('element-selector').classList.add('hidden');
+            document.getElementById('instructions-box').classList.add('hidden');
+
+            // Scroll to top of the panel
+            document.getElementById('visual-tab').scrollTop = 0;
+
+            // Check if this element needs files to be visible
+            let elementInfo = null;
+            Object.values(elements).forEach(category => {
+                const found = category.find(el => el.id === elementId);
+                if (found) elementInfo = found;
+            });
+
+            if (elementInfo && elementInfo.needsFiles) {
+                // Switch to file list view and load files
+                switchPickerView('files');
+            } else {
+                // Switch to empty drop zone view
+                switchPickerView('empty');
+            }
+
+            // Highlight the element in the picker
+            highlightElementInPicker(elementId);
+
+            renderStyleProperties();
+        }
+
+        // Back to element list
+        function backToElementList() {
+            currentElement = null;
+
+            // Hide back button and style editor, show element selector
+            document.getElementById('back-button-container').classList.add('hidden');
+            document.getElementById('style-editor').classList.add('hidden');
+            document.getElementById('element-selector').classList.remove('hidden');
+            document.getElementById('instructions-box').classList.remove('hidden');
+
+            // Scroll to top
+            document.getElementById('visual-tab').scrollTop = 0;
+
+            // Remove highlights
+            document.querySelectorAll('.picker-highlight').forEach(el => {
+                el.classList.remove('picker-highlight');
+            });
+
+            // Clear active state
+            document.querySelectorAll('.element-item').forEach(el => el.classList.remove('active'));
+        }
+
+        // Highlight element in picker
+        function highlightElementInPicker(elementId) {
+            // Remove previous highlights
+            document.querySelectorAll('.picker-highlight').forEach(el => {
+                el.classList.remove('picker-highlight');
+            });
+
+            // Find the element info
+            let elementInfo = null;
+            Object.values(elements).forEach(category => {
+                const found = category.find(el => el.id === elementId);
+                if (found) elementInfo = found;
+            });
+
+            if (!elementInfo) return;
+
+            // Add highlight to matching elements in picker
+            setTimeout(() => {
+                const pickerElements = document.querySelectorAll(`.fsp-picker ${elementInfo.selector}`);
+                pickerElements.forEach(el => {
+                    el.classList.add('picker-highlight');
+                });
+            }, 100);
+        }
+
+        // Render style properties
+        function renderStyleProperties() {
+            const container = document.getElementById('style-properties');
+
+            if (!currentElement) {
+                container.innerHTML = '';
+                return;
+            }
+
+            // Add current element header with back button
+            let elementLabel = '';
+            let elementDesc = '';
+            Object.values(elements).forEach(category => {
+                const found = category.find(el => el.id === currentElement);
+                if (found) {
+                    elementLabel = found.label;
+                    elementDesc = found.desc;
+                }
+            });
+
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'mb-6';
+            headerDiv.innerHTML = `
+                <div class="p-4 bg-blue-900/30 border border-blue-500/50 rounded-lg">
+                    <h3 class="text-lg font-bold text-blue-300 mb-1">Editing: ${elementLabel}</h3>
+                    <div class="text-xs text-orange-700 mb-2">${elementDesc}</div>
+                    <div class="text-xs text-blue-300">
+                        ✨ Watch it highlight in blue on the right →
+                    </div>
+                </div>
+            `;
+            container.innerHTML = '';
+            container.appendChild(headerDiv);
+
+            const currentStyles = appliedStyles[currentElement] || {};
+
+            Object.entries(styleProperties).forEach(([group, properties]) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'property-group';
+
+                const groupLabel = document.createElement('div');
+                groupLabel.className = 'property-label';
+                groupLabel.textContent = group.charAt(0).toUpperCase() + group.slice(1);
+                groupDiv.appendChild(groupLabel);
+
+                properties.forEach(prop => {
+                    const propDiv = document.createElement('div');
+                    propDiv.className = 'flex items-center justify-between mb-3';
+
+                    const label = document.createElement('label');
+                    label.className = 'text-sm text-slate-300';
+                    label.textContent = prop.label;
+
+                    let input;
+                    if (prop.type === 'color') {
+                        input = document.createElement('input');
+                        input.type = 'color';
+                        input.value = currentStyles[prop.cssProperty] || '#ffffff';
+                    } else if (prop.type === 'select') {
+                        input = document.createElement('select');
+                        input.className = 'style-input';
+                        prop.options.forEach(opt => {
+                            const option = document.createElement('option');
+                            option.value = opt;
+                            option.textContent = opt;
+                            input.appendChild(option);
+                        });
+                        input.value = currentStyles[prop.cssProperty] || prop.options[0];
+                    } else if (prop.type === 'range') {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'flex items-center gap-2';
+                        input = document.createElement('input');
+                        input.type = 'range';
+                        input.min = prop.min;
+                        input.max = prop.max;
+                        input.step = prop.step;
+                        input.value = currentStyles[prop.cssProperty] || prop.max;
+                        input.className = 'flex-1';
+                        const valueDisplay = document.createElement('span');
+                        valueDisplay.className = 'text-xs text-orange-700 w-10';
+                        valueDisplay.textContent = input.value;
+                        input.addEventListener('input', (e) => {
+                            valueDisplay.textContent = e.target.value;
+                        });
+                        wrapper.appendChild(input);
+                        wrapper.appendChild(valueDisplay);
+                        propDiv.appendChild(label);
+                        propDiv.appendChild(wrapper);
+                        groupDiv.appendChild(propDiv);
+                        input.addEventListener('change', (e) => updateStyle(prop.cssProperty, e.target.value));
+                        return;
+                    } else {
+                        input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'style-input w-32';
+                        input.placeholder = prop.placeholder || '';
+                        input.value = currentStyles[prop.cssProperty] || '';
+                    }
+
+                    input.addEventListener('change', (e) => {
+                        let value = e.target.value;
+                        if (prop.unit && value && !value.includes(prop.unit) && !value.includes('rgba') && !value.includes('rgb')) {
+                            value = value + prop.unit;
+                        }
+                        updateStyle(prop.cssProperty, value);
+                    });
+
+                    propDiv.appendChild(label);
+                    propDiv.appendChild(input);
+                    groupDiv.appendChild(propDiv);
+                });
+
+                container.appendChild(groupDiv);
+            });
+
+            // Add clear button
+            if (Object.keys(currentStyles).length > 0) {
+                const clearBtn = document.createElement('button');
+                clearBtn.className = 'w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md transition mt-4';
+                clearBtn.textContent = 'Clear Element Styles';
+                clearBtn.addEventListener('click', clearCurrentElementStyles);
+                container.appendChild(clearBtn);
+            }
+        }
+
+        // Update style
+        function updateStyle(property, value) {
+            if (!currentElement) return;
+
+            if (!appliedStyles[currentElement]) {
+                appliedStyles[currentElement] = {};
+            }
+
+            if (value) {
+                appliedStyles[currentElement][property] = value;
+            } else {
+                delete appliedStyles[currentElement][property];
+            }
+
+            applyStylesToPreview();
+            updateCSSOutput();
+            renderElementList();
+        }
+
+        // Apply styles to preview
+        function applyStylesToPreview() {
+            const styleEl = document.getElementById('dynamic-styles');
+            let cssText = '';
+
+            // Get all element IDs and their selectors
+            const elementMap = {};
+            Object.values(elements).forEach(categoryItems => {
+                categoryItems.forEach(element => {
+                    elementMap[element.id] = element.selector;
+                });
+            });
+
+            Object.entries(appliedStyles).forEach(([elementId, styles]) => {
+                const selector = elementMap[elementId];
+                if (selector && Object.keys(styles).length > 0) {
+                    cssText += `.fsp-picker ${selector} {\n`;
+                    Object.entries(styles).forEach(([property, value]) => {
+                        cssText += `    ${property}: ${value} !important;\n`;
+                    });
+                    cssText += `}\n\n`;
+                }
+            });
+
+            styleEl.textContent = cssText;
+
+            // Visual feedback
+            const previewPanel = document.getElementById('right-panel');
+            previewPanel.classList.add('preview-updated');
+            setTimeout(() => previewPanel.classList.remove('preview-updated'), 500);
+        }
+
+        // Update CSS output
+        function updateCSSOutput() {
+            const output = document.getElementById('css-output');
+            if (Object.keys(appliedStyles).length === 0) {
+                output.innerHTML = '<div class="text-slate-500 text-center py-8">No styles applied yet</div>';
+                return;
+            }
+
+            const elementMap = {};
+            Object.values(elements).forEach(categoryItems => {
+                categoryItems.forEach(element => {
+                    elementMap[element.id] = element.selector;
+                });
+            });
+
+            let html = '';
+            Object.entries(appliedStyles).forEach(([elementId, styles]) => {
+                const selector = elementMap[elementId];
+                if (selector && Object.keys(styles).length > 0) {
+                    html += `<span class="css-selector">.fsp-picker ${selector}</span> <span class="css-brace">{</span>\n`;
+                    Object.entries(styles).forEach(([property, value]) => {
+                        html += `    <span class="css-property">${property}</span>: <span class="css-value">${value}</span> !important;\n`;
+                    });
+                    html += `<span class="css-brace">}</span>\n\n`;
+                }
+            });
+
+            output.innerHTML = html;
+        }
+
+        // Clear current element styles
+        function clearCurrentElementStyles() {
+            if (!currentElement) return;
+            delete appliedStyles[currentElement];
+            applyStylesToPreview();
+            updateCSSOutput();
+            renderStyleProperties();
+            renderElementList();
+        }
+
+        // Apply preset
+        function applyPreset(presetName) {
+            const preset = presets[presetName];
+            if (!preset) return;
+
+            appliedStyles = JSON.parse(JSON.stringify(preset));
+            applyStylesToPreview();
+            updateCSSOutput();
+            renderElementList();
+            if (currentElement) {
+                renderStyleProperties();
+            }
+        }
+
+        // Reset all
+        function resetAll() {
+            appliedStyles = {};
+            applyStylesToPreview();
+            updateCSSOutput();
+            renderElementList();
+            if (currentElement) {
+                renderStyleProperties();
+            }
+        }
+
+        // Copy CSS
+        function copyCSSToClipboard() {
+            const elementMap = {};
+            Object.values(elements).forEach(categoryItems => {
+                categoryItems.forEach(element => {
+                    elementMap[element.id] = element.selector;
+                });
+            });
+
+            let cssText = '';
+            Object.entries(appliedStyles).forEach(([elementId, styles]) => {
+                const selector = elementMap[elementId];
+                if (selector && Object.keys(styles).length > 0) {
+                    cssText += `.fsp-picker ${selector} {\n`;
+                    Object.entries(styles).forEach(([property, value]) => {
+                        cssText += `    ${property}: ${value} !important;\n`;
+                    });
+                    cssText += `}\n\n`;
+                }
+            });
+
+            navigator.clipboard.writeText(cssText).then(() => {
+                const btn = document.getElementById('copy-css');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('bg-green-600');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('bg-green-600');
+                }, 2000);
+            });
+        }
+
+        // Picker view switching
+        function switchPickerView(view) {
+            if (currentView === view) return; // Already in this view
+
+            currentView = view;
+
+            // Update tab styles
+            const emptyTab = document.getElementById('tab-empty');
+            const filesTab = document.getElementById('tab-files');
+
+            if (view === 'empty') {
+                emptyTab.classList.add('bg-orange-600', 'text-white');
+                emptyTab.classList.remove('bg-orange-200', 'text-orange-900');
+                filesTab.classList.remove('bg-orange-600', 'text-white');
+                filesTab.classList.add('bg-orange-200', 'text-orange-900');
+
+                // Clear the file list to go back to drop zone
+                clearFileList();
+            } else {
+                filesTab.classList.add('bg-orange-600', 'text-white');
+                filesTab.classList.remove('bg-orange-200', 'text-orange-900');
+                emptyTab.classList.remove('bg-orange-600', 'text-white');
+                emptyTab.classList.add('bg-orange-200', 'text-orange-900');
+
+                // Load files to show summary view
+                loadDummyFiles();
+            }
+        }
+
+        // Clear file list to return to drop zone view
+        function clearFileList() {
+            try {
+                // Find and click any "go back" or clear buttons in the picker
+                const backButtons = document.querySelectorAll('.fsp-summary__go-back, .fsp-header__back');
+                if (backButtons.length > 0) {
+                    backButtons[0].click();
+                    filesLoaded = false;
+                }
+
+                // Alternative: try to remove files from summary
+                const removeButtons = document.querySelectorAll('.fsp-summary__action--remove');
+                removeButtons.forEach(btn => {
+                    setTimeout(() => btn.click(), 50);
+                });
+
+                if (removeButtons.length > 0) {
+                    filesLoaded = false;
+                }
+            } catch (e) {
+                console.log('Could not clear file list');
+            }
+        }
+
+        // Tab switching (for left panel tabs)
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active', 'bg-orange-600');
+                btn.classList.add('bg-orange-200');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active', 'bg-orange-600');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.remove('bg-orange-200');
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+        }
+
+        // Resizer functionality
+        const resizer = document.getElementById('resizer');
+        const leftPanel = document.getElementById('left-panel');
+        const rightPanel = document.getElementById('right-panel');
+
+        resizer.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            document.addEventListener('mousemove', resize);
+            document.addEventListener('mouseup', stopResize);
+        });
+
+        function resize(e) {
+            const newWidth = e.clientX;
+            if (newWidth > 300 && newWidth < window.innerWidth - 400) {
+                leftPanel.style.width = newWidth + 'px';
+            }
+        }
+
+        function stopResize() {
+            document.removeEventListener('mousemove', resize);
+            document.removeEventListener('mouseup', stopResize);
+        }
+
+        // Event listeners
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.addEventListener('click', (e) => switchTab(e.target.dataset.tab));
+        });
+
+        document.querySelectorAll('.preset-button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const preset = e.currentTarget.dataset.preset;
+                applyPreset(preset);
+            });
+        });
+
+        document.getElementById('reset-all').addEventListener('click', resetAll);
+        document.getElementById('copy-css').addEventListener('click', copyCSSToClipboard);
+
+        // Picker view tabs
+        document.getElementById('tab-empty').addEventListener('click', () => switchPickerView('empty'));
+        document.getElementById('tab-files').addEventListener('click', () => switchPickerView('files'));
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            initPicker();
+            renderElementList();
+            updateCSSOutput();
+        });
+    </script>
+</body>
+
+</html>
