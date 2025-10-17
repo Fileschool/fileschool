@@ -177,6 +177,111 @@
             color: white;
         }
 
+        /* Live CSS Viewer */
+        #live-css-viewer {
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid #fed7aa;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .live-css-header {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .live-css-content {
+            padding: 16px;
+            height: 100%;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #fef3c7;
+        }
+
+        .live-css-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9a3412;
+            font-style: italic;
+        }
+
+        .css-line {
+            opacity: 0;
+            animation: fadeInLine 0.3s ease-in forwards;
+        }
+
+        @keyframes fadeInLine {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .live-css-selector {
+            color: #ea580c;
+            font-weight: 600;
+        }
+
+        .live-css-property {
+            color: #0369a1;
+        }
+
+        .live-css-value {
+            color: #059669;
+        }
+
+        .live-css-brace {
+            color: #64748b;
+        }
+
+        .copy-live-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-live-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .css-rule-block {
+            margin-bottom: 16px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Property Group */
         .property-group {
             background: #ffffff;
@@ -581,10 +686,28 @@
             </div>
 
             <!-- Picker Container -->
-            <div class="flex-1 flex items-center justify-center overflow-hidden">
+            <div class="flex-1 flex items-center justify-center overflow-hidden mb-4">
                 <div id="picker-container"
-                    style="width: 900px; height: 600px; transform-origin: center; overflow: hidden;">
+                    style="width: 1000px; height: 580px; transform-origin: center; overflow: hidden;">
                     <!-- Filestack picker will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Live CSS Viewer -->
+            <div id="live-css-viewer">
+                <div class="live-css-header">
+                    <div class="flex items-center gap-2">
+                        <span class="text-white font-semibold">⚡ Live CSS</span>
+                        <span id="css-line-count" class="text-xs text-orange-100"></span>
+                    </div>
+                    <button class="copy-live-btn" onclick="copyLiveCSS()">
+                        📋 Copy
+                    </button>
+                </div>
+                <div id="live-css-content" class="live-css-content">
+                    <div class="live-css-empty">
+                        ✨ Start styling elements to see CSS appear here
+                    </div>
                 </div>
             </div>
         </div>
@@ -1373,6 +1496,9 @@
 
             styleEl.textContent = cssText;
 
+            // Update live CSS viewer
+            updateLiveCSSViewer(elementMap);
+
             // Visual feedback
             const previewPanel = document.getElementById('right-panel');
             previewPanel.classList.add('preview-updated');
@@ -1475,6 +1601,83 @@
                     btn.classList.remove('bg-green-600');
                 }, 2000);
             });
+        }
+
+        // Update Live CSS Viewer
+        function updateLiveCSSViewer(elementMap) {
+            const container = document.getElementById('live-css-content');
+            const lineCount = document.getElementById('css-line-count');
+
+            if (Object.keys(appliedStyles).length === 0) {
+                container.innerHTML = `
+                    <div class="live-css-empty">
+                        ✨ Start styling elements to see CSS appear here
+                    </div>
+                `;
+                lineCount.textContent = '';
+                return;
+            }
+
+            let html = '';
+            let totalLines = 0;
+
+            Object.entries(appliedStyles).forEach(([elementId, styles]) => {
+                const selector = elementMap[elementId];
+                if (selector && Object.keys(styles).length > 0) {
+                    html += '<div class="css-rule-block">';
+                    html += `<span class="live-css-selector">.fsp-picker ${selector}</span> `;
+                    html += `<span class="live-css-brace">{</span>\n`;
+                    totalLines += 1;
+
+                    Object.entries(styles).forEach(([property, value]) => {
+                        html += `  <span class="live-css-property">${property}</span>: `;
+                        html += `<span class="live-css-value">${value}</span> !important;\n`;
+                        totalLines += 1;
+                    });
+
+                    html += `<span class="live-css-brace">}</span>\n`;
+                    html += '</div>';
+                    totalLines += 1;
+                }
+            });
+
+            container.innerHTML = html;
+            lineCount.textContent = `${totalLines} lines`;
+        }
+
+        // Copy Live CSS
+        function copyLiveCSS() {
+            const elementMap = {};
+            Object.values(elements).forEach(categoryItems => {
+                categoryItems.forEach(element => {
+                    elementMap[element.id] = element.selector;
+                });
+            });
+
+            let cssText = '';
+            Object.entries(appliedStyles).forEach(([elementId, styles]) => {
+                const selector = elementMap[elementId];
+                if (selector && Object.keys(styles).length > 0) {
+                    cssText += `.fsp-picker ${selector} {\n`;
+                    Object.entries(styles).forEach(([property, value]) => {
+                        cssText += `  ${property}: ${value} !important;\n`;
+                    });
+                    cssText += `}\n\n`;
+                }
+            });
+
+            if (cssText) {
+                navigator.clipboard.writeText(cssText).then(() => {
+                    const btn = document.querySelector('.copy-live-btn');
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '✅ Copied!';
+                    btn.style.background = 'rgba(52, 211, 153, 0.5)';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
+                    }, 2000);
+                });
+            }
         }
 
         // Picker view switching
@@ -1592,6 +1795,7 @@
             initPicker();
             renderElementList();
             updateCSSOutput();
+            updateLiveCSSViewer({});
         });
     </script>
 </body>
