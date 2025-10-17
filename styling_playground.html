@@ -140,19 +140,19 @@
         }
 
         .css-selector {
-            color: #f472b6;
+            color: #db2777;
         }
 
         .css-property {
-            color: #60a5fa;
+            color: #2563eb;
         }
 
         .css-value {
-            color: #34d399;
+            color: #059669;
         }
 
         .css-brace {
-            color: #cbd5e1;
+            color: #64748b;
         }
 
         /* Element List Item */
@@ -209,14 +209,14 @@
             position: relative;
             width: 44px;
             height: 24px;
-            background: #334155;
+            background: #fdba74;
             border-radius: 12px;
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .toggle-switch.active {
-            background: #3b82f6;
+            background: #f97316;
         }
 
         .toggle-switch::after {
@@ -594,7 +594,7 @@
 
     <script>
         // Configuration
-        const API_KEY = 'api_key_here';
+        const API_KEY = 'y';
 
         // Element categories and selectors
         const elements = {
@@ -1081,7 +1081,7 @@
                             ? '<span class="category-badge bg-blue-500 text-white">Styled</span>'
                             : ''}
                             </div>
-                            <div class="text-xs text-slate-500">${element.desc || ''}</div>
+                            <div class="text-xs text-orange-700">${element.desc || ''}</div>
                         </div>
                     `;
                     item.addEventListener('click', () => selectElement(element.id));
@@ -1228,10 +1228,10 @@
             const headerDiv = document.createElement('div');
             headerDiv.className = 'mb-6';
             headerDiv.innerHTML = `
-                <div class="p-4 bg-blue-900/30 border border-blue-500/50 rounded-lg">
-                    <h3 class="text-lg font-bold text-blue-300 mb-1">Editing: ${elementLabel}</h3>
+                <div class="p-4 bg-orange-100 border border-orange-400 rounded-lg">
+                    <h3 class="text-lg font-bold text-orange-900 mb-1">Editing: ${elementLabel}</h3>
                     <div class="text-xs text-orange-700 mb-2">${elementDesc}</div>
-                    <div class="text-xs text-blue-300">
+                    <div class="text-xs text-orange-800">
                         ✨ Watch it highlight in blue on the right →
                     </div>
                 </div>
@@ -1255,7 +1255,7 @@
                     propDiv.className = 'flex items-center justify-between mb-3';
 
                     const label = document.createElement('label');
-                    label.className = 'text-sm text-slate-300';
+                    label.className = 'text-sm text-orange-900';
                     label.textContent = prop.label;
 
                     let input;
@@ -1385,7 +1385,7 @@
         function updateCSSOutput() {
             const output = document.getElementById('css-output');
             if (Object.keys(appliedStyles).length === 0) {
-                output.innerHTML = '<div class="text-slate-500 text-center py-8">No styles applied yet</div>';
+                output.innerHTML = '<div class="text-orange-700 text-center py-8">No styles applied yet</div>';
                 return;
             }
 
