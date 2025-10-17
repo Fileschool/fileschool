@@ -227,8 +227,6 @@ class CodeGeneratorEnhanced {
                 return this.generateVideoProcessingCode(tab, options);
             case 'audio-processing':
                 return this.generateAudioProcessingCode(tab, options);
-            case 'dnd':
-                return this.generateDndCode(tab, options);
             default:
                 return null;
         }
@@ -832,105 +830,30 @@ const taggingUrl = '${url}';${chainNote}`;
 
         switch (tab) {
             case 'javascript':
-                return `// Safe for Work Detection
-// Returns { "sfw": true } for safe content or { "sfw": false } for unsafe content
-
+                return `// Safe for Work detection
 fetch('${url}')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(\`HTTP error! status: \${response.status}\`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('SFW Analysis Result:', data);
-    
-    // Handle the result
-    if (data.sfw === true) {
-      console.log('✓ Image is safe for work');
-      // Your logic for safe content
-    } else if (data.sfw === false) {
-      console.log('✗ Image is NOT safe for work');
-      // Your logic for unsafe content (e.g., flag for review)
-    }
-  })
-  .catch(error => {
-    console.error('SFW check failed:', error);
-    // Handle error (network issues, invalid credentials, etc.)
-  });${chainNote}
-
-// Example: Using async/await
-async function checkContentSafety() {
-  try {
-    const response = await fetch('${url}');
-    if (!response.ok) throw new Error(\`HTTP \${response.status}\`);
-    
-    const result = await response.json();
-    return result.sfw; // Returns true or false
-  } catch (error) {
-    console.error('Error checking content safety:', error);
-    return null; // or handle error appropriately
-  }
-}`;
+  .then(r => r.json())
+  .then(data => console.log('SFW status:', data))
+  .catch(err => console.error('SFW check failed:', err));${chainNote}`;
 
             case 'react':
-                return `import React, { useState } from 'react';
-
-// Safe for Work Detection Component
-// Analyzes image content and returns boolean indicating if content is workplace-appropriate
+                return `import React from 'react';
 
 const SafeForWorkChecker = () => {
-  const [sfwStatus, setSfwStatus] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
   const checkSFW = async () => {
-    setLoading(true);
-    setError(null);
-    
     try {
-      const response = await fetch('${url}');
-      
-      if (!response.ok) {
-        throw new Error(\`HTTP error! status: \${response.status}\`);
-      }
-      
-      const data = await response.json();
-      setSfwStatus(data.sfw);
-      
-      console.log('SFW Analysis:', data);
-      
-      // Handle the result
-      if (data.sfw === true) {
-        console.log('✓ Content is safe for work');
-        // Your logic for safe content
-      } else {
-        console.log('✗ Content flagged as unsafe');
-        // Your logic for unsafe content
-      }
-      
-    } catch (err) {
-      console.error('SFW check failed:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      const res = await fetch('${url}');
+      const data = await res.json();
+      console.log('SFW status:', data);
+    } catch (error) {
+      console.error('SFW check failed:', error);
     }
   };
 
   return (
-    <div>
-      <button onClick={checkSFW} disabled={loading}>
-        {loading ? 'Analyzing...' : 'Check Content Safety'}
-      </button>
-      
-      {sfwStatus !== null && (
-        <div style={{ color: sfwStatus ? 'green' : 'red' }}>
-          {sfwStatus ? '✓ Safe for Work' : '✗ Not Safe for Work'}
-        </div>
-      )}
-      
-      {error && <div style={{ color: 'red' }}>Error: {error}</div>}
-    </div>
+    <button onClick={checkSFW}>
+      Check SFW Status
+    </button>
   );
 };
 
@@ -938,92 +861,32 @@ export default SafeForWorkChecker;${chainNote}`;
 
             case 'vue':
                 return `<template>
-  <div>
-    <button @click="checkSFW" :disabled="loading">
-      {{ loading ? 'Analyzing...' : 'Check Content Safety' }}
-    </button>
-    
-    <div v-if="sfwStatus !== null" :style="{ color: sfwStatus ? 'green' : 'red' }">
-      {{ sfwStatus ? '✓ Safe for Work' : '✗ Not Safe for Work' }}
-    </div>
-    
-    <div v-if="error" style="color: red">
-      Error: {{ error }}
-    </div>
-  </div>
+  <button @click="checkSFW">Check SFW Status</button>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      sfwStatus: null,
-      loading: false,
-      error: null
-    };
-  },
-  
   methods: {
     async checkSFW() {
-      this.loading = true;
-      this.error = null;
-      
       try {
-        const response = await fetch('${url}');
-        
-        if (!response.ok) {
-          throw new Error(\`HTTP error! status: \${response.status}\`);
-        }
-        
-        const data = await response.json();
-        this.sfwStatus = data.sfw;
-        
-        console.log('SFW Analysis:', data);
-        
-        // Handle the result
-        if (data.sfw === true) {
-          console.log('✓ Content is safe for work');
-          // Your logic for safe content
-        } else {
-          console.log('✗ Content flagged as unsafe');
-          // Your logic for unsafe content
-        }
-        
-      } catch (err) {
-        console.error('SFW check failed:', err);
-        this.error = err.message;
-      } finally {
-        this.loading = false;
+        const res = await fetch('${url}');
+        const data = await res.json();
+        console.log('SFW status:', data);
+      } catch (error) {
+        console.error('SFW check failed:', error);
       }
     }
   }
-};
+}
 </script>${chainNote}`;
 
             case 'url':
-                return `// Safe for Work Detection URL
-// Processing API endpoint for content moderation
-
-const sfwUrl = '${url}';${chainNote}
-
-// Usage Examples:
-// 1. Basic handle: https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/sfw/<HANDLE>
-// 2. External URL: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/sfw/<EXTERNAL_URL>
-// 3. Storage Alias: https://cdn.filestackcontent.com/<API_KEY>/security=p:<POLICY>,s:<SIGNATURE>/sfw/src://<ALIAS>/<PATH>
-
-// Response Format:
-// Safe content: { "sfw": true }
-// Unsafe content: { "sfw": false }
-
-// Chaining with other operations:
-// https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/crop=dim:[0,0,500,500]/sfw/<HANDLE>
-// https://cdn.filestackcontent.com/security=p:<POLICY>,s:<SIGNATURE>/resize=width:800/sfw/<HANDLE>`;
+                return `// Safe for Work Check URL
+const sfwUrl = '${url}';${chainNote}`;
 
             default:
-                return `// Safe for Work Detection for ${tab}
-const sfwUrl = '${url}';${chainNote}
-
-// Returns: { "sfw": true } or { "sfw": false }`;
+                return `// Safe for Work check for ${tab}
+const sfwUrl = '${url}';${chainNote}`;
         }
     }
 
@@ -2203,398 +2066,6 @@ ${transformUrl}
 // Configure webhooks to receive the processed audio URL`;
         }
     }
-
-    generateDndCode(tab, options) {
-        const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
-        const container = options.container || '.drop-container';
-        
-        // Build configuration object
-        const config = {};
-        if (options.accept && options.accept.length > 0) {
-            config.accept = options.accept;
-        }
-        if (options.maxSize) {
-            config.maxSize = options.maxSize;
-        }
-        if (options.maxFiles) {
-            config.maxFiles = options.maxFiles;
-        }
-        if (options.failOverMaxFiles) {
-            config.failOverMaxFiles = options.failOverMaxFiles;
-        }
-        if (options.path) {
-            config.path = options.path;
-        }
-        if (options.storeLocation) {
-            config.storeLocation = options.storeLocation;
-        }
-        if (options.tags) {
-            config.tags = options.tags;
-        }
-        if (options.storeOnly) {
-            config.storeOnly = options.storeOnly;
-        }
-
-        // Build SDK config for security and settings
-        const sdkConfig = {};
-        if (options.sdkConfig) {
-            if (options.sdkConfig.cname) {
-                sdkConfig.cname = options.sdkConfig.cname;
-            }
-            if (options.sdkConfig.security) {
-                sdkConfig.security = options.sdkConfig.security;
-            }
-        }
-
-        const configString = Object.keys(config).length > 0 ? JSON.stringify(config, null, 2) : '{}';
-        const sdkConfigString = Object.keys(sdkConfig).length > 0 ? JSON.stringify(sdkConfig, null, 2) : 'null';
-
-        switch (tab) {
-            case 'javascript':
-                let eventHandlers = '';
-                if (options.events) {
-                    eventHandlers = '\n// Event Handlers\n';
-                    
-                    if (options.events.progress) {
-                        eventHandlers += `filestackDnD.on('progress', (progress) => {
-    console.log('Upload progress:', progress.percent + '%');
-    // Update progress bar: document.getElementById('progress-bar').style.width = progress.percent + '%';
-});
-
-`;
-                    }
-                    
-                    if (options.events.dragEvents) {
-                        eventHandlers += `filestackDnD.on('dragover', () => {
-    document.querySelector('${container}').style.borderColor = '#4CAF50';
-    document.querySelector('${container}').style.backgroundColor = '#f0f8f0';
-});
-
-filestackDnD.on('dragleave', () => {
-    document.querySelector('${container}').style.borderColor = '#ccc';
-    document.querySelector('${container}').style.backgroundColor = 'transparent';
-});
-
-filestackDnD.on('drop', () => {
-    console.log('File dropped, starting upload...');
-});
-
-`;
-                    }
-                    
-                    if (options.events.successEvents) {
-                        eventHandlers += `filestackDnD.on('successReadFile', (file) => {
-    console.log('File selected:', file.name, file.size + ' bytes');
-});
-
-filestackDnD.on('uploadFileFinish', (result) => {
-    console.log('Upload completed:', result);
-    console.log('File URL:', result.url);
-    console.log('File Handle:', result.handle);
-});
-
-`;
-                    }
-                    
-                    if (options.events.errorHandling) {
-                        eventHandlers += `filestackDnD.on('error', (error) => {
-    console.error('Upload error:', error);
-    // Show user-friendly error message
-    alert('Upload failed: ' + error.message);
-});
-
-`;
-                    }
-                }
-
-                return `// Drag and Drop Upload
-// Include the filestack-drag-and-drop library in your HTML:
-// <script src="https://static.filestackapi.com/filestack-drag-and-drop-js/3.x/filestack-drag-and-drop.min.js"></script>
-
-const apikey = "${apiKey}";
-
-// Drag & Drop Configuration
-const config = ${configString};
-
-// SDK Configuration
-const sdkConfig = ${sdkConfigString};
-
-// Initialize Drag and Drop
-const filestackDnD = new filestackDnD.init(apikey, document.querySelector('${container}'), config, sdkConfig);${eventHandlers}
-// Optional: Add more elements to support drag & drop
-// filestackDnD.setElements(document.querySelectorAll('.drop-zone'));
-
-// Optional: Update upload options dynamically
-// filestackDnD.setUploadOptions({ path: '/new-path/' });`;
-
-            case 'react':
-                return `// Drag and Drop Upload in React
-import React, { useEffect, useRef } from 'react';
-
-// Include the filestack-drag-and-drop library in your HTML:
-// <script src="https://static.filestackapi.com/filestack-drag-and-drop-js/3.x/filestack-drag-and-drop.min.js"></script>
-
-const DragDropUpload = () => {
-  const dropZoneRef = useRef(null);
-  const filestackDnDRef = useRef(null);
-
-  useEffect(() => {
-    const apikey = "${apiKey}";
-    
-    // Drag & Drop Configuration
-    const config = ${configString};
-    
-    // SDK Configuration
-    const sdkConfig = ${sdkConfigString};
-
-    // Initialize Drag and Drop
-    filestackDnDRef.current = new window.filestackDnD.init(
-      apikey, 
-      dropZoneRef.current, 
-      config, 
-      sdkConfig
-    );
-
-    // Listen to events
-    filestackDnDRef.current.on('uploadFileFinish', (result) => {
-      console.log('Upload completed:', result);
-    });
-
-    filestackDnDRef.current.on('error', (error) => {
-      console.error('Upload error:', error);
-    });
-
-    return () => {
-      // Cleanup if needed
-      if (filestackDnDRef.current) {
-        // filestackDnDRef.current.destroy(); // if available
-      }
-    };
-  }, []);
-
-  return (
-    <div 
-      ref={dropZoneRef}
-      style={{
-        border: '2px dashed #ccc',
-        padding: '2rem',
-        textAlign: 'center',
-        cursor: 'pointer'
-      }}
-    >
-      Drop files here to upload
-    </div>
-  );
-};
-
-export default DragDropUpload;`;
-
-            case 'vue':
-                return `// Drag and Drop Upload in Vue
-<template>
-  <div 
-    ref="dropZone"
-    class="drop-zone"
-    @dragover.prevent
-    @drop.prevent="handleDrop"
-  >
-    Drop files here to upload
-  </div>
-</template>
-
-<script>
-// Include the filestack-drag-and-drop library in your HTML:
-// <script src="https://static.filestackapi.com/filestack-drag-and-drop-js/3.x/filestack-drag-and-drop.min.js"></script>
-
-export default {
-  name: 'DragDropUpload',
-  mounted() {
-    const apikey = "${apiKey}";
-    
-    // Drag & Drop Configuration
-    const config = ${configString};
-    
-    // SDK Configuration
-    const sdkConfig = ${sdkConfigString};
-
-    // Initialize Drag and Drop
-    this.filestackDnD = new window.filestackDnD.init(
-      apikey, 
-      this.$refs.dropZone, 
-      config, 
-      sdkConfig
-    );
-
-    // Listen to events
-    this.filestackDnD.on('uploadFileFinish', (result) => {
-      console.log('Upload completed:', result);
-    });
-
-    this.filestackDnD.on('error', (error) => {
-      console.error('Upload error:', error);
-    });
-  },
-  beforeDestroy() {
-    // Cleanup if needed
-    if (this.filestackDnD) {
-      // this.filestackDnD.destroy(); // if available
-    }
-  }
-};
-</script>
-
-<style scoped>
-.drop-zone {
-  border: 2px dashed #ccc;
-  padding: 2rem;
-  text-align: center;
-  cursor: pointer;
-}
-</style>`;
-
-            case 'angular':
-                return `// Drag and Drop Upload in Angular
-import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
-
-// Include the filestack-drag-and-drop library in your HTML:
-// <script src="https://static.filestackapi.com/filestack-drag-and-drop-js/3.x/filestack-drag-and-drop.min.js"></script>
-
-@Component({
-  selector: 'app-drag-drop-upload',
-  template: \`
-    <div 
-      class="drop-zone"
-      (dragover)="onDragOver($event)"
-      (drop)="onDrop($event)"
-    >
-      Drop files here to upload
-    </div>
-  \`,
-  styles: [\`
-    .drop-zone {
-      border: 2px dashed #ccc;
-      padding: 2rem;
-      text-align: center;
-      cursor: pointer;
-    }
-  \`]
-})
-export class DragDropUploadComponent implements OnInit, OnDestroy {
-  private filestackDnD: any;
-
-  constructor(private elementRef: ElementRef) {}
-
-  ngOnInit() {
-    const apikey = "${apiKey}";
-    
-    // Drag & Drop Configuration
-    const config = ${configString};
-    
-    // SDK Configuration
-    const sdkConfig = ${sdkConfigString};
-
-    // Initialize Drag and Drop
-    this.filestackDnD = new (window as any).filestackDnD.init(
-      apikey, 
-      this.elementRef.nativeElement.querySelector('.drop-zone'), 
-      config, 
-      sdkConfig
-    );
-
-    // Listen to events
-    this.filestackDnD.on('uploadFileFinish', (result: any) => {
-      console.log('Upload completed:', result);
-    });
-
-    this.filestackDnD.on('error', (error: any) => {
-      console.error('Upload error:', error);
-    });
-  }
-
-  ngOnDestroy() {
-    // Cleanup if needed
-    if (this.filestackDnD) {
-      // this.filestackDnD.destroy(); // if available
-    }
-  }
-
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
-  }
-
-  onDrop(event: DragEvent) {
-    event.preventDefault();
-  }
-}`;
-
-            case 'nodejs':
-                return `// Drag and Drop Upload - Node.js Backend
-// Note: Drag and Drop is a frontend library. This shows how to handle the upload results.
-
-const express = require('express');
-const app = express();
-
-app.use(express.json());
-
-// Webhook endpoint to receive upload notifications
-app.post('/webhook/filestack-upload', (req, res) => {
-  const { handle, filename, mimetype, size, url } = req.body;
-  
-  console.log('File uploaded:', {
-    handle,
-    filename,
-    mimetype,
-    size,
-    url
-  });
-  
-  // Process the uploaded file
-  // Save metadata to database, trigger further processing, etc.
-  
-  res.status(200).json({ success: true });
-});
-
-// Frontend configuration for reference:
-// Drag & Drop Configuration
-const frontendConfig = ${configString};
-
-// SDK Configuration  
-const sdkConfig = ${sdkConfigString};
-
-console.log('Frontend should use this configuration:');
-console.log('Container:', '${container}');
-console.log('Config:', frontendConfig);
-console.log('SDK Config:', sdkConfig);
-
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
-});`;
-
-            case 'url':
-                return `// Drag and Drop Upload Configuration
-// This is a frontend library configuration, not a URL
-
-Container Selector: ${container}
-
-Configuration:
-${configString}
-
-SDK Configuration:
-${sdkConfigString}
-
-Library CDN:
-https://static.filestackapi.com/filestack-drag-and-drop-js/3.x/filestack-drag-and-drop.min.js
-
-Documentation:
-https://www.filestack.com/docs/uploads/dnd/`;
-
-            default:
-                return `// Drag and Drop Upload
-// Configuration: ${configString}
-// Container: ${container}
-// SDK Config: ${sdkConfigString}`;
-        }
-    }
 }
 
 // Initialize enhanced code generator
@@ -2774,9 +2245,6 @@ function generateCodeEnhanced(section, tab = 'javascript') {
             case 'audio-processing':
                 options = collectAudioProcessingOptions();
                 break;
-            case 'dnd':
-                options = collectDndOptions();
-                break;
             default:
                 options = {};
         }
@@ -2804,108 +2272,6 @@ function collectUploadOptions() {
         };
     } catch (error) {
         console.warn('Error collecting upload options:', error);
-        return {};
-    }
-}
-
-function collectDndOptions() {
-    try {
-        const options = {};
-
-        // Container selector
-        const container = document.getElementById('dndContainer')?.value;
-        if (container) {
-            options.container = container;
-        }
-
-        // Accept files - Get from checkboxes
-        const acceptFiles = [];
-        const checkboxes = document.querySelectorAll('.dnd-accept-checkbox:checked');
-        checkboxes.forEach(checkbox => {
-            acceptFiles.push(checkbox.value);
-        });
-        if (acceptFiles.length > 0) {
-            options.accept = acceptFiles;
-        }
-
-        // Max size
-        const maxSize = document.getElementById('dndMaxSize')?.value;
-        if (maxSize && maxSize !== '0') {
-            options.maxSize = parseInt(maxSize);
-        }
-
-        // Max files
-        const maxFiles = document.getElementById('dndMaxFiles')?.value;
-        if (maxFiles && maxFiles !== '0') {
-            options.maxFiles = parseInt(maxFiles);
-        }
-
-        // Fail over max files
-        const failOver = document.getElementById('dndFailOverMaxFiles')?.checked;
-        if (failOver) {
-            options.failOverMaxFiles = true;
-        }
-
-        // Upload options
-        const uploadPath = document.getElementById('dndUploadPath')?.value;
-        if (uploadPath) {
-            options.path = uploadPath;
-        }
-
-        const storeLocation = document.getElementById('dndStoreLocation')?.value;
-        if (storeLocation) {
-            options.storeLocation = storeLocation;
-        }
-
-        const uploadTags = document.getElementById('dndUploadTags')?.value;
-        if (uploadTags) {
-            options.tags = uploadTags;
-        }
-
-        const storeOnly = document.getElementById('dndStoreOnly')?.checked;
-        if (storeOnly) {
-            options.storeOnly = true;
-        }
-
-        // SDK configuration
-        const cname = document.getElementById('dndCname')?.value;
-        const policy = document.getElementById('dndPolicy')?.value;
-        const signature = document.getElementById('dndSignature')?.value;
-
-        const sdkConfig = {};
-        if (cname) {
-            sdkConfig.cname = cname;
-        }
-        if (policy && signature) {
-            sdkConfig.security = {
-                policy: policy,
-                signature: signature
-            };
-        }
-
-        if (Object.keys(sdkConfig).length > 0) {
-            options.sdkConfig = sdkConfig;
-        }
-
-        // Event configuration
-        const enableProgress = document.getElementById('dndEnableProgress')?.checked;
-        const enableDragEvents = document.getElementById('dndEnableDragEvents')?.checked;
-        const enableErrorHandling = document.getElementById('dndEnableErrorHandling')?.checked;
-        const enableSuccessEvents = document.getElementById('dndEnableSuccessEvents')?.checked;
-
-        const events = {};
-        if (enableProgress) events.progress = true;
-        if (enableDragEvents) events.dragEvents = true;
-        if (enableErrorHandling) events.errorHandling = true;
-        if (enableSuccessEvents) events.successEvents = true;
-
-        if (Object.keys(events).length > 0) {
-            options.events = events;
-        }
-
-        return options;
-    } catch (error) {
-        console.warn('Error collecting DND options:', error);
         return {};
     }
 }
@@ -3687,18 +3053,6 @@ function setupEventListeners() {
                 paramsInput.parentNode.insertBefore(hintDiv, paramsInput.nextSibling);
             }
 
-            // Create or get presets container
-            let presetsContainer = step.querySelector('.chain-presets');
-            if (!presetsContainer) {
-                presetsContainer = document.createElement('div');
-                presetsContainer.className = 'chain-presets';
-                presetsContainer.style.cssText = 'display:none; margin: 0.5rem 0; gap: 0.3rem; flex-wrap: wrap;';
-                const stepHeader = step.querySelector('.chain-step-header');
-                if (stepHeader) {
-                    stepHeader.parentNode.insertBefore(presetsContainer, stepHeader.nextSibling);
-                }
-            }
-
             // Add change listener
             operationSelect.addEventListener('change', () => {
                 const paramInfo = getParameterInfo(operationSelect.value);
@@ -3710,64 +3064,14 @@ function setupEventListeners() {
                         paramsInput.disabled = true;
                         paramsInput.value = '';
                         hintDiv.style.display = 'none';
-                        presetsContainer.style.display = 'none';
                     } else {
                         paramsInput.disabled = false;
                         hintDiv.innerHTML = `<strong>${paramInfo.description}</strong><br>${paramInfo.constraints}`;
                         hintDiv.style.display = 'block';
-                        
-                        // Show presets if available
-                        if (paramInfo.presets && paramInfo.presets.length > 0) {
-                            presetsContainer.innerHTML = '<div style="font-size: 0.85em; color: #666; margin-bottom: 0.3rem;"><i class="fas fa-magic"></i> Quick Presets:</div>';
-                            presetsContainer.style.display = 'flex';
-                            
-                            paramInfo.presets.forEach(preset => {
-                                const presetBtn = document.createElement('button');
-                                presetBtn.type = 'button';
-                                presetBtn.className = 'preset-btn';
-                                presetBtn.textContent = preset.label;
-                                presetBtn.title = preset.value;
-                                presetBtn.style.cssText = `
-                                    padding: 4px 10px;
-                                    font-size: 0.85em;
-                                    background: #f0f0f0;
-                                    border: 1px solid #d0d0d0;
-                                    border-radius: 4px;
-                                    cursor: pointer;
-                                    transition: all 0.2s ease;
-                                `;
-                                
-                                presetBtn.addEventListener('mouseover', () => {
-                                    presetBtn.style.background = '#EF4A26';
-                                    presetBtn.style.color = 'white';
-                                    presetBtn.style.borderColor = '#EF4A26';
-                                });
-                                
-                                presetBtn.addEventListener('mouseout', () => {
-                                    presetBtn.style.background = '#f0f0f0';
-                                    presetBtn.style.color = 'inherit';
-                                    presetBtn.style.borderColor = '#d0d0d0';
-                                });
-                                
-                                presetBtn.addEventListener('click', () => {
-                                    paramsInput.value = preset.value;
-                                    paramsInput.focus();
-                                    // Trigger any code generation if needed
-                                    if (typeof generateCode === 'function') {
-                                        generateCode();
-                                    }
-                                });
-                                
-                                presetsContainer.appendChild(presetBtn);
-                            });
-                        } else {
-                            presetsContainer.style.display = 'none';
-                        }
                     }
                 } else {
                     paramsInput.placeholder = 'Select operation first';
                     hintDiv.style.display = 'none';
-                    presetsContainer.style.display = 'none';
                 }
             });
 
@@ -6037,34 +5341,20 @@ function generateMetadataCode() {
 
 // Drag & Drop Functions
 function generateDndCode() {
-    // Get accept files from checkboxes
-    const acceptFiles = [];
-    const checkboxes = document.querySelectorAll('.dnd-accept-checkbox:checked');
-    checkboxes.forEach(checkbox => {
-        acceptFiles.push(checkbox.value);
-    });
-
+    const accept = document.getElementById('dndAccept')?.value || '';
     const maxSize = validateIntegerInput('dndMaxSize');
     const maxFiles = validateIntegerInput('dndMaxFiles');
     const failOver = !!document.getElementById('dndFailOverMaxFiles')?.checked;
     const container = document.getElementById('dndContainer')?.value || '.drop-container';
-    const uploadPath = document.getElementById('dndUploadPath')?.value || '';
-    const storeLocation = document.getElementById('dndStoreLocation')?.value || '';
-    const uploadTags = document.getElementById('dndUploadTags')?.value || '';
-    const storeOnly = !!document.getElementById('dndStoreOnly')?.checked;
     const policy = document.getElementById('dndPolicy')?.value || '';
     const signature = document.getElementById('dndSignature')?.value || '';
     const cname = document.getElementById('dndCname')?.value || '';
 
     const config = {};
-    if (acceptFiles.length > 0) config.accept = acceptFiles;
+    if (accept) config.accept = accept.split(',').map(s => s.trim());
     if (maxSize !== null) config.maxSize = maxSize;
     if (maxFiles !== null) config.maxFiles = maxFiles;
     if (failOver) config.failOverMaxFiles = true;
-    if (uploadPath) config.path = uploadPath;
-    if (storeLocation) config.storeLocation = storeLocation;
-    if (uploadTags) config.tags = uploadTags;
-    if (storeOnly) config.storeOnly = true;
 
     const sdkConfig = {};
     if (cname) sdkConfig.cname = cname;
@@ -6324,39 +5614,14 @@ export default {
 
 function testDnd() {
     const container = document.getElementById('dndContainer')?.value || '.drop-container';
-    
-    // Get accept files from checkboxes
-    const acceptFiles = [];
-    const checkboxes = document.querySelectorAll('.dnd-accept-checkbox:checked');
-    checkboxes.forEach(checkbox => {
-        acceptFiles.push(checkbox.value);
-    });
-    const accept = acceptFiles.length > 0 ? acceptFiles.join(', ') : 'all files';
-    
+    const accept = document.getElementById('dndAccept')?.value || 'all files';
     const maxSize = validateIntegerInput('dndMaxSize');
     const maxFiles = validateIntegerInput('dndMaxFiles');
-    const failOver = !!document.getElementById('dndFailOverMaxFiles')?.checked;
-    const uploadPath = document.getElementById('dndUploadPath')?.value || 'default';
-    const storeLocation = document.getElementById('dndStoreLocation')?.value || 'default';
-    const uploadTags = document.getElementById('dndUploadTags')?.value || 'none';
-    const storeOnly = !!document.getElementById('dndStoreOnly')?.checked;
-    const timeout = validateIntegerInput('dndTimeout');
-    const cname = document.getElementById('dndCname')?.value || 'default';
-    const policy = document.getElementById('dndPolicy')?.value || 'none';
-    const signature = document.getElementById('dndSignature')?.value || 'none';
 
     let config = `Drop Container: ${container}\n`;
     config += `Accept: ${accept}\n`;
     config += `Max Size: ${maxSize ? (maxSize / 1048576).toFixed(2) + 'MB' : 'No limit'}\n`;
-    config += `Max Files: ${maxFiles || 'No limit'}\n`;
-    config += `Fail Over Max Files: ${failOver ? 'Yes' : 'No'}\n`;
-    config += `Upload Path: ${uploadPath}\n`;
-    config += `Store Location: ${storeLocation}\n`;
-    config += `Upload Tags: ${uploadTags}\n`;
-    config += `Store Only: ${storeOnly ? 'Yes' : 'No'}\n`;
-    config += `Timeout: ${timeout || 30000}ms\n`;
-    config += `CNAME: ${cname}\n`;
-    config += `Security: ${policy && signature ? 'Configured' : 'Not configured'}`;
+    config += `Max Files: ${maxFiles || 'No limit'}`;
 
     showNotification('Drag & Drop configuration validated. Add your API key and include the filestack-drag-and-drop library to test actual uploads.', 'success');
     console.log('Drag & Drop Test Configuration:', config);
@@ -6379,8 +5644,14 @@ function runCode() {
         testUpload();
     } else if (currentSection === 'download') {
         testDownload();
+    } else if (currentSection === 'sfw') {
+        testSfw();
     } else if (currentSection === 'tagging') {
         testTagging();
+    } else if (currentSection === 'ocr') {
+        testOcr();
+    } else if (currentSection === 'faces') {
+        testFaces();
     } else if (currentSection === 'security') {
         testSecurity();
     } else if (currentSection === 'store') {
@@ -6585,40 +5856,9 @@ function generateUploadCode() {
 function collectUploadOptions() {
     const uploadConfig = {};
 
-    // Store/Upload Configuration
     const uploadPath = document.getElementById('uploadPath')?.value;
     if (uploadPath) {
         uploadConfig.path = uploadPath;
-    }
-
-    const uploadContainer = document.getElementById('uploadContainer')?.value;
-    if (uploadContainer) {
-        uploadConfig.container = uploadContainer;
-    }
-
-    const uploadFilename = document.getElementById('uploadFilename')?.value;
-    if (uploadFilename) {
-        uploadConfig.filename = uploadFilename;
-    }
-
-    const uploadMimetype = document.getElementById('uploadMimetype')?.value;
-    if (uploadMimetype) {
-        uploadConfig.mimetype = uploadMimetype;
-    }
-
-    const uploadProvider = document.getElementById('uploadProvider')?.value;
-    if (uploadProvider && uploadProvider !== 'S3') {
-        uploadConfig.provider = uploadProvider;
-    }
-
-    const uploadAccess = document.getElementById('uploadAccess')?.value;
-    if (uploadAccess && uploadAccess !== 'private') {
-        uploadConfig.access = uploadAccess;
-    }
-
-    const uploadBase64Decode = document.getElementById('uploadBase64Decode')?.checked;
-    if (uploadBase64Decode) {
-        uploadConfig.base64decode = true;
     }
 
     // Collect upload tags (documented feature)
@@ -6634,48 +5874,6 @@ function collectUploadOptions() {
     if (Object.keys(tags).length > 0) {
         uploadConfig.tags = tags;
     }
-
-    // File Operations
-    const fileHandle = document.getElementById('fileHandle')?.value;
-    if (fileHandle) {
-        uploadConfig.fileHandle = fileHandle;
-    }
-
-    uploadConfig.enableMetadata = document.getElementById('enableMetadata')?.checked || false;
-    uploadConfig.enableDelete = document.getElementById('enableDelete')?.checked || false;
-    uploadConfig.enableOverwrite = document.getElementById('enableOverwrite')?.checked || false;
-
-    // Metadata Configuration
-    if (uploadConfig.enableMetadata) {
-        const metadataFields = [];
-        if (document.getElementById('metadataSize')?.checked) metadataFields.push('size');
-        if (document.getElementById('metadataMimetype')?.checked) metadataFields.push('mimetype');
-        if (document.getElementById('metadataFilename')?.checked) metadataFields.push('filename');
-        if (document.getElementById('metadataUploaded')?.checked) metadataFields.push('uploaded');
-        if (document.getElementById('metadataExif')?.checked) metadataFields.push('exif');
-        if (document.getElementById('metadataStorage')?.checked) {
-            metadataFields.push('location', 'path', 'container');
-        }
-        uploadConfig.metadataFields = metadataFields;
-    }
-
-    // Download Configuration
-    const downloadHandle = document.getElementById('downloadHandle')?.value;
-    if (downloadHandle) {
-        uploadConfig.downloadHandle = downloadHandle;
-    }
-
-    const downloadFilename = document.getElementById('downloadFilename')?.value;
-    if (downloadFilename) {
-        uploadConfig.downloadFilename = downloadFilename;
-    }
-
-    const downloadFormat = document.getElementById('downloadFormat')?.value;
-    if (downloadFormat && downloadFormat !== 'original') {
-        uploadConfig.downloadFormat = downloadFormat;
-    }
-
-    uploadConfig.downloadForceDownload = document.getElementById('downloadForceDownload')?.checked || false;
 
     return uploadConfig;
 }
@@ -6761,173 +5959,43 @@ function removePickerUploadTag(button) {
 }
 
 function generateJavaScriptUploadCode(uploadConfig) {
-    const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
-    
-    // Build query parameters for Store API based on docs
-    const queryParams = ['key=' + apiKey];
-    if (uploadConfig.filename) queryParams.push(`filename=${encodeURIComponent(uploadConfig.filename)}`);
-    if (uploadConfig.mimetype) queryParams.push(`mimetype=${encodeURIComponent(uploadConfig.mimetype)}`);
-    if (uploadConfig.path) queryParams.push(`path=${encodeURIComponent(uploadConfig.path)}`);
-    if (uploadConfig.container) queryParams.push(`container=${encodeURIComponent(uploadConfig.container)}`);
-    if (uploadConfig.access) queryParams.push(`access=${uploadConfig.access}`);
-    if (uploadConfig.base64decode) queryParams.push('base64decode=true');
+    let code = `// Upload file to Filestack
+const file = document.getElementById('uploadFile').files[0];
+if (!file) {
+    console.error('Please select a file');
+    return;
+}
 
-    const provider = uploadConfig.provider || 'S3';
-    const storeUrl = `https://www.filestackapi.com/api/store/${provider}?${queryParams.join('&')}`;
-
-    let code = `// Filestack File API - HTTP Requests
-// Documentation: https://www.filestack.com/docs/api/file/
-
+const client = filestack.init('YOUR_APIKEY');
 `;
 
-    // Store/Upload API - only if we have config
-    if (queryParams.length > 1 || uploadConfig.path || uploadConfig.container) {
-        code += `// ===== STORE API =====
-// POST https://www.filestackapi.com/api/store/${provider}
-
-// Upload from URL
-fetch('${storeUrl}', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'url=' + encodeURIComponent('https://example.com/yourfile.jpg')
-})
-.then(res => res.json())
-.then(data => console.log('Response:', data))
-.catch(err => console.error('Error:', err));
-
-// Upload binary file
-const fileInput = document.getElementById('fileInput');
-const file = fileInput.files[0];
-
-fetch('${storeUrl}', {
-    method: 'POST',
-    headers: { 'Content-Type': file.type },
-    body: file
-})
-.then(res => res.json())
-.then(data => console.log('Response:', data))
-.catch(err => console.error('Error:', err));
-
-// Expected Response:
-// {
-//   "url": "https://cdn.filestackcontent.com/HANDLE",
-//   "size": 8331,
-//   "type": "image/png",
-//   "filename": "watermark.png",
-//   "key": "STORAGE_KEY"
-// }
-
+    if (uploadConfig.tags) {
+        code += `
+// Upload with custom tags to track file metadata
 `;
     }
 
-    // Metadata API
-    if (uploadConfig.enableMetadata && uploadConfig.fileHandle) {
-        const metadataParams = uploadConfig.metadataFields?.length > 0 
-            ? uploadConfig.metadataFields.map(f => `${f}=true`).join('&')
-            : '';
-        
-        const metadataUrl = metadataParams 
-            ? `https://www.filestackapi.com/api/file/${uploadConfig.fileHandle}/metadata?${metadataParams}`
-            : `https://www.filestackapi.com/api/file/${uploadConfig.fileHandle}/metadata`;
-        
-        code += `// ===== METADATA API =====
-// GET ${metadataUrl}
+    const optionsStr = Object.keys(uploadConfig).length > 0
+        ? JSON.stringify(uploadConfig, null, 2)
+        : '{}';
 
-fetch('${metadataUrl}')
-.then(res => res.json())
-.then(data => console.log('Metadata:', data))
-.catch(err => console.error('Error:', err));
+    code += `
+// Upload configuration
+const uploadOptions = ${optionsStr};
+${uploadConfig.path ? '// path: Organizes files in custom folder\n' : ''}${uploadConfig.tags ? '// tags: Custom metadata returned in response and webhooks\n' : ''}
+client.upload(file, uploadOptions)
+    .then(response => {
+        console.log('Upload successful:', response);
+        // Response contains: url, handle, filename, size, mimetype, key, status
+        ${uploadConfig.tags ? '// Upload tags available in response.upload_tags' : ''}
 
-`;
-    }
-
-    // Delete API
-    if (uploadConfig.enableDelete && uploadConfig.fileHandle) {
-        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
-        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-        
-        code += `// ===== DELETE API =====
-// DELETE https://www.filestackapi.com/api/file/${uploadConfig.fileHandle}
-// Requires security
-
-fetch('https://www.filestackapi.com/api/file/${uploadConfig.fileHandle}?policy=${policy}&signature=${signature}', {
-    method: 'DELETE'
-})
-.then(res => {
-    if (res.ok) console.log('Deleted');
-    else console.error('Delete failed');
-})
-.catch(err => console.error('Error:', err));
-
-`;
-    }
-
-    // Overwrite API
-    if (uploadConfig.enableOverwrite && uploadConfig.fileHandle) {
-        const policy = document.getElementById('securityPolicy')?.value || 'YOUR_POLICY';
-        const signature = document.getElementById('securitySignature')?.value || 'YOUR_SIGNATURE';
-        
-        code += `// ===== OVERWRITE API =====
-// POST https://www.filestackapi.com/api/file/${uploadConfig.fileHandle}
-// Requires security
-
-const newFile = document.getElementById('fileInput').files[0];
-
-fetch('https://www.filestackapi.com/api/file/${uploadConfig.fileHandle}?policy=${policy}&signature=${signature}', {
-    method: 'POST',
-    headers: { 'Content-Type': newFile.type },
-    body: newFile
-})
-.then(res => res.json())
-.then(data => console.log('Overwrite response:', data))
-.catch(err => console.error('Error:', err));
-
-`;
-    }
-
-    // Download - only if handle is provided
-    if (uploadConfig.downloadHandle) {
-        const dlHandle = uploadConfig.downloadHandle;
-        const dlParam = uploadConfig.downloadForceDownload ? '?dl=true' : '';
-        
-        code += `// ===== DOWNLOAD =====
-// GET https://cdn.filestackcontent.com/${dlHandle}
-
-const downloadUrl = 'https://cdn.filestackcontent.com/${dlHandle}${dlParam}';
-
-// Direct download link
-console.log('Download URL:', downloadUrl);
-
-// Or fetch the file
-fetch(downloadUrl)
-.then(res => res.blob())
-.then(blob => {
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'file';
-    a.click();
-})
-.catch(err => console.error('Error:', err));
-
-`;
-    }
-
-    if (code === `// Filestack File API - HTTP Requests
-// Documentation: https://www.filestack.com/docs/api/file/
-
-`) {
-        return `// Filestack File API
-// Configure the form fields to generate HTTP request examples
-
-// Store API - Upload files with POST request
-// Metadata API - Get file info with GET request  
-// Delete API - Remove files with DELETE request (requires security)
-// Overwrite API - Replace file content with POST request (requires security)
-// Download - Simple CDN GET request
-
-// Fill in the configuration fields above to see generated code examples.`;
-    }
+        // Use the filelink immediately
+        console.log('File URL:', response.url);
+    })
+    .catch(error => {
+        console.error('Upload failed:', error);
+        // Handle upload error with retry logic if needed
+    });`;
 
     return code;
 }
@@ -7384,201 +6452,9 @@ function generateURLSfwCode(options) {
     return `// SFW URL (Processing API)\nconst sfwUrl = 'https://cdn.filestackcontent.com/${sec}sfw/${handle}';`;
 }
 
-function showTestResult(element, type, title, message, details = null) {
-    element.style.display = 'block';
-    
-    const colors = {
-        success: { bg: '#d4edda', border: '#28a745', text: '#155724' },
-        error: { bg: '#f8d7da', border: '#dc3545', text: '#721c24' },
-        warning: { bg: '#fff3cd', border: '#ffc107', text: '#856404' },
-        info: { bg: '#d1ecf1', border: '#17a2b8', text: '#0c5460' },
-        loading: { bg: '#e8f4f8', border: '#17a2b8', text: '#0c5460' }
-    };
-    
-    const color = colors[type] || colors.info;
-    
-    element.style.background = color.bg;
-    element.style.border = `2px solid ${color.border}`;
-    element.style.color = color.text;
-    
-    let html = `
-        <div style="display: flex; align-items: start; gap: 0.5rem;">
-            <div style="flex: 1;">
-                <div style="font-weight: bold; font-size: 1.1em; margin-bottom: 0.3rem;">${title}</div>
-                <div style="line-height: 1.6;">${message}</div>`;
-    
-    if (details) {
-        if (details.result) {
-            html += `
-                <div style="margin-top: 0.8rem; padding: 0.5rem; background: rgba(0,0,0,0.05); border-radius: 3px; font-family: monospace; font-size: 0.9em;">
-                    <strong>Response:</strong> ${JSON.stringify(details.result, null, 2)}
-                </div>`;
-        }
-        if (details.url) {
-            html += `
-                <div style="margin-top: 0.8rem; font-size: 0.85em; word-break: break-all;">
-                    <strong>API URL:</strong><br>
-                    <code style="background: rgba(0,0,0,0.05); padding: 2px 4px; border-radius: 2px;">${details.url}</code>
-                </div>`;
-        }
-    }
-    
-    html += `
-            </div>
-        </div>`;
-    
-    element.innerHTML = html;
-    
-    // Scroll into view
-    element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+function testSfw() {
+    const handle = document.getElementById('sfwHandle').value;
 }
-
-function testTagging() {
-    const inputType = document.querySelector('input[name="taggingInputType"]:checked')?.value || 'handle';
-    const policy = document.getElementById('securityPolicy')?.value;
-    const signature = document.getElementById('securitySignature')?.value;
-    const apiKey = document.getElementById('globalApikey')?.value;
-    const resultDiv = document.getElementById('taggingTestResult');
-    
-    // Validate inputs
-    if (!policy || policy === 'YOUR_POLICY' || !policy.trim()) {
-        showTestResult(resultDiv, 'error', '⚠️ Security Policy Required', 'Please configure your security policy in the API Key section at the top.');
-        return;
-    }
-    
-    if (!signature || signature === 'YOUR_SIGNATURE' || !signature.trim()) {
-        showTestResult(resultDiv, 'error', '⚠️ Security Signature Required', 'Please configure your security signature in the API Key section at the top.');
-        return;
-    }
-    
-    let source = '';
-    let needsApiKey = false;
-    
-    switch (inputType) {
-        case 'handle':
-            source = document.getElementById('taggingHandle')?.value;
-            if (!source || source === 'YOUR_FILE_HANDLE') {
-                showTestResult(resultDiv, 'error', '⚠️ File Handle Required', 'Please enter a valid file handle.');
-                return;
-            }
-            break;
-        case 'external':
-            source = document.getElementById('taggingExternalUrl')?.value;
-            if (!source || source === 'https://example.com/image.jpg') {
-                showTestResult(resultDiv, 'error', '⚠️ External URL Required', 'Please enter a valid image URL.');
-                return;
-            }
-            if (!apiKey || apiKey === 'YOUR_API_KEY') {
-                showTestResult(resultDiv, 'error', '⚠️ API Key Required', 'External URLs require an API key.');
-                return;
-            }
-            needsApiKey = true;
-            break;
-        case 'storage':
-            const alias = document.getElementById('taggingStorageAlias')?.value;
-            const path = document.getElementById('taggingStoragePath')?.value;
-            if (!alias || alias === 'STORAGE_ALIAS' || !path || path === '/path/to/image.jpg') {
-                showTestResult(resultDiv, 'error', '⚠️ Storage Details Required', 'Please enter both storage alias and file path.');
-                return;
-            }
-            source = `src://${alias}${path}`;
-            if (!apiKey || apiKey === 'YOUR_API_KEY') {
-                showTestResult(resultDiv, 'error', '⚠️ API Key Required', 'Storage aliases require an API key.');
-                return;
-            }
-            needsApiKey = true;
-            break;
-    }
-    
-    // Build transformation chain
-    const enableChaining = document.getElementById('taggingEnableChaining')?.checked || false;
-    let transformChain = '';
-    
-    if (enableChaining) {
-        const preSteps = document.querySelectorAll('#taggingPreChainBuilder .chain-step');
-        const transformSteps = [];
-        preSteps.forEach(step => {
-            const operation = step.querySelector('.chain-operation')?.value;
-            const params = step.querySelector('.chain-params')?.value;
-            if (operation) {
-                transformSteps.push(params ? `${operation}=${params}` : operation);
-            }
-        });
-        if (transformSteps.length > 0) {
-            transformChain = transformSteps.join('/') + '/';
-        }
-    }
-    
-    // Build URL
-    const sec = `security=p:${policy},s:${signature}/`;
-    let url;
-    
-    if (needsApiKey) {
-        url = `https://cdn.filestackcontent.com/${apiKey}/${sec}${transformChain}tags/${source}`;
-    } else {
-        url = `https://cdn.filestackcontent.com/${sec}${transformChain}tags/${source}`;
-    }
-    
-    // Show loading state
-    showTestResult(resultDiv, 'loading', '⏳ Analyzing Image...', 'Running AI tagging on your image. This usually takes 1-3 seconds.');
-    
-    // Make API call
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Tagging Test Result:', data);
-            
-            if (data.tags && data.tags.auto) {
-                const tags = data.tags.auto;
-                const tagCount = Object.keys(tags).length;
-                const topTags = Object.entries(tags)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 10)
-                    .map(([tag, score]) => `<span style="background: #e8f4f8; padding: 4px 8px; border-radius: 4px; margin: 2px; display: inline-block;"><strong>${tag}</strong>: ${score}%</span>`)
-                    .join(' ');
-                
-                showTestResult(
-                    resultDiv, 
-                    'success', 
-                    `✓ Found ${tagCount} Tags`, 
-                    `<div style="margin-bottom: 0.8rem;">The AI identified ${tagCount} features in your image with confidence scores:</div>
-                     <div style="line-height: 2;">${topTags}</div>`,
-                    { url, result: data }
-                );
-            } else {
-                showTestResult(
-                    resultDiv, 
-                    'info', 
-                    'Unexpected Response', 
-                    `Received: ${JSON.stringify(data)}`,
-                    { url, result: data }
-                );
-            }
-        })
-        .catch(error => {
-            console.error('Tagging Test Error:', error);
-            let errorMessage = error.message;
-            
-            if (error.message.includes('403')) {
-                errorMessage = 'Access denied. Check your security policy and signature.';
-            } else if (error.message.includes('404')) {
-                errorMessage = 'File not found. Verify the handle or URL is correct.';
-            } else if (error.message.includes('401')) {
-                errorMessage = 'Authentication failed. Check your API key and security credentials.';
-            } else if (error.message.includes('Failed to fetch')) {
-                errorMessage = 'Network error. Check your internet connection.';
-            }
-            
-            showTestResult(resultDiv, 'error', '⚠️ Test Failed', errorMessage, { url });
-        });
-}
-
-
 
 // Transform Chains functionality
 // Get parameter hints and constraints for transformation operations
@@ -7587,187 +6463,104 @@ function getParameterInfo(operation) {
         'resize': {
             example: 'width:300,height:200,fit:clip',
             description: 'Width (px), Height (px), Fit (clip|crop|scale|max)',
-            constraints: 'Width/Height: 1-10000px',
-            presets: [
-                { label: 'Small (300x300)', value: 'width:300,height:300,fit:crop' },
-                { label: 'Medium (600x600)', value: 'width:600,height:600,fit:crop' },
-                { label: 'Large (1200x1200)', value: 'width:1200,height:1200,fit:crop' },
-                { label: 'HD (1920x1080)', value: 'width:1920,height:1080,fit:clip' },
-                { label: 'Square 500px', value: 'width:500,height:500,fit:scale' }
-            ]
+            constraints: 'Width/Height: 1-10000px'
         },
         'crop': {
             example: 'x:10,y:10,width:300,height:200',
             description: 'X position, Y position, Width, Height (all in pixels)',
-            constraints: 'All values must be positive integers',
-            presets: [
-                { label: 'Top Center 500x300', value: 'dim:[0,0,500,300]' },
-                { label: 'Center Square 400x400', value: 'dim:[100,100,400,400]' },
-                { label: 'Custom Coordinates', value: 'x:0,y:0,width:500,height:500' }
-            ]
+            constraints: 'All values must be positive integers'
         },
         'rotate': {
             example: 'deg:90',
             description: 'Rotation angle in degrees',
-            constraints: 'Degrees: 0-359 or exif',
-            presets: [
-                { label: '90° Clockwise', value: 'deg:90' },
-                { label: '180°', value: 'deg:180' },
-                { label: '270° (90° Counter)', value: 'deg:270' },
-                { label: 'Auto (EXIF)', value: 'deg:exif' }
-            ]
+            constraints: 'Degrees: 0-359 or exif'
         },
         'blur': {
             example: 'amount:5',
             description: 'Blur intensity',
-            constraints: 'Amount: 0-20 (higher = more blur)',
-            presets: [
-                { label: 'Light Blur', value: 'amount:3' },
-                { label: 'Medium Blur', value: 'amount:7' },
-                { label: 'Heavy Blur', value: 'amount:15' }
-            ]
+            constraints: 'Amount: 0-20 (higher = more blur)'
         },
         'sharpen': {
             example: 'amount:3',
             description: 'Sharpen intensity',
-            constraints: 'Amount: 0-20',
-            presets: [
-                { label: 'Light Sharpen', value: 'amount:2' },
-                { label: 'Medium Sharpen', value: 'amount:5' },
-                { label: 'Heavy Sharpen', value: 'amount:10' }
-            ]
+            constraints: 'Amount: 0-20'
         },
         'quality': {
             example: 'value:75',
             description: 'Output quality for JPG/WebP',
-            constraints: 'Value: 1-100 (higher = better quality)',
-            presets: [
-                { label: 'Low (50)', value: 'value:50' },
-                { label: 'Medium (75)', value: 'value:75' },
-                { label: 'High (90)', value: 'value:90' },
-                { label: 'Maximum (100)', value: 'value:100' }
-            ]
+            constraints: 'Value: 1-100 (higher = better quality)'
         },
         'convert': {
             example: 'format:png',
             description: 'Convert to different format',
-            constraints: 'Format: jpg, png, webp, gif, bmp, tiff',
-            presets: [
-                { label: 'PNG', value: 'format:png' },
-                { label: 'JPG', value: 'format:jpg' },
-                { label: 'WebP', value: 'format:webp' },
-                { label: 'GIF', value: 'format:gif' }
-            ]
+            constraints: 'Format: jpg, png, webp, gif, bmp, tiff'
         },
         'watermark': {
             example: 'file:HANDLE,size:50,position:center',
             description: 'File handle, Size (%), Position',
-            constraints: 'Size: 1-500%, Position: top|middle|bottom,left|center|right',
-            presets: [
-                { label: 'Center 30%', value: 'file:YOUR_HANDLE,size:30,position:center' },
-                { label: 'Bottom Right 20%', value: 'file:YOUR_HANDLE,size:20,position:[bottom,right]' },
-                { label: 'Top Left 25%', value: 'file:YOUR_HANDLE,size:25,position:[top,left]' }
-            ]
+            constraints: 'Size: 1-500%, Position: top|middle|bottom,left|center|right'
         },
         'sepia': {
             example: 'tone:80',
             description: 'Sepia tone intensity',
-            constraints: 'Tone: 0-100',
-            presets: [
-                { label: 'Light Sepia', value: 'tone:40' },
-                { label: 'Medium Sepia', value: 'tone:70' },
-                { label: 'Full Sepia', value: 'tone:100' }
-            ]
+            constraints: 'Tone: 0-100'
         },
         'rounded_corners': {
             example: 'radius:10',
             description: 'Corner radius in pixels',
-            constraints: 'Radius: 1-10000px',
-            presets: [
-                { label: 'Small (10px)', value: 'radius:10' },
-                { label: 'Medium (25px)', value: 'radius:25' },
-                { label: 'Large (50px)', value: 'radius:50' },
-                { label: 'Extra Large (100px)', value: 'radius:100' }
-            ]
+            constraints: 'Radius: 1-10000px'
         },
         'vignette': {
             example: 'amount:20',
             description: 'Vignette effect intensity',
-            constraints: 'Amount: 0-100',
-            presets: [
-                { label: 'Subtle', value: 'amount:15' },
-                { label: 'Moderate', value: 'amount:35' },
-                { label: 'Strong', value: 'amount:60' }
-            ]
+            constraints: 'Amount: 0-100'
         },
         'shadow': {
             example: 'blur:4,opacity:60,vector:[4,4]',
             description: 'Blur amount, Opacity %, Vector offset [x,y]',
-            constraints: 'Blur: 0-100, Opacity: 0-100, Vector: [-1000,1000]',
-            presets: [
-                { label: 'Soft Shadow', value: 'blur:5,opacity:40,vector:[3,3]' },
-                { label: 'Medium Shadow', value: 'blur:8,opacity:60,vector:[5,5]' },
-                { label: 'Hard Shadow', value: 'blur:2,opacity:80,vector:[4,4]' }
-            ]
+            constraints: 'Blur: 0-100, Opacity: 0-100, Vector: [-1000,1000]'
         },
         'border': {
             example: 'width:3,color:black',
             description: 'Border width (px) and color',
-            constraints: 'Width: 1-1000px, Color: hex or name',
-            presets: [
-                { label: 'Thin Black', value: 'width:2,color:black' },
-                { label: 'Medium White', value: 'width:5,color:white' },
-                { label: 'Thick Gray', value: 'width:10,color:gray' },
-                { label: 'Orange Border', value: 'width:5,color:EF4A26' }
-            ]
+            constraints: 'Width: 1-1000px, Color: hex or name'
         },
         'upscale': {
             example: 'noise:low,style:artwork',
             description: 'AI upscaling options',
-            constraints: 'Noise: none|low|medium|high, Style: artwork|photo',
-            presets: [
-                { label: 'Photo (Low Noise)', value: 'noise:low,style:photo' },
-                { label: 'Artwork (Medium)', value: 'noise:medium,style:artwork' },
-                { label: 'Clean Photo', value: 'noise:none,style:photo' }
-            ]
+            constraints: 'Noise: none|low|medium|high, Style: artwork|photo'
         },
         'blackwhite': {
             example: '',
             description: 'No parameters needed - converts to black & white',
-            constraints: '',
-            presets: []
+            constraints: ''
         },
         'flip': {
             example: '',
             description: 'No parameters needed - flips image vertically',
-            constraints: '',
-            presets: []
+            constraints: ''
         },
         'flop': {
             example: '',
             description: 'No parameters needed - flips image horizontally',
-            constraints: '',
-            presets: []
+            constraints: ''
         },
         'negative': {
             example: '',
             description: 'No parameters needed - inverts colors',
-            constraints: '',
-            presets: []
+            constraints: ''
         },
         'circle': {
             example: '',
             description: 'No parameters needed - crops to circle',
-            constraints: '',
-            presets: []
+            constraints: ''
         }
     };
 
     return info[operation] || {
         example: 'key:value,key2:value2',
         description: 'Custom parameters',
-        constraints: '',
-        presets: []
+        constraints: ''
     };
 }
 
@@ -7804,7 +6597,6 @@ function addChainStepToBuilder(builderId) {
             </select>
             <button type="button" class="btn-remove-step">×</button>
         </div>
-        <div class="chain-presets" style="display:none; margin: 0.5rem 0; gap: 0.3rem; flex-wrap: wrap;"></div>
         <input type="text" class="chain-params" placeholder="Select operation first">
         <div class="chain-param-hint" style="display:none;"></div>
     `;
@@ -7813,10 +6605,9 @@ function addChainStepToBuilder(builderId) {
     const operationSelect = stepDiv.querySelector('.chain-operation');
     const paramsInput = stepDiv.querySelector('.chain-params');
     const hintDiv = stepDiv.querySelector('.chain-param-hint');
-    const presetsContainer = stepDiv.querySelector('.chain-presets');
     const removeBtn = stepDiv.querySelector('.btn-remove-step');
 
-    // Update placeholder, hint, and presets when operation changes
+    // Update placeholder and hint when operation changes
     operationSelect.addEventListener('change', () => {
         const paramInfo = getParameterInfo(operationSelect.value);
 
@@ -7827,65 +6618,15 @@ function addChainStepToBuilder(builderId) {
                 paramsInput.disabled = true;
                 paramsInput.value = '';
                 hintDiv.style.display = 'none';
-                presetsContainer.style.display = 'none';
             } else {
                 paramsInput.disabled = false;
                 hintDiv.innerHTML = `<strong>${paramInfo.description}</strong><br>${paramInfo.constraints}`;
                 hintDiv.style.display = 'block';
-                
-                // Show presets if available
-                if (paramInfo.presets && paramInfo.presets.length > 0) {
-                    presetsContainer.innerHTML = '<div style="font-size: 0.85em; color: #666; margin-bottom: 0.3rem;"><i class="fas fa-magic"></i> Quick Presets:</div>';
-                    presetsContainer.style.display = 'flex';
-                    
-                    paramInfo.presets.forEach(preset => {
-                        const presetBtn = document.createElement('button');
-                        presetBtn.type = 'button';
-                        presetBtn.className = 'preset-btn';
-                        presetBtn.textContent = preset.label;
-                        presetBtn.title = preset.value;
-                        presetBtn.style.cssText = `
-                            padding: 4px 10px;
-                            font-size: 0.85em;
-                            background: #f0f0f0;
-                            border: 1px solid #d0d0d0;
-                            border-radius: 4px;
-                            cursor: pointer;
-                            transition: all 0.2s ease;
-                        `;
-                        
-                        presetBtn.addEventListener('mouseover', () => {
-                            presetBtn.style.background = '#EF4A26';
-                            presetBtn.style.color = 'white';
-                            presetBtn.style.borderColor = '#EF4A26';
-                        });
-                        
-                        presetBtn.addEventListener('mouseout', () => {
-                            presetBtn.style.background = '#f0f0f0';
-                            presetBtn.style.color = 'inherit';
-                            presetBtn.style.borderColor = '#d0d0d0';
-                        });
-                        
-                        presetBtn.addEventListener('click', () => {
-                            paramsInput.value = preset.value;
-                            paramsInput.focus();
-                            // Trigger any code generation if needed
-                            if (typeof generateCode === 'function') {
-                                generateCode();
-                            }
-                        });
-                        
-                        presetsContainer.appendChild(presetBtn);
-                    });
-                } else {
-                    presetsContainer.style.display = 'none';
-                }
             }
         } else {
             paramsInput.placeholder = 'Select operation first';
             paramsInput.disabled = false;
             hintDiv.style.display = 'none';
-            presetsContainer.style.display = 'none';
         }
     });
 
