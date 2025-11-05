@@ -5583,10 +5583,13 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                 let css = '';
 
+                // Scope CSS to only affect the styling picker container
+                // This prevents styles from affecting the main File Picker preview
                 Object.values(this.appliedStyles).forEach(elementStyles => {
                     const { selector, ...styles } = elementStyles;
                     if (Object.keys(styles).length > 0) {
-                        css += `${selector} {\n`;
+                        // Add #styling-picker-container prefix to scope the styles
+                        css += `#styling-picker-container ${selector} {\n`;
                         Object.entries(styles).forEach(([prop, value]) => {
                             css += `  ${prop}: ${value};\n`;
                         });
