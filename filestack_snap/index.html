@@ -61,6 +61,9 @@
             <button class="tier-tab" data-tier="advanced">
                 <i class="fas fa-cog"></i> Advanced
             </button>
+            <button class="tier-tab" data-tier="styling">
+                <i class="fas fa-palette"></i> Styling
+            </button>
         </div>
 
         <!-- Tier 2: Subcategories for Uploads -->
@@ -150,6 +153,13 @@
             </button>
             <button class="sub-tab" data-section="security">
                 <i class="fas fa-lock"></i> Security
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Styling -->
+        <div class="nav-tier nav-tier-2" data-parent="styling">
+            <button class="sub-tab" data-section="picker-styling">
+                <i class="fas fa-palette"></i> Picker Styling
             </button>
         </div>
     </nav>
@@ -4732,6 +4742,150 @@ dnd.filstackSdk.picker(options).open();</pre>
                 </div>
             </section>
 
+            <!-- Picker Styling Section -->
+            <section id="picker-styling" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-palette"></i> Picker Styling & Preview</h2>
+                    <p>Style your file picker with custom CSS and preview it with your configured options. This combines your picker configuration from the "File Picker" tab with custom styling.</p>
+                </div>
+
+                <div class="config-card">
+                    <h3><i class="fas fa-info-circle"></i> About Picker Styling</h3>
+                    <p class="card-description">This section lets you customize the visual appearance of your file picker while maintaining all the configuration options you set in the "File Picker" tab. The generated code will include both the JavaScript configuration AND the custom CSS styling.</p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
+                        <h4><i class="fas fa-lightbulb"></i> How It Works</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><strong>Live Preview:</strong> See your picker with both styling AND configuration options</li>
+                            <li><strong>Combined Output:</strong> Get both CSS and JavaScript in one place</li>
+                            <li><strong>Full Customization:</strong> Control colors, borders, spacing, and more</li>
+                            <li><strong>Preset Themes:</strong> Quickly apply professional color schemes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Styling Controls and Preview Container -->
+                <div class="styling-container" style="display: flex; gap: 2rem; margin-top: 2rem; min-height: 600px;">
+                    <!-- Left Panel: Styling Controls -->
+                    <div class="styling-controls" style="flex: 0 0 350px; overflow-y: auto; max-height: 800px;">
+                        <!-- Tabs -->
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem;">
+                            <button class="styling-tab-btn active" data-styling-tab="visual" style="padding: 0.5rem 1rem; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                <i class="fas fa-paint-brush"></i> Visual Editor
+                            </button>
+                            <button class="styling-tab-btn" data-styling-tab="presets" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                <i class="fas fa-swatchbook"></i> Presets
+                            </button>
+                        </div>
+
+                        <!-- Visual Editor Tab Content -->
+                        <div id="styling-visual-tab" class="styling-tab-content">
+                            <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem;">
+                                <i class="fas fa-info-circle"></i> Click on an element in the list below to customize its appearance.
+                            </p>
+
+                            <!-- Back Button (hidden initially) -->
+                            <div id="styling-back-button" style="display: none; margin-bottom: 1rem;">
+                                <button onclick="backToStylingElementList()" style="padding: 0.5rem 1rem; background: #fb923c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+                                    <i class="fas fa-arrow-left"></i> Back to Elements
+                                </button>
+                            </div>
+
+                            <!-- Style Editor (hidden initially) -->
+                            <div id="styling-style-editor" style="display: none;">
+                                <div id="styling-style-properties" style="display: flex; flex-direction: column; gap: 1rem;">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Element Selector -->
+                            <div id="styling-element-selector">
+                                <div id="styling-element-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <!-- Elements will be added dynamically via JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Presets Tab Content -->
+                        <div id="styling-presets-tab" class="styling-tab-content" style="display: none;">
+                            <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem;">
+                                <i class="fas fa-palette"></i> Choose a preset theme to quickly apply a professional look.
+                            </p>
+
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <button class="styling-preset-btn" data-preset="dark" style="padding: 1rem; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Dark Theme</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Modern dark color scheme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="minimal" style="padding: 1rem; background: #ffffff; color: #000000; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Minimalist</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.6;">Clean and simple design</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="vibrant" style="padding: 1rem; background: #fef3c7; color: #78350f; border: 1px solid #f59e0b; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Vibrant</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Colorful amber/orange theme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="ocean" style="padding: 1rem; background: #e0f2fe; color: #164e63; border: 1px solid #0ea5e9; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Ocean</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Calm blue water vibes</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="forest" style="padding: 1rem; background: #dcfce7; color: #14532d; border: 1px solid #22c55e; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Forest</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Fresh green nature theme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="corporate" style="padding: 1rem; background: #f8fafc; color: #1e293b; border: 1px solid #1e40af; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Corporate</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Professional business style</div>
+                                </button>
+                            </div>
+
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e5e7eb;">
+                                <button id="styling-reset-all" style="width: 100%; padding: 0.75rem; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                    <i class="fas fa-undo"></i> Reset All Styles
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Live Preview & Code Output -->
+                    <div class="styling-preview" style="flex: 1; display: flex; flex-direction: column; gap: 1.5rem;">
+                        <!-- Picker Preview -->
+                        <div style="flex: 1; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: #f9fafb; position: relative; min-height: 500px;">
+                            <h4 style="margin-bottom: 1rem; color: #374151; font-size: 1.1rem;">
+                                <i class="fas fa-eye"></i> Live Preview
+                            </h4>
+                            <div id="styling-picker-container" style="width: 100%; height: 450px; background: white; border-radius: 4px; overflow: hidden;">
+                                <!-- Picker will be rendered here -->
+                            </div>
+                        </div>
+
+                        <!-- Generated Code Display -->
+                        <div style="border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: white;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
+                                    <i class="fas fa-code"></i> Generated Code (CSS + JavaScript)
+                                </h4>
+                                <button id="styling-copy-code" style="padding: 0.5rem 1rem; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                                    <i class="fas fa-copy"></i> Copy All
+                                </button>
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                                <button class="styling-code-tab active" data-code-tab="combined" style="padding: 0.4rem 0.8rem; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Combined</button>
+                                <button class="styling-code-tab" data-code-tab="css" style="padding: 0.4rem 0.8rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">CSS Only</button>
+                                <button class="styling-code-tab" data-code-tab="javascript" style="padding: 0.4rem 0.8rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">JavaScript Only</button>
+                            </div>
+
+                            <pre id="styling-generated-code" style="background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 4px; overflow-x: auto; max-height: 400px; margin: 0; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5;"><code>// Configure your picker options in the "File Picker" tab,
+// then style elements here to see the combined code.</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Styles Container -->
+                <style id="styling-dynamic-styles"></style>
+            </section>
+
         </main>
 
         <!-- Code Panel -->
@@ -4821,6 +4975,466 @@ dnd.filstackSdk.picker(options).open();</pre>
                 });
             });
         });
+    </script>
+
+    <!-- Picker Styling JavaScript -->
+    <script>
+    (function() {
+        // Picker Styling Module
+        const PickerStyling = {
+            appliedStyles: {},
+            currentElement: null,
+            pickerInstance: null,
+
+            // Element definitions (simplified from styling_playground.html)
+            elements: {
+                'Header': [
+                    { id: 'header', label: 'Top Header Bar', selector: '.fsp-header' },
+                ],
+                'Sidebar': [
+                    { id: 'source-list', label: 'Left Sidebar', selector: '.fsp-source-list' },
+                    { id: 'source-item', label: 'Source Items', selector: '.fsp-source-list__item' },
+                    { id: 'source-item-active', label: 'Active Source Item', selector: '.fsp-source-list__item--active' },
+                ],
+                'Drop Area': [
+                    { id: 'drop-area', label: 'Drop Zone Box', selector: '.fsp-drop-area' },
+                    { id: 'drop-area-title', label: 'Drop Title Text', selector: '.fsp-drop-area__title' },
+                    { id: 'drop-area-button', label: 'Browse Button', selector: '.fsp-drop-area__button' },
+                ],
+                'Buttons': [
+                    { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button-upload' },
+                ],
+            },
+
+            // Style properties
+            styleProperties: {
+                colors: [
+                    { id: 'background', label: 'Background', type: 'color', cssProperty: 'background-color' },
+                    { id: 'text-color', label: 'Text Color', type: 'color', cssProperty: 'color' },
+                    { id: 'border-color', label: 'Border Color', type: 'color', cssProperty: 'border-color' },
+                ],
+                layout: [
+                    { id: 'padding', label: 'Padding', type: 'text', cssProperty: 'padding', unit: 'px' },
+                    { id: 'border-radius', label: 'Border Radius', type: 'text', cssProperty: 'border-radius', unit: 'px' },
+                ],
+            },
+
+            // Preset themes (simplified)
+            presets: {
+                dark: {
+                    'header': { 'background-color': '#0f172a', 'color': '#e2e8f0' },
+                    'source-list': { 'background-color': '#0f172a' },
+                    'source-item-active': { 'background-color': '#3b82f6', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#334155', 'border': '2px dashed #64748b' },
+                    'button-primary': { 'background-color': '#3b82f6', 'color': '#ffffff' },
+                },
+                minimal: {
+                    'header': { 'background-color': '#ffffff', 'border-bottom': '1px solid #e5e7eb' },
+                    'source-list': { 'background-color': '#fafafa' },
+                    'source-item-active': { 'background-color': '#000000', 'color': '#ffffff' },
+                    'drop-area': { 'border': '1px solid #d1d5db' },
+                    'button-primary': { 'background-color': '#000000', 'color': '#ffffff' },
+                },
+                vibrant: {
+                    'header': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#fef3c7' },
+                    'source-item-active': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#fef3c7', 'border': '2px dashed #f59e0b' },
+                    'button-primary': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                },
+                ocean: {
+                    'header': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#bae6fd' },
+                    'source-item-active': { 'background-color': '#0284c7', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#bae6fd', 'border': '2px dashed #0ea5e9' },
+                    'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                },
+                forest: {
+                    'header': { 'background-color': '#22c55e', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#bbf7d0' },
+                    'source-item-active': { 'background-color': '#16a34a', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#bbf7d0', 'border': '2px dashed #22c55e' },
+                    'button-primary': { 'background-color': '#22c55e', 'color': '#ffffff' },
+                },
+                corporate: {
+                    'header': { 'background-color': '#1e40af', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#eff6ff' },
+                    'source-item-active': { 'background-color': '#2563eb', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#f1f5f9', 'border': '2px solid #cbd5e1' },
+                    'button-primary': { 'background-color': '#1e40af', 'color': '#ffffff' },
+                },
+            },
+
+            init() {
+                this.renderElementList();
+                this.attachEventListeners();
+                // Don't init picker yet - wait until section is visible
+            },
+
+            attachEventListeners() {
+                // Styling tab buttons
+                document.querySelectorAll('.styling-tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.switchStylingTab(btn.dataset.stylingTab));
+                });
+
+                // Preset buttons
+                document.querySelectorAll('.styling-preset-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.applyPreset(btn.dataset.preset));
+                });
+
+                // Reset button
+                document.getElementById('styling-reset-all')?.addEventListener('click', () => this.resetAllStyles());
+
+                // Code tab buttons
+                document.querySelectorAll('.styling-code-tab').forEach(btn => {
+                    btn.addEventListener('click', () => this.switchCodeTab(btn.dataset.codeTab));
+                });
+
+                // Copy button
+                document.getElementById('styling-copy-code')?.addEventListener('click', () => this.copyGeneratedCode());
+
+                // Listen for section changes to init picker
+                document.addEventListener('sectionChanged', (e) => {
+                    if (e.detail === 'picker-styling' && !this.pickerInstance) {
+                        this.initPicker();
+                    }
+                });
+            },
+
+            switchStylingTab(tabName) {
+                // Update button styles
+                document.querySelectorAll('.styling-tab-btn').forEach(btn => {
+                    if (btn.dataset.stylingTab === tabName) {
+                        btn.style.background = '#2196f3';
+                        btn.style.color = 'white';
+                        btn.style.border = 'none';
+                        btn.classList.add('active');
+                    } else {
+                        btn.style.background = 'white';
+                        btn.style.color = '#374151';
+                        btn.style.border = '1px solid #d1d5db';
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // Update tab content
+                document.getElementById('styling-visual-tab').style.display = tabName === 'visual' ? 'block' : 'none';
+                document.getElementById('styling-presets-tab').style.display = tabName === 'presets' ? 'block' : 'none';
+            },
+
+            switchCodeTab(tabName) {
+                // Update button styles
+                document.querySelectorAll('.styling-code-tab').forEach(btn => {
+                    if (btn.dataset.codeTab === tabName) {
+                        btn.style.background = '#2196f3';
+                        btn.style.color = 'white';
+                        btn.style.border = 'none';
+                        btn.classList.add('active');
+                    } else {
+                        btn.style.background = 'white';
+                        btn.style.color = '#374151';
+                        btn.style.border = '1px solid #d1d5db';
+                        btn.classList.remove('active');
+                    }
+                });
+
+                this.updateGeneratedCode(tabName);
+            },
+
+            renderElementList() {
+                const container = document.getElementById('styling-element-list');
+                container.innerHTML = '';
+
+                Object.entries(this.elements).forEach(([category, items]) => {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.style.marginBottom = '1rem';
+
+                    const categoryTitle = document.createElement('div');
+                    categoryTitle.textContent = category;
+                    categoryTitle.style.fontWeight = '600';
+                    categoryTitle.style.fontSize = '0.9rem';
+                    categoryTitle.style.color = '#374151';
+                    categoryTitle.style.marginBottom = '0.5rem';
+                    categoryDiv.appendChild(categoryTitle);
+
+                    items.forEach(element => {
+                        const elementBtn = document.createElement('button');
+                        elementBtn.textContent = element.label;
+                        elementBtn.style.cssText = 'width: 100%; padding: 0.75rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.85rem; transition: all 0.2s;';
+                        elementBtn.addEventListener('mouseover', () => {
+                            elementBtn.style.borderColor = '#2196f3';
+                            elementBtn.style.background = '#f0f9ff';
+                        });
+                        elementBtn.addEventListener('mouseout', () => {
+                            elementBtn.style.borderColor = '#e5e7eb';
+                            elementBtn.style.background = 'white';
+                        });
+                        elementBtn.addEventListener('click', () => this.selectElement(element));
+                        categoryDiv.appendChild(elementBtn);
+                    });
+
+                    container.appendChild(categoryDiv);
+                });
+            },
+
+            selectElement(element) {
+                this.currentElement = element;
+                document.getElementById('styling-element-selector').style.display = 'none';
+                document.getElementById('styling-style-editor').style.display = 'block';
+                document.getElementById('styling-back-button').style.display = 'block';
+                this.renderStyleEditor(element);
+            },
+
+            renderStyleEditor(element) {
+                const container = document.getElementById('styling-style-properties');
+                container.innerHTML = `<h4 style="margin-bottom: 1rem; color: #374151;">Styling: ${element.label}</h4>`;
+
+                Object.entries(this.styleProperties).forEach(([groupName, properties]) => {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.style.marginBottom = '1.5rem';
+
+                    const groupTitle = document.createElement('div');
+                    groupTitle.textContent = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+                    groupTitle.style.fontWeight = '600';
+                    groupTitle.style.fontSize = '0.85rem';
+                    groupTitle.style.color = '#6b7280';
+                    groupTitle.style.marginBottom = '0.75rem';
+                    groupTitle.style.textTransform = 'uppercase';
+                    groupDiv.appendChild(groupTitle);
+
+                    properties.forEach(prop => {
+                        const propDiv = document.createElement('div');
+                        propDiv.style.marginBottom = '0.75rem';
+
+                        const label = document.createElement('label');
+                        label.textContent = prop.label;
+                        label.style.display = 'block';
+                        label.style.fontSize = '0.85rem';
+                        label.style.fontWeight = '500';
+                        label.style.marginBottom = '0.25rem';
+                        label.style.color = '#374151';
+                        propDiv.appendChild(label);
+
+                        const input = document.createElement('input');
+                        input.type = prop.type;
+                        input.style.cssText = 'width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;';
+
+                        const currentValue = this.appliedStyles[element.id]?.[prop.cssProperty];
+                        if (currentValue) {
+                            input.value = prop.type === 'color' ? currentValue : currentValue.replace(prop.unit || '', '');
+                        }
+
+                        input.addEventListener('input', (e) => {
+                            const value = prop.unit ? e.target.value + prop.unit : e.target.value;
+                            this.applyStyle(element.id, element.selector, prop.cssProperty, value);
+                        });
+
+                        propDiv.appendChild(input);
+                        groupDiv.appendChild(propDiv);
+                    });
+
+                    container.appendChild(groupDiv);
+                });
+            },
+
+            applyStyle(elementId, selector, cssProperty, value) {
+                if (!this.appliedStyles[elementId]) {
+                    this.appliedStyles[elementId] = { selector };
+                }
+                this.appliedStyles[elementId][cssProperty] = value;
+                this.updateDynamicStyles();
+                this.updateGeneratedCode();
+            },
+
+            applyPreset(presetName) {
+                const preset = this.presets[presetName];
+                if (!preset) return;
+
+                this.appliedStyles = {};
+                Object.entries(preset).forEach(([elementId, styles]) => {
+                    const element = Object.values(this.elements).flat().find(el => el.id === elementId);
+                    if (element) {
+                        this.appliedStyles[elementId] = { selector: element.selector, ...styles };
+                    }
+                });
+
+                this.updateDynamicStyles();
+                this.updateGeneratedCode();
+            },
+
+            resetAllStyles() {
+                this.appliedStyles = {};
+                this.updateDynamicStyles();
+                this.updateGeneratedCode();
+            },
+
+            updateDynamicStyles() {
+                const styleElement = document.getElementById('styling-dynamic-styles');
+                let css = '';
+
+                Object.values(this.appliedStyles).forEach(elementStyles => {
+                    const { selector, ...styles } = elementStyles;
+                    if (Object.keys(styles).length > 0) {
+                        css += `${selector} {\n`;
+                        Object.entries(styles).forEach(([prop, value]) => {
+                            css += `  ${prop}: ${value};\n`;
+                        });
+                        css += `}\n\n`;
+                    }
+                });
+
+                styleElement.textContent = css;
+            },
+
+            generateCSS() {
+                let css = '/* Filestack Picker Custom Styles */\n\n';
+                Object.values(this.appliedStyles).forEach(elementStyles => {
+                    const { selector, ...styles } = elementStyles;
+                    if (Object.keys(styles).length > 0) {
+                        css += `${selector} {\n`;
+                        Object.entries(styles).forEach(([prop, value]) => {
+                            css += `  ${prop}: ${value};\n`;
+                        });
+                        css += `}\n\n`;
+                    }
+                });
+                return css || '/* No custom styles applied yet */';
+            },
+
+            generateJavaScript() {
+                // Get picker options from the main picker configuration
+                let pickerOptions = {};
+                try {
+                    if (typeof collectPickerOptions === 'function') {
+                        pickerOptions = collectPickerOptions();
+                    }
+                } catch (e) {
+                    console.error('Could not collect picker options:', e);
+                }
+
+                const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
+
+                let js = '// Initialize Filestack client\n';
+                js += `const client = filestack.init('${apiKey}');\n\n`;
+                js += '// Configure and open picker\n';
+                js += 'const picker = client.picker({\n';
+
+                if (Object.keys(pickerOptions).length > 0) {
+                    Object.entries(pickerOptions).forEach(([key, value], index, arr) => {
+                        const isLast = index === arr.length - 1;
+                        js += `  ${key}: ${JSON.stringify(value, null, 2).split('\n').join('\n  ')}${isLast ? '' : ','}\n`;
+                    });
+                } else {
+                    js += '  // Configure your picker options in the "File Picker" tab\n';
+                    js += '  displayMode: \'overlay\',\n';
+                    js += '  maxFiles: 20\n';
+                }
+
+                js += '});\n\n';
+                js += 'picker.open();';
+
+                return js;
+            },
+
+            updateGeneratedCode(tab = 'combined') {
+                const codeElement = document.getElementById('styling-generated-code');
+                const css = this.generateCSS();
+                const js = this.generateJavaScript();
+
+                let code = '';
+                if (tab === 'combined') {
+                    code = `<!-- Add this CSS to your stylesheet -->\n<style>\n${css}</style>\n\n<!-- Add this JavaScript to your page -->\n<script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><\/script>\n<script>\n${js}\n<\/script>`;
+                } else if (tab === 'css') {
+                    code = css;
+                } else if (tab === 'javascript') {
+                    code = js;
+                }
+
+                codeElement.textContent = code;
+            },
+
+            copyGeneratedCode() {
+                const codeElement = document.getElementById('styling-generated-code');
+                navigator.clipboard.writeText(codeElement.textContent).then(() => {
+                    const btn = document.getElementById('styling-copy-code');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                    }, 2000);
+                });
+            },
+
+            initPicker() {
+                const apiKey = document.getElementById('globalApikey')?.value || 'AzYGVlXhTVGcG1GYJXsWuz';
+
+                if (!apiKey || apiKey === 'YOUR_API_KEY') {
+                    document.getElementById('styling-picker-container').innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 2rem;">
+                            <div>
+                                <h3 style="color: #dc2626; margin-bottom: 0.5rem;">API Key Required</h3>
+                                <p style="color: #6b7280; font-size: 0.9rem;">Please enter your Filestack API key in the sidebar to preview the picker.</p>
+                            </div>
+                        </div>`;
+                    return;
+                }
+
+                try {
+                    const client = filestack.init(apiKey);
+
+                    // Get picker options from the main configuration
+                    let pickerOptions = {
+                        container: '#styling-picker-container',
+                        displayMode: 'inline',
+                        maxFiles: 20,
+                        uploadInBackground: false,
+                    };
+
+                    try {
+                        if (typeof collectPickerOptions === 'function') {
+                            const userOptions = collectPickerOptions();
+                            pickerOptions = { ...pickerOptions, ...userOptions, container: '#styling-picker-container', displayMode: 'inline' };
+                        }
+                    } catch (e) {
+                        console.log('Using default picker options');
+                    }
+
+                    this.pickerInstance = client.picker(pickerOptions);
+                    this.pickerInstance.open();
+
+                    // Update code display
+                    this.updateGeneratedCode();
+                } catch (error) {
+                    console.error('Error initializing picker:', error);
+                    document.getElementById('styling-picker-container').innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 2rem;">
+                            <div>
+                                <h3 style="color: #dc2626; margin-bottom: 0.5rem;">Error Loading Picker</h3>
+                                <p style="color: #6b7280; font-size: 0.9rem;">${error.message}</p>
+                            </div>
+                        </div>`;
+                }
+            }
+        };
+
+        // Global functions for button handlers
+        window.backToStylingElementList = function() {
+            document.getElementById('styling-element-selector').style.display = 'block';
+            document.getElementById('styling-style-editor').style.display = 'none';
+            document.getElementById('styling-back-button').style.display = 'none';
+            PickerStyling.currentElement = null;
+        };
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => PickerStyling.init());
+        } else {
+            PickerStyling.init();
+        }
+
+        // Store reference globally if needed
+        window.PickerStyling = PickerStyling;
+    })();
     </script>
 
 </body>
