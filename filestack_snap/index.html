@@ -5341,6 +5341,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                             console.log('%c🚀 Styling Section Activated - Initializing Picker Preview...', 'color: #8b5cf6; font-weight: bold; font-size: 13px');
                             setTimeout(() => this.initPicker(), 100);
                         }
+                        // Always update generated code when section becomes active
+                        this.updateGeneratedCode();
                     }
                 });
 
@@ -5349,7 +5351,22 @@ dnd.filstackSdk.picker(options).open();</pre>
                     observer.observe(stylingSection, { attributes: true, attributeFilter: ['class'] });
                 }
 
-                // Watch for changes in File Picker's generated code to sync with Styling section
+                // Watch for changes in File Picker configuration to auto-update Styling section
+                // Listen to all form inputs with class "track-changes" in the File Picker section
+                const updateStylingCode = () => {
+                    if (document.getElementById('picker-styling')?.classList.contains('active')) {
+                        console.log('%c⚡ File Picker config changed - Auto-updating Styling section...', 'color: #f59e0b; font-weight: bold');
+                        this.updateGeneratedCode();
+                    }
+                };
+
+                // Watch for changes to File Picker form inputs
+                document.querySelectorAll('.track-changes').forEach(input => {
+                    input.addEventListener('change', updateStylingCode);
+                    input.addEventListener('input', updateStylingCode);
+                });
+
+                // Also watch for changes in File Picker's generated code (for when user clicks Generate Code)
                 const filePickerCodeObserver = new MutationObserver(() => {
                     if (document.getElementById('picker-styling')?.classList.contains('active')) {
                         this.updateGeneratedCode();
@@ -5626,14 +5643,21 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             generateJavaScript() {
-                // Get the already-generated JavaScript code from File Picker section
-                // This ensures callbacks and formatting match exactly
+                // Always generate fresh JavaScript code from current File Picker configuration
+                // This ensures we always show the latest configuration, not stale generated code
                 try {
-                    const filePickerCode = document.getElementById('generatedCode');
-                    if (filePickerCode && filePickerCode.textContent &&
-                        !filePickerCode.textContent.includes('Your generated code will appear here')) {
-                        // Return the File Picker's generated code
-                        return filePickerCode.textContent;
+                    let pickerOptions = {};
+
+                    // Get current picker options from File Picker section
+                    if (typeof collectPickerOptions === 'function') {
+                        pickerOptions = collectPickerOptions();
+                        console.log('%c🔄 Auto-generating fresh JavaScript code from current File Picker config', 'color: #06b6d4; font-weight: bold');
+                    }
+
+                    // Use the same code generation function as File Picker section
+                    if (typeof generateJavaScriptPickerCode === 'function') {
+                        const jsCode = generateJavaScriptPickerCode(pickerOptions);
+                        return jsCode;
                     }
 
                     // Fallback: Generate code matching File Picker format
@@ -5643,8 +5667,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                     code += `const client = filestack.init(apikey);\n\n`;
 
                     code += `const options = {\n`;
-                    code += `  // Configure your picker in "Uploads → File Picker" and click "Generate Code"\n`;
-                    code += `  // Then return here to see the combined CSS + JavaScript\n`;
+                    code += `  // Configure your picker in "Uploads → File Picker"\n`;
+                    code += `  // This code auto-generates from your current configuration\n`;
                     code += `};\n\n`;
 
                     code += `const picker = client.picker(options);\n`;
