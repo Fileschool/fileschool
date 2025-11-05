@@ -5647,19 +5647,32 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                     // Check if File Picker has generated code
                     if (filePickerCode && filePickerCode.textContent) {
-                        const codeText = filePickerCode.textContent.trim();
+                        let codeText = filePickerCode.textContent.trim();
 
-                        // Check if it's actual generated code (not the placeholder)
-                        if (!codeText.includes('Your generated code will appear here') &&
-                            !codeText.includes('Configure your options') &&
-                            codeText.length > 50) {
+                        // Check if it's actual generated code (not the placeholder text)
+                        if (!codeText.includes('Your generated code will appear here')) {
+                            // Remove the metadata comments (Generated on:, Section:, etc.)
+                            const lines = codeText.split('\n');
+                            const codeWithoutMetadata = lines.filter(line => {
+                                const trimmed = line.trim();
+                                return !(trimmed.startsWith('// Generated on:') ||
+                                       trimmed.startsWith('// Section:') ||
+                                       trimmed.startsWith('// Language:') ||
+                                       trimmed.startsWith('// API Key:'));
+                            }).join('\n').trim();
 
-                            console.log('%c✅ USING GENERATED CODE FROM FILE PICKER PANEL', 'background: #10b981; color: white; padding: 4px 8px; font-weight: bold');
-                            return codeText;
+                            // Check if there's actual code (not just comments)
+                            if (codeWithoutMetadata.length > 50 && codeWithoutMetadata.includes('const')) {
+                                console.log('%c✅ USING GENERATED CODE FROM FILE PICKER PANEL', 'background: #10b981; color: white; padding: 4px 8px; font-weight: bold');
+                                console.log('Code length:', codeWithoutMetadata.length, 'characters');
+                                return codeWithoutMetadata;
+                            }
                         }
                     }
 
                     // If no generated code exists, generate fresh from current config
+                    console.log('%c⚠️ NO FILE PICKER CODE FOUND - Auto-generating from config', 'background: #f59e0b; color: white; padding: 4px 8px; font-weight: bold');
+
                     let pickerOptions = {};
                     if (typeof collectPickerOptions === 'function') {
                         pickerOptions = collectPickerOptions();
@@ -5667,7 +5680,6 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                     if (typeof generateJavaScriptPickerCode === 'function') {
                         const jsCode = generateJavaScriptPickerCode(pickerOptions);
-                        console.log('%c⚠️ NO FILE PICKER CODE FOUND - Auto-generating from config', 'background: #f59e0b; color: white; padding: 4px 8px; font-weight: bold');
                         return jsCode;
                     }
 
