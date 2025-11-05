@@ -5338,7 +5338,6 @@ dnd.filstackSdk.picker(options).open();</pre>
                     if (stylingSection && stylingSection.classList.contains('active')) {
                         // Init picker if not already done
                         if (!this.pickerInstance) {
-                            console.log('%c🚀 Styling Section Activated - Initializing Picker Preview...', 'color: #8b5cf6; font-weight: bold; font-size: 13px');
                             setTimeout(() => this.initPicker(), 100);
                         }
                         // Always update generated code when section becomes active
@@ -5355,7 +5354,6 @@ dnd.filstackSdk.picker(options).open();</pre>
                 // Listen to all form inputs with class "track-changes" in the File Picker section
                 const updateStylingCode = () => {
                     if (document.getElementById('picker-styling')?.classList.contains('active')) {
-                        console.log('%c⚡ File Picker config changed - Auto-updating Styling section...', 'color: #f59e0b; font-weight: bold');
                         this.updateGeneratedCode();
                     }
                 };
@@ -5643,37 +5641,44 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             generateJavaScript() {
-                // Always generate fresh JavaScript code from current File Picker configuration
-                // This ensures we always show the latest configuration, not stale generated code
+                // Get the actual generated JavaScript code from File Picker's code panel
                 try {
-                    let pickerOptions = {};
+                    const filePickerCode = document.getElementById('generatedCode');
 
-                    // Get current picker options from File Picker section
-                    if (typeof collectPickerOptions === 'function') {
-                        pickerOptions = collectPickerOptions();
-                        console.log('%c🔄 Auto-generating fresh JavaScript code from current File Picker config', 'color: #06b6d4; font-weight: bold');
+                    // Check if File Picker has generated code
+                    if (filePickerCode && filePickerCode.textContent) {
+                        const codeText = filePickerCode.textContent.trim();
+
+                        // Check if it's actual generated code (not the placeholder)
+                        if (!codeText.includes('Your generated code will appear here') &&
+                            !codeText.includes('Configure your options') &&
+                            codeText.length > 50) {
+
+                            console.log('%c✅ USING GENERATED CODE FROM FILE PICKER PANEL', 'background: #10b981; color: white; padding: 4px 8px; font-weight: bold');
+                            return codeText;
+                        }
                     }
 
-                    // Use the same code generation function as File Picker section
+                    // If no generated code exists, generate fresh from current config
+                    let pickerOptions = {};
+                    if (typeof collectPickerOptions === 'function') {
+                        pickerOptions = collectPickerOptions();
+                    }
+
                     if (typeof generateJavaScriptPickerCode === 'function') {
                         const jsCode = generateJavaScriptPickerCode(pickerOptions);
+                        console.log('%c⚠️ NO FILE PICKER CODE FOUND - Auto-generating from config', 'background: #f59e0b; color: white; padding: 4px 8px; font-weight: bold');
                         return jsCode;
                     }
 
-                    // Fallback: Generate code matching File Picker format
+                    // Final fallback
                     const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
                     let code = `// Filestack Picker Configuration\n`;
                     code += `const apikey = "${apiKey}";\n`;
                     code += `const client = filestack.init(apikey);\n\n`;
-
-                    code += `const options = {\n`;
-                    code += `  // Configure your picker in "Uploads → File Picker"\n`;
-                    code += `  // This code auto-generates from your current configuration\n`;
-                    code += `};\n\n`;
-
+                    code += `const options = {};\n\n`;
                     code += `const picker = client.picker(options);\n`;
                     code += `picker.open();\n`;
-
                     return code;
                 } catch (e) {
                     console.error('Error generating JavaScript:', e);
@@ -5733,15 +5738,10 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                     const client = filestack.init(apiKey);
 
-                    // Try to get user-configured options from File Picker section
+                    // Get user-configured options from File Picker section
                     let userOptions = {};
-                    try {
-                        if (typeof collectPickerOptions === 'function') {
-                            userOptions = collectPickerOptions();
-                            console.log('%c📋 Collected picker options from File Picker:', 'color: #2196f3; font-weight: bold', userOptions);
-                        }
-                    } catch (e) {
-                        console.error('Error collecting picker options:', e);
+                    if (typeof collectPickerOptions === 'function') {
+                        userOptions = collectPickerOptions();
                     }
 
                     // Merge options: user options + forced container/displayMode for inline preview
@@ -5752,17 +5752,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                         uploadInBackground: false
                     };
 
-                    console.log('%c🎨 Final picker options for Styling preview:', 'color: #10b981; font-weight: bold', pickerOptions);
-
-                    // Show the actual JavaScript code being executed
-                    console.log('%c📝 ACTUAL JAVASCRIPT CODE BEING EXECUTED:', 'color: #f59e0b; font-weight: bold; font-size: 14px');
-                    console.log(`const apikey = "${apiKey}";
-const client = filestack.init(apikey);
-
-const options = ${JSON.stringify(pickerOptions, null, 2)};
-
-const picker = client.picker(options);
-picker.open();`);
+                    console.log('%c📝 STYLING PREVIEW PICKER OPTIONS:', 'background: #3b82f6; color: white; padding: 4px 8px; font-weight: bold');
+                    console.log(pickerOptions);
 
                     this.pickerInstance = client.picker(pickerOptions);
                     this.pickerInstance.open();

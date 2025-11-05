@@ -5299,11 +5299,6 @@ function generateJavaScriptPickerCode(options) {
     }
 
     // Callbacks
-    console.log('Checking callbacks...');
-    console.log('enableOnFileSelected:', document.getElementById('enableOnFileSelected')?.checked);
-    console.log('enableOnFileUploadFinished:', document.getElementById('enableOnFileUploadFinished')?.checked);
-    console.log('enableOnOpen:', document.getElementById('enableOnOpen')?.checked);
-
     if (document.getElementById('enableOnFileSelected')?.checked) {
         lines.push(`  onFileSelected: (file) => {\n    if (file.size > 1000 * 1000) {\n      throw new Error('File too big, select something smaller than 1MB');\n    }\n  },`);
     }
@@ -5314,7 +5309,6 @@ function generateJavaScriptPickerCode(options) {
         lines.push(`  onUploadDone: (res) => {\n    console.log('PickerResponse', res);\n  },`);
     }
     if (document.getElementById('enableOnFileUploadFinished')?.checked) {
-        console.log('Adding onFileUploadFinished callback!');
         lines.push(`  onFileUploadFinished: (file) => {\n    console.log('File upload finished', file);\n  },`);
     }
     if (document.getElementById('enableOnFileUploadFailed')?.checked) {
