@@ -4916,7 +4916,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     </button>
                                 </div>
                             </div>
-                            <div id="styling-picker-container" style="flex: 1; background: white; border-radius: 4px; overflow: hidden;">
+                            <div id="styling-picker-container" style="flex: 1; min-height: 600px; background: white; border-radius: 4px; overflow: auto;">
                                 <!-- Picker will be rendered here -->
                             </div>
                         </div>
@@ -5756,13 +5756,19 @@ dnd.filstackSdk.picker(options).open();</pre>
                         userOptions = collectPickerOptions();
                     }
 
-                    // Merge options: user options + forced container/displayMode for inline preview
-                    const pickerOptions = {
-                        ...userOptions,
-                        container: '#styling-picker-container',
-                        displayMode: 'inline',
-                        uploadInBackground: false
-                    };
+                    // For preview, use user's displayMode or default to inline
+                    // Only force container if using inline mode
+                    const pickerOptions = { ...userOptions };
+
+                    // If user chose inline mode OR didn't specify, embed in container
+                    if (!pickerOptions.displayMode || pickerOptions.displayMode === 'inline') {
+                        pickerOptions.container = '#styling-picker-container';
+                        pickerOptions.displayMode = 'inline';
+                    }
+                    // Otherwise (overlay or dropPane), respect user's choice and it will open normally
+
+                    // Always disable background upload for preview
+                    pickerOptions.uploadInBackground = false;
 
                     console.log('%c📝 STYLING PREVIEW PICKER OPTIONS:', 'background: #3b82f6; color: white; padding: 4px 8px; font-weight: bold');
                     console.log(pickerOptions);
