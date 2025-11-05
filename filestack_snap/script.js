@@ -4351,6 +4351,7 @@ function collectPickerOptions() {
 // Collect transform options
 function collectTransformOptions() {
     const options = {};
+    const validationWarnings = []; // Track transformations that are enabled but missing required fields
 
     // File handle
     const handle = document.getElementById('transformHandle').value;
@@ -4364,10 +4365,13 @@ function collectTransformOptions() {
         const height = validateIntegerInput('resizeHeight');
         const fit = document.getElementById('resizeFit').value;
 
-        options.resize = {};
-        if (width !== null) options.resize.width = width;
-        if (height !== null) options.resize.height = height;
-        if (fit !== 'clip') options.resize.fit = fit;
+        // Only add resize if at least width or height is provided
+        if (width !== null || height !== null) {
+            options.resize = {};
+            if (width !== null) options.resize.width = width;
+            if (height !== null) options.resize.height = height;
+            if (fit !== 'clip') options.resize.fit = fit;
+        }
     }
 
     if (document.getElementById('enableCrop').checked) {
@@ -4380,6 +4384,8 @@ function collectTransformOptions() {
             options.crop = {
                 dim: [x, y, width, height]
             };
+        } else {
+            validationWarnings.push('Crop is enabled but missing required fields (x, y, width, height)');
         }
     }
 
@@ -4452,13 +4458,16 @@ function collectTransformOptions() {
         const opacity = validateIntegerInput('shadowOpacity');
         const vector = document.getElementById('shadowVector').value;
 
-        options.shadow = {};
-        if (blur !== null) options.shadow.blur = blur;
-        if (opacity !== null) options.shadow.opacity = opacity;
-        if (vector) {
-            const vectorArray = vector.split(',').map(v => parseInt(v.trim()));
-            if (vectorArray.length === 2) {
-                options.shadow.vector = vectorArray;
+        // Only add shadow if at least one parameter is provided
+        if (blur !== null || opacity !== null || vector) {
+            options.shadow = {};
+            if (blur !== null) options.shadow.blur = blur;
+            if (opacity !== null) options.shadow.opacity = opacity;
+            if (vector) {
+                const vectorArray = vector.split(',').map(v => parseInt(v.trim()));
+                if (vectorArray.length === 2) {
+                    options.shadow.vector = vectorArray;
+                }
             }
         }
     }
@@ -4467,9 +4476,12 @@ function collectTransformOptions() {
         const width = validateIntegerInput('borderWidth');
         const color = document.getElementById('borderColor').value;
 
-        options.border = {};
-        if (width !== null) options.border.width = width;
-        if (color) options.border.color = color;
+        // Only add border if at least width or color is provided
+        if (width !== null || color) {
+            options.border = {};
+            if (width !== null) options.border.width = width;
+            if (color) options.border.color = color;
+        }
     }
 
     if (document.getElementById('enableWatermark').checked) {
@@ -4513,10 +4525,13 @@ function collectTransformOptions() {
         const minSize = validateNumberInput('blurFacesMinSize');
         const maxSize = validateNumberInput('blurFacesMaxSize');
 
-        options.blur_faces = {};
-        if (amount !== null) options.blur_faces.amount = amount;
-        if (minSize !== null) options.blur_faces.minsize = minSize;
-        if (maxSize !== null) options.blur_faces.maxsize = maxSize;
+        // Only add blur_faces if at least one parameter is provided
+        if (amount !== null || minSize !== null || maxSize !== null) {
+            options.blur_faces = {};
+            if (amount !== null) options.blur_faces.amount = amount;
+            if (minSize !== null) options.blur_faces.minsize = minSize;
+            if (maxSize !== null) options.blur_faces.maxsize = maxSize;
+        }
     }
 
     if (document.getElementById('enableCropFaces').checked) {
@@ -4524,10 +4539,13 @@ function collectTransformOptions() {
         const height = validateIntegerInput('cropFacesHeight');
         const mode = document.getElementById('cropFacesMode').value;
 
-        options.crop_faces = {};
-        if (width !== null) options.crop_faces.width = width;
-        if (height !== null) options.crop_faces.height = height;
-        if (mode) options.crop_faces.mode = mode;
+        // Only add crop_faces if at least one parameter is provided
+        if (width !== null || height !== null || mode) {
+            options.crop_faces = {};
+            if (width !== null) options.crop_faces.width = width;
+            if (height !== null) options.crop_faces.height = height;
+            if (mode) options.crop_faces.mode = mode;
+        }
     }
 
     if (document.getElementById('enablePixelateFaces').checked) {
@@ -4535,10 +4553,13 @@ function collectTransformOptions() {
         const minSize = validateNumberInput('pixelateFacesMinSize');
         const maxSize = validateNumberInput('pixelateFacesMaxSize');
 
-        options.pixelate_faces = {};
-        if (amount !== null) options.pixelate_faces.amount = amount;
-        if (minSize !== null) options.pixelate_faces.minsize = minSize;
-        if (maxSize !== null) options.pixelate_faces.maxsize = maxSize;
+        // Only add pixelate_faces if at least one parameter is provided
+        if (amount !== null || minSize !== null || maxSize !== null) {
+            options.pixelate_faces = {};
+            if (amount !== null) options.pixelate_faces.amount = amount;
+            if (minSize !== null) options.pixelate_faces.minsize = minSize;
+            if (maxSize !== null) options.pixelate_faces.maxsize = maxSize;
+        }
     }
 
     // Smart crop with validation
@@ -4553,6 +4574,8 @@ function collectTransformOptions() {
                 height: height
             };
             if (mode !== 'auto') options.smart_crop.mode = mode;
+        } else {
+            validationWarnings.push('Smart Crop is enabled but missing required fields (width and height)');
         }
     }
 
@@ -4561,9 +4584,15 @@ function collectTransformOptions() {
         const noise = document.getElementById('upscaleNoise').value;
         const style = document.getElementById('upscaleStyle').value;
 
-        options.upscale = {};
-        if (noise !== 'none') options.upscale.noise = noise;
-        if (style) options.upscale.style = style;
+        // Only add upscale if at least one non-default parameter is provided
+        if ((noise && noise !== 'none') || style) {
+            options.upscale = {};
+            if (noise !== 'none') options.upscale.noise = noise;
+            if (style) options.upscale.style = style;
+        } else {
+            // If no parameters, just enable upscale with defaults
+            options.upscale = true;
+        }
     }
 
     // PDF processing
@@ -4572,10 +4601,13 @@ function collectTransformOptions() {
         const pageFormat = document.getElementById('pdfPageFormat').value;
         const orientation = document.getElementById('pdfOrientation').value;
 
-        options.pdfconvert = {};
-        if (pages) options.pdfconvert.pages = pages.split(',').map(p => p.trim());
-        if (pageFormat) options.pdfconvert.pageformat = pageFormat;
-        if (orientation) options.pdfconvert.pageorientation = orientation;
+        // Only add pdfconvert if at least one parameter is provided
+        if (pages || pageFormat || orientation) {
+            options.pdfconvert = {};
+            if (pages) options.pdfconvert.pages = pages.split(',').map(p => p.trim());
+            if (pageFormat) options.pdfconvert.pageformat = pageFormat;
+            if (orientation) options.pdfconvert.pageorientation = orientation;
+        }
     }
 
     if (document.getElementById('enablePdfInfo').checked) {
@@ -4598,6 +4630,46 @@ function collectTransformOptions() {
     if (compress !== 80) {
         if (!options.output) options.output = {};
         options.output.compress = compress;
+    }
+
+    // Display validation warnings to user if any
+    if (validationWarnings.length > 0) {
+        console.warn('Transformation validation warnings:', validationWarnings);
+
+        // Display warnings in the UI
+        let warningDiv = document.getElementById('transformValidationWarnings');
+        if (!warningDiv) {
+            // Create warning div if it doesn't exist
+            warningDiv = document.createElement('div');
+            warningDiv.id = 'transformValidationWarnings';
+            warningDiv.style.cssText = 'background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 12px; margin: 10px 0; color: #856404;';
+
+            // Insert it before the code display area
+            const codeDisplay = document.querySelector('.code-output-container') || document.querySelector('.code-display');
+            if (codeDisplay && codeDisplay.parentNode) {
+                codeDisplay.parentNode.insertBefore(warningDiv, codeDisplay);
+            }
+        }
+
+        warningDiv.innerHTML = `
+            <strong>⚠️ Validation Warnings:</strong>
+            <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+                ${validationWarnings.map(w => `<li>${w}</li>`).join('')}
+            </ul>
+            <small>These transformations will not be included in the generated code.</small>
+        `;
+        warningDiv.style.display = 'block';
+    } else {
+        // Hide warnings if there are none
+        const warningDiv = document.getElementById('transformValidationWarnings');
+        if (warningDiv) {
+            warningDiv.style.display = 'none';
+        }
+    }
+
+    // Attach warnings to options for potential use in code generation
+    if (validationWarnings.length > 0) {
+        options._validationWarnings = validationWarnings;
     }
 
     return options;
