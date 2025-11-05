@@ -4906,8 +4906,11 @@ dnd.filstackSdk.picker(options).open();</pre>
                                 <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
                                     <i class="fas fa-eye"></i> Live Preview with Styling
                                 </h4>
-                                <!-- View Mode Toggles -->
-                                <div style="display: flex; gap: 0.5rem;">
+                                <!-- View Mode Toggles & Refresh -->
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <button id="styling-refresh-picker" style="padding: 0.5rem 1rem; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
+                                        <i class="fas fa-sync-alt"></i> Refresh Preview
+                                    </button>
                                     <button id="styling-tab-empty" class="styling-view-tab active" style="padding: 0.5rem 1rem; background: #fb923c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
                                         Drop Zone View
                                     </button>
@@ -5327,6 +5330,12 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                 // Reset button
                 document.getElementById('styling-reset-all')?.addEventListener('click', () => this.resetAllStyles());
+
+                // Refresh picker button
+                document.getElementById('styling-refresh-picker')?.addEventListener('click', () => {
+                    console.log('%c🔄 REFRESH PICKER CLICKED', 'background: #10b981; color: white; padding: 4px 8px; font-weight: bold');
+                    this.reinitPicker();
+                });
 
                 // View mode toggle buttons
                 document.getElementById('styling-tab-empty')?.addEventListener('click', () => this.switchPickerView('empty'));
@@ -5757,6 +5766,10 @@ dnd.filstackSdk.picker(options).open();</pre>
                     let userOptions = {};
                     if (typeof collectPickerOptions === 'function') {
                         userOptions = collectPickerOptions();
+                        console.log('%c🔍 DEBUG: collectPickerOptions() returned:', 'background: #8b5cf6; color: white; padding: 4px 8px; font-weight: bold');
+                        console.log(JSON.stringify(userOptions, null, 2));
+                    } else {
+                        console.error('collectPickerOptions function not found!');
                     }
 
                     // Use inline mode with fixed container (like styling_playground.html)
@@ -5767,8 +5780,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                         uploadInBackground: false
                     };
 
-                    console.log('%c📝 STYLING PREVIEW PICKER OPTIONS:', 'background: #3b82f6; color: white; padding: 4px 8px; font-weight: bold');
-                    console.log(pickerOptions);
+                    console.log('%c📝 STYLING PREVIEW PICKER OPTIONS (FINAL):', 'background: #3b82f6; color: white; padding: 4px 8px; font-weight: bold');
+                    console.log(JSON.stringify(pickerOptions, null, 2));
 
                     this.pickerInstance = client.picker(pickerOptions);
                     this.pickerInstance.open();
@@ -5782,6 +5795,30 @@ dnd.filstackSdk.picker(options).open();</pre>
                             </div>
                         </div>`;
                 }
+            },
+
+            // Reinitialize picker with latest File Picker options
+            reinitPicker() {
+                console.log('%c♻️ Reinitializing picker...', 'background: #10b981; color: white; padding: 4px 8px; font-weight: bold');
+
+                // Close existing picker if it exists
+                if (this.pickerInstance) {
+                    try {
+                        this.pickerInstance.close();
+                        this.pickerInstance = null;
+                    } catch (e) {
+                        console.log('Could not close existing picker:', e);
+                    }
+                }
+
+                // Clear container
+                const container = document.getElementById('styling-picker-container');
+                if (container) {
+                    container.innerHTML = '';
+                }
+
+                // Reinitialize
+                setTimeout(() => this.initPicker(), 100);
             },
 
             // Switch between Drop Zone and File List views
