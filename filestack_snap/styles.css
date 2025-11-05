@@ -138,16 +138,17 @@ body {
     left: 20px;
     top: 90px;
     width: 220px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: white;
     border-radius: 12px;
     padding: 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 101;
     overflow: hidden;
+    border: 2px solid var(--primary-orange);
 }
 
 .credentials-header {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--primary-orange);
     padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
@@ -168,6 +169,7 @@ body {
 
 .credentials-content {
     padding: 1rem;
+    background: white;
 }
 
 .credentials-sidebar .form-group {
@@ -179,7 +181,7 @@ body {
 }
 
 .credentials-sidebar label {
-    color: white;
+    color: var(--dark-purple);
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -192,15 +194,15 @@ body {
 
 .credentials-sidebar label i {
     font-size: 0.75rem;
-    opacity: 0.8;
+    color: var(--primary-orange);
 }
 
 .credentials-sidebar input {
     font-size: 0.75rem;
     padding: 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.9);
+    background: white;
     width: 100%;
     box-sizing: border-box;
     transition: all 0.2s ease;
@@ -216,12 +218,6 @@ body {
 .credentials-sidebar input::placeholder {
     color: #999;
     font-size: 0.7rem;
-}
-
-/* Adjust Section Navigator position to be below Credentials */
-.section-navigator {
-    top: 380px;
-    max-height: calc(100vh - 400px);
 }
 
 /* Top Navigation Tabs */
@@ -425,6 +421,7 @@ body.sidebar-visible .main-content {
     padding: 20px;
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    scroll-margin-top: 200px; /* Prevent overshooting when clicking Jump to Section */
 }
 
 /* Compact cards take less vertical space */
@@ -1458,22 +1455,26 @@ i.fa-info-circle[title]:hover::after {
     transform: translateX(-50%);
     background: #2c3e50;
     color: #ffffff;
-    padding: 0.6rem 0.9rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.6;
     white-space: normal;
     word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-transform: none;
+    letter-spacing: normal;
     opacity: 1;
     pointer-events: none;
     transition: opacity 0.2s ease;
     z-index: 10000;
-    min-width: 180px;
-    max-width: 260px;
+    min-width: 200px;
+    max-width: 300px;
     text-align: left;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     margin-bottom: 0.5rem;
 }
 
@@ -2654,9 +2655,9 @@ textarea:focus {
 .section-navigator {
     position: fixed;
     left: 20px;
-    top: 160px;
+    top: 350px; /* Below credentials sidebar (90px top + ~260px height) */
     width: 220px;
-    max-height: calc(100vh - 180px);
+    max-height: calc(100vh - 370px);
     background: white;
     border: 1px solid var(--border-color);
     border-radius: 12px;

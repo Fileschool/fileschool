@@ -1847,7 +1847,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Blur</span>
                                 </label>
                                 <div class="transform-inputs" id="blurInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="blurAmount" min="0" max="100">
+                                    <label for="blurAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Blur Amount</label>
+                                    <input type="number" placeholder="0-100" id="blurAmount" min="0" max="100">
                                 </div>
                             </div>
 
@@ -1857,7 +1858,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Sharpen</span>
                                 </label>
                                 <div class="transform-inputs" id="sharpenInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="sharpenAmount" min="0" max="100">
+                                    <label for="sharpenAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Sharpen Amount</label>
+                                    <input type="number" placeholder="0-100" id="sharpenAmount" min="0" max="100">
                                 </div>
                             </div>
 
@@ -1867,7 +1869,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Sepia</span>
                                 </label>
                                 <div class="transform-inputs" id="sepiaInputs" style="display: none;">
-                                    <input type="number" placeholder="Tone" id="sepiaTone" min="0" max="100">
+                                    <label for="sepiaTone" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Sepia Tone</label>
+                                    <input type="number" placeholder="0-100" id="sepiaTone" min="0" max="100">
                                 </div>
                             </div>
 
@@ -1898,7 +1901,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Rounded Corners</span>
                                 </label>
                                 <div class="transform-inputs" id="roundedCornersInputs" style="display: none;">
-                                    <input type="number" placeholder="Radius" id="roundedCornersRadius" min="0"
+                                    <label for="roundedCornersRadius" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Corner Radius</label>
+                                    <input type="number" placeholder="0-1000" id="roundedCornersRadius" min="0"
                                         max="1000">
                                 </div>
                             </div>
@@ -1938,7 +1942,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Blur Faces</span>
                                 </label>
                                 <div class="transform-inputs" id="blurFacesInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="blurFacesAmount" min="0" max="100">
+                                    <input type="number" placeholder="0-100" id="blurFacesAmount" min="0" max="100">
                                     <input type="number" placeholder="Min Size" id="blurFacesMinSize" min="0"
                                         max="10000" step="0.01">
                                     <input type="number" placeholder="Max Size" id="blurFacesMaxSize" min="0"
@@ -1968,7 +1972,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Pixelate Faces</span>
                                 </label>
                                 <div class="transform-inputs" id="pixelateFacesInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="pixelateFacesAmount" min="0"
+                                    <input type="number" placeholder="2-100" id="pixelateFacesAmount" min="0"
                                         max="100">
                                     <input type="number" placeholder="Min Size" id="pixelateFacesMinSize" min="0"
                                         max="10000" step="0.01">
@@ -1990,7 +1994,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Vignette</span>
                                 </label>
                                 <div class="transform-inputs" id="vignetteInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="vignetteAmount" min="0" max="100">
+                                    <label for="vignetteAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Vignette Amount</label>
+                                    <input type="number" placeholder="0-100" id="vignetteAmount" min="0" max="100">
                                 </div>
                             </div>
 
@@ -2000,9 +2005,12 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Shadow</span>
                                 </label>
                                 <div class="transform-inputs" id="shadowInputs" style="display: none;">
-                                    <input type="number" placeholder="Blur" id="shadowBlur" min="0">
-                                    <input type="number" placeholder="Opacity" id="shadowOpacity" min="0" max="100">
-                                    <input type="text" placeholder="Vector (x,y)" id="shadowVector">
+                                    <label for="shadowBlur" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Blur Amount</label>
+                                    <input type="number" placeholder="0+" id="shadowBlur" min="0">
+                                    <label for="shadowOpacity" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; margin-top: 0.5rem; display: block;">Opacity</label>
+                                    <input type="number" placeholder="0-100" id="shadowOpacity" min="0" max="100">
+                                    <label for="shadowVector" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; margin-top: 0.5rem; display: block;">Vector (x, y)</label>
+                                    <input type="text" placeholder="e.g., 10,10" id="shadowVector">
                                 </div>
                             </div>
 
@@ -2012,8 +2020,10 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <span>Border</span>
                                 </label>
                                 <div class="transform-inputs" id="borderInputs" style="display: none;">
-                                    <input type="number" placeholder="Width" id="borderWidth" min="0" max="100">
-                                    <input type="text" placeholder="Color" id="borderColor" value="#000000">
+                                    <label for="borderWidth" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Border Width</label>
+                                    <input type="number" placeholder="0-100" id="borderWidth" min="0" max="100">
+                                    <label for="borderColor" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; margin-top: 0.5rem; display: block;">Border Color</label>
+                                    <input type="color" id="borderColor" value="#000000">
                                 </div>
                             </div>
 
@@ -2153,7 +2163,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                                 <span>Pixelate</span>
                                             </label>
                                             <div class="transform-inputs" id="pixelateInputs" style="display: none;">
-                                                <input type="number" placeholder="Amount" id="pixelateAmount" min="2" max="100" value="10">
+                                                <label for="pixelateAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Pixelate Amount</label>
+                                                <input type="number" placeholder="2-100" id="pixelateAmount" min="2" max="100" value="10">
                                                 <small style="color: #666; font-size: 0.8rem;">Range: 2 to 100</small>
                                             </div>
                                         </div>
@@ -2164,7 +2175,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                                 <span>Oil Paint</span>
                                             </label>
                                             <div class="transform-inputs" id="oilPaintInputs" style="display: none;">
-                                                <input type="number" placeholder="Amount" id="oilPaintAmount" min="2" max="100" value="5">
+                                                <label for="oilPaintAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Oil Paint Amount</label>
+                                                <input type="number" placeholder="2-100" id="oilPaintAmount" min="2" max="100" value="5">
                                                 <small style="color: #666; font-size: 0.8rem;">Range: 2 to 100</small>
                                             </div>
                                         </div>
