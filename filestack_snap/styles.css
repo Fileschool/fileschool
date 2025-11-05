@@ -138,16 +138,17 @@ body {
     left: 20px;
     top: 90px;
     width: 220px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: white;
     border-radius: 12px;
     padding: 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 101;
     overflow: hidden;
+    border: 2px solid var(--primary-orange);
 }
 
 .credentials-header {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--primary-orange);
     padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
@@ -168,6 +169,7 @@ body {
 
 .credentials-content {
     padding: 1rem;
+    background: white;
 }
 
 .credentials-sidebar .form-group {
@@ -179,7 +181,7 @@ body {
 }
 
 .credentials-sidebar label {
-    color: white;
+    color: var(--dark-purple);
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -192,15 +194,15 @@ body {
 
 .credentials-sidebar label i {
     font-size: 0.75rem;
-    opacity: 0.8;
+    color: var(--primary-orange);
 }
 
 .credentials-sidebar input {
     font-size: 0.75rem;
     padding: 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.9);
+    background: white;
     width: 100%;
     box-sizing: border-box;
     transition: all 0.2s ease;
