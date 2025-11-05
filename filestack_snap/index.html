@@ -5475,31 +5475,26 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                     const client = filestack.init(apiKey);
 
-                    // Get picker options from the main configuration
-                    let pickerOptions = {
-                        container: '#styling-picker-container',
-                        displayMode: 'inline',
-                        maxFiles: 20,
-                        uploadInBackground: false,
-                    };
-
                     // Try to get user-configured options from File Picker section
+                    let userOptions = {};
                     try {
                         if (typeof collectPickerOptions === 'function') {
-                            const userOptions = collectPickerOptions();
-                            // Merge user options but keep container and displayMode for inline preview
-                            pickerOptions = {
-                                ...userOptions,
-                                ...pickerOptions,
-                                container: '#styling-picker-container',
-                                displayMode: 'inline'
-                            };
+                            userOptions = collectPickerOptions();
+                            console.log('Collected picker options from File Picker:', userOptions);
                         }
                     } catch (e) {
-                        console.log('Using default picker options:', e);
+                        console.error('Error collecting picker options:', e);
                     }
 
-                    console.log('Initializing picker with options:', pickerOptions);
+                    // Merge options: user options + forced container/displayMode for inline preview
+                    const pickerOptions = {
+                        ...userOptions,
+                        container: '#styling-picker-container',
+                        displayMode: 'inline',
+                        uploadInBackground: false
+                    };
+
+                    console.log('Final picker options for inline preview:', pickerOptions);
                     this.pickerInstance = client.picker(pickerOptions);
                     this.pickerInstance.open();
                 } catch (error) {
