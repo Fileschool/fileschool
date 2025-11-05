@@ -5583,10 +5583,13 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                 let css = '';
 
+                // Scope CSS to only affect the styling picker container
+                // This prevents styles from affecting the main File Picker preview
                 Object.values(this.appliedStyles).forEach(elementStyles => {
                     const { selector, ...styles } = elementStyles;
                     if (Object.keys(styles).length > 0) {
-                        css += `${selector} {\n`;
+                        // Add #styling-picker-container prefix to scope the styles
+                        css += `#styling-picker-container ${selector} {\n`;
                         Object.entries(styles).forEach(([prop, value]) => {
                             css += `  ${prop}: ${value};\n`;
                         });
@@ -5622,27 +5625,31 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             generateJavaScript() {
-                // Get picker options from File Picker section
+                // Get the already-generated JavaScript code from File Picker section
+                // This ensures callbacks and formatting match exactly
                 try {
-                    let pickerOptions = {};
-                    if (typeof collectPickerOptions === 'function') {
-                        pickerOptions = collectPickerOptions();
+                    const filePickerCode = document.getElementById('generatedCode');
+                    if (filePickerCode && filePickerCode.textContent &&
+                        !filePickerCode.textContent.includes('Your generated code will appear here')) {
+                        // Return the File Picker's generated code
+                        return filePickerCode.textContent;
                     }
 
-                    // Format options as JavaScript code
-                    const optionsStr = JSON.stringify(pickerOptions, null, 2);
+                    // Fallback: Generate code matching File Picker format
+                    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+                    let code = `// Filestack Picker Configuration\n`;
+                    code += `const apikey = "${apiKey}";\n`;
+                    code += `const client = filestack.init(apikey);\n\n`;
 
-                    const jsCode = `// Initialize Filestack client
-const client = filestack.init('YOUR_API_KEY');
+                    code += `const options = {\n`;
+                    code += `  // Configure your picker in "Uploads → File Picker" and click "Generate Code"\n`;
+                    code += `  // Then return here to see the combined CSS + JavaScript\n`;
+                    code += `};\n\n`;
 
-// Picker options from File Picker configuration
-const pickerOptions = ${optionsStr};
+                    code += `const picker = client.picker(options);\n`;
+                    code += `picker.open();\n`;
 
-// Open the picker
-const picker = client.picker(pickerOptions);
-picker.open();`;
-
-                    return jsCode;
+                    return code;
                 } catch (e) {
                     console.error('Error generating JavaScript:', e);
                     return '// Error: Could not generate JavaScript from picker options';
