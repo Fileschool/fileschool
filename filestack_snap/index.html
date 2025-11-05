@@ -4902,9 +4902,12 @@ dnd.filstackSdk.picker(options).open();</pre>
                     <div class="styling-preview" style="flex: 1; display: flex; flex-direction: column; gap: 1.5rem;">
                         <!-- Picker Preview -->
                         <div style="flex: 1; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: #f9fafb; position: relative; min-height: 500px;">
-                            <h4 style="margin-bottom: 1rem; color: #374151; font-size: 1.1rem;">
-                                <i class="fas fa-eye"></i> Live Preview
-                            </h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
+                                    <i class="fas fa-eye"></i> Live Preview
+                                </h4>
+                                <span style="font-size: 0.75rem; color: #6b7280; font-style: italic;">API key required for preview only</span>
+                            </div>
                             <div id="styling-picker-container" style="width: 100%; height: 450px; background: white; border-radius: 4px; overflow: hidden;">
                                 <!-- Picker will be rendered here -->
                             </div>
@@ -5043,27 +5046,50 @@ dnd.filstackSdk.picker(options).open();</pre>
             currentElement: null,
             pickerInstance: null,
 
-            // Element definitions (simplified from styling_playground.html)
+            // Element definitions (complete from styling_playground.html)
             elements: {
                 'Header': [
-                    { id: 'header', label: 'Top Header Bar', selector: '.fsp-header' },
+                    { id: 'header', label: 'Top Header Bar', selector: '.fsp-header', desc: 'Bar at the very top' },
                 ],
                 'Sidebar': [
-                    { id: 'source-list', label: 'Left Sidebar', selector: '.fsp-source-list' },
-                    { id: 'source-item', label: 'Source Items', selector: '.fsp-source-list__item' },
-                    { id: 'source-item-active', label: 'Active Source Item', selector: '.fsp-source-list__item--active' },
+                    { id: 'source-list', label: 'Left Sidebar', selector: '.fsp-source-list', desc: 'List of sources (Computer, URL, etc)' },
+                    { id: 'source-item', label: 'Source Items', selector: '.fsp-source-list__item', desc: 'Computer, URL, Instagram items' },
+                    { id: 'source-item-active', label: 'Active Source Item', selector: '.fsp-source-list__item--active', desc: 'The selected source' },
                 ],
                 'Drop Area': [
-                    { id: 'drop-area', label: 'Drop Zone Box', selector: '.fsp-drop-area' },
-                    { id: 'drop-area-title', label: 'Drop Title Text', selector: '.fsp-drop-area__title' },
-                    { id: 'drop-area-button', label: 'Browse Button', selector: '.fsp-drop-area__button' },
+                    { id: 'drop-area-container', label: 'Whole Upload Area', selector: '.fsp-drop-area-container', desc: 'Full background area' },
+                    { id: 'drop-area', label: 'Drop Zone Box', selector: '.fsp-drop-area', desc: 'Dashed box "Drag and drop..."' },
+                    { id: 'drop-area-title', label: 'Drop Title Text', selector: '.fsp-drop-area__title', desc: '"Drag and drop..." text' },
+                    { id: 'drop-area-subtitle', label: 'Drop Subtitle', selector: '.fsp-drop-area__subtitle', desc: '"or click to browse" text' },
+                    { id: 'drop-area-button', label: 'Browse Button', selector: '.fsp-drop-area__button', desc: '"Choose Files" button' },
                 ],
                 'Buttons': [
-                    { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button-upload' },
+                    { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button-upload', desc: 'Main action button', needsFiles: true },
+                    { id: 'button-cancel', label: 'Cancel Button', selector: '.fsp-button--cancel', desc: 'Cancel/back button', needsFiles: true },
+                ],
+                'File Grid': [
+                    { id: 'grid', label: 'File Grid', selector: '.fsp-grid', desc: 'Grid of files/folders' },
+                    { id: 'grid-cell', label: 'File/Folder Items', selector: '.fsp-grid__cell', desc: 'Individual file boxes' },
+                    { id: 'grid-cell-selected', label: 'Selected Files', selector: '.fsp-grid__cell--selected', desc: 'Checked files' },
+                ],
+                'Footer': [
+                    { id: 'footer', label: 'Bottom Footer', selector: '.fsp-footer', desc: 'Bar at the bottom', needsFiles: true },
+                    { id: 'footer-badge', label: 'File Count Badge', selector: '.fsp-badge', desc: 'Number badge on upload button', needsFiles: true },
+                ],
+                'Summary View (File List)': [
+                    { id: 'content', label: 'Main Content Area', selector: '.fsp-content', desc: 'Main content container for file list', needsFiles: true },
+                    { id: 'summary-title', label: 'Selected Files Title', selector: '.fsp-summary .filestack-text-center', desc: '"Selected Files" heading text', needsFiles: true },
+                    { id: 'summary-body', label: 'Summary Container', selector: '.fsp-summary__body', desc: 'Container for file list', needsFiles: true },
+                    { id: 'summary-item', label: 'File Item Row', selector: '.fsp-summary__item', desc: 'Each file in the list', needsFiles: true },
+                    { id: 'summary-item-name', label: 'File Name', selector: '.fsp-summary__item-name', desc: 'File name text', needsFiles: true },
+                    { id: 'summary-thumbnail', label: 'File Thumbnail', selector: '.fsp-summary__thumbnail-container', desc: 'File icon container', needsFiles: true },
+                    { id: 'summary-size', label: 'File Size', selector: '.fsp-summary__size', desc: 'File size text', needsFiles: true },
+                    { id: 'summary-remove', label: 'Delete Button', selector: '.fsp-summary__action--remove', desc: 'Remove file button', needsFiles: true },
+                    { id: 'summary-actions', label: 'Actions Container', selector: '.fsp-summary__actions-container', desc: 'File action buttons area', needsFiles: true },
                 ],
             },
 
-            // Style properties
+            // Style properties (complete from styling_playground.html)
             styleProperties: {
                 colors: [
                     { id: 'background', label: 'Background', type: 'color', cssProperty: 'background-color' },
@@ -5072,18 +5098,42 @@ dnd.filstackSdk.picker(options).open();</pre>
                 ],
                 layout: [
                     { id: 'padding', label: 'Padding', type: 'text', cssProperty: 'padding', unit: 'px' },
+                    { id: 'margin', label: 'Margin', type: 'text', cssProperty: 'margin', unit: 'px' },
                     { id: 'border-radius', label: 'Border Radius', type: 'text', cssProperty: 'border-radius', unit: 'px' },
+                ],
+                border: [
+                    { id: 'border-width', label: 'Border Width', type: 'text', cssProperty: 'border-width', unit: 'px' },
+                    { id: 'border-style', label: 'Border Style', type: 'select', cssProperty: 'border-style', options: ['none', 'solid', 'dashed', 'dotted'] },
+                ],
+                typography: [
+                    { id: 'font-size', label: 'Font Size', type: 'text', cssProperty: 'font-size', unit: 'px' },
+                    { id: 'font-weight', label: 'Font Weight', type: 'select', cssProperty: 'font-weight', options: ['normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900'] },
+                    { id: 'text-align', label: 'Text Align', type: 'select', cssProperty: 'text-align', options: ['left', 'center', 'right'] },
+                ],
+                effects: [
+                    { id: 'opacity', label: 'Opacity', type: 'range', cssProperty: 'opacity', min: 0, max: 1, step: 0.1 },
+                    { id: 'box-shadow', label: 'Box Shadow', type: 'text', cssProperty: 'box-shadow', placeholder: '0 4px 6px rgba(0,0,0,0.1)' },
                 ],
             },
 
             // Preset themes
             presets: {
                 dark: {
-                    'header': { 'background-color': '#0f172a', 'color': '#e2e8f0' },
-                    'source-list': { 'background-color': '#0f172a' },
+                    'header': { 'background-color': '#0f172a', 'color': '#e2e8f0', 'border-bottom': '1px solid #334155' },
+                    'source-list': { 'background-color': '#0f172a', 'border-right': '1px solid #334155' },
+                    'source-item': { 'color': '#94a3b8' },
                     'source-item-active': { 'background-color': '#3b82f6', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#334155', 'border': '2px dashed #64748b' },
-                    'button-primary': { 'background-color': '#3b82f6', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#1e293b' },
+                    'drop-area': { 'background-color': '#334155', 'border': '2px dashed #64748b', 'border-radius': '8px' },
+                    'button-primary': { 'background-color': '#3b82f6', 'color': '#ffffff', 'border-radius': '6px' },
+                    'button-cancel': { 'background-color': '#475569', 'color': '#e2e8f0', 'border-radius': '6px' },
+                    'footer': { 'background-color': '#0f172a', 'border-top': '1px solid #334155' },
+                    'content': { 'background-color': '#1e293b' },
+                    'summary-body': { 'background-color': '#1e293b' },
+                    'summary-item': { 'background-color': '#334155', 'color': '#e2e8f0', 'border-radius': '6px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#e2e8f0' },
+                    'summary-size': { 'color': '#94a3b8' },
+                    'summary-remove': { 'color': '#ef4444' },
                 },
                 minimal: {
                     'header': { 'background-color': '#ffffff', 'border-bottom': '1px solid #e5e7eb' },
@@ -5195,7 +5245,9 @@ dnd.filstackSdk.picker(options).open();</pre>
             init() {
                 this.renderElementList();
                 this.attachEventListeners();
-                // Don't init picker yet - wait until section is visible
+                // Initialize code display (works without API key)
+                this.updateGeneratedCode();
+                // Don't init picker yet - wait until section is visible (requires API key)
             },
 
             attachEventListeners() {
@@ -5348,21 +5400,72 @@ dnd.filstackSdk.picker(options).open();</pre>
                         label.style.color = '#374151';
                         propDiv.appendChild(label);
 
-                        const input = document.createElement('input');
-                        input.type = prop.type;
-                        input.style.cssText = 'width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;';
+                        let input;
+
+                        // Handle different input types
+                        if (prop.type === 'select') {
+                            input = document.createElement('select');
+                            input.style.cssText = 'width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; background: white;';
+                            prop.options.forEach(optionValue => {
+                                const option = document.createElement('option');
+                                option.value = optionValue;
+                                option.textContent = optionValue;
+                                input.appendChild(option);
+                            });
+                        } else if (prop.type === 'range') {
+                            input = document.createElement('input');
+                            input.type = 'range';
+                            input.min = prop.min;
+                            input.max = prop.max;
+                            input.step = prop.step;
+                            input.style.cssText = 'width: 100%;';
+
+                            // Add value display
+                            const valueDisplay = document.createElement('span');
+                            valueDisplay.style.cssText = 'display: inline-block; margin-left: 0.5rem; font-size: 0.85rem; color: #6b7280;';
+                            valueDisplay.textContent = input.value;
+
+                            input.addEventListener('input', (e) => {
+                                valueDisplay.textContent = e.target.value;
+                            });
+
+                            propDiv.appendChild(input);
+                            propDiv.appendChild(valueDisplay);
+                        } else {
+                            input = document.createElement('input');
+                            input.type = prop.type;
+                            input.style.cssText = 'width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;';
+                            if (prop.placeholder) {
+                                input.placeholder = prop.placeholder;
+                            }
+                        }
 
                         const currentValue = this.appliedStyles[element.id]?.[prop.cssProperty];
                         if (currentValue) {
-                            input.value = prop.type === 'color' ? currentValue : currentValue.replace(prop.unit || '', '');
+                            if (prop.type === 'color') {
+                                input.value = currentValue;
+                            } else if (prop.type === 'range') {
+                                input.value = currentValue;
+                            } else if (prop.unit) {
+                                input.value = currentValue.replace(prop.unit, '').trim();
+                            } else {
+                                input.value = currentValue;
+                            }
                         }
 
                         input.addEventListener('input', (e) => {
-                            const value = prop.unit ? e.target.value + prop.unit : e.target.value;
+                            const value = prop.unit && prop.type !== 'color' && prop.type !== 'range' ? e.target.value + prop.unit : e.target.value;
                             this.applyStyle(element.id, element.selector, prop.cssProperty, value);
                         });
 
-                        propDiv.appendChild(input);
+                        input.addEventListener('change', (e) => {
+                            const value = prop.unit && prop.type !== 'color' && prop.type !== 'range' ? e.target.value + prop.unit : e.target.value;
+                            this.applyStyle(element.id, element.selector, prop.cssProperty, value);
+                        });
+
+                        if (prop.type !== 'range') {
+                            propDiv.appendChild(input);
+                        }
                         groupDiv.appendChild(propDiv);
                     });
 
