@@ -5252,6 +5252,25 @@ function generateJavaScriptPickerCode(options) {
     if (options.modalSize) lines.push(`  modalSize: ${JSON.stringify(options.modalSize)},`);
     if (options.pasteMode) lines.push(`  pasteMode: '${options.pasteMode}',`);
 
+    // Additional advanced options
+    if (options.globalDropZone) lines.push(`  globalDropZone: true,`);
+    if (options.disableAltText) lines.push(`  disableAltText: true,`);
+    if (options.disableDirectoryUpload) lines.push(`  disableDirectoryUpload: true,`);
+    if (options.miniUploader) lines.push(`  miniUploader: true,`);
+    if (options.startUploadingWhenMaxFilesReached) lines.push(`  startUploadingWhenMaxFilesReached: true,`);
+    if (options.disableStorageKey) lines.push(`  disableStorageKey: true,`);
+    if (options.useSentryBreadcrumbs) lines.push(`  useSentryBreadcrumbs: true,`);
+    if (options.viewType) lines.push(`  viewType: '${options.viewType}',`);
+    if (options.videoResolution) lines.push(`  videoResolution: '${options.videoResolution}',`);
+    if (options.container) lines.push(`  container: '${options.container}',`);
+    if (options.customSourceName) lines.push(`  customSourceName: '${options.customSourceName}',`);
+    if (options.customSourcePath) lines.push(`  customSourcePath: '${options.customSourcePath}',`);
+    if (options.customSourceContainer) lines.push(`  customSourceContainer: '${options.customSourceContainer}',`);
+    if (options.rootId) lines.push(`  rootId: '${options.rootId}',`);
+    if (options.supportEmail) lines.push(`  supportEmail: '${options.supportEmail}',`);
+    if (options.googleDriveAppID) lines.push(`  googleDriveAppID: '${options.googleDriveAppID}',`);
+    if (options.errorsTimeout) lines.push(`  errorsTimeout: ${options.errorsTimeout},`);
+
     // storeTo
     if (options.storeTo) {
         lines.push(`  storeTo: ${JSON.stringify(options.storeTo, null, 2).replace(/\n/g, '\n  ')},`);
