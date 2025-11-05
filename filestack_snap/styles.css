@@ -281,6 +281,12 @@ body {
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     overflow-y: auto;
+    transition: margin-left 0.3s ease;
+}
+
+/* Add left margin when sidebar is visible */
+body.sidebar-visible .main-content {
+    margin-left: 260px;
 }
 
 .content-section {
@@ -2578,18 +2584,22 @@ textarea:focus {
     transition: width 0.1s ease;
 }
 
-/* Section Navigator (sticky on long pages) */
+/* Section Navigator (LEFT SIDEBAR - sticky throughout page) */
 .section-navigator {
-    position: sticky;
-    top: 220px;
+    position: fixed;
+    left: 20px;
+    top: 160px;
+    width: 220px;
+    max-height: calc(100vh - 180px);
     background: white;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
-    margin-bottom: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     z-index: 100;
     display: none; /* Hidden by default, shown via JS on long pages */
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .section-navigator.visible {
@@ -2603,6 +2613,12 @@ textarea:focus {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    position: sticky;
+    top: 0;
+    background: white;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.75rem;
 }
 
 .section-nav-list {
@@ -2611,12 +2627,13 @@ textarea:focus {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.25rem;
 }
 
 .section-nav-item {
     padding: 0.5rem 0.75rem;
     border-radius: 6px;
+    font-size: 0.85rem;
     cursor: pointer;
     font-size: 0.85rem;
     color: #666;
@@ -2878,21 +2895,24 @@ textarea:focus {
 /* Mobile responsiveness for new elements */
 @media (max-width: 768px) {
     .section-navigator {
-        top: 160px;
-        position: relative;
+        display: none !important; /* Hide sidebar on mobile */
     }
-    
+
+    body.sidebar-visible .main-content {
+        margin-left: 0; /* Remove margin on mobile */
+    }
+
     .back-to-top {
         bottom: 20px;
         right: 20px;
         width: 45px;
         height: 45px;
     }
-    
+
     .page-indicator {
         display: none;
     }
-    
+
     .notification {
         top: 80px;
         right: 10px;

@@ -3282,6 +3282,51 @@ function setupManualCodeGeneration() {
             }
         }
 
+        // Check if watermark is enabled without file
+        if (document.getElementById('enableWatermark')?.checked) {
+            const file = document.getElementById('watermarkFile');
+
+            if (!file.value) {
+                const watermarkOption = file.closest('.transform-option');
+                if (watermarkOption) watermarkOption.classList.add('has-validation-error');
+
+                file.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = file;
+
+                errors.push({ field: 'Watermark', message: 'File handle is required' });
+            }
+        }
+
+        // Check if collage is enabled without files
+        if (document.getElementById('enableCollage')?.checked) {
+            const files = document.getElementById('collageFiles');
+
+            if (!files.value) {
+                const collageOption = files.closest('.transform-option');
+                if (collageOption) collageOption.classList.add('has-validation-error');
+
+                files.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = files;
+
+                errors.push({ field: 'Collage', message: 'Files array is required (e.g., ["handle1", "handle2"])' });
+            }
+        }
+
+        // Check if urlscreenshot is enabled without URL
+        if (document.getElementById('enableUrlScreenshot')?.checked) {
+            const url = document.getElementById('urlScreenshotUrl');
+
+            if (!url.value) {
+                const urlScreenshotOption = url.closest('.transform-option');
+                if (urlScreenshotOption) urlScreenshotOption.classList.add('has-validation-error');
+
+                url.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = url;
+
+                errors.push({ field: 'URL Screenshot', message: 'URL is required' });
+            }
+        }
+
         return { valid: errors.length === 0, errors, firstErrorElement };
     }
 
@@ -9426,18 +9471,31 @@ function initializeSectionNavigator() {
         if (!activeSection) return;
 
         const configCards = activeSection.querySelectorAll('.config-card');
-        
+
+        // Get or create navigator (only one in body)
+        let navigator = document.querySelector('.section-navigator');
+
         // If page has 5+ config cards, show section navigator
         if (configCards.length >= 5) {
-            let navigator = activeSection.querySelector('.section-navigator');
-            
             if (!navigator) {
                 navigator = createSectionNavigator(configCards);
-                activeSection.insertBefore(navigator, activeSection.firstChild);
+                document.body.appendChild(navigator);
+            } else {
+                // Update existing navigator for new section
+                updateSectionNavigator(navigator, configCards);
             }
-            
-            // Show navigator
-            setTimeout(() => navigator.classList.add('visible'), 100);
+
+            // Show navigator and add body class
+            setTimeout(() => {
+                navigator.classList.add('visible');
+                document.body.classList.add('sidebar-visible');
+            }, 100);
+        } else {
+            // Hide navigator for short sections
+            if (navigator) {
+                navigator.classList.remove('visible');
+                document.body.classList.remove('sidebar-visible');
+            }
         }
     });
 
@@ -9453,10 +9511,49 @@ function initializeSectionNavigator() {
         const configCards = activeSection.querySelectorAll('.config-card');
         if (configCards.length >= 5) {
             const navigator = createSectionNavigator(configCards);
-            activeSection.insertBefore(navigator, activeSection.firstChild);
-            setTimeout(() => navigator.classList.add('visible'), 100);
+            document.body.appendChild(navigator);
+            setTimeout(() => {
+                navigator.classList.add('visible');
+                document.body.classList.add('sidebar-visible');
+            }, 100);
         }
     }
+}
+
+function updateSectionNavigator(navigator, configCards) {
+    // Clear existing nav items
+    const navList = navigator.querySelector('.section-nav-list');
+    if (!navList) return;
+
+    navList.innerHTML = '';
+
+    // Rebuild nav items for new section
+    configCards.forEach((card, index) => {
+        const cardTitle = card.querySelector('h3');
+        if (!cardTitle) return;
+
+        // Add ID to card for scrolling
+        if (!card.id) {
+            card.id = `section-card-${index}`;
+        }
+
+        const navItem = document.createElement('li');
+        navItem.className = 'section-nav-item';
+        navItem.textContent = cardTitle.textContent.replace(/[^\w\s]/gi, '').trim();
+        navItem.setAttribute('data-target', card.id);
+
+        navItem.addEventListener('click', () => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Update active state
+            navList.querySelectorAll('.section-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            navItem.classList.add('active');
+        });
+
+        navList.appendChild(navItem);
+    });
 }
 
 function createSectionNavigator(configCards) {
