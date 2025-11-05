@@ -2738,6 +2738,10 @@ function generateCodeEnhanced(section, tab = 'javascript') {
             case 'picker':
                 options = collectPickerOptions();
                 break;
+            case 'picker-styling':
+                // For Styling section, collect picker options to generate proper code
+                options = collectPickerOptions();
+                break;
             case 'transform':
                 options = collectTransformOptions();
                 break;
@@ -2781,8 +2785,8 @@ function generateCodeEnhanced(section, tab = 'javascript') {
                 options = {};
         }
 
-        // For picker section, use dedicated function that handles callbacks
-        if (section === 'picker') {
+        // For picker and picker-styling sections, use dedicated function that handles callbacks
+        if (section === 'picker' || section === 'picker-styling') {
             generatePickerCode(tab);
             return;
         }
@@ -3568,8 +3572,16 @@ function setupManualCodeGeneration() {
                 generateBtn.disabled = true;
             }
 
-            // Generate code
-            generateCodeEnhanced(currentSection, tabName);
+            // Special handling for picker-styling section
+            if (currentSection === 'picker-styling') {
+                // Update the Styling section's code display instead of main code panel
+                if (window.PickerStyling && typeof window.PickerStyling.updateGeneratedCode === 'function') {
+                    window.PickerStyling.updateGeneratedCode();
+                }
+            } else {
+                // Generate code normally for other sections
+                generateCodeEnhanced(currentSection, tabName);
+            }
             markConfigUpToDate();
 
             // Restore button state
