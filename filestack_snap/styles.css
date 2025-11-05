@@ -2026,8 +2026,11 @@ input[type="range"]::-moz-range-thumb:hover {
     border: 2px solid #e9ecef;
     position: relative;
     min-width: 250px;
+    max-width: 350px;
     margin-right: 3rem;
     vertical-align: top;
+    white-space: normal;
+    overflow: hidden;
 }
 
 .chain-step:last-child {
@@ -2103,6 +2106,12 @@ input[type="range"]::-moz-range-thumb:hover {
     border-left: 3px solid var(--primary-orange);
     margin-top: 0.5rem;
     font-family: 'Courier New', monospace;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    box-sizing: border-box;
+    line-height: 1.5;
 }
 
 .chain-params:disabled {
