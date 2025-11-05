@@ -5092,6 +5092,9 @@ dnd.filstackSdk.picker(options).open();</pre>
 
             // Element definitions (complete from styling_playground.html)
             elements: {
+                'Container': [
+                    { id: 'modal', label: 'Picker Modal/Container', selector: '.fsp-picker', desc: 'Entire picker container/modal' },
+                ],
                 'Header': [
                     { id: 'header', label: 'Top Header Bar', selector: '.fsp-header', desc: 'Bar at the very top' },
                 ],
@@ -5163,6 +5166,7 @@ dnd.filstackSdk.picker(options).open();</pre>
             // Preset themes
             presets: {
                 dark: {
+                    'modal': { 'background-color': '#1e293b', 'color': '#e2e8f0' },
                     'header': { 'background-color': '#0f172a', 'color': '#e2e8f0', 'border-bottom': '1px solid #334155' },
                     'source-list': { 'background-color': '#0f172a', 'border-right': '1px solid #334155' },
                     'source-item': { 'color': '#94a3b8' },
@@ -5180,6 +5184,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'summary-remove': { 'color': '#ef4444' },
                 },
                 minimal: {
+                    'modal': { 'background-color': '#ffffff', 'border-radius': '0px' },
                     'header': { 'background-color': '#ffffff', 'border-bottom': '1px solid #e5e7eb' },
                     'source-list': { 'background-color': '#fafafa' },
                     'source-item-active': { 'background-color': '#000000', 'color': '#ffffff' },
@@ -5187,6 +5192,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#000000', 'color': '#ffffff' },
                 },
                 vibrant: {
+                    'modal': { 'background-color': '#fef3c7', 'color': '#78350f' },
                     'header': { 'background-color': '#f59e0b', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#fef3c7' },
                     'source-item-active': { 'background-color': '#f59e0b', 'color': '#ffffff' },
@@ -5194,6 +5200,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#f59e0b', 'color': '#ffffff' },
                 },
                 ocean: {
+                    'modal': { 'background-color': '#e0f2fe', 'color': '#164e63' },
                     'header': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#bae6fd' },
                     'source-item-active': { 'background-color': '#0284c7', 'color': '#ffffff' },
@@ -5201,6 +5208,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
                 },
                 forest: {
+                    'modal': { 'background-color': '#dcfce7', 'color': '#14532d' },
                     'header': { 'background-color': '#22c55e', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#bbf7d0' },
                     'source-item-active': { 'background-color': '#16a34a', 'color': '#ffffff' },
@@ -5208,6 +5216,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#22c55e', 'color': '#ffffff' },
                 },
                 sunset: {
+                    'modal': { 'background': 'linear-gradient(135deg, #fecaca 0%, #fde68a 50%, #fbcfe8 100%)', 'color': '#7c2d12' },
                     'header': { 'background-color': '#f97316', 'color': '#ffffff' },
                     'source-list': { 'background': 'rgba(254, 202, 202, 0.7)' },
                     'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
@@ -5215,6 +5224,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background': 'linear-gradient(90deg, #f97316, #ef4444)', 'color': '#ffffff' },
                 },
                 neon: {
+                    'modal': { 'background-color': '#18181b', 'color': '#fafafa' },
                     'header': { 'background-color': '#09090b', 'color': '#a78bfa', 'border-bottom': '2px solid #a78bfa' },
                     'source-list': { 'background-color': '#27272a', 'border-right': '2px solid #6366f1' },
                     'source-item-active': { 'background-color': '#6366f1', 'color': '#ffffff', 'box-shadow': '0 0 20px rgba(99, 102, 241, 0.5)' },
@@ -5222,6 +5232,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#a78bfa', 'color': '#18181b', 'box-shadow': '0 0 15px rgba(167, 139, 250, 0.5)' },
                 },
                 pastel: {
+                    'modal': { 'background-color': '#fef3f2', 'color': '#7c2d12' },
                     'header': { 'background-color': '#fce7f3', 'color': '#831843', 'border-bottom': '1px solid #fbcfe8' },
                     'source-list': { 'background-color': '#f5f3ff', 'border-right': '1px solid #e9d5ff' },
                     'source-item-active': { 'background-color': '#f0abfc', 'color': '#701a75' },
@@ -5229,6 +5240,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#f0abfc', 'color': '#701a75' },
                 },
                 corporate: {
+                    'modal': { 'background-color': '#f8fafc', 'color': '#1e293b' },
                     'header': { 'background-color': '#1e40af', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#eff6ff' },
                     'source-item-active': { 'background-color': '#2563eb', 'color': '#ffffff' },
@@ -5236,6 +5248,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#1e40af', 'color': '#ffffff' },
                 },
                 cyberpunk: {
+                    'modal': { 'background-color': '#0a0a0a', 'color': '#00ff9f' },
                     'header': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'border-bottom': '2px solid #00ff9f' },
                     'source-list': { 'background-color': '#1a1a1a', 'border-right': '2px solid #ff00ff' },
                     'source-item-active': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000' },
@@ -5243,6 +5256,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'box-shadow': '0 0 15px rgba(255, 0, 255, 0.5)' },
                 },
                 nature: {
+                    'modal': { 'background-color': '#f0fdf4', 'color': '#14532d' },
                     'header': { 'background': 'linear-gradient(135deg, #84cc16, #059669)', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#ecfccb' },
                     'source-item-active': { 'background-color': '#65a30d', 'color': '#ffffff' },
@@ -5250,6 +5264,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background': 'linear-gradient(90deg, #84cc16, #22c55e)', 'color': '#ffffff' },
                 },
                 midnight: {
+                    'modal': { 'background-color': '#0c1445', 'color': '#c7d2fe' },
                     'header': { 'background-color': '#1e1b4b', 'color': '#c7d2fe', 'border-bottom': '1px solid #312e81' },
                     'source-list': { 'background-color': '#1e1b4b', 'border-right': '1px solid #312e81' },
                     'source-item-active': { 'background-color': '#4338ca', 'color': '#e0e7ff' },
@@ -5257,6 +5272,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#4f46e5', 'color': '#ffffff' },
                 },
                 candy: {
+                    'modal': { 'background': 'linear-gradient(135deg, #fdf2f8 0%, #fae8ff 100%)', 'color': '#831843' },
                     'header': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#fdf4ff' },
                     'source-item-active': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
@@ -5264,6 +5280,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6, #a855f7)', 'color': '#ffffff' },
                 },
                 autumn: {
+                    'modal': { 'background': 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)', 'color': '#7c2d12' },
                     'header': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c)', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#fed7aa', 'border-right': '1px solid #fdba74' },
                     'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
@@ -5271,6 +5288,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c, #f97316)', 'color': '#ffffff' },
                 },
                 arctic: {
+                    'modal': { 'background': 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', 'color': '#0c4a6e' },
                     'header': { 'background-color': '#7dd3fc', 'color': '#0c4a6e' },
                     'source-list': { 'background-color': '#e0f2fe', 'border-right': '1px solid #bae6fd' },
                     'source-item-active': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
@@ -5278,6 +5296,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
                 },
                 retro: {
+                    'modal': { 'background-color': '#fffbeb', 'color': '#78350f' },
                     'header': { 'background-color': '#fbbf24', 'color': '#78350f', 'border-bottom': '3px solid #78350f' },
                     'source-list': { 'background-color': '#fef3c7', 'border-right': '3px solid #78350f' },
                     'source-item-active': { 'background-color': '#78350f', 'color': '#fbbf24' },
@@ -5603,12 +5622,31 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             generateJavaScript() {
-                // Get JavaScript code from File Picker's generated code
-                const filePickerCodeElement = document.getElementById('generatedCode');
-                if (filePickerCodeElement) {
-                    return filePickerCodeElement.textContent.trim();
+                // Get picker options from File Picker section
+                try {
+                    let pickerOptions = {};
+                    if (typeof collectPickerOptions === 'function') {
+                        pickerOptions = collectPickerOptions();
+                    }
+
+                    // Format options as JavaScript code
+                    const optionsStr = JSON.stringify(pickerOptions, null, 2);
+
+                    const jsCode = `// Initialize Filestack client
+const client = filestack.init('YOUR_API_KEY');
+
+// Picker options from File Picker configuration
+const pickerOptions = ${optionsStr};
+
+// Open the picker
+const picker = client.picker(pickerOptions);
+picker.open();`;
+
+                    return jsCode;
+                } catch (e) {
+                    console.error('Error generating JavaScript:', e);
+                    return '// Error: Could not generate JavaScript from picker options';
                 }
-                return '// No picker configuration available';
             },
 
             updateGeneratedCode() {
@@ -5624,11 +5662,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     combinedCode += '/* CSS Styling */\n<style>\n' + css + '\n<\/style>\n\n';
                 }
 
-                if (js && js !== '// No picker configuration available') {
-                    combinedCode += '/* JavaScript Configuration */\n<script>\n' + js + '\n<\/script>';
-                } else {
-                    combinedCode += '/* JavaScript Configuration */\n// Configure your picker in the "Uploads/File Picker" tab first';
-                }
+                combinedCode += '/* JavaScript Configuration */\n<script>\n' + js + '\n<\/script>';
 
                 codeElement.textContent = combinedCode;
             },
