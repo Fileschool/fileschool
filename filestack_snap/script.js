@@ -2781,7 +2781,13 @@ function generateCodeEnhanced(section, tab = 'javascript') {
                 options = {};
         }
 
-        // Try enhanced generation first
+        // For picker section, use dedicated function that handles callbacks
+        if (section === 'picker') {
+            generatePickerCode(tab);
+            return;
+        }
+
+        // Try enhanced generation first for other sections
         const enhancedCode = enhancedCodeGenerator.generateCode(section, tab, options);
 
         // Always use enhanced version if available, otherwise use fallback message
