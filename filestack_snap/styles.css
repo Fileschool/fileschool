@@ -242,6 +242,8 @@ body {
     background: var(--dark-purple);
     position: sticky;
     top: 80px;
+    left: 280px; /* Start after the left sidebar */
+    width: calc(100% - 280px); /* Take remaining width */
     z-index: 900;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
@@ -3006,6 +3008,11 @@ textarea:focus {
 
     .main-content {
         margin-left: 0 !important; /* Remove margin on mobile */
+    }
+
+    .top-nav-tabs {
+        left: 0 !important; /* Full width on mobile */
+        width: 100% !important;
     }
 
     .back-to-top {
