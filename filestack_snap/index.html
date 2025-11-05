@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+    <script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
@@ -5203,12 +5203,18 @@ dnd.filstackSdk.picker(options).open();</pre>
                 // Copy button
                 document.getElementById('styling-copy-code')?.addEventListener('click', () => this.copyGeneratedCode());
 
-                // Listen for section changes to init picker
-                document.addEventListener('sectionChanged', (e) => {
-                    if (e.detail === 'picker-styling' && !this.pickerInstance) {
-                        this.initPicker();
+                // Watch for when the styling section becomes visible
+                const observer = new MutationObserver(() => {
+                    const stylingSection = document.getElementById('picker-styling');
+                    if (stylingSection && stylingSection.classList.contains('active') && !this.pickerInstance) {
+                        setTimeout(() => this.initPicker(), 100);
                     }
                 });
+
+                const stylingSection = document.getElementById('picker-styling');
+                if (stylingSection) {
+                    observer.observe(stylingSection, { attributes: true, attributeFilter: ['class'] });
+                }
             },
 
             switchStylingTab(tabName) {
@@ -5412,38 +5418,14 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             generateJavaScript() {
-                // Get picker options from the main picker configuration
-                let pickerOptions = {};
-                try {
-                    if (typeof collectPickerOptions === 'function') {
-                        pickerOptions = collectPickerOptions();
-                    }
-                } catch (e) {
-                    console.error('Could not collect picker options:', e);
+                // Get the existing generated code from the File Picker section
+                const generatedCodeElement = document.getElementById('generatedCode');
+                if (generatedCodeElement && generatedCodeElement.textContent.trim()) {
+                    return generatedCodeElement.textContent.trim();
                 }
 
-                const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
-
-                let js = '// Initialize Filestack client\n';
-                js += `const client = filestack.init('${apiKey}');\n\n`;
-                js += '// Configure and open picker\n';
-                js += 'const picker = client.picker({\n';
-
-                if (Object.keys(pickerOptions).length > 0) {
-                    Object.entries(pickerOptions).forEach(([key, value], index, arr) => {
-                        const isLast = index === arr.length - 1;
-                        js += `  ${key}: ${JSON.stringify(value, null, 2).split('\n').join('\n  ')}${isLast ? '' : ','}\n`;
-                    });
-                } else {
-                    js += '  // Configure your picker options in the "File Picker" tab\n';
-                    js += '  displayMode: \'overlay\',\n';
-                    js += '  maxFiles: 20\n';
-                }
-
-                js += '});\n\n';
-                js += 'picker.open();';
-
-                return js;
+                // Fallback if no code is generated yet
+                return '// Please configure your picker in the "Uploads > File Picker" tab first,\n// then click "Generate Code" to see the JavaScript here.';
             },
 
             updateGeneratedCode(tab = 'combined') {
@@ -5453,7 +5435,7 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                 let code = '';
                 if (tab === 'combined') {
-                    code = `<!-- Add this CSS to your stylesheet -->\n<style>\n${css}</style>\n\n<!-- Add this JavaScript to your page -->\n<script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><\/script>\n<script>\n${js}\n<\/script>`;
+                    code = `<!-- Add this CSS to your stylesheet -->\n<style>\n${css}</style>\n\n<!-- Add this JavaScript to your page -->\n<script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"><\/script>\n<script>\n${js}\n<\/script>`;
                 } else if (tab === 'css') {
                     code = css;
                 } else if (tab === 'javascript') {
@@ -5476,7 +5458,7 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             initPicker() {
-                const apiKey = document.getElementById('globalApikey')?.value || 'AzYGVlXhTVGcG1GYJXsWuz';
+                const apiKey = document.getElementById('globalApikey')?.value;
 
                 if (!apiKey || apiKey === 'YOUR_API_KEY') {
                     document.getElementById('styling-picker-container').innerHTML = `
@@ -5490,6 +5472,11 @@ dnd.filstackSdk.picker(options).open();</pre>
                 }
 
                 try {
+                    // Check if filestack is loaded
+                    if (typeof filestack === 'undefined') {
+                        throw new Error('Filestack library not loaded');
+                    }
+
                     const client = filestack.init(apiKey);
 
                     // Get picker options from the main configuration
@@ -5500,15 +5487,23 @@ dnd.filstackSdk.picker(options).open();</pre>
                         uploadInBackground: false,
                     };
 
+                    // Try to get user-configured options from File Picker section
                     try {
                         if (typeof collectPickerOptions === 'function') {
                             const userOptions = collectPickerOptions();
-                            pickerOptions = { ...pickerOptions, ...userOptions, container: '#styling-picker-container', displayMode: 'inline' };
+                            // Merge user options but keep container and displayMode for inline preview
+                            pickerOptions = {
+                                ...userOptions,
+                                ...pickerOptions,
+                                container: '#styling-picker-container',
+                                displayMode: 'inline'
+                            };
                         }
                     } catch (e) {
-                        console.log('Using default picker options');
+                        console.log('Using default picker options:', e);
                     }
 
+                    console.log('Initializing picker with options:', pickerOptions);
                     this.pickerInstance = client.picker(pickerOptions);
                     this.pickerInstance.open();
 
