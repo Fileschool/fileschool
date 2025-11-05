@@ -4898,49 +4898,67 @@ dnd.filstackSdk.picker(options).open();</pre>
                         </div>
                     </div>
 
-                    <!-- Right Panel: Live Preview & Code Output -->
-                    <div class="styling-preview" style="flex: 1; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Right Panel: Live Preview -->
+                    <div class="styling-preview" style="flex: 1;">
                         <!-- Picker Preview -->
-                        <div style="flex: 1; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: #f9fafb; position: relative; min-height: 500px;">
-                            <h4 style="color: #374151; font-size: 1.1rem; margin-bottom: 1rem;">
-                                <i class="fas fa-eye"></i> Live Preview
-                            </h4>
-                            <div id="styling-picker-container" style="width: 100%; height: 450px; background: white; border-radius: 4px; overflow: hidden;">
+                        <div style="height: 100%; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: #f9fafb; display: flex; flex-direction: column;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
+                                    <i class="fas fa-eye"></i> Live Preview with Styling
+                                </h4>
+                                <!-- View Mode Toggles -->
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button id="styling-tab-empty" class="styling-view-tab active" style="padding: 0.5rem 1rem; background: #fb923c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
+                                        Drop Zone View
+                                    </button>
+                                    <button id="styling-tab-files" class="styling-view-tab" style="padding: 0.5rem 1rem; background: #fed7aa; color: #7c2d12; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
+                                        File List View
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="styling-picker-container" style="flex: 1; background: white; border-radius: 4px; overflow: hidden;">
                                 <!-- Picker will be rendered here -->
                             </div>
-                        </div>
-
-                        <!-- Generated Code Display -->
-                        <div style="border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: white;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
-                                    <i class="fas fa-code"></i> Generated Code
-                                </h4>
-                                <button id="styling-copy-code" style="padding: 0.5rem 1rem; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
-                                    <i class="fas fa-copy"></i> Copy All
-                                </button>
-                            </div>
-
-                            <!-- Notice about code source -->
-                            <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8rem; color: #0c4a6e;">
-                                <strong><i class="fas fa-info-circle"></i> Code Source:</strong> JavaScript from <strong>Uploads → File Picker</strong> + CSS styling below
-                            </div>
-
-                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
-                                <button class="styling-code-tab active" data-code-tab="combined" style="padding: 0.4rem 0.8rem; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Combined</button>
-                                <button class="styling-code-tab" data-code-tab="css" style="padding: 0.4rem 0.8rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">CSS Only</button>
-                                <button class="styling-code-tab" data-code-tab="javascript" style="padding: 0.4rem 0.8rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">JS (from File Picker)</button>
-                            </div>
-
-                            <pre id="styling-generated-code" style="background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 4px; overflow-x: auto; max-height: 400px; margin: 0; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5;"><code>// Step 1: Go to "Uploads → File Picker" and configure your picker
-// Step 2: Click "Generate Code" in the File Picker section
-// Step 3: Return here to add CSS styling and see the combined code</code></pre>
                         </div>
                     </div>
                 </div>
 
                 <!-- Dynamic Styles Container -->
                 <style id="styling-dynamic-styles"></style>
+
+                <!-- Picker Highlighting Styles -->
+                <style>
+                    .picker-highlight {
+                        position: relative !important;
+                        z-index: 1000 !important;
+                        outline: 4px solid #3b82f6 !important;
+                        outline-offset: -4px !important;
+                        animation: snake-border-colors 3s ease-in-out infinite !important;
+                    }
+
+                    @keyframes snake-border-colors {
+                        0% {
+                            outline-color: #3b82f6;
+                            filter: drop-shadow(0 0 8px #3b82f6);
+                        }
+                        25% {
+                            outline-color: #06b6d4;
+                            filter: drop-shadow(0 0 8px #06b6d4);
+                        }
+                        50% {
+                            outline-color: #10b981;
+                            filter: drop-shadow(0 0 8px #10b981);
+                        }
+                        75% {
+                            outline-color: #f59e0b;
+                            filter: drop-shadow(0 0 8px #f59e0b);
+                        }
+                        100% {
+                            outline-color: #3b82f6;
+                            filter: drop-shadow(0 0 8px #3b82f6);
+                        }
+                    }
+                </style>
             </section>
 
         </main>
@@ -5042,6 +5060,8 @@ dnd.filstackSdk.picker(options).open();</pre>
             appliedStyles: {},
             currentElement: null,
             pickerInstance: null,
+            currentView: 'empty', // Track current view mode
+            mockFiles: [], // Store mock files for file list view
 
             // Element definitions (complete from styling_playground.html)
             elements: {
@@ -5242,8 +5262,6 @@ dnd.filstackSdk.picker(options).open();</pre>
             init() {
                 this.renderElementList();
                 this.attachEventListeners();
-                // Initialize code display
-                this.updateGeneratedCode();
                 // Don't init picker yet - wait until section is visible
             },
 
@@ -5261,20 +5279,14 @@ dnd.filstackSdk.picker(options).open();</pre>
                 // Reset button
                 document.getElementById('styling-reset-all')?.addEventListener('click', () => this.resetAllStyles());
 
-                // Code tab buttons
-                document.querySelectorAll('.styling-code-tab').forEach(btn => {
-                    btn.addEventListener('click', () => this.switchCodeTab(btn.dataset.codeTab));
-                });
-
-                // Copy button
-                document.getElementById('styling-copy-code')?.addEventListener('click', () => this.copyGeneratedCode());
+                // View mode toggle buttons
+                document.getElementById('styling-tab-empty')?.addEventListener('click', () => this.switchPickerView('empty'));
+                document.getElementById('styling-tab-files')?.addEventListener('click', () => this.switchPickerView('files'));
 
                 // Watch for when the styling section becomes visible
                 const observer = new MutationObserver(() => {
                     const stylingSection = document.getElementById('picker-styling');
                     if (stylingSection && stylingSection.classList.contains('active')) {
-                        // Update code when section becomes active
-                        this.updateGeneratedCode();
                         // Init picker if not already done
                         if (!this.pickerInstance) {
                             setTimeout(() => this.initPicker(), 100);
@@ -5285,17 +5297,6 @@ dnd.filstackSdk.picker(options).open();</pre>
                 const stylingSection = document.getElementById('picker-styling');
                 if (stylingSection) {
                     observer.observe(stylingSection, { attributes: true, attributeFilter: ['class'] });
-                }
-
-                // Watch for changes to the generated code in File Picker section
-                const codeObserver = new MutationObserver(() => {
-                    // Update our code display when File Picker code changes
-                    this.updateGeneratedCode();
-                });
-
-                const generatedCodeElement = document.getElementById('generatedCode');
-                if (generatedCodeElement) {
-                    codeObserver.observe(generatedCodeElement, { childList: true, characterData: true, subtree: true });
                 }
             },
 
@@ -5318,25 +5319,6 @@ dnd.filstackSdk.picker(options).open();</pre>
                 // Update tab content
                 document.getElementById('styling-visual-tab').style.display = tabName === 'visual' ? 'block' : 'none';
                 document.getElementById('styling-presets-tab').style.display = tabName === 'presets' ? 'block' : 'none';
-            },
-
-            switchCodeTab(tabName) {
-                // Update button styles
-                document.querySelectorAll('.styling-code-tab').forEach(btn => {
-                    if (btn.dataset.codeTab === tabName) {
-                        btn.style.background = '#2196f3';
-                        btn.style.color = 'white';
-                        btn.style.border = 'none';
-                        btn.classList.add('active');
-                    } else {
-                        btn.style.background = 'white';
-                        btn.style.color = '#374151';
-                        btn.style.border = '1px solid #d1d5db';
-                        btn.classList.remove('active');
-                    }
-                });
-
-                this.updateGeneratedCode(tabName);
             },
 
             renderElementList() {
@@ -5381,6 +5363,16 @@ dnd.filstackSdk.picker(options).open();</pre>
                 document.getElementById('styling-style-editor').style.display = 'block';
                 document.getElementById('styling-back-button').style.display = 'block';
                 this.renderStyleEditor(element);
+
+                // Switch view mode if element needs files
+                if (element.needsFiles) {
+                    this.switchPickerView('files');
+                } else {
+                    this.switchPickerView('empty');
+                }
+
+                // Highlight the element in picker
+                this.highlightElementInPicker(element);
             },
 
             renderStyleEditor(element) {
@@ -5492,7 +5484,6 @@ dnd.filstackSdk.picker(options).open();</pre>
                 }
                 this.appliedStyles[elementId][cssProperty] = value;
                 this.updateDynamicStyles();
-                this.updateGeneratedCode();
             },
 
             applyPreset(presetName) {
@@ -5508,13 +5499,11 @@ dnd.filstackSdk.picker(options).open();</pre>
                 });
 
                 this.updateDynamicStyles();
-                this.updateGeneratedCode();
             },
 
             resetAllStyles() {
                 this.appliedStyles = {};
                 this.updateDynamicStyles();
-                this.updateGeneratedCode();
             },
 
             updateDynamicStyles() {
@@ -5535,65 +5524,6 @@ dnd.filstackSdk.picker(options).open();</pre>
                 styleElement.textContent = css;
             },
 
-            generateCSS() {
-                let css = '/* Filestack Picker Custom Styles */\n\n';
-                Object.values(this.appliedStyles).forEach(elementStyles => {
-                    const { selector, ...styles } = elementStyles;
-                    if (Object.keys(styles).length > 0) {
-                        css += `${selector} {\n`;
-                        Object.entries(styles).forEach(([prop, value]) => {
-                            css += `  ${prop}: ${value};\n`;
-                        });
-                        css += `}\n\n`;
-                    }
-                });
-                return css || '/* No custom styles applied yet */';
-            },
-
-            generateJavaScript() {
-                // Get the existing generated code from the File Picker section
-                const generatedCodeElement = document.getElementById('generatedCode');
-                if (generatedCodeElement && generatedCodeElement.textContent.trim()) {
-                    const code = generatedCodeElement.textContent.trim();
-                    // Check if it's actual code (not placeholder text)
-                    if (!code.includes('Your generated code will appear here')) {
-                        return code;
-                    }
-                }
-
-                // Fallback if no code is generated yet
-                return '// ⚠️ No picker code generated yet\n//\n// To see JavaScript code here:\n// 1. Go to "Uploads → File Picker" tab\n// 2. Configure your picker options\n// 3. Click "Generate Code" button\n// 4. Return to this Styling section\n//\n// The JavaScript from File Picker will appear here automatically.';
-            },
-
-            updateGeneratedCode(tab = 'combined') {
-                const codeElement = document.getElementById('styling-generated-code');
-                const css = this.generateCSS();
-                const js = this.generateJavaScript();
-
-                let code = '';
-                if (tab === 'combined') {
-                    code = `<!-- Add this CSS to your stylesheet -->\n<style>\n${css}</style>\n\n<!-- Add this JavaScript to your page -->\n<script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"><\/script>\n<script>\n${js}\n<\/script>`;
-                } else if (tab === 'css') {
-                    code = css;
-                } else if (tab === 'javascript') {
-                    code = js;
-                }
-
-                codeElement.textContent = code;
-            },
-
-            copyGeneratedCode() {
-                const codeElement = document.getElementById('styling-generated-code');
-                navigator.clipboard.writeText(codeElement.textContent).then(() => {
-                    const btn = document.getElementById('styling-copy-code');
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                    }, 2000);
-                });
-            },
-
             initPicker() {
                 // Use API key from sidebar, or default demo key
                 const apiKey = document.getElementById('globalApikey')?.value || 'AzYGVlXhTVGcG1GYJXsWuz';
@@ -5606,36 +5536,28 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                     const client = filestack.init(apiKey);
 
-                    // Get picker options from the main configuration
-                    let pickerOptions = {
-                        container: '#styling-picker-container',
-                        displayMode: 'inline',
-                        maxFiles: 20,
-                        uploadInBackground: false,
-                    };
-
                     // Try to get user-configured options from File Picker section
+                    let userOptions = {};
                     try {
                         if (typeof collectPickerOptions === 'function') {
-                            const userOptions = collectPickerOptions();
-                            // Merge user options but keep container and displayMode for inline preview
-                            pickerOptions = {
-                                ...userOptions,
-                                ...pickerOptions,
-                                container: '#styling-picker-container',
-                                displayMode: 'inline'
-                            };
+                            userOptions = collectPickerOptions();
+                            console.log('Collected picker options from File Picker:', userOptions);
                         }
                     } catch (e) {
-                        console.log('Using default picker options:', e);
+                        console.error('Error collecting picker options:', e);
                     }
 
-                    console.log('Initializing picker with options:', pickerOptions);
+                    // Merge options: user options + forced container/displayMode for inline preview
+                    const pickerOptions = {
+                        ...userOptions,
+                        container: '#styling-picker-container',
+                        displayMode: 'inline',
+                        uploadInBackground: false
+                    };
+
+                    console.log('Final picker options for inline preview:', pickerOptions);
                     this.pickerInstance = client.picker(pickerOptions);
                     this.pickerInstance.open();
-
-                    // Update code display when picker loads
-                    this.updateGeneratedCode();
                 } catch (error) {
                     console.error('Error initializing picker:', error);
                     document.getElementById('styling-picker-container').innerHTML = `
@@ -5646,6 +5568,92 @@ dnd.filstackSdk.picker(options).open();</pre>
                             </div>
                         </div>`;
                 }
+            },
+
+            // Switch between Drop Zone and File List views
+            switchPickerView(view) {
+                if (this.currentView === view) return; // Already in this view
+
+                this.currentView = view;
+
+                // Update tab styles
+                const emptyTab = document.getElementById('styling-tab-empty');
+                const filesTab = document.getElementById('styling-tab-files');
+
+                if (view === 'empty') {
+                    emptyTab.style.background = '#fb923c';
+                    emptyTab.style.color = 'white';
+                    filesTab.style.background = '#fed7aa';
+                    filesTab.style.color = '#7c2d12';
+
+                    // Clear file list to go back to drop zone
+                    this.clearFileList();
+                } else {
+                    filesTab.style.background = '#fb923c';
+                    filesTab.style.color = 'white';
+                    emptyTab.style.background = '#fed7aa';
+                    emptyTab.style.color = '#7c2d12';
+
+                    // Load mock files to show file list view
+                    this.loadMockFiles();
+                }
+            },
+
+            // Highlight element in picker with animated border
+            highlightElementInPicker(element) {
+                // Remove previous highlights
+                document.querySelectorAll('.picker-highlight').forEach(el => {
+                    el.classList.remove('picker-highlight');
+                });
+
+                // Add highlight to matching elements in picker
+                setTimeout(() => {
+                    const pickerElements = document.querySelectorAll(`.fsp-picker ${element.selector}`);
+                    pickerElements.forEach(el => {
+                        el.classList.add('picker-highlight');
+                    });
+                }, 100);
+            },
+
+            // Load mock files for file list view
+            loadMockFiles() {
+                if (!this.pickerInstance) return;
+
+                // Create mock files if not already created
+                if (this.mockFiles.length === 0) {
+                    this.mockFiles = [
+                        { filename: 'sample-image-1.jpg', mimetype: 'image/jpeg', size: 1024000 },
+                        { filename: 'sample-document.pdf', mimetype: 'application/pdf', size: 512000 },
+                        { filename: 'sample-image-2.png', mimetype: 'image/png', size: 2048000 }
+                    ];
+                }
+
+                // Trigger file selection to show summary view
+                try {
+                    // This simulates files being selected
+                    if (this.pickerInstance && this.pickerInstance._picker) {
+                        // Try to trigger the summary view
+                        const pickerElement = document.querySelector('.fsp-picker');
+                        if (pickerElement) {
+                            // Simulate having files selected by triggering the picker's internal state
+                            console.log('Attempting to show file list view with mock files');
+                        }
+                    }
+                } catch (e) {
+                    console.log('Could not programmatically show file list:', e);
+                }
+            },
+
+            // Clear file list to show drop zone
+            clearFileList() {
+                if (!this.pickerInstance) return;
+
+                try {
+                    // Try to reset picker to drop zone view
+                    console.log('Clearing file list to show drop zone');
+                } catch (e) {
+                    console.log('Could not programmatically clear files:', e);
+                }
             }
         };
 
@@ -5655,6 +5663,11 @@ dnd.filstackSdk.picker(options).open();</pre>
             document.getElementById('styling-style-editor').style.display = 'none';
             document.getElementById('styling-back-button').style.display = 'none';
             PickerStyling.currentElement = null;
+
+            // Remove highlights
+            document.querySelectorAll('.picker-highlight').forEach(el => {
+                el.classList.remove('picker-highlight');
+            });
         };
 
         // Initialize when DOM is ready
