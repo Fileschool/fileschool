@@ -5945,7 +5945,9 @@ function loadTemplate(templateName) {
 
     // Auto-generate code with the new configuration
     setTimeout(() => {
-        manualGenerateCode();
+        if (typeof window.manualGenerateCode === 'function') {
+            window.manualGenerateCode();
+        }
     }, 300);
 }
 
@@ -6070,7 +6072,9 @@ function loadTransformPipeline(pipelineName) {
 
     // Auto-generate code with the new configuration
     setTimeout(() => {
-        manualGenerateCode();
+        if (typeof window.manualGenerateCode === 'function') {
+            window.manualGenerateCode();
+        }
     }, 300);
 }
 
@@ -6193,7 +6197,9 @@ function loadChainPipeline(pipelineName) {
 
     // Auto-generate code with the new configuration
     setTimeout(() => {
-        manualGenerateCode();
+        if (typeof window.manualGenerateCode === 'function') {
+            window.manualGenerateCode();
+        }
     }, 300);
 }
 
@@ -9651,28 +9657,59 @@ function initializeUXImprovements() {
 }
 
 function createCredentialsSidebar() {
+    // Get existing inputs from HTML
+    const apikeyInput = document.getElementById('globalApikey');
+    const policyInput = document.getElementById('securityPolicy');
+    const signatureInput = document.getElementById('securitySignature');
+
+    if (!apikeyInput || !policyInput || !signatureInput) {
+        console.error('Credentials inputs not found in DOM');
+        return;
+    }
+
+    // Create sidebar container
     const sidebar = document.createElement('div');
     sidebar.className = 'credentials-sidebar';
-    sidebar.innerHTML = `
-        <div class="credentials-header">
-            <i class="fas fa-key"></i>
-            <h4>API Credentials</h4>
-        </div>
-        <div class="credentials-content">
-            <div class="form-group">
-                <label for="globalApikey"><i class="fas fa-lock"></i> API Key</label>
-                <input type="text" id="globalApikey" placeholder="Enter API key" title="Your Filestack API key">
-            </div>
-            <div class="form-group">
-                <label for="securityPolicy"><i class="fas fa-shield-alt"></i> Policy</label>
-                <input type="text" id="securityPolicy" placeholder="Security policy" title="Base64 encoded security policy">
-            </div>
-            <div class="form-group">
-                <label for="securitySignature"><i class="fas fa-signature"></i> Signature</label>
-                <input type="text" id="securitySignature" placeholder="Signature" title="HMAC-SHA256 signature">
-            </div>
-        </div>
+
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'credentials-header';
+    header.innerHTML = `
+        <i class="fas fa-key"></i>
+        <h4>API Credentials</h4>
     `;
+    sidebar.appendChild(header);
+
+    // Create content container
+    const content = document.createElement('div');
+    content.className = 'credentials-content';
+
+    // Create form groups and move existing inputs into them
+    const apikeyGroup = document.createElement('div');
+    apikeyGroup.className = 'form-group';
+    apikeyGroup.innerHTML = '<label for="globalApikey"><i class="fas fa-lock"></i> API Key</label>';
+    apikeyInput.placeholder = 'Enter API key';
+    apikeyInput.title = 'Your Filestack API key';
+    apikeyGroup.appendChild(apikeyInput);
+    content.appendChild(apikeyGroup);
+
+    const policyGroup = document.createElement('div');
+    policyGroup.className = 'form-group';
+    policyGroup.innerHTML = '<label for="securityPolicy"><i class="fas fa-shield-alt"></i> Policy</label>';
+    policyInput.placeholder = 'Security policy';
+    policyInput.title = 'Base64 encoded security policy';
+    policyGroup.appendChild(policyInput);
+    content.appendChild(policyGroup);
+
+    const signatureGroup = document.createElement('div');
+    signatureGroup.className = 'form-group';
+    signatureGroup.innerHTML = '<label for="securitySignature"><i class="fas fa-signature"></i> Signature</label>';
+    signatureInput.placeholder = 'Signature';
+    signatureInput.title = 'HMAC-SHA256 signature';
+    signatureGroup.appendChild(signatureInput);
+    content.appendChild(signatureGroup);
+
+    sidebar.appendChild(content);
     document.body.appendChild(sidebar);
 }
 
