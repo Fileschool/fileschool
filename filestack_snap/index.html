@@ -4977,7 +4977,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     }
 
                     /* Hide right-side code panel when in styling section */
-                    #picker-styling.active ~ .code-panel {
+                    body:has(#picker-styling.active) .code-panel {
                         display: none !important;
                     }
                 </style>
