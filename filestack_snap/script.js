@@ -4433,6 +4433,104 @@ function collectPickerOptions() {
         }
     }
 
+    // Advanced Picker Options (New)
+
+    // UI Customization
+    if (document.getElementById('disableTransformer')?.checked) {
+        options.disableTransformer = true;
+    }
+    if (document.getElementById('transformationsUI')?.checked) {
+        options.transformationsUI = true;
+    }
+    if (document.getElementById('globalDropZone')?.checked) {
+        options.globalDropZone = true;
+    }
+    if (document.getElementById('disableThumbnails')?.checked) {
+        options.disableThumbnails = true;
+    }
+    if (document.getElementById('disableAltText')?.checked) {
+        options.disableAltText = true;
+    }
+    if (document.getElementById('disableDirectoryUpload')?.checked) {
+        options.disableDirectoryUpload = true;
+    }
+    if (document.getElementById('miniUploader')?.checked) {
+        options.miniUploader = true;
+    }
+
+    // Upload Behavior
+    if (document.getElementById('allowManualRetry')?.checked) {
+        options.allowManualRetry = true;
+    }
+    if (document.getElementById('startUploadingWhenMaxFilesReached')?.checked) {
+        options.startUploadingWhenMaxFilesReached = true;
+    }
+    if (document.getElementById('disableStorageKey')?.checked) {
+        options.disableStorageKey = true;
+    }
+    if (document.getElementById('useSentryBreadcrumbs')?.checked) {
+        options.useSentryBreadcrumbs = true;
+    }
+
+    // Dimensions
+    const imageDim = document.getElementById('imageDim')?.value;
+    if (imageDim) {
+        const dims = imageDim.split(',').map(d => parseInt(d.trim()));
+        if (dims.length === 2 && !isNaN(dims[0]) && !isNaN(dims[1])) {
+            options.imageDim = dims;
+        }
+    }
+
+    // View and Display
+    const viewType = document.getElementById('viewType')?.value;
+    if (viewType && viewType !== '') {
+        options.viewType = viewType;
+    }
+
+    const videoResolution = document.getElementById('videoResolution')?.value;
+    if (videoResolution) {
+        options.videoResolution = videoResolution;
+    }
+
+    const pickerContainer = document.getElementById('pickerContainer')?.value;
+    if (pickerContainer) {
+        options.container = pickerContainer;
+    }
+
+    const modalSize = document.getElementById('modalSize')?.value;
+    if (modalSize) {
+        const dims = modalSize.split(',').map(d => parseInt(d.trim()));
+        if (dims.length === 2 && !isNaN(dims[0]) && !isNaN(dims[1])) {
+            options.modalSize = dims;
+        }
+    }
+
+    // Custom Source
+    const customSourceName = document.getElementById('customSourceName')?.value;
+    const customSourcePath = document.getElementById('customSourcePath')?.value;
+    const customSourceContainer = document.getElementById('customSourceContainer')?.value;
+    if (customSourceName) options.customSourceName = customSourceName;
+    if (customSourcePath) options.customSourcePath = customSourcePath;
+    if (customSourceContainer) options.customSourceContainer = customSourceContainer;
+
+    // Miscellaneous
+    const rootId = document.getElementById('rootId')?.value;
+    if (rootId) options.rootId = rootId;
+
+    const supportEmail = document.getElementById('supportEmail')?.value;
+    if (supportEmail) options.supportEmail = supportEmail;
+
+    const googleDriveAppId = document.getElementById('googleDriveAppId')?.value;
+    if (googleDriveAppId) options.googleDriveAppID = googleDriveAppId;
+
+    const errorsTimeout = validateIntegerInput('errorsTimeout');
+    if (errorsTimeout !== null) {
+        options.errorsTimeout = errorsTimeout;
+    }
+
+    // Note: Callbacks are handled in code generation, not in options object
+    // They will be added as function stubs in generated code
+
     console.log('Final collected picker options:', options);
     return options;
 }
