@@ -4575,24 +4575,39 @@ dnd.filstackSdk.picker(options).open();</pre>
                         <label>Transform Chain Builder</label>
                         <div id="chainBuilder" class="chain-builder">
                             <div class="chain-step">
-                                <select class="chain-operation track-changes">
-                                    <option value="">Select Operation</option>
-                                    <option value="resize">Resize</option>
-                                    <option value="crop">Crop</option>
-                                    <option value="rotate">Rotate</option>
-                                    <option value="blur">Blur</option>
-                                    <option value="sharpen">Sharpen</option>
-                                    <option value="quality">Quality</option>
-                                    <option value="convert">Convert Format</option>
-                                    <option value="watermark">Watermark</option>
-                                </select>
+                                <div class="chain-step-header">
+                                    <select class="chain-operation track-changes" title="Select a transformation to apply">
+                                        <option value="">Select Operation</option>
+                                        <option value="resize">Resize</option>
+                                        <option value="crop">Crop</option>
+                                        <option value="rotate">Rotate</option>
+                                        <option value="blur">Blur</option>
+                                        <option value="sharpen">Sharpen</option>
+                                        <option value="sepia">Sepia</option>
+                                        <option value="blackwhite">Black & White</option>
+                                        <option value="flip">Flip</option>
+                                        <option value="flop">Flop</option>
+                                        <option value="negative">Negative</option>
+                                        <option value="circle">Circle</option>
+                                        <option value="rounded_corners">Rounded Corners</option>
+                                        <option value="vignette">Vignette</option>
+                                        <option value="shadow">Shadow</option>
+                                        <option value="border">Border</option>
+                                        <option value="watermark">Watermark</option>
+                                        <option value="upscale">Upscale</option>
+                                        <option value="quality">Quality</option>
+                                        <option value="convert">Convert Format</option>
+                                    </select>
+                                    <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
+                                </div>
                                 <input type="text" class="chain-params track-changes"
-                                    placeholder="Parameters (e.g., width:300,height:200)">
-                                <button type="button" class="btn-remove-step">×</button>
+                                    placeholder="Parameters (e.g., width:300,height:200)" title="Enter transformation parameters">
+                                <div class="chain-param-hint" style="display:none;"></div>
                             </div>
                         </div>
-                        <button type="button" id="addChainStep" class="btn btn-secondary btn-small">Add
-                            Step</button>
+                        <button type="button" id="addChainStep" class="btn btn-secondary btn-small">
+                            <i class="fas fa-plus"></i> Add Step
+                        </button>
                     </div>
 
                     <div class="form-group">
