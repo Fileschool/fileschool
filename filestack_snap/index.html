@@ -4980,6 +4980,11 @@ dnd.filstackSdk.picker(options).open();</pre>
                     body:has(#picker-styling.active) .code-panel {
                         display: none !important;
                     }
+
+                    /* Expand main content to full width when code panel is hidden */
+                    body:has(#picker-styling.active) .main-container {
+                        grid-template-columns: 1fr !important;
+                    }
                 </style>
             </section>
 
@@ -5616,11 +5621,11 @@ dnd.filstackSdk.picker(options).open();</pre>
                 let combinedCode = '';
 
                 if (css) {
-                    combinedCode += '/* CSS Styling */\n<style>\n' + css + '\n</style>\n\n';
+                    combinedCode += '/* CSS Styling */\n<style>\n' + css + '\n<\/style>\n\n';
                 }
 
                 if (js && js !== '// No picker configuration available') {
-                    combinedCode += '/* JavaScript Configuration */\n<script>\n' + js + '\n</script>';
+                    combinedCode += '/* JavaScript Configuration */\n<script>\n' + js + '\n<\/script>';
                 } else {
                     combinedCode += '/* JavaScript Configuration */\n// Configure your picker in the "Uploads/File Picker" tab first';
                 }
