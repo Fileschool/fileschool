@@ -3282,6 +3282,234 @@ function setupManualCodeGeneration() {
             }
         }
 
+        // Check if watermark is enabled without file
+        if (document.getElementById('enableWatermark')?.checked) {
+            const file = document.getElementById('watermarkFile');
+
+            if (!file.value) {
+                const watermarkOption = file.closest('.transform-option');
+                if (watermarkOption) watermarkOption.classList.add('has-validation-error');
+
+                file.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = file;
+
+                errors.push({ field: 'Watermark', message: 'File handle is required' });
+            }
+        }
+
+        // Check if collage is enabled without files
+        if (document.getElementById('enableCollage')?.checked) {
+            const files = document.getElementById('collageFiles');
+
+            if (!files.value) {
+                const collageOption = files.closest('.transform-option');
+                if (collageOption) collageOption.classList.add('has-validation-error');
+
+                files.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = files;
+
+                errors.push({ field: 'Collage', message: 'Files array is required (e.g., ["handle1", "handle2"])' });
+            }
+        }
+
+        // Check if urlscreenshot is enabled without URL
+        if (document.getElementById('enableUrlScreenshot')?.checked) {
+            const url = document.getElementById('urlScreenshotUrl');
+
+            if (!url.value) {
+                const urlScreenshotOption = url.closest('.transform-option');
+                if (urlScreenshotOption) urlScreenshotOption.classList.add('has-validation-error');
+
+                url.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = url;
+
+                errors.push({ field: 'URL Screenshot', message: 'URL is required' });
+            }
+        }
+
+        // Check if resize is enabled but has no dimensions
+        if (document.getElementById('enableResize')?.checked) {
+            const width = document.getElementById('resizeWidth');
+            const height = document.getElementById('resizeHeight');
+
+            if (!width.value && !height.value) {
+                const resizeOption = width.closest('.transform-option');
+                if (resizeOption) resizeOption.classList.add('has-validation-error');
+
+                width.classList.add('validation-error');
+                height.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = width;
+
+                errors.push({ field: 'Resize', message: 'At least Width or Height is required' });
+            }
+        }
+
+        // Check if rotate is enabled without degrees
+        if (document.getElementById('enableRotate')?.checked) {
+            const degrees = document.getElementById('rotateDegrees');
+
+            if (!degrees.value) {
+                const rotateOption = degrees.closest('.transform-option');
+                if (rotateOption) rotateOption.classList.add('has-validation-error');
+
+                degrees.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = degrees;
+
+                errors.push({ field: 'Rotate', message: 'Degrees value is required' });
+            }
+        }
+
+        // Check if blur is enabled without amount
+        if (document.getElementById('enableBlur')?.checked) {
+            const amount = document.getElementById('blurAmount');
+
+            if (!amount.value) {
+                const blurOption = amount.closest('.transform-option');
+                if (blurOption) blurOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Blur', message: 'Amount value is required' });
+            }
+        }
+
+        // Check if sharpen is enabled without amount
+        if (document.getElementById('enableSharpen')?.checked) {
+            const amount = document.getElementById('sharpenAmount');
+
+            if (!amount.value) {
+                const sharpenOption = amount.closest('.transform-option');
+                if (sharpenOption) sharpenOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Sharpen', message: 'Amount value is required' });
+            }
+        }
+
+        // Check if sepia is enabled without tone
+        if (document.getElementById('enableSepia')?.checked) {
+            const tone = document.getElementById('sepiaTone');
+
+            if (!tone.value) {
+                const sepiaOption = tone.closest('.transform-option');
+                if (sepiaOption) sepiaOption.classList.add('has-validation-error');
+
+                tone.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = tone;
+
+                errors.push({ field: 'Sepia', message: 'Tone value is required' });
+            }
+        }
+
+        // Check if rounded corners is enabled without radius
+        if (document.getElementById('enableRoundedCorners')?.checked) {
+            const radius = document.getElementById('roundedCornersRadius');
+
+            if (!radius.value) {
+                const roundedOption = radius.closest('.transform-option');
+                if (roundedOption) roundedOption.classList.add('has-validation-error');
+
+                radius.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = radius;
+
+                errors.push({ field: 'Rounded Corners', message: 'Radius value is required' });
+            }
+        }
+
+        // Check if vignette is enabled without amount
+        if (document.getElementById('enableVignette')?.checked) {
+            const amount = document.getElementById('vignetteAmount');
+
+            if (!amount.value) {
+                const vignetteOption = amount.closest('.transform-option');
+                if (vignetteOption) vignetteOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Vignette', message: 'Amount value is required' });
+            }
+        }
+
+        // Check if partial blur is enabled without objects
+        if (document.getElementById('enablePartialBlur')?.checked) {
+            const objects = document.getElementById('partialBlurObjects');
+
+            if (!objects.value) {
+                const partialBlurOption = objects.closest('.transform-option');
+                if (partialBlurOption) partialBlurOption.classList.add('has-validation-error');
+
+                objects.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = objects;
+
+                errors.push({ field: 'Partial Blur', message: 'Objects JSON is required (e.g., [{"x":10,"y":10,"width":50,"height":50}])' });
+            }
+        }
+
+        // Check if partial pixelate is enabled without objects
+        if (document.getElementById('enablePartialPixelate')?.checked) {
+            const objects = document.getElementById('partialPixelateObjects');
+
+            if (!objects.value) {
+                const partialPixelateOption = objects.closest('.transform-option');
+                if (partialPixelateOption) partialPixelateOption.classList.add('has-validation-error');
+
+                objects.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = objects;
+
+                errors.push({ field: 'Partial Pixelate', message: 'Objects JSON is required (e.g., [{"x":10,"y":10,"width":50,"height":50}])' });
+            }
+        }
+
+        // Check advanced transformations
+        // Pixelate
+        if (document.getElementById('enablePixelate')?.checked) {
+            const amount = document.getElementById('pixelateAmount');
+
+            if (!amount.value) {
+                const pixelateOption = amount.closest('.transform-option');
+                if (pixelateOption) pixelateOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Pixelate', message: 'Amount value is required' });
+            }
+        }
+
+        // Oil Paint
+        if (document.getElementById('enableOilPaint')?.checked) {
+            const amount = document.getElementById('oilPaintAmount');
+
+            if (!amount.value) {
+                const oilPaintOption = amount.closest('.transform-option');
+                if (oilPaintOption) oilPaintOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Oil Paint', message: 'Amount value is required' });
+            }
+        }
+
+        // Monochrome
+        if (document.getElementById('enableMonochrome')?.checked) {
+            const color = document.getElementById('monochromeColor');
+
+            if (!color.value) {
+                const monochromeOption = color.closest('.transform-option');
+                if (monochromeOption) monochromeOption.classList.add('has-validation-error');
+
+                color.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = color;
+
+                errors.push({ field: 'Monochrome', message: 'Color value is required' });
+            }
+        }
+
         return { valid: errors.length === 0, errors, firstErrorElement };
     }
 
@@ -9417,6 +9645,35 @@ function initializeUXImprovements() {
 
     // Fix notification stacking
     improveNotifications();
+
+    // Create credentials sidebar
+    createCredentialsSidebar();
+}
+
+function createCredentialsSidebar() {
+    const sidebar = document.createElement('div');
+    sidebar.className = 'credentials-sidebar';
+    sidebar.innerHTML = `
+        <div class="credentials-header">
+            <i class="fas fa-key"></i>
+            <h4>API Credentials</h4>
+        </div>
+        <div class="credentials-content">
+            <div class="form-group">
+                <label for="globalApikey"><i class="fas fa-lock"></i> API Key</label>
+                <input type="text" id="globalApikey" placeholder="Enter API key" title="Your Filestack API key">
+            </div>
+            <div class="form-group">
+                <label for="securityPolicy"><i class="fas fa-shield-alt"></i> Policy</label>
+                <input type="text" id="securityPolicy" placeholder="Security policy" title="Base64 encoded security policy">
+            </div>
+            <div class="form-group">
+                <label for="securitySignature"><i class="fas fa-signature"></i> Signature</label>
+                <input type="text" id="securitySignature" placeholder="Signature" title="HMAC-SHA256 signature">
+            </div>
+        </div>
+    `;
+    document.body.appendChild(sidebar);
 }
 
 function initializeSectionNavigator() {
@@ -9426,18 +9683,31 @@ function initializeSectionNavigator() {
         if (!activeSection) return;
 
         const configCards = activeSection.querySelectorAll('.config-card');
-        
+
+        // Get or create navigator (only one in body)
+        let navigator = document.querySelector('.section-navigator');
+
         // If page has 5+ config cards, show section navigator
         if (configCards.length >= 5) {
-            let navigator = activeSection.querySelector('.section-navigator');
-            
             if (!navigator) {
                 navigator = createSectionNavigator(configCards);
-                activeSection.insertBefore(navigator, activeSection.firstChild);
+                document.body.appendChild(navigator);
+            } else {
+                // Update existing navigator for new section
+                updateSectionNavigator(navigator, configCards);
             }
-            
-            // Show navigator
-            setTimeout(() => navigator.classList.add('visible'), 100);
+
+            // Show navigator and add body class
+            setTimeout(() => {
+                navigator.classList.add('visible');
+                document.body.classList.add('sidebar-visible');
+            }, 100);
+        } else {
+            // Hide navigator for short sections
+            if (navigator) {
+                navigator.classList.remove('visible');
+                document.body.classList.remove('sidebar-visible');
+            }
         }
     });
 
@@ -9453,10 +9723,49 @@ function initializeSectionNavigator() {
         const configCards = activeSection.querySelectorAll('.config-card');
         if (configCards.length >= 5) {
             const navigator = createSectionNavigator(configCards);
-            activeSection.insertBefore(navigator, activeSection.firstChild);
-            setTimeout(() => navigator.classList.add('visible'), 100);
+            document.body.appendChild(navigator);
+            setTimeout(() => {
+                navigator.classList.add('visible');
+                document.body.classList.add('sidebar-visible');
+            }, 100);
         }
     }
+}
+
+function updateSectionNavigator(navigator, configCards) {
+    // Clear existing nav items
+    const navList = navigator.querySelector('.section-nav-list');
+    if (!navList) return;
+
+    navList.innerHTML = '';
+
+    // Rebuild nav items for new section
+    configCards.forEach((card, index) => {
+        const cardTitle = card.querySelector('h3');
+        if (!cardTitle) return;
+
+        // Add ID to card for scrolling
+        if (!card.id) {
+            card.id = `section-card-${index}`;
+        }
+
+        const navItem = document.createElement('li');
+        navItem.className = 'section-nav-item';
+        navItem.textContent = cardTitle.textContent.replace(/[^\w\s]/gi, '').trim();
+        navItem.setAttribute('data-target', card.id);
+
+        navItem.addEventListener('click', () => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Update active state
+            navList.querySelectorAll('.section-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            navItem.classList.add('active');
+        });
+
+        navList.appendChild(navItem);
+    });
 }
 
 function createSectionNavigator(configCards) {
