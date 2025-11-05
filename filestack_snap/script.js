@@ -9645,6 +9645,35 @@ function initializeUXImprovements() {
 
     // Fix notification stacking
     improveNotifications();
+
+    // Create credentials sidebar
+    createCredentialsSidebar();
+}
+
+function createCredentialsSidebar() {
+    const sidebar = document.createElement('div');
+    sidebar.className = 'credentials-sidebar';
+    sidebar.innerHTML = `
+        <div class="credentials-header">
+            <i class="fas fa-key"></i>
+            <h4>API Credentials</h4>
+        </div>
+        <div class="credentials-content">
+            <div class="form-group">
+                <label for="globalApikey"><i class="fas fa-lock"></i> API Key</label>
+                <input type="text" id="globalApikey" placeholder="Enter API key" title="Your Filestack API key">
+            </div>
+            <div class="form-group">
+                <label for="securityPolicy"><i class="fas fa-shield-alt"></i> Policy</label>
+                <input type="text" id="securityPolicy" placeholder="Security policy" title="Base64 encoded security policy">
+            </div>
+            <div class="form-group">
+                <label for="securitySignature"><i class="fas fa-signature"></i> Signature</label>
+                <input type="text" id="securitySignature" placeholder="Signature" title="HMAC-SHA256 signature">
+            </div>
+        </div>
+    `;
+    document.body.appendChild(sidebar);
 }
 
 function initializeSectionNavigator() {

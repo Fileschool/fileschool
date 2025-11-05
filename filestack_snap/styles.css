@@ -132,39 +132,96 @@ body {
     font-size: 1rem;
 }
 
-/* API Key Bar */
-.api-key-bar {
-    background: white;
-    border-bottom: 1px solid var(--border-color);
-    padding: 1rem 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+/* Credentials Sidebar (Left, Above Jump to Section) */
+.credentials-sidebar {
+    position: fixed;
+    left: 20px;
+    top: 90px;
+    width: 220px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 101;
+    overflow: hidden;
 }
 
-.api-key-container {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 0 60px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1.5rem;
+.credentials-header {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
 }
 
-.api-key-container .form-group {
+.credentials-header i {
+    font-size: 1rem;
+}
+
+.credentials-header h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+}
+
+.credentials-content {
+    padding: 1rem;
+}
+
+.credentials-sidebar .form-group {
+    margin-bottom: 0.75rem;
+}
+
+.credentials-sidebar .form-group:last-child {
     margin-bottom: 0;
 }
 
-.api-key-container .form-group label {
-    color: #666;
-    font-size: 0.75rem;
+.credentials-sidebar label {
+    color: white;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
     margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 
-.api-key-container input {
-    font-size: 0.85rem;
-    padding: 0.6rem 0.8rem;
+.credentials-sidebar label i {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.credentials-sidebar input {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.9);
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.credentials-sidebar input:focus {
+    border-color: var(--primary-orange);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(239, 74, 38, 0.1);
+    outline: none;
+}
+
+.credentials-sidebar input::placeholder {
+    color: #999;
+    font-size: 0.7rem;
+}
+
+/* Adjust Section Navigator position to be below Credentials */
+.section-navigator {
+    top: 380px;
+    max-height: calc(100vh - 400px);
 }
 
 /* Top Navigation Tabs */
@@ -2903,6 +2960,10 @@ textarea:focus {
 
 /* Mobile responsiveness for new elements */
 @media (max-width: 768px) {
+    .credentials-sidebar {
+        display: none !important; /* Hide credentials on mobile */
+    }
+
     .section-navigator {
         display: none !important; /* Hide sidebar on mobile */
     }
