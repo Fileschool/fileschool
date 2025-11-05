@@ -5364,6 +5364,12 @@ dnd.filstackSdk.picker(options).open();</pre>
 
             renderElementList() {
                 const container = document.getElementById('styling-element-list');
+                if (!container) {
+                    console.error('styling-element-list container not found');
+                    return;
+                }
+
+                console.log('Rendering element list with', Object.keys(this.elements).length, 'categories');
                 container.innerHTML = '';
 
                 Object.entries(this.elements).forEach(([category, items]) => {
@@ -5549,6 +5555,8 @@ dnd.filstackSdk.picker(options).open();</pre>
 
             updateDynamicStyles() {
                 const styleElement = document.getElementById('styling-dynamic-styles');
+                if (!styleElement) return;
+
                 let css = '';
 
                 Object.values(this.appliedStyles).forEach(elementStyles => {
@@ -5563,7 +5571,15 @@ dnd.filstackSdk.picker(options).open();</pre>
                 });
 
                 styleElement.textContent = css;
-                this.updateGeneratedCode();
+
+                // Update generated code if the section is active
+                try {
+                    if (document.getElementById('picker-styling')?.classList.contains('active')) {
+                        this.updateGeneratedCode();
+                    }
+                } catch (e) {
+                    console.log('Could not update generated code:', e);
+                }
             },
 
             generateCSS() {
