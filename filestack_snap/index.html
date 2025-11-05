@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+    <script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
@@ -4746,19 +4746,30 @@ dnd.filstackSdk.picker(options).open();</pre>
             <section id="picker-styling" class="content-section">
                 <div class="section-header">
                     <h2><i class="fas fa-palette"></i> Picker Styling & Preview</h2>
-                    <p>Style your file picker with custom CSS and preview it with your configured options. This combines your picker configuration from the "File Picker" tab with custom styling.</p>
+                    <p>Add custom CSS styling to your file picker. This section uses the JavaScript code generated in <strong>Uploads → File Picker</strong> and adds visual styling on top of it.</p>
+                </div>
+
+                <!-- Important Notice -->
+                <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;"><i class="fas fa-exclamation-triangle"></i> Important: Configure File Picker First</h4>
+                    <p style="margin: 0; color: #856404; font-size: 0.95rem;">
+                        <strong>Step 1:</strong> Go to <strong>Uploads → File Picker</strong> and configure your picker options (sources, file types, etc.)<br>
+                        <strong>Step 2:</strong> Click <strong>"Generate Code"</strong> in the File Picker section<br>
+                        <strong>Step 3:</strong> Return here to add styling and see the combined result
+                    </p>
                 </div>
 
                 <div class="config-card">
                     <h3><i class="fas fa-info-circle"></i> About Picker Styling</h3>
-                    <p class="card-description">This section lets you customize the visual appearance of your file picker while maintaining all the configuration options you set in the "File Picker" tab. The generated code will include both the JavaScript configuration AND the custom CSS styling.</p>
+                    <p class="card-description">This section adds visual styling (CSS) to the JavaScript code you generated in the <strong>Uploads → File Picker</strong> section. The picker preview and generated code both use your existing File Picker configuration.</p>
 
                     <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
                         <h4><i class="fas fa-lightbulb"></i> How It Works</h4>
                         <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>Live Preview:</strong> See your picker with both styling AND configuration options</li>
-                            <li><strong>Combined Output:</strong> Get both CSS and JavaScript in one place</li>
-                            <li><strong>Full Customization:</strong> Control colors, borders, spacing, and more</li>
+                            <li><strong>Uses Your Config:</strong> JavaScript code from <strong>Uploads → File Picker</strong> (not regenerated)</li>
+                            <li><strong>Adds Styling:</strong> Custom CSS on top of your picker configuration</li>
+                            <li><strong>Live Preview:</strong> See your picker with both configuration AND styling</li>
+                            <li><strong>Combined Output:</strong> Get CSS + JavaScript from File Picker in one place</li>
                             <li><strong>Preset Themes:</strong> Quickly apply professional color schemes</li>
                         </ul>
                     </div>
@@ -4901,23 +4912,29 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                         <!-- Generated Code Display -->
                         <div style="border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: white;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                                 <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
-                                    <i class="fas fa-code"></i> Generated Code (CSS + JavaScript)
+                                    <i class="fas fa-code"></i> Generated Code
                                 </h4>
                                 <button id="styling-copy-code" style="padding: 0.5rem 1rem; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
                                     <i class="fas fa-copy"></i> Copy All
                                 </button>
                             </div>
 
+                            <!-- Notice about code source -->
+                            <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8rem; color: #0c4a6e;">
+                                <strong><i class="fas fa-info-circle"></i> Code Source:</strong> JavaScript from <strong>Uploads → File Picker</strong> + CSS styling below
+                            </div>
+
                             <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
                                 <button class="styling-code-tab active" data-code-tab="combined" style="padding: 0.4rem 0.8rem; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Combined</button>
                                 <button class="styling-code-tab" data-code-tab="css" style="padding: 0.4rem 0.8rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">CSS Only</button>
-                                <button class="styling-code-tab" data-code-tab="javascript" style="padding: 0.4rem 0.8rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">JavaScript Only</button>
+                                <button class="styling-code-tab" data-code-tab="javascript" style="padding: 0.4rem 0.8rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">JS (from File Picker)</button>
                             </div>
 
-                            <pre id="styling-generated-code" style="background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 4px; overflow-x: auto; max-height: 400px; margin: 0; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5;"><code>// Configure your picker options in the "File Picker" tab,
-// then style elements here to see the combined code.</code></pre>
+                            <pre id="styling-generated-code" style="background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 4px; overflow-x: auto; max-height: 400px; margin: 0; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5;"><code>// Step 1: Go to "Uploads → File Picker" and configure your picker
+// Step 2: Click "Generate Code" in the File Picker section
+// Step 3: Return here to add CSS styling and see the combined code</code></pre>
                         </div>
                     </div>
                 </div>
@@ -5203,12 +5220,18 @@ dnd.filstackSdk.picker(options).open();</pre>
                 // Copy button
                 document.getElementById('styling-copy-code')?.addEventListener('click', () => this.copyGeneratedCode());
 
-                // Listen for section changes to init picker
-                document.addEventListener('sectionChanged', (e) => {
-                    if (e.detail === 'picker-styling' && !this.pickerInstance) {
-                        this.initPicker();
+                // Watch for when the styling section becomes visible
+                const observer = new MutationObserver(() => {
+                    const stylingSection = document.getElementById('picker-styling');
+                    if (stylingSection && stylingSection.classList.contains('active') && !this.pickerInstance) {
+                        setTimeout(() => this.initPicker(), 100);
                     }
                 });
+
+                const stylingSection = document.getElementById('picker-styling');
+                if (stylingSection) {
+                    observer.observe(stylingSection, { attributes: true, attributeFilter: ['class'] });
+                }
             },
 
             switchStylingTab(tabName) {
@@ -5412,38 +5435,18 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             generateJavaScript() {
-                // Get picker options from the main picker configuration
-                let pickerOptions = {};
-                try {
-                    if (typeof collectPickerOptions === 'function') {
-                        pickerOptions = collectPickerOptions();
+                // Get the existing generated code from the File Picker section
+                const generatedCodeElement = document.getElementById('generatedCode');
+                if (generatedCodeElement && generatedCodeElement.textContent.trim()) {
+                    const code = generatedCodeElement.textContent.trim();
+                    // Check if it's actual code (not placeholder text)
+                    if (!code.includes('Your generated code will appear here')) {
+                        return code;
                     }
-                } catch (e) {
-                    console.error('Could not collect picker options:', e);
                 }
 
-                const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
-
-                let js = '// Initialize Filestack client\n';
-                js += `const client = filestack.init('${apiKey}');\n\n`;
-                js += '// Configure and open picker\n';
-                js += 'const picker = client.picker({\n';
-
-                if (Object.keys(pickerOptions).length > 0) {
-                    Object.entries(pickerOptions).forEach(([key, value], index, arr) => {
-                        const isLast = index === arr.length - 1;
-                        js += `  ${key}: ${JSON.stringify(value, null, 2).split('\n').join('\n  ')}${isLast ? '' : ','}\n`;
-                    });
-                } else {
-                    js += '  // Configure your picker options in the "File Picker" tab\n';
-                    js += '  displayMode: \'overlay\',\n';
-                    js += '  maxFiles: 20\n';
-                }
-
-                js += '});\n\n';
-                js += 'picker.open();';
-
-                return js;
+                // Fallback if no code is generated yet
+                return '// ⚠️ No picker code generated yet\n//\n// To see JavaScript code here:\n// 1. Go to "Uploads → File Picker" tab\n// 2. Configure your picker options\n// 3. Click "Generate Code" button\n// 4. Return to this Styling section\n//\n// The JavaScript from File Picker will appear here automatically.';
             },
 
             updateGeneratedCode(tab = 'combined') {
@@ -5453,7 +5456,7 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                 let code = '';
                 if (tab === 'combined') {
-                    code = `<!-- Add this CSS to your stylesheet -->\n<style>\n${css}</style>\n\n<!-- Add this JavaScript to your page -->\n<script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"><\/script>\n<script>\n${js}\n<\/script>`;
+                    code = `<!-- Add this CSS to your stylesheet -->\n<style>\n${css}</style>\n\n<!-- Add this JavaScript to your page -->\n<script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"><\/script>\n<script>\n${js}\n<\/script>`;
                 } else if (tab === 'css') {
                     code = css;
                 } else if (tab === 'javascript') {
@@ -5476,7 +5479,7 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             initPicker() {
-                const apiKey = document.getElementById('globalApikey')?.value || 'AzYGVlXhTVGcG1GYJXsWuz';
+                const apiKey = document.getElementById('globalApikey')?.value;
 
                 if (!apiKey || apiKey === 'YOUR_API_KEY') {
                     document.getElementById('styling-picker-container').innerHTML = `
@@ -5490,6 +5493,11 @@ dnd.filstackSdk.picker(options).open();</pre>
                 }
 
                 try {
+                    // Check if filestack is loaded
+                    if (typeof filestack === 'undefined') {
+                        throw new Error('Filestack library not loaded');
+                    }
+
                     const client = filestack.init(apiKey);
 
                     // Get picker options from the main configuration
@@ -5500,15 +5508,23 @@ dnd.filstackSdk.picker(options).open();</pre>
                         uploadInBackground: false,
                     };
 
+                    // Try to get user-configured options from File Picker section
                     try {
                         if (typeof collectPickerOptions === 'function') {
                             const userOptions = collectPickerOptions();
-                            pickerOptions = { ...pickerOptions, ...userOptions, container: '#styling-picker-container', displayMode: 'inline' };
+                            // Merge user options but keep container and displayMode for inline preview
+                            pickerOptions = {
+                                ...userOptions,
+                                ...pickerOptions,
+                                container: '#styling-picker-container',
+                                displayMode: 'inline'
+                            };
                         }
                     } catch (e) {
-                        console.log('Using default picker options');
+                        console.log('Using default picker options:', e);
                     }
 
+                    console.log('Initializing picker with options:', pickerOptions);
                     this.pickerInstance = client.picker(pickerOptions);
                     this.pickerInstance.open();
 
