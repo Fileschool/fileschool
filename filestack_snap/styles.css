@@ -137,7 +137,7 @@ body {
     position: fixed;
     left: 0;
     top: 80px;
-    width: 260px;
+    width: 280px;
     height: calc(100vh - 80px);
     background: #f8f9fa;
     border-right: 1px solid var(--border-color);
@@ -153,7 +153,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    max-width: 220px;
+    max-width: 240px;
     background: white;
     border-radius: 12px;
     padding: 0;
@@ -240,10 +240,11 @@ body {
 /* Top Navigation Tabs */
 .top-nav-tabs {
     background: var(--dark-purple);
-    position: sticky;
+    position: fixed;
     top: 80px;
-    left: 280px; /* Start after the left sidebar */
-    width: calc(100% - 280px); /* Take remaining width */
+    left: 280px;
+    right: 0;
+    width: calc(100% - 280px);
     z-index: 900;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
@@ -338,13 +339,15 @@ body {
 .main-container {
     display: grid;
     grid-template-columns: 1fr 600px;
-    max-width: 2000px;
-    margin: 0 auto;
+    max-width: calc(100% - 280px);
+    margin-left: 280px;
+    margin-top: 0;
     gap: 2rem;
     min-height: calc(100vh - 300px);
     background: var(--light-gray);
     position: relative;
     padding: 2rem;
+    padding-top: 180px;
 }
 
 /* Main Content */
@@ -353,13 +356,12 @@ body {
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     overflow-y: auto;
-    margin-left: 280px; /* Always account for left sidebar */
-    transition: margin-left 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .content-section {
     display: none;
-    padding: 2rem;
+    padding: 2.5rem;
 }
 
 .content-section.active {
@@ -367,7 +369,7 @@ body {
 }
 
 .section-header {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
     border-bottom: 2px solid var(--border-color);
 }
@@ -433,10 +435,11 @@ body {
 .config-card {
     background: #fff;
     border-radius: 12px;
-    padding: 20px;
+    padding: 1.75rem;
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     scroll-margin-top: 200px; /* Prevent overshooting when clicking Jump to Section */
+    margin-bottom: 1.5rem;
 }
 
 /* Compact cards take less vertical space */
@@ -712,11 +715,11 @@ input[type="range"]::-moz-range-thumb {
     flex-direction: column;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     position: sticky;
-    top: 220px;
-    height: calc(100vh - 260px);
+    top: 200px;
+    height: calc(100vh - 240px);
     overflow: visible;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 950;
+    z-index: 50;
 }
 
 .code-header {
@@ -3004,6 +3007,11 @@ textarea:focus {
 @media (max-width: 768px) {
     .left-sidebar-container {
         display: none !important; /* Hide entire left sidebar on mobile */
+    }
+
+    .main-container {
+        margin-left: 0 !important;
+        max-width: 100% !important;
     }
 
     .main-content {
