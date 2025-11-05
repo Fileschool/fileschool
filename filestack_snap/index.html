@@ -4902,12 +4902,9 @@ dnd.filstackSdk.picker(options).open();</pre>
                     <div class="styling-preview" style="flex: 1; display: flex; flex-direction: column; gap: 1.5rem;">
                         <!-- Picker Preview -->
                         <div style="flex: 1; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: #f9fafb; position: relative; min-height: 500px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
-                                    <i class="fas fa-eye"></i> Live Preview
-                                </h4>
-                                <span style="font-size: 0.75rem; color: #6b7280; font-style: italic;">API key required for preview only</span>
-                            </div>
+                            <h4 style="color: #374151; font-size: 1.1rem; margin-bottom: 1rem;">
+                                <i class="fas fa-eye"></i> Live Preview
+                            </h4>
                             <div id="styling-picker-container" style="width: 100%; height: 450px; background: white; border-radius: 4px; overflow: hidden;">
                                 <!-- Picker will be rendered here -->
                             </div>
@@ -5245,9 +5242,9 @@ dnd.filstackSdk.picker(options).open();</pre>
             init() {
                 this.renderElementList();
                 this.attachEventListeners();
-                // Initialize code display (works without API key)
+                // Initialize code display
                 this.updateGeneratedCode();
-                // Don't init picker yet - wait until section is visible (requires API key)
+                // Don't init picker yet - wait until section is visible
             },
 
             attachEventListeners() {
@@ -5275,14 +5272,30 @@ dnd.filstackSdk.picker(options).open();</pre>
                 // Watch for when the styling section becomes visible
                 const observer = new MutationObserver(() => {
                     const stylingSection = document.getElementById('picker-styling');
-                    if (stylingSection && stylingSection.classList.contains('active') && !this.pickerInstance) {
-                        setTimeout(() => this.initPicker(), 100);
+                    if (stylingSection && stylingSection.classList.contains('active')) {
+                        // Update code when section becomes active
+                        this.updateGeneratedCode();
+                        // Init picker if not already done
+                        if (!this.pickerInstance) {
+                            setTimeout(() => this.initPicker(), 100);
+                        }
                     }
                 });
 
                 const stylingSection = document.getElementById('picker-styling');
                 if (stylingSection) {
                     observer.observe(stylingSection, { attributes: true, attributeFilter: ['class'] });
+                }
+
+                // Watch for changes to the generated code in File Picker section
+                const codeObserver = new MutationObserver(() => {
+                    // Update our code display when File Picker code changes
+                    this.updateGeneratedCode();
+                });
+
+                const generatedCodeElement = document.getElementById('generatedCode');
+                if (generatedCodeElement) {
+                    codeObserver.observe(generatedCodeElement, { childList: true, characterData: true, subtree: true });
                 }
             },
 
@@ -5582,18 +5595,8 @@ dnd.filstackSdk.picker(options).open();</pre>
             },
 
             initPicker() {
-                const apiKey = document.getElementById('globalApikey')?.value;
-
-                if (!apiKey || apiKey === 'YOUR_API_KEY') {
-                    document.getElementById('styling-picker-container').innerHTML = `
-                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 2rem;">
-                            <div>
-                                <h3 style="color: #dc2626; margin-bottom: 0.5rem;">API Key Required</h3>
-                                <p style="color: #6b7280; font-size: 0.9rem;">Please enter your Filestack API key in the sidebar to preview the picker.</p>
-                            </div>
-                        </div>`;
-                    return;
-                }
+                // Use API key from sidebar, or default demo key
+                const apiKey = document.getElementById('globalApikey')?.value || 'AzYGVlXhTVGcG1GYJXsWuz';
 
                 try {
                     // Check if filestack is loaded
@@ -5631,7 +5634,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     this.pickerInstance = client.picker(pickerOptions);
                     this.pickerInstance.open();
 
-                    // Update code display
+                    // Update code display when picker loads
                     this.updateGeneratedCode();
                 } catch (error) {
                     console.error('Error initializing picker:', error);
