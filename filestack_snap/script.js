@@ -5302,6 +5302,36 @@ function generateJavaScriptPickerCode(options) {
     if (document.getElementById('enableOnUploadDone')?.checked) {
         lines.push(`  onUploadDone: (res) => {\n    console.log('PickerResponse', res);\n  },`);
     }
+    if (document.getElementById('enableOnFileUploadFinished')?.checked) {
+        lines.push(`  onFileUploadFinished: (file) => {\n    console.log('File upload finished', file);\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadFailed')?.checked) {
+        lines.push(`  onFileUploadFailed: (file, error) => {\n    console.error('File upload failed', file, error);\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadProgress')?.checked) {
+        lines.push(`  onFileUploadProgress: (file, event) => {\n    console.log('File upload progress', file.filename, event.totalPercent + '%');\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadStarted')?.checked) {
+        lines.push(`  onFileUploadStarted: (file) => {\n    console.log('File upload started', file);\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadCancel')?.checked) {
+        lines.push(`  onFileUploadCancel: (file) => {\n    console.log('File upload cancelled', file);\n  },`);
+    }
+    if (document.getElementById('enableOnOpen')?.checked) {
+        lines.push(`  onOpen: () => {\n    console.log('Picker opened');\n  },`);
+    }
+    if (document.getElementById('enableOnClose')?.checked) {
+        lines.push(`  onClose: () => {\n    console.log('Picker closed');\n  },`);
+    }
+    if (document.getElementById('enableOnCancel')?.checked) {
+        lines.push(`  onCancel: () => {\n    console.log('Picker cancelled');\n  },`);
+    }
+    if (document.getElementById('enableOnUploadStarted')?.checked) {
+        lines.push(`  onUploadStarted: (files) => {\n    console.log('Upload batch started', files.length + ' files');\n  },`);
+    }
+    if (document.getElementById('enableOnFileCropped')?.checked) {
+        lines.push(`  onFileCropped: (file) => {\n    console.log('File cropped', file);\n  },`);
+    }
 
     const optionsCode = `const options = {\n${lines.join('\n')}\n};\n\n`;
     code += optionsCode;
