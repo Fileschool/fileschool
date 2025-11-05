@@ -8510,59 +8510,145 @@ function addChainStepToBuilder(builderId) {
 
 function addChainStep() {
     const chainBuilder = document.getElementById('chainBuilder');
+    if (!chainBuilder) return;
+
     const stepDiv = document.createElement('div');
     stepDiv.className = 'chain-step';
     stepDiv.innerHTML = `
-        <select class="chain-operation track-changes">
-            <option value="">Select Operation</option>
-            <option value="resize">Resize</option>
-            <option value="crop">Crop</option>
-            <option value="rotate">Rotate</option>
-            <option value="blur">Blur</option>
-            <option value="sharpen">Sharpen</option>
-            <option value="quality">Quality</option>
-            <option value="convert">Convert Format</option>
-            <option value="watermark">Watermark</option>
-            <option value="sepia">Sepia</option>
-            <option value="blackwhite">Black & White</option>
-            <option value="flip">Flip</option>
-            <option value="flop">Flop</option>
-            <option value="negative">Negative</option>
-            <option value="circle">Circle</option>
-            <option value="rounded_corners">Rounded Corners</option>
-            <option value="vignette">Vignette</option>
-            <option value="shadow">Shadow</option>
-            <option value="border">Border</option>
-            <option value="upscale">Upscale</option>
-        </select>
-        <input type="text" class="chain-params track-changes" placeholder="Parameters (e.g., width:300,height:200)">
-        <button type="button" class="btn-remove-step">×</button>
+        <div class="chain-step-header">
+            <select class="chain-operation track-changes" title="Select a transformation to apply">
+                <option value="">Select Operation</option>
+                <option value="resize">Resize</option>
+                <option value="crop">Crop</option>
+                <option value="rotate">Rotate</option>
+                <option value="blur">Blur</option>
+                <option value="sharpen">Sharpen</option>
+                <option value="sepia">Sepia</option>
+                <option value="blackwhite">Black & White</option>
+                <option value="flip">Flip</option>
+                <option value="flop">Flop</option>
+                <option value="negative">Negative</option>
+                <option value="circle">Circle</option>
+                <option value="rounded_corners">Rounded Corners</option>
+                <option value="vignette">Vignette</option>
+                <option value="shadow">Shadow</option>
+                <option value="border">Border</option>
+                <option value="watermark">Watermark</option>
+                <option value="upscale">Upscale</option>
+                <option value="quality">Quality</option>
+                <option value="convert">Convert Format</option>
+            </select>
+            <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
+        </div>
+        <div class="chain-presets" style="display:none; margin: 0.5rem 0; gap: 0.3rem; flex-wrap: wrap;"></div>
+        <input type="text" class="chain-params track-changes" placeholder="Select operation first" title="Enter transformation parameters">
+        <div class="chain-param-hint" style="display:none;"></div>
     `;
 
-    // Add event listener for remove button
+    // Get elements
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+    const hintDiv = stepDiv.querySelector('.chain-param-hint');
+    const presetsContainer = stepDiv.querySelector('.chain-presets');
     const removeBtn = stepDiv.querySelector('.btn-remove-step');
+
+    // Update placeholder, hint, and presets when operation changes
+    operationSelect.addEventListener('change', () => {
+        const paramInfo = getParameterInfo(operationSelect.value);
+
+        if (operationSelect.value) {
+            paramsInput.placeholder = paramInfo.example;
+
+            if (paramInfo.example === '') {
+                paramsInput.disabled = true;
+                paramsInput.value = '';
+                hintDiv.style.display = 'none';
+                presetsContainer.style.display = 'none';
+            } else {
+                paramsInput.disabled = false;
+                hintDiv.innerHTML = `<strong>${paramInfo.description}</strong><br>${paramInfo.constraints}`;
+                hintDiv.style.display = 'block';
+
+                // Show presets if available
+                if (paramInfo.presets && paramInfo.presets.length > 0) {
+                    presetsContainer.innerHTML = '<div style="font-size: 0.85em; color: #666; margin-bottom: 0.3rem;"><i class="fas fa-magic"></i> Quick Presets:</div>';
+                    presetsContainer.style.display = 'flex';
+
+                    paramInfo.presets.forEach(preset => {
+                        const presetBtn = document.createElement('button');
+                        presetBtn.type = 'button';
+                        presetBtn.className = 'preset-btn';
+                        presetBtn.textContent = preset.label;
+                        presetBtn.title = preset.value;
+                        presetBtn.style.cssText = `
+                            padding: 6px 12px;
+                            font-size: 0.85em;
+                            background: #f0f0f0;
+                            border: 1px solid #d0d0d0;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-weight: 600;
+                        `;
+
+                        presetBtn.addEventListener('mouseover', () => {
+                            presetBtn.style.background = '#EF4A26';
+                            presetBtn.style.color = 'white';
+                            presetBtn.style.borderColor = '#EF4A26';
+                        });
+
+                        presetBtn.addEventListener('mouseout', () => {
+                            presetBtn.style.background = '#f0f0f0';
+                            presetBtn.style.color = 'inherit';
+                            presetBtn.style.borderColor = '#d0d0d0';
+                        });
+
+                        presetBtn.addEventListener('click', () => {
+                            paramsInput.value = preset.value;
+                            paramsInput.focus();
+                            if (typeof manualGenerateCode === 'function') {
+                                manualGenerateCode();
+                            }
+                        });
+
+                        presetsContainer.appendChild(presetBtn);
+                    });
+                } else {
+                    presetsContainer.style.display = 'none';
+                }
+            }
+        } else {
+            paramsInput.placeholder = 'Select operation first';
+            paramsInput.disabled = true;
+            paramsInput.value = '';
+            hintDiv.style.display = 'none';
+            presetsContainer.style.display = 'none';
+        }
+
+        if (typeof manualGenerateCode === 'function') {
+            manualGenerateCode();
+        }
+    });
+
+    // Trigger change to set initial state
+    const currentValue = operationSelect.value;
+    if (currentValue) {
+        operationSelect.dispatchEvent(new Event('change'));
+    }
+
+    // Add event listener for params input
+    paramsInput.addEventListener('input', debounce(() => {
+        if (typeof manualGenerateCode === 'function') {
+            manualGenerateCode();
+        }
+    }, 300));
+
+    // Add event listener for remove button
     removeBtn.addEventListener('click', () => {
         stepDiv.remove();
         if (typeof manualGenerateCode === 'function') {
             manualGenerateCode();
         }
     });
-
-    // Add event listeners for changes
-    const operationSelect = stepDiv.querySelector('.chain-operation');
-    const paramsInput = stepDiv.querySelector('.chain-params');
-
-    operationSelect.addEventListener('change', () => {
-        updateParameterPlaceholder(operationSelect, paramsInput);
-        if (typeof manualGenerateCode === 'function') {
-            manualGenerateCode();
-        }
-    });
-    paramsInput.addEventListener('input', debounce(() => {
-        if (typeof manualGenerateCode === 'function') {
-            manualGenerateCode();
-        }
-    }, 300));
 
     chainBuilder.appendChild(stepDiv);
     if (typeof manualGenerateCode === 'function') {
