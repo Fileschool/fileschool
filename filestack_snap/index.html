@@ -4833,9 +4833,49 @@ dnd.filstackSdk.picker(options).open();</pre>
                                     <div style="font-weight: 600; margin-bottom: 0.25rem;">Forest</div>
                                     <div style="font-size: 0.75rem; opacity: 0.8;">Fresh green nature theme</div>
                                 </button>
+                                <button class="styling-preset-btn" data-preset="sunset" style="padding: 1rem; background: linear-gradient(135deg, #fecaca 0%, #fde68a 50%); color: #7c2d12; border: 1px solid #f97316; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Sunset</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Warm sunset gradient</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="neon" style="padding: 1rem; background: #18181b; color: #a78bfa; border: 1px solid #6366f1; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Neon</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Glowing neon dark theme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="pastel" style="padding: 1rem; background: #fef3f2; color: #831843; border: 1px solid #fbcfe8; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Pastel</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Soft pastel colors</div>
+                                </button>
                                 <button class="styling-preset-btn" data-preset="corporate" style="padding: 1rem; background: #f8fafc; color: #1e293b; border: 1px solid #1e40af; border-radius: 6px; cursor: pointer; text-align: left;">
                                     <div style="font-weight: 600; margin-bottom: 0.25rem;">Corporate</div>
                                     <div style="font-size: 0.75rem; opacity: 0.8;">Professional business style</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="cyberpunk" style="padding: 1rem; background: #0a0a0a; color: #00ff9f; border: 1px solid #ff00ff; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Cyberpunk</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Futuristic neon cyberpunk</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="nature" style="padding: 1rem; background: #f0fdf4; color: #14532d; border: 1px solid #84cc16; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Nature</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Bright natural greens</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="midnight" style="padding: 1rem; background: #0c1445; color: #c7d2fe; border: 1px solid #4338ca; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Midnight</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Deep midnight blue</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="candy" style="padding: 1rem; background: linear-gradient(135deg, #fae8ff 0%, #fce7f3 50%); color: #831843; border: 1px solid #ec4899; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Candy</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Sweet candy pink gradients</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="autumn" style="padding: 1rem; background: #fef2f2; color: #7c2d12; border: 1px solid #ea580c; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Autumn</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Warm autumn colors</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="arctic" style="padding: 1rem; background: #f0f9ff; color: #0c4a6e; border: 1px solid #0ea5e9; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Arctic</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Cool arctic ice theme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="retro" style="padding: 1rem; background: #fffbeb; color: #78350f; border: 1px solid #fbbf24; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Retro</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Vintage retro style</div>
                                 </button>
                             </div>
 
@@ -5019,7 +5059,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                 ],
             },
 
-            // Preset themes (simplified)
+            // Preset themes
             presets: {
                 dark: {
                     'header': { 'background-color': '#0f172a', 'color': '#e2e8f0' },
@@ -5056,12 +5096,82 @@ dnd.filstackSdk.picker(options).open();</pre>
                     'drop-area': { 'background-color': '#bbf7d0', 'border': '2px dashed #22c55e' },
                     'button-primary': { 'background-color': '#22c55e', 'color': '#ffffff' },
                 },
+                sunset: {
+                    'header': { 'background-color': '#f97316', 'color': '#ffffff' },
+                    'source-list': { 'background': 'rgba(254, 202, 202, 0.7)' },
+                    'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
+                    'drop-area': { 'background': 'rgba(254, 202, 202, 0.8)', 'border': '2px dashed #f97316' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #f97316, #ef4444)', 'color': '#ffffff' },
+                },
+                neon: {
+                    'header': { 'background-color': '#09090b', 'color': '#a78bfa', 'border-bottom': '2px solid #a78bfa' },
+                    'source-list': { 'background-color': '#27272a', 'border-right': '2px solid #6366f1' },
+                    'source-item-active': { 'background-color': '#6366f1', 'color': '#ffffff', 'box-shadow': '0 0 20px rgba(99, 102, 241, 0.5)' },
+                    'drop-area': { 'background-color': '#27272a', 'border': '2px solid #a78bfa', 'box-shadow': '0 0 30px rgba(167, 139, 250, 0.3)' },
+                    'button-primary': { 'background-color': '#a78bfa', 'color': '#18181b', 'box-shadow': '0 0 15px rgba(167, 139, 250, 0.5)' },
+                },
+                pastel: {
+                    'header': { 'background-color': '#fce7f3', 'color': '#831843', 'border-bottom': '1px solid #fbcfe8' },
+                    'source-list': { 'background-color': '#f5f3ff', 'border-right': '1px solid #e9d5ff' },
+                    'source-item-active': { 'background-color': '#f0abfc', 'color': '#701a75' },
+                    'drop-area': { 'background-color': '#fce7f3', 'border': '2px dashed #f9a8d4' },
+                    'button-primary': { 'background-color': '#f0abfc', 'color': '#701a75' },
+                },
                 corporate: {
                     'header': { 'background-color': '#1e40af', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#eff6ff' },
                     'source-item-active': { 'background-color': '#2563eb', 'color': '#ffffff' },
                     'drop-area': { 'background-color': '#f1f5f9', 'border': '2px solid #cbd5e1' },
                     'button-primary': { 'background-color': '#1e40af', 'color': '#ffffff' },
+                },
+                cyberpunk: {
+                    'header': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'border-bottom': '2px solid #00ff9f' },
+                    'source-list': { 'background-color': '#1a1a1a', 'border-right': '2px solid #ff00ff' },
+                    'source-item-active': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000' },
+                    'drop-area': { 'background-color': '#1a1a1a', 'border': '3px solid #00ff9f', 'box-shadow': '0 0 25px rgba(0, 255, 159, 0.4)' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'box-shadow': '0 0 15px rgba(255, 0, 255, 0.5)' },
+                },
+                nature: {
+                    'header': { 'background': 'linear-gradient(135deg, #84cc16, #059669)', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#ecfccb' },
+                    'source-item-active': { 'background-color': '#65a30d', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#dcfce7', 'border': '2px dashed #16a34a' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #84cc16, #22c55e)', 'color': '#ffffff' },
+                },
+                midnight: {
+                    'header': { 'background-color': '#1e1b4b', 'color': '#c7d2fe', 'border-bottom': '1px solid #312e81' },
+                    'source-list': { 'background-color': '#1e1b4b', 'border-right': '1px solid #312e81' },
+                    'source-item-active': { 'background-color': '#4338ca', 'color': '#e0e7ff' },
+                    'drop-area': { 'background-color': '#1e1b4b', 'border': '2px dashed #6366f1' },
+                    'button-primary': { 'background-color': '#4f46e5', 'color': '#ffffff' },
+                },
+                candy: {
+                    'header': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#fdf4ff' },
+                    'source-item-active': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#fdf4ff', 'border': '3px dashed #ec4899' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6, #a855f7)', 'color': '#ffffff' },
+                },
+                autumn: {
+                    'header': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c)', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#fed7aa', 'border-right': '1px solid #fdba74' },
+                    'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#fed7aa', 'border': '2px dashed #dc2626' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c, #f97316)', 'color': '#ffffff' },
+                },
+                arctic: {
+                    'header': { 'background-color': '#7dd3fc', 'color': '#0c4a6e' },
+                    'source-list': { 'background-color': '#e0f2fe', 'border-right': '1px solid #bae6fd' },
+                    'source-item-active': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#e0f2fe', 'border': '2px dashed #38bdf8' },
+                    'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                },
+                retro: {
+                    'header': { 'background-color': '#fbbf24', 'color': '#78350f', 'border-bottom': '3px solid #78350f' },
+                    'source-list': { 'background-color': '#fef3c7', 'border-right': '3px solid #78350f' },
+                    'source-item-active': { 'background-color': '#78350f', 'color': '#fbbf24' },
+                    'drop-area': { 'background-color': '#fef3c7', 'border': '3px solid #78350f' },
+                    'button-primary': { 'background-color': '#78350f', 'color': '#fbbf24', 'border': '3px solid #78350f' },
                 },
             },
 
