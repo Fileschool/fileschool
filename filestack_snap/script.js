@@ -9137,3 +9137,332 @@ class TransformPlayground {
 document.addEventListener('DOMContentLoaded', () => {
     window.transformPlayground = new TransformPlayground();
 });
+
+/* ==========================================
+   UX IMPROVEMENTS FOR LONG PAGES
+   ========================================== */
+
+// Initialize UX improvements when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initializeUXImprovements();
+});
+
+function initializeUXImprovements() {
+    // Add scroll progress bar
+    const progressBar = document.createElement('div');
+    progressBar.className = 'scroll-progress';
+    document.body.appendChild(progressBar);
+
+    // Add back to top button
+    const backToTop = document.createElement('button');
+    backToTop.className = 'back-to-top';
+    backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    backToTop.setAttribute('title', 'Back to Top');
+    document.body.appendChild(backToTop);
+
+    // Update progress bar on scroll
+    window.addEventListener('scroll', () => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight - windowHeight;
+        const scrolled = window.scrollY;
+        const progress = (scrolled / documentHeight) * 100;
+        progressBar.style.width = progress + '%';
+
+        // Show/hide back to top button
+        if (scrolled > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    // Back to top click handler
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initialize section navigator for long pages
+    initializeSectionNavigator();
+
+    // Make long sections collapsible
+    makeConfigCardsCollapsible();
+
+    // Fix notification stacking
+    improveNotifications();
+}
+
+function initializeSectionNavigator() {
+    // Check if current section has many cards (long page)
+    const observer = new MutationObserver(() => {
+        const activeSection = document.querySelector('.content-section.active');
+        if (!activeSection) return;
+
+        const configCards = activeSection.querySelectorAll('.config-card');
+        
+        // If page has 5+ config cards, show section navigator
+        if (configCards.length >= 5) {
+            let navigator = activeSection.querySelector('.section-navigator');
+            
+            if (!navigator) {
+                navigator = createSectionNavigator(configCards);
+                activeSection.insertBefore(navigator, activeSection.firstChild);
+            }
+            
+            // Show navigator
+            setTimeout(() => navigator.classList.add('visible'), 100);
+        }
+    });
+
+    // Observe section changes
+    const contentSections = document.querySelectorAll('.content-section');
+    contentSections.forEach(section => {
+        observer.observe(section, { attributes: true, attributeFilter: ['class'] });
+    });
+
+    // Initial check
+    const activeSection = document.querySelector('.content-section.active');
+    if (activeSection) {
+        const configCards = activeSection.querySelectorAll('.config-card');
+        if (configCards.length >= 5) {
+            const navigator = createSectionNavigator(configCards);
+            activeSection.insertBefore(navigator, activeSection.firstChild);
+            setTimeout(() => navigator.classList.add('visible'), 100);
+        }
+    }
+}
+
+function createSectionNavigator(configCards) {
+    const navigator = document.createElement('div');
+    navigator.className = 'section-navigator';
+    
+    const title = document.createElement('h4');
+    title.innerHTML = '<i class="fas fa-list"></i> Jump to Section';
+    navigator.appendChild(title);
+    
+    const navList = document.createElement('ul');
+    navList.className = 'section-nav-list';
+    
+    configCards.forEach((card, index) => {
+        const cardTitle = card.querySelector('h3');
+        if (!cardTitle) return;
+        
+        // Add ID to card for scrolling
+        if (!card.id) {
+            card.id = `section-card-${index}`;
+        }
+        
+        const navItem = document.createElement('li');
+        navItem.className = 'section-nav-item';
+        navItem.textContent = cardTitle.textContent.replace(/[^\w\s]/gi, '').trim();
+        navItem.setAttribute('data-target', card.id);
+        
+        navItem.addEventListener('click', () => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Update active state
+            navList.querySelectorAll('.section-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            navItem.classList.add('active');
+        });
+        
+        navList.appendChild(navItem);
+    });
+    
+    navigator.appendChild(navList);
+    
+    // Track scroll position to highlight active section
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                updateActiveNavItem(navList, configCards);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    return navigator;
+}
+
+function updateActiveNavItem(navList, configCards) {
+    const scrollPos = window.scrollY + 250;
+    
+    let activeIndex = 0;
+    configCards.forEach((card, index) => {
+        if (card.offsetTop <= scrollPos) {
+            activeIndex = index;
+        }
+    });
+    
+    navList.querySelectorAll('.section-nav-item').forEach((item, index) => {
+        if (index === activeIndex) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+}
+
+function makeConfigCardsCollapsible() {
+    // Observe when sections become active
+    const observer = new MutationObserver(() => {
+        const activeSection = document.querySelector('.content-section.active');
+        if (!activeSection) return;
+
+        const configCards = activeSection.querySelectorAll('.config-card:not(.collapsible-ready)');
+        
+        configCards.forEach((card, index) => {
+            // Skip if already made collapsible
+            if (card.classList.contains('collapsible-ready')) return;
+            
+            const h3 = card.querySelector('h3');
+            if (!h3) return;
+
+            // Don't make the first 2 cards collapsible (keep most important visible)
+            if (index < 2) {
+                card.classList.add('collapsible-ready');
+                return;
+            }
+
+            // Create collapsible header
+            const header = document.createElement('div');
+            header.className = 'collapsible-section-header';
+            
+            const headerTitle = document.createElement('h3');
+            headerTitle.innerHTML = h3.innerHTML;
+            
+            const collapseIcon = document.createElement('i');
+            collapseIcon.className = 'fas fa-chevron-down collapse-icon';
+            
+            header.appendChild(headerTitle);
+            header.appendChild(collapseIcon);
+            
+            // Wrap content
+            const content = document.createElement('div');
+            content.className = 'collapsible-content';
+            
+            // Move all children except h3 into content
+            Array.from(card.children).forEach(child => {
+                if (child !== h3) {
+                    content.appendChild(child);
+                }
+            });
+            
+            // Replace h3 with header and add content
+            card.replaceChild(header, h3);
+            card.appendChild(content);
+            
+            // Toggle collapse on click
+            header.addEventListener('click', () => {
+                header.classList.toggle('collapsed');
+                content.classList.toggle('collapsed');
+            });
+            
+            card.classList.add('collapsible-ready');
+        });
+    });
+
+    const contentSections = document.querySelectorAll('.content-section');
+    contentSections.forEach(section => {
+        observer.observe(section, { attributes: true, attributeFilter: ['class'] });
+    });
+}
+
+function improveNotifications() {
+    // Override or improve the showUserFeedback function
+    const originalShowUserFeedback = window.showUserFeedback;
+    
+    window.showUserFeedback = function(message, type = 'info') {
+        // Remove "template loaded" notifications - they're not important
+        if (message.toLowerCase().includes('template') && message.toLowerCase().includes('loaded')) {
+            console.log(message); // Just log it
+            return;
+        }
+        
+        // Call original function
+        if (originalShowUserFeedback) {
+            originalShowUserFeedback(message, type);
+        }
+        
+        // Auto-dismiss after 3 seconds
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach((notification, index) => {
+            // Stack them vertically
+            notification.style.top = (100 + (index * 70)) + 'px';
+            
+            // Auto-dismiss
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+            
+            // Add dismiss button if not exists
+            if (!notification.querySelector('.notification-dismiss')) {
+                const dismissBtn = document.createElement('button');
+                dismissBtn.className = 'notification-dismiss';
+                dismissBtn.innerHTML = '×';
+                dismissBtn.onclick = () => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100px)';
+                    setTimeout(() => notification.remove(), 300);
+                };
+                notification.appendChild(dismissBtn);
+            }
+        });
+    };
+}
+
+// Add helpful hints for first-time users
+function showFirstTimeHints() {
+    // Check if user has seen hints before
+    const hasSeenHints = localStorage.getItem('filestack_snap_hints_seen');
+    if (hasSeenHints) return;
+
+    // Only show on File Picker section (most complex)
+    const pickerSection = document.getElementById('picker');
+    if (!pickerSection) return;
+
+    const hint = document.createElement('div');
+    hint.className = 'first-time-hint';
+    hint.innerHTML = `
+        <i class="fas fa-lightbulb"></i>
+        <div class="first-time-hint-content">
+            <h4>👋 First time here?</h4>
+            <p>
+                <strong>This page is long!</strong> Use the <strong>"Jump to Section"</strong> navigator above to quickly find what you need.
+                You can also collapse sections you're not using to keep things tidy.
+            </p>
+        </div>
+        <button class="first-time-hint-dismiss">×</button>
+    `;
+
+    const dismissBtn = hint.querySelector('.first-time-hint-dismiss');
+    dismissBtn.onclick = () => {
+        hint.style.opacity = '0';
+        setTimeout(() => hint.remove(), 300);
+        localStorage.setItem('filestack_snap_hints_seen', 'true');
+    };
+
+    // Insert at the top of the section
+    const sectionHeader = pickerSection.querySelector('.section-header');
+    if (sectionHeader && sectionHeader.nextSibling) {
+        sectionHeader.parentNode.insertBefore(hint, sectionHeader.nextSibling);
+    }
+
+    // Auto-dismiss after 10 seconds
+    setTimeout(() => {
+        if (hint.parentNode) {
+            hint.style.opacity = '0';
+            setTimeout(() => hint.remove(), 300);
+            localStorage.setItem('filestack_snap_hints_seen', 'true');
+        }
+    }, 10000);
+}
+
+// Show hints after a delay
+setTimeout(showFirstTimeHints, 1000);
+
+console.log('UX improvements initialized');

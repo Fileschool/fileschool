@@ -2561,3 +2561,342 @@ textarea:focus {
 .preset-btn:active {
     opacity: 0.8;
 }
+
+/* ==========================================
+   IMPROVED UX FOR LONG PAGES
+   ========================================== */
+
+/* Scroll Progress Bar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-orange) 0%, #ff6b45 100%);
+    z-index: 9999;
+    transition: width 0.1s ease;
+}
+
+/* Section Navigator (sticky on long pages) */
+.section-navigator {
+    position: sticky;
+    top: 220px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+    display: none; /* Hidden by default, shown via JS on long pages */
+}
+
+.section-navigator.visible {
+    display: block;
+}
+
+.section-navigator h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.9rem;
+    color: var(--dark-purple);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.section-nav-item {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #666;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.section-nav-item:hover {
+    background: rgba(239, 74, 38, 0.05);
+    border-left-color: var(--primary-orange);
+    color: var(--dark-purple);
+}
+
+.section-nav-item.active {
+    background: rgba(239, 74, 38, 0.1);
+    border-left-color: var(--primary-orange);
+    color: var(--primary-orange);
+    font-weight: 600;
+}
+
+/* Collapsible Section Headers */
+.collapsible-section-header {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.collapsible-section-header:hover {
+    border-color: var(--primary-orange);
+}
+
+.collapsible-section-header h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.collapse-icon {
+    font-size: 1.2rem;
+    color: var(--primary-orange);
+    transition: transform 0.2s ease;
+}
+
+.collapsible-section-header.collapsed .collapse-icon {
+    transform: rotate(-90deg);
+}
+
+.collapsible-content {
+    max-height: 10000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.collapsible-content.collapsed {
+    max-height: 0;
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--primary-orange);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(239, 74, 38, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: #d43d1f;
+}
+
+.back-to-top:active {
+    transform: scale(0.95);
+}
+
+/* Section Grouping - Visual Cards */
+.section-group {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-group-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark-purple);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Better notification positioning */
+.notification {
+    position: fixed;
+    top: 100px; /* Higher position to avoid overlap */
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    z-index: 10000; /* Higher z-index */
+    animation: slideInRight 0.3s ease;
+    max-width: 350px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Stack notifications vertically */
+.notification:nth-of-type(2) {
+    top: 160px;
+}
+
+.notification:nth-of-type(3) {
+    top: 220px;
+}
+
+/* Dismiss button for notifications */
+.notification-dismiss {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+    opacity: 0.8;
+}
+
+.notification-dismiss:hover {
+    opacity: 1;
+}
+
+/* Page Length Indicator */
+.page-indicator {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.page-indicator.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.page-indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d0d0d0;
+    transition: all 0.2s ease;
+}
+
+.page-indicator-dot.active {
+    background: var(--primary-orange);
+    transform: scale(1.5);
+}
+
+/* Helper text for first-time users */
+.first-time-hint {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+    border: 1px solid #ffd966;
+    border-left: 4px solid #ffc107;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.first-time-hint i {
+    color: #ffc107;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.first-time-hint-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: #856404;
+    font-size: 0.95rem;
+}
+
+.first-time-hint-content p {
+    margin: 0;
+    color: #856404;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.first-time-hint-dismiss {
+    background: none;
+    border: none;
+    color: #856404;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+    opacity: 0.6;
+}
+
+.first-time-hint-dismiss:hover {
+    opacity: 1;
+}
+
+/* Mobile responsiveness for new elements */
+@media (max-width: 768px) {
+    .section-navigator {
+        top: 160px;
+        position: relative;
+    }
+    
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+    
+    .page-indicator {
+        display: none;
+    }
+    
+    .notification {
+        top: 80px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
