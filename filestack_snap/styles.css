@@ -218,12 +218,6 @@ body {
     font-size: 0.7rem;
 }
 
-/* Adjust Section Navigator position to be below Credentials */
-.section-navigator {
-    top: 380px;
-    max-height: calc(100vh - 400px);
-}
-
 /* Top Navigation Tabs */
 .top-nav-tabs {
     background: var(--dark-purple);
@@ -425,6 +419,7 @@ body.sidebar-visible .main-content {
     padding: 20px;
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    scroll-margin-top: 200px; /* Prevent overshooting when clicking Jump to Section */
 }
 
 /* Compact cards take less vertical space */
@@ -2654,9 +2649,9 @@ textarea:focus {
 .section-navigator {
     position: fixed;
     left: 20px;
-    top: 160px;
+    top: 350px; /* Below credentials sidebar (90px top + ~260px height) */
     width: 220px;
-    max-height: calc(100vh - 180px);
+    max-height: calc(100vh - 370px);
     background: white;
     border: 1px solid var(--border-color);
     border-radius: 12px;

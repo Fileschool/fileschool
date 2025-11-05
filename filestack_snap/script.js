@@ -9654,6 +9654,9 @@ function initializeUXImprovements() {
 
     // Create credentials sidebar
     createCredentialsSidebar();
+
+    // Setup collapsible headers (for manually created collapsibles in HTML)
+    setupCollapsibleHeaders();
 }
 
 function createCredentialsSidebar() {
@@ -9941,6 +9944,22 @@ function makeConfigCardsCollapsible() {
     const contentSections = document.querySelectorAll('.content-section');
     contentSections.forEach(section => {
         observer.observe(section, { attributes: true, attributeFilter: ['class'] });
+    });
+}
+
+function setupCollapsibleHeaders() {
+    // Setup click handlers for all collapsible headers (manually created in HTML)
+    document.querySelectorAll('.collapsible-section-header').forEach(header => {
+        if (!header.hasAttribute('data-click-attached')) {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                if (content && content.classList.contains('collapsible-content')) {
+                    header.classList.toggle('collapsed');
+                    content.classList.toggle('collapsed');
+                }
+            });
+            header.setAttribute('data-click-attached', 'true');
+        }
     });
 }
 
