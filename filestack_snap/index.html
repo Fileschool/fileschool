@@ -813,6 +813,54 @@
                     </a>
                 </div>
 
+                <!-- About Drag & Drop - Introduction -->
+                <div class="config-card config-full-width" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+                    <h3><i class="fas fa-rocket"></i> About Drag & Drop</h3>
+                    <p style="font-size: 1.05rem; color: #495057; margin-bottom: 1.5rem;">
+                        The Filestack Drag-and-Drop library makes it incredibly easy to add file upload functionality to your web applications.
+                        Simply configure the options below, and we'll generate the code for you!
+                    </p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-bolt"></i> Quick Setup (Just 3 Steps!)</h4>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-check"></i> <strong>Add HTML Element:</strong> Create a div with class <code>.drop-container</code></li>
+                            <li><i class="fas fa-check"></i> <strong>Include Library:</strong> Load the filestack-drag-and-drop UMD module via CDN</li>
+                            <li><i class="fas fa-check"></i> <strong>Initialize:</strong> Call <code>new filestackDnD.init(apiKey, element, options)</code></li>
+                        </ul>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0;">
+                            <h4><i class="fas fa-magic"></i> Key Features</h4>
+                            <ul class="feature-list" style="margin: 0.5rem 0; font-size: 0.9rem;">
+                                <li><i class="fas fa-filter"></i> File type filtering</li>
+                                <li><i class="fas fa-weight-hanging"></i> Size limits</li>
+                                <li><i class="fas fa-th"></i> Multiple drop zones</li>
+                                <li><i class="fas fa-chart-line"></i> Progress tracking</li>
+                                <li><i class="fas fa-pause-circle"></i> Upload control (pause/resume)</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
+                            <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
+                            <ul style="margin: 0.5rem 0; font-size: 0.9rem; padding-left: 1.5rem;">
+                                <li>Profile picture uploads</li>
+                                <li>Document management</li>
+                                <li>Photo galleries</li>
+                                <li>File attachments</li>
+                                <li>Bulk imports (CSV, JSON)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1.5rem; padding: 1rem; background: #e8f5e9; border-radius: 8px; border: 1px solid #4caf50;">
+                        <p style="margin: 0; color: #2e7d32; font-weight: 600;">
+                            <i class="fas fa-arrow-down"></i> Configure your settings below, then click "Generate Code" to get started!
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Basic Configuration -->
                 <div class="config-card">
                     <h3><i class="fas fa-cog"></i> Basic Configuration</h3>
@@ -1135,50 +1183,73 @@
                     </div>
                 </div>
 
-                <div class="config-card config-full-width" style="margin-top: 1.5rem;">
-                    <h3><i class="fas fa-info-circle"></i> About Drag & Drop</h3>
-                    <p>The Filestack Drag-and-Drop library makes it incredibly easy to add file upload functionality to your web applications:</p>
+                <!-- Advanced API Methods -->
+                <div class="config-card config-full-width">
+                    <h3><i class="fas fa-code"></i> Advanced API Methods & Controls</h3>
+                    <p class="card-description">Programmatic control over the drag & drop instance after initialization.</p>
 
                     <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-rocket"></i> Quick Setup (Just 3 Lines!)</h4>
-                        <ul class="feature-list" style="margin: 0.5rem 0;">
-                            <li><i class="fas fa-check"></i> <strong>Add HTML Element:</strong> Create a div with class <code>.drop-container</code></li>
-                            <li><i class="fas fa-check"></i> <strong>Include Library:</strong> Load the filestack-drag-and-drop UMD module</li>
-                            <li><i class="fas fa-check"></i> <strong>Initialize:</strong> Call <code>new filestackDnD.init(apiKey, element, options)</code></li>
+                        <h4><i class="fas fa-th"></i> Element Management</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Dynamically add, remove, or replace drop zones after initialization:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.setElements(elements)</code> - Replace all drop zones with new elements</li>
+                            <li><code>dnd.setElement(element)</code> - Replace all with a single element</li>
+                            <li><code>dnd.addElement(element)</code> - Add one more drop zone to existing list</li>
+                            <li><code>dnd.addElements(elements)</code> - Add multiple drop zones to existing list</li>
                         </ul>
+                        <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #1976d2;">dnd.addElement(document.querySelector('.another-drop-zone'));</pre>
+                        </div>
                     </div>
 
                     <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-magic"></i> Key Features</h4>
-                        <ul class="feature-list" style="margin: 0.5rem 0;">
-                            <li><i class="fas fa-check"></i> <strong>File Type Filtering:</strong> Accept only specific file types (images, PDFs, etc.)</li>
-                            <li><i class="fas fa-check"></i> <strong>Size Limits:</strong> Restrict file sizes to prevent large uploads</li>
-                            <li><i class="fas fa-check"></i> <strong>Multiple Elements:</strong> Add drag & drop to multiple elements on one page</li>
-                            <li><i class="fas fa-check"></i> <strong>Event Handling:</strong> Listen to progress, success, error events</li>
-                            <li><i class="fas fa-check"></i> <strong>Upload Control:</strong> Pause, resume, or cancel uploads programmatically</li>
+                        <h4><i class="fas fa-pause-circle"></i> Upload Control</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Pause, resume, or cancel uploads programmatically via events:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.emit('pause', {elementId})</code> - Pause all uploads from an element</li>
+                            <li><code>dnd.emit('pause', {fileId})</code> - Pause a specific file upload</li>
+                            <li><code>dnd.emit('resume', {elementId})</code> - Resume paused uploads</li>
+                            <li><code>dnd.emit('cancel', {elementId})</code> - Cancel uploads completely</li>
                         </ul>
+                        <div style="background: #faf5ff; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #9c27b0;">dnd.emit('pause', { elementId: 'drop-zone-1' });</pre>
+                        </div>
                     </div>
 
-                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
-                        <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
-                            <li><strong>Profile Picture Upload:</strong> Single file drop zone for avatars</li>
-                            <li><strong>Document Management:</strong> Accept PDFs, Word docs, spreadsheets</li>
-                            <li><strong>Photo Gallery:</strong> Multi-file image uploads with previews</li>
-                            <li><strong>File Attachments:</strong> Email-style file attachment zones</li>
-                            <li><strong>Bulk Import:</strong> CSV, JSON, or data file uploads</li>
+                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-tools"></i> Helper Properties</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Access internal helpers for advanced control:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.elementHelper</code> - Direct access to element manager (elements array)</li>
+                            <li><code>dnd.eventEmitterHelper</code> - Event emitter for custom events</li>
+                            <li><code>dnd.uploadsHelper</code> - Upload manager for configuration changes</li>
+                            <li><code>dnd.filstackSdk</code> - Full Filestack Client instance access</li>
                         </ul>
+                        <div style="background: #fff8e1; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #f57c00;">// Open file picker from same SDK instance
+dnd.filstackSdk.picker(options).open();</pre>
+                        </div>
                     </div>
 
                     <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50;">
-                        <h4><i class="fas fa-graduation-cap"></i> Quick Tips</h4>
+                        <h4><i class="fas fa-graduation-cap"></i> Quick Tips & Best Practices</h4>
                         <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>Visual Feedback:</strong> Style your drop zone with hover effects and drag-over indicators</li>
-                            <li><strong>Accept Patterns:</strong> Use MIME types (<code>image/*</code>) for broader matching</li>
-                            <li><strong>Size in Bytes:</strong> Remember 1MB = 1048576 bytes, 10MB = 10485760 bytes</li>
-                            <li><strong>Multiple Zones:</strong> Use <code>setElements()</code> to add more drop zones after initialization</li>
+                            <li><strong>Visual Feedback:</strong> Style your drop zone with CSS hover effects and drag-over indicators</li>
+                            <li><strong>Accept Patterns:</strong> Use MIME types like <code>image/*</code> for broader file matching</li>
+                            <li><strong>Size in Bytes:</strong> Remember: 1MB = 1,048,576 bytes, 10MB = 10,485,760 bytes</li>
+                            <li><strong>Multiple Zones:</strong> Use <code>setElements()</code> to manage multiple drop zones efficiently</li>
                             <li><strong>Event Listeners:</strong> Use <code>.on('uploadFileFinish', callback)</code> to track completed uploads</li>
-                            <li><strong>Security:</strong> Add policy/signature for private uploads or to enforce file restrictions server-side</li>
+                            <li><strong>Security:</strong> Add policy/signature for private uploads or server-side file restrictions</li>
+                            <li><strong>CDN + SRI:</strong> Use Subresource Integrity (SRI) hashes from manifest.json for security</li>
                         </ul>
                     </div>
                 </div>
