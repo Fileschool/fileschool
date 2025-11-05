@@ -5338,6 +5338,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     if (stylingSection && stylingSection.classList.contains('active')) {
                         // Init picker if not already done
                         if (!this.pickerInstance) {
+                            console.log('%c🚀 Styling Section Activated - Initializing Picker Preview...', 'color: #8b5cf6; font-weight: bold; font-size: 13px');
                             setTimeout(() => this.initPicker(), 100);
                         }
                     }
@@ -5713,7 +5714,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                     try {
                         if (typeof collectPickerOptions === 'function') {
                             userOptions = collectPickerOptions();
-                            console.log('Collected picker options from File Picker:', userOptions);
+                            console.log('%c📋 Collected picker options from File Picker:', 'color: #2196f3; font-weight: bold', userOptions);
                         }
                     } catch (e) {
                         console.error('Error collecting picker options:', e);
@@ -5727,7 +5728,18 @@ dnd.filstackSdk.picker(options).open();</pre>
                         uploadInBackground: false
                     };
 
-                    console.log('Final picker options for inline preview:', pickerOptions);
+                    console.log('%c🎨 Final picker options for Styling preview:', 'color: #10b981; font-weight: bold', pickerOptions);
+
+                    // Show the actual JavaScript code being executed
+                    console.log('%c📝 ACTUAL JAVASCRIPT CODE BEING EXECUTED:', 'color: #f59e0b; font-weight: bold; font-size: 14px');
+                    console.log(`const apikey = "${apiKey}";
+const client = filestack.init(apikey);
+
+const options = ${JSON.stringify(pickerOptions, null, 2)};
+
+const picker = client.picker(options);
+picker.open();`);
+
                     this.pickerInstance = client.picker(pickerOptions);
                     this.pickerInstance.open();
                 } catch (error) {
