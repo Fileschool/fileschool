@@ -5616,11 +5616,11 @@ dnd.filstackSdk.picker(options).open();</pre>
                 let combinedCode = '';
 
                 if (css) {
-                    combinedCode += '/* CSS Styling */\n<style>\n' + css + '\n</style>\n\n';
+                    combinedCode += '/* CSS Styling */\n<style>\n' + css + '\n<\/style>\n\n';
                 }
 
                 if (js && js !== '// No picker configuration available') {
-                    combinedCode += '/* JavaScript Configuration */\n<script>\n' + js + '\n</script>';
+                    combinedCode += '/* JavaScript Configuration */\n<script>\n' + js + '\n<\/script>';
                 } else {
                     combinedCode += '/* JavaScript Configuration */\n// Configure your picker in the "Uploads/File Picker" tab first';
                 }
