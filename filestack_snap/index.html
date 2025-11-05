@@ -624,6 +624,475 @@
                             </ul>
                         </div>
                     </div>
+                    <!-- Advanced Picker Options (Collapsible) -->
+                    <div class="config-card">
+                        <div class="collapsible-section-header">
+                            <h3><i class="fas fa-cogs"></i> Advanced Picker Options</h3>
+                            <i class="fas fa-chevron-down collapse-icon"></i>
+                        </div>
+                        <div class="collapsible-content collapsed">
+                            <p class="card-description" style="margin-top: 1rem;">Advanced configuration options for power users. Most apps won't need these settings.</p>
+
+                            <!-- Additional Callbacks -->
+                            <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-bell"></i> Additional Event Callbacks</h4>
+                                
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadFinished" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadFinished</span>
+                                            <i class="fas fa-info-circle" title="Called when each individual file completes uploading. Use this to track per-file completion." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-check"></i> Triggered for each file upon completion
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadFailed" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadFailed</span>
+                                            <i class="fas fa-info-circle" title="Called when a file upload fails. Essential for error handling and retry logic." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-exclamation-triangle"></i> Handle upload failures gracefully
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadProgress" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadProgress</span>
+                                            <i class="fas fa-info-circle" title="Called repeatedly during upload with progress information. Perfect for progress bars." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-chart-line"></i> Track real-time upload progress
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadStarted" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadStarted</span>
+                                            <i class="fas fa-info-circle" title="Called when each file begins uploading. Use to show 'uploading' status." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-play"></i> Fired when upload starts for each file
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadCancel" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadCancel</span>
+                                            <i class="fas fa-info-circle" title="Called when user cancels a file upload." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-ban"></i> Handle user cancellations
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnOpen" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onOpen</span>
+                                            <i class="fas fa-info-circle" title="Called when picker UI is mounted/opened." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-door-open"></i> Picker opened event
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnClose" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onClose</span>
+                                            <i class="fas fa-info-circle" title="Called when picker UI is closed/unmounted." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-door-closed"></i> Picker closed event
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnCancel" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onCancel</span>
+                                            <i class="fas fa-info-circle" title="Called when user cancels the entire picker session." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-times-circle"></i> User cancelled picker
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnUploadStarted" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onUploadStarted</span>
+                                            <i class="fas fa-info-circle" title="Called when user clicks upload button to begin batch upload." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-upload"></i> Batch upload initiated
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileCropped" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileCropped</span>
+                                            <i class="fas fa-info-circle" title="Called when user crops an image in the picker editor." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-crop"></i> Image cropped event
+                                        </small>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- UI Customization & Behavior -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-palette"></i> UI Customization & Behavior</h4>
+                                
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableTransformer" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Image Editor</span>
+                                            <i class="fas fa-info-circle" title="Remove the image editing/cropping UI from picker." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-ban"></i> Removes crop/edit capabilities
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="transformationsUI" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Enable New Transformations UI</span>
+                                            <i class="fas fa-info-circle" title="Use the newer transformation interface (if available)." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-wand-magic-sparkles"></i> Modern transform interface
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="globalDropZone" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Global Drop Zone</span>
+                                            <i class="fas fa-info-circle" title="Allow drag-drop anywhere in picker, not just specific zones." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-expand"></i> Drop files anywhere in picker
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableThumbnails" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Thumbnails</span>
+                                            <i class="fas fa-info-circle" title="Don't show image previews in summary screen." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-image"></i> Hide image previews
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableAltText" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Alt Text Editor</span>
+                                            <i class="fas fa-info-circle" title="Hide the alt text editing field in summary." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-text-slash"></i> Remove alt text input
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableDirectoryUpload" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Directory Upload</span>
+                                            <i class="fas fa-info-circle" title="Prevent users from uploading entire folders." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-folder-minus"></i> Only individual files allowed
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="miniUploader" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Mini Uploader Mode</span>
+                                            <i class="fas fa-info-circle" title="Use compact mini uploader interface." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-compress"></i> Compact uploader UI
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <div class="form-row" style="margin-top: 1rem;">
+                                    <div class="form-group">
+                                        <label for="viewType">
+                                            Default View Type
+                                            <i class="fas fa-info-circle" title="Set default view for file browser: list or grid."></i>
+                                        </label>
+                                        <select id="viewType" class="track-changes">
+                                            <option value="">Default</option>
+                                            <option value="list">List View</option>
+                                            <option value="grid">Grid View</option>
+                                        </select>
+                                        <small class="form-hint">
+                                            <i class="fas fa-th"></i> Browser layout preference
+                                        </small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="videoResolution">
+                                            Video Recording Resolution
+                                            <i class="fas fa-info-circle" title="Set resolution for video recording. Format: widthxheight (e.g., 1920x1080)"></i>
+                                        </label>
+                                        <input type="text" id="videoResolution" placeholder="1280x720" class="track-changes">
+                                        <small class="form-hint">
+                                            <i class="fas fa-video"></i> Example: <code>1920x1080</code>, <code>1280x720</code>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Behavior -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-arrow-up"></i> Upload Behavior</h4>
+                                
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="allowManualRetry" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Allow Manual Retry</span>
+                                            <i class="fas fa-info-circle" title="Keep modal open on failure so users can retry uploads manually." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-redo"></i> Let users retry failed uploads
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="startUploadingWhenMaxFilesReached" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Auto-Upload at Max Files</span>
+                                            <i class="fas fa-info-circle" title="Automatically start uploading when maxFiles limit is reached." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-bolt"></i> Auto-trigger upload at file limit
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableStorageKey" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Storage Key Prefix</span>
+                                            <i class="fas fa-info-circle" title="Remove hash prefix from stored file keys." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-hashtag"></i> Cleaner file keys
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <div class="form-group" style="margin-top: 1rem;">
+                                    <label for="imageDim">
+                                        Exact Image Dimensions (w,h)
+                                        <i class="fas fa-info-circle" title="Force exact image dimensions. Format: 'width,height' (e.g., '800,600'). Different from imageMax/imageMin."></i>
+                                    </label>
+                                    <input type="text" id="imageDim" placeholder="800,600" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-ruler-combined"></i> Forces exact dimensions, not max/min. Example: <code>800,600</code>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Inline/DropPane Configuration -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-window-maximize"></i> Inline/DropPane Configuration</h4>
+                                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                                    These options only apply when displayMode is set to 'inline' or 'dropPane'.
+                                </p>
+
+                                <div class="form-group">
+                                    <label for="pickerContainer">
+                                        Container Selector
+                                        <i class="fas fa-info-circle" title="CSS selector or DOM element where inline/dropPane picker will be mounted (e.g., '#my-uploader', '.upload-zone')."></i>
+                                    </label>
+                                    <input type="text" id="pickerContainer" placeholder="#my-uploader" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-crosshairs"></i> Required for inline/dropPane modes. Example: <code>#my-uploader</code>
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="modalSize">
+                                        Modal Size (w,h)
+                                        <i class="fas fa-info-circle" title="Custom modal dimensions in pixels. Format: 'width,height' (e.g., '1200,800'). Desktop only."></i>
+                                    </label>
+                                    <input type="text" id="modalSize" placeholder="1200,800" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-expand-alt"></i> Desktop modal dimensions. Example: <code>1200,800</code>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Custom Source Configuration -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-plug"></i> Custom Source Configuration</h4>
+                                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                                    Configure custom source integration. Only applies when 'customsource' is in fromSources.
+                                </p>
+
+                                <div class="form-group">
+                                    <label for="customSourceName">
+                                        Custom Source Name
+                                        <i class="fas fa-info-circle" title="Display name for your custom source in the picker."></i>
+                                    </label>
+                                    <input type="text" id="customSourceName" placeholder="My Files" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-tag"></i> Name shown in source list
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="customSourcePath">
+                                        Custom Source Path
+                                        <i class="fas fa-info-circle" title="Default path/directory in your custom source."></i>
+                                    </label>
+                                    <input type="text" id="customSourcePath" placeholder="/default/path/" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-folder-open"></i> Starting directory in custom source
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="customSourceContainer">
+                                        Custom Source Container ID
+                                        <i class="fas fa-info-circle" title="Container ID for custom source integration (advanced)."></i>
+                                    </label>
+                                    <input type="text" id="customSourceContainer" placeholder="my-custom-source" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-hashtag"></i> Advanced: Custom source container identifier
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Miscellaneous Advanced -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-toolbox"></i> Miscellaneous Advanced Options</h4>
+
+                                <div class="form-group">
+                                    <label for="rootId">
+                                        Root Mount ID
+                                        <i class="fas fa-info-circle" title="Unique ID for picker mount point. Useful for multiple pickers on one page."></i>
+                                    </label>
+                                    <input type="text" id="rootId" placeholder="filestack-picker-1" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-anchor"></i> Unique identifier for this picker instance
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="supportEmail">
+                                        Support Email
+                                        <i class="fas fa-info-circle" title="Email address shown in error messages for user support."></i>
+                                    </label>
+                                    <input type="email" id="supportEmail" placeholder="support@example.com" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-envelope"></i> Shown to users when errors occur
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="googleDriveAppId">
+                                        Google Drive App ID
+                                        <i class="fas fa-info-circle" title="Custom Google Drive Picker App ID for your own OAuth client."></i>
+                                    </label>
+                                    <input type="text" id="googleDriveAppId" placeholder="123456789012-..." class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-google-drive"></i> For custom Google Drive integration
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="errorsTimeout">
+                                        Error Message Timeout (ms)
+                                        <i class="fas fa-info-circle" title="How long error messages are displayed in milliseconds."></i>
+                                    </label>
+                                    <input type="number" id="errorsTimeout" min="0" placeholder="3000" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-clock"></i> Duration in milliseconds. 3000ms = 3 seconds
+                                    </small>
+                                </div>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="useSentryBreadcrumbs" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Enable Sentry Breadcrumbs</span>
+                                            <i class="fas fa-info-circle" title="Enable Sentry error tracking breadcrumbs for debugging." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-bug"></i> Error tracking integration
+                                        </small>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-top: 1.5rem;">
+                                <h4><i class="fas fa-code"></i> Note on Complex Options</h4>
+                                <p style="margin: 0.5rem 0; font-size: 0.9rem;">
+                                    Some advanced options like <code>acceptFn</code>, <code>customText</code>, <code>transformations</code>, 
+                                    <code>pasteMode</code>, <code>dropPane</code>, and <code>customAuthText</code> accept complex objects or functions.
+                                    These cannot be configured through this UI and must be added directly in your code.
+                                </p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+                                    <strong>Reference:</strong> See <a href="https://filestack.github.io/filestack-js/interfaces/PickerOptions.html" target="_blank">official PickerOptions documentation</a> for full details.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Store Options -->
                     <div class="config-card">
@@ -811,6 +1280,54 @@
                     <a href="https://www.filestack.com/docs/uploads/dnd/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
                         <i class="fas fa-book"></i> View Documentation
                     </a>
+                </div>
+
+                <!-- About Drag & Drop - Introduction -->
+                <div class="config-card config-full-width" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+                    <h3><i class="fas fa-rocket"></i> About Drag & Drop</h3>
+                    <p style="font-size: 1.05rem; color: #495057; margin-bottom: 1.5rem;">
+                        The Filestack Drag-and-Drop library makes it incredibly easy to add file upload functionality to your web applications.
+                        Simply configure the options below, and we'll generate the code for you!
+                    </p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-bolt"></i> Quick Setup (Just 3 Steps!)</h4>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-check"></i> <strong>Add HTML Element:</strong> Create a div with class <code>.drop-container</code></li>
+                            <li><i class="fas fa-check"></i> <strong>Include Library:</strong> Load the filestack-drag-and-drop UMD module via CDN</li>
+                            <li><i class="fas fa-check"></i> <strong>Initialize:</strong> Call <code>new filestackDnD.init(apiKey, element, options)</code></li>
+                        </ul>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0;">
+                            <h4><i class="fas fa-magic"></i> Key Features</h4>
+                            <ul class="feature-list" style="margin: 0.5rem 0; font-size: 0.9rem;">
+                                <li><i class="fas fa-filter"></i> File type filtering</li>
+                                <li><i class="fas fa-weight-hanging"></i> Size limits</li>
+                                <li><i class="fas fa-th"></i> Multiple drop zones</li>
+                                <li><i class="fas fa-chart-line"></i> Progress tracking</li>
+                                <li><i class="fas fa-pause-circle"></i> Upload control (pause/resume)</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
+                            <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
+                            <ul style="margin: 0.5rem 0; font-size: 0.9rem; padding-left: 1.5rem;">
+                                <li>Profile picture uploads</li>
+                                <li>Document management</li>
+                                <li>Photo galleries</li>
+                                <li>File attachments</li>
+                                <li>Bulk imports (CSV, JSON)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1.5rem; padding: 1rem; background: #e8f5e9; border-radius: 8px; border: 1px solid #4caf50;">
+                        <p style="margin: 0; color: #2e7d32; font-weight: 600;">
+                            <i class="fas fa-arrow-down"></i> Configure your settings below, then click "Generate Code" to get started!
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Basic Configuration -->
@@ -1135,50 +1652,73 @@
                     </div>
                 </div>
 
-                <div class="config-card config-full-width" style="margin-top: 1.5rem;">
-                    <h3><i class="fas fa-info-circle"></i> About Drag & Drop</h3>
-                    <p>The Filestack Drag-and-Drop library makes it incredibly easy to add file upload functionality to your web applications:</p>
+                <!-- Advanced API Methods -->
+                <div class="config-card config-full-width">
+                    <h3><i class="fas fa-code"></i> Advanced API Methods & Controls</h3>
+                    <p class="card-description">Programmatic control over the drag & drop instance after initialization.</p>
 
                     <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-rocket"></i> Quick Setup (Just 3 Lines!)</h4>
-                        <ul class="feature-list" style="margin: 0.5rem 0;">
-                            <li><i class="fas fa-check"></i> <strong>Add HTML Element:</strong> Create a div with class <code>.drop-container</code></li>
-                            <li><i class="fas fa-check"></i> <strong>Include Library:</strong> Load the filestack-drag-and-drop UMD module</li>
-                            <li><i class="fas fa-check"></i> <strong>Initialize:</strong> Call <code>new filestackDnD.init(apiKey, element, options)</code></li>
+                        <h4><i class="fas fa-th"></i> Element Management</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Dynamically add, remove, or replace drop zones after initialization:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.setElements(elements)</code> - Replace all drop zones with new elements</li>
+                            <li><code>dnd.setElement(element)</code> - Replace all with a single element</li>
+                            <li><code>dnd.addElement(element)</code> - Add one more drop zone to existing list</li>
+                            <li><code>dnd.addElements(elements)</code> - Add multiple drop zones to existing list</li>
                         </ul>
+                        <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #1976d2;">dnd.addElement(document.querySelector('.another-drop-zone'));</pre>
+                        </div>
                     </div>
 
                     <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-magic"></i> Key Features</h4>
-                        <ul class="feature-list" style="margin: 0.5rem 0;">
-                            <li><i class="fas fa-check"></i> <strong>File Type Filtering:</strong> Accept only specific file types (images, PDFs, etc.)</li>
-                            <li><i class="fas fa-check"></i> <strong>Size Limits:</strong> Restrict file sizes to prevent large uploads</li>
-                            <li><i class="fas fa-check"></i> <strong>Multiple Elements:</strong> Add drag & drop to multiple elements on one page</li>
-                            <li><i class="fas fa-check"></i> <strong>Event Handling:</strong> Listen to progress, success, error events</li>
-                            <li><i class="fas fa-check"></i> <strong>Upload Control:</strong> Pause, resume, or cancel uploads programmatically</li>
+                        <h4><i class="fas fa-pause-circle"></i> Upload Control</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Pause, resume, or cancel uploads programmatically via events:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.emit('pause', {elementId})</code> - Pause all uploads from an element</li>
+                            <li><code>dnd.emit('pause', {fileId})</code> - Pause a specific file upload</li>
+                            <li><code>dnd.emit('resume', {elementId})</code> - Resume paused uploads</li>
+                            <li><code>dnd.emit('cancel', {elementId})</code> - Cancel uploads completely</li>
                         </ul>
+                        <div style="background: #faf5ff; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #9c27b0;">dnd.emit('pause', { elementId: 'drop-zone-1' });</pre>
+                        </div>
                     </div>
 
-                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
-                        <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
-                            <li><strong>Profile Picture Upload:</strong> Single file drop zone for avatars</li>
-                            <li><strong>Document Management:</strong> Accept PDFs, Word docs, spreadsheets</li>
-                            <li><strong>Photo Gallery:</strong> Multi-file image uploads with previews</li>
-                            <li><strong>File Attachments:</strong> Email-style file attachment zones</li>
-                            <li><strong>Bulk Import:</strong> CSV, JSON, or data file uploads</li>
+                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-tools"></i> Helper Properties</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Access internal helpers for advanced control:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.elementHelper</code> - Direct access to element manager (elements array)</li>
+                            <li><code>dnd.eventEmitterHelper</code> - Event emitter for custom events</li>
+                            <li><code>dnd.uploadsHelper</code> - Upload manager for configuration changes</li>
+                            <li><code>dnd.filstackSdk</code> - Full Filestack Client instance access</li>
                         </ul>
+                        <div style="background: #fff8e1; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #f57c00;">// Open file picker from same SDK instance
+dnd.filstackSdk.picker(options).open();</pre>
+                        </div>
                     </div>
 
                     <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50;">
-                        <h4><i class="fas fa-graduation-cap"></i> Quick Tips</h4>
+                        <h4><i class="fas fa-graduation-cap"></i> Quick Tips & Best Practices</h4>
                         <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>Visual Feedback:</strong> Style your drop zone with hover effects and drag-over indicators</li>
-                            <li><strong>Accept Patterns:</strong> Use MIME types (<code>image/*</code>) for broader matching</li>
-                            <li><strong>Size in Bytes:</strong> Remember 1MB = 1048576 bytes, 10MB = 10485760 bytes</li>
-                            <li><strong>Multiple Zones:</strong> Use <code>setElements()</code> to add more drop zones after initialization</li>
+                            <li><strong>Visual Feedback:</strong> Style your drop zone with CSS hover effects and drag-over indicators</li>
+                            <li><strong>Accept Patterns:</strong> Use MIME types like <code>image/*</code> for broader file matching</li>
+                            <li><strong>Size in Bytes:</strong> Remember: 1MB = 1,048,576 bytes, 10MB = 10,485,760 bytes</li>
+                            <li><strong>Multiple Zones:</strong> Use <code>setElements()</code> to manage multiple drop zones efficiently</li>
                             <li><strong>Event Listeners:</strong> Use <code>.on('uploadFileFinish', callback)</code> to track completed uploads</li>
-                            <li><strong>Security:</strong> Add policy/signature for private uploads or to enforce file restrictions server-side</li>
+                            <li><strong>Security:</strong> Add policy/signature for private uploads or server-side file restrictions</li>
+                            <li><strong>CDN + SRI:</strong> Use Subresource Integrity (SRI) hashes from manifest.json for security</li>
                         </ul>
                     </div>
                 </div>
@@ -1577,6 +2117,216 @@
                                     <input type="checkbox" id="enablePdfInfo">
                                     <span>PDF Info</span>
                                 </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Transformations (Collapsible) -->
+                    <div class="config-card config-full-width" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+                        <div class="collapsible-header" onclick="toggleCollapsible('advancedTransformations')">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-magic" style="color: var(--primary-orange);"></i>
+                                <h3 style="margin: 0;">Advanced Transformations</h3>
+                                <span class="badge" style="background: var(--primary-orange); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem;">11 Additional</span>
+                            </div>
+                            <i class="fas fa-chevron-down" id="advancedTransformationsIcon" style="transition: transform 0.3s ease; color: #666;"></i>
+                        </div>
+                        <p class="card-description" style="margin: 1rem 0 1.5rem 0; color: #666;">
+                            Additional image processing transformations including adjustments, artistic effects, document conversion, and more.
+                        </p>
+
+                        <div id="advancedTransformationsContent" style="display: none;">
+                            <div class="transform-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+
+                                <!-- Image Enhancements -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-magic"></i> Image Enhancements</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableEnhance">
+                                                <span>Enhance</span>
+                                            </label>
+                                            <small style="color: #666; display: block; margin-left: 1.5rem; margin-top: 0.25rem;">AI-powered automatic image enhancement</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Artistic Filters -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-palette"></i> Artistic Filters</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enablePixelate">
+                                                <span>Pixelate</span>
+                                            </label>
+                                            <div class="transform-inputs" id="pixelateInputs" style="display: none;">
+                                                <input type="number" placeholder="Amount" id="pixelateAmount" min="2" max="100" value="10">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 2 to 100</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableOilPaint">
+                                                <span>Oil Paint</span>
+                                            </label>
+                                            <div class="transform-inputs" id="oilPaintInputs" style="display: none;">
+                                                <input type="number" placeholder="Amount" id="oilPaintAmount" min="2" max="100" value="5">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 2 to 100</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableMonochrome">
+                                                <span>Monochrome</span>
+                                            </label>
+                                            <div class="transform-inputs" id="monochromeInputs" style="display: none;">
+                                                <input type="color" id="monochromeColor" value="#0000FF">
+                                                <small style="color: #666; font-size: 0.8rem;">Choose color</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableModulate">
+                                                <span>Modulate</span>
+                                            </label>
+                                            <div class="transform-inputs" id="modulateInputs" style="display: none;">
+                                                <input type="number" placeholder="Brightness" id="modulateBrightness" min="0" max="10000" step="100">
+                                                <input type="number" placeholder="Hue" id="modulateHue" min="0" max="10000" step="100">
+                                                <input type="number" placeholder="Saturation" id="modulateSaturation" min="0" max="10000" step="100">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 0 to 10000 each</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableAscii">
+                                                <span>ASCII Art</span>
+                                            </label>
+                                            <div class="transform-inputs" id="asciiInputs" style="display: none;">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="asciiColored">
+                                                    <span>Colored</span>
+                                                </label>
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="asciiReverse">
+                                                    <span>Reverse</span>
+                                                </label>
+                                                <input type="number" placeholder="Size" id="asciiSize" min="10" max="100" value="20">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Photo Effects -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-camera-retro"></i> Photo Effects</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableTornEdges">
+                                                <span>Torn Edges</span>
+                                            </label>
+                                            <div class="transform-inputs" id="tornEdgesInputs" style="display: none;">
+                                                <input type="number" placeholder="Spread" id="tornEdgesSpread" min="1" max="10000" value="10">
+                                                <input type="color" id="tornEdgesBackground" value="#FFFFFF">
+                                                <small style="color: #666; font-size: 0.8rem;">Spread & background color</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enablePolaroid">
+                                                <span>Polaroid</span>
+                                            </label>
+                                            <div class="transform-inputs" id="polaroidInputs" style="display: none;">
+                                                <input type="color" id="polaroidColor" value="#FFFFFF">
+                                                <input type="number" placeholder="Rotate (degrees)" id="polaroidRotate" min="-360" max="360" value="0">
+                                                <input type="color" id="polaroidBackground" value="#FFFFFF">
+                                                <small style="color: #666; font-size: 0.8rem;">Color, rotation & background</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Advanced Multi-Image -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-th"></i> Multi-Image</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableCollage">
+                                                <span>Collage</span>
+                                            </label>
+                                            <div class="transform-inputs" id="collageInputs" style="display: none;">
+                                                <textarea placeholder='["handle1", "handle2", "handle3"]' id="collageFiles" rows="2"></textarea>
+                                                <input type="number" placeholder="Width" id="collageWidth" min="1" max="10000">
+                                                <input type="number" placeholder="Height" id="collageHeight" min="1" max="10000">
+                                                <select id="collageFit">
+                                                    <option value="auto">Auto</option>
+                                                    <option value="crop">Crop</option>
+                                                    <option value="max">Max</option>
+                                                </select>
+                                                <input type="number" placeholder="Margin" id="collageMargin" min="0" max="100" value="10">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="collageAutorotate">
+                                                    <span>Auto-rotate</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- URL & Caching -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-globe"></i> URL & Optimization</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableUrlScreenshot">
+                                                <span>URL Screenshot</span>
+                                            </label>
+                                            <div class="transform-inputs" id="urlScreenshotInputs" style="display: none;">
+                                                <input type="text" placeholder="URL to capture" id="urlScreenshotUrl">
+                                                <select id="urlScreenshotAgent">
+                                                    <option value="desktop">Desktop</option>
+                                                    <option value="mobile">Mobile</option>
+                                                </select>
+                                                <select id="urlScreenshotMode">
+                                                    <option value="window">Window</option>
+                                                    <option value="all">Full Page</option>
+                                                </select>
+                                                <input type="number" placeholder="Width" id="urlScreenshotWidth" min="1" max="3840" value="1920">
+                                                <input type="number" placeholder="Height" id="urlScreenshotHeight" min="1" max="2160" value="1080">
+                                                <input type="number" placeholder="Delay (ms)" id="urlScreenshotDelay" min="0" max="20000" value="0">
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableCompress">
+                                                <span>Compress</span>
+                                            </label>
+                                            <div class="transform-inputs" id="compressInputs" style="display: none;">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="compressMetadata">
+                                                    <span>Strip metadata</span>
+                                                </label>
+                                                <small style="color: #666; font-size: 0.8rem;">Remove EXIF/metadata to reduce file size</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
