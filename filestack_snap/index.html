@@ -2121,6 +2121,216 @@ dnd.filstackSdk.picker(options).open();</pre>
                         </div>
                     </div>
 
+                    <!-- Advanced Transformations (Collapsible) -->
+                    <div class="config-card config-full-width" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+                        <div class="collapsible-header" onclick="toggleCollapsible('advancedTransformations')">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-magic" style="color: var(--primary-orange);"></i>
+                                <h3 style="margin: 0;">Advanced Transformations</h3>
+                                <span class="badge" style="background: var(--primary-orange); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem;">11 Additional</span>
+                            </div>
+                            <i class="fas fa-chevron-down" id="advancedTransformationsIcon" style="transition: transform 0.3s ease; color: #666;"></i>
+                        </div>
+                        <p class="card-description" style="margin: 1rem 0 1.5rem 0; color: #666;">
+                            Additional image processing transformations including adjustments, artistic effects, document conversion, and more.
+                        </p>
+
+                        <div id="advancedTransformationsContent" style="display: none;">
+                            <div class="transform-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+
+                                <!-- Image Enhancements -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-magic"></i> Image Enhancements</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableEnhance">
+                                                <span>Enhance</span>
+                                            </label>
+                                            <small style="color: #666; display: block; margin-left: 1.5rem; margin-top: 0.25rem;">AI-powered automatic image enhancement</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Artistic Filters -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-palette"></i> Artistic Filters</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enablePixelate">
+                                                <span>Pixelate</span>
+                                            </label>
+                                            <div class="transform-inputs" id="pixelateInputs" style="display: none;">
+                                                <input type="number" placeholder="Amount" id="pixelateAmount" min="2" max="100" value="10">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 2 to 100</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableOilPaint">
+                                                <span>Oil Paint</span>
+                                            </label>
+                                            <div class="transform-inputs" id="oilPaintInputs" style="display: none;">
+                                                <input type="number" placeholder="Amount" id="oilPaintAmount" min="2" max="100" value="5">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 2 to 100</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableMonochrome">
+                                                <span>Monochrome</span>
+                                            </label>
+                                            <div class="transform-inputs" id="monochromeInputs" style="display: none;">
+                                                <input type="color" id="monochromeColor" value="#0000FF">
+                                                <small style="color: #666; font-size: 0.8rem;">Choose color</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableModulate">
+                                                <span>Modulate</span>
+                                            </label>
+                                            <div class="transform-inputs" id="modulateInputs" style="display: none;">
+                                                <input type="number" placeholder="Brightness" id="modulateBrightness" min="0" max="10000" step="100">
+                                                <input type="number" placeholder="Hue" id="modulateHue" min="0" max="10000" step="100">
+                                                <input type="number" placeholder="Saturation" id="modulateSaturation" min="0" max="10000" step="100">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 0 to 10000 each</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableAscii">
+                                                <span>ASCII Art</span>
+                                            </label>
+                                            <div class="transform-inputs" id="asciiInputs" style="display: none;">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="asciiColored">
+                                                    <span>Colored</span>
+                                                </label>
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="asciiReverse">
+                                                    <span>Reverse</span>
+                                                </label>
+                                                <input type="number" placeholder="Size" id="asciiSize" min="10" max="100" value="20">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Photo Effects -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-camera-retro"></i> Photo Effects</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableTornEdges">
+                                                <span>Torn Edges</span>
+                                            </label>
+                                            <div class="transform-inputs" id="tornEdgesInputs" style="display: none;">
+                                                <input type="number" placeholder="Spread" id="tornEdgesSpread" min="1" max="10000" value="10">
+                                                <input type="color" id="tornEdgesBackground" value="#FFFFFF">
+                                                <small style="color: #666; font-size: 0.8rem;">Spread & background color</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enablePolaroid">
+                                                <span>Polaroid</span>
+                                            </label>
+                                            <div class="transform-inputs" id="polaroidInputs" style="display: none;">
+                                                <input type="color" id="polaroidColor" value="#FFFFFF">
+                                                <input type="number" placeholder="Rotate (degrees)" id="polaroidRotate" min="-360" max="360" value="0">
+                                                <input type="color" id="polaroidBackground" value="#FFFFFF">
+                                                <small style="color: #666; font-size: 0.8rem;">Color, rotation & background</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Advanced Multi-Image -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-th"></i> Multi-Image</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableCollage">
+                                                <span>Collage</span>
+                                            </label>
+                                            <div class="transform-inputs" id="collageInputs" style="display: none;">
+                                                <textarea placeholder='["handle1", "handle2", "handle3"]' id="collageFiles" rows="2"></textarea>
+                                                <input type="number" placeholder="Width" id="collageWidth" min="1" max="10000">
+                                                <input type="number" placeholder="Height" id="collageHeight" min="1" max="10000">
+                                                <select id="collageFit">
+                                                    <option value="auto">Auto</option>
+                                                    <option value="crop">Crop</option>
+                                                    <option value="max">Max</option>
+                                                </select>
+                                                <input type="number" placeholder="Margin" id="collageMargin" min="0" max="100" value="10">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="collageAutorotate">
+                                                    <span>Auto-rotate</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- URL & Caching -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-globe"></i> URL & Optimization</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableUrlScreenshot">
+                                                <span>URL Screenshot</span>
+                                            </label>
+                                            <div class="transform-inputs" id="urlScreenshotInputs" style="display: none;">
+                                                <input type="text" placeholder="URL to capture" id="urlScreenshotUrl">
+                                                <select id="urlScreenshotAgent">
+                                                    <option value="desktop">Desktop</option>
+                                                    <option value="mobile">Mobile</option>
+                                                </select>
+                                                <select id="urlScreenshotMode">
+                                                    <option value="window">Window</option>
+                                                    <option value="all">Full Page</option>
+                                                </select>
+                                                <input type="number" placeholder="Width" id="urlScreenshotWidth" min="1" max="3840" value="1920">
+                                                <input type="number" placeholder="Height" id="urlScreenshotHeight" min="1" max="2160" value="1080">
+                                                <input type="number" placeholder="Delay (ms)" id="urlScreenshotDelay" min="0" max="20000" value="0">
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableCompress">
+                                                <span>Compress</span>
+                                            </label>
+                                            <div class="transform-inputs" id="compressInputs" style="display: none;">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="compressMetadata">
+                                                    <span>Strip metadata</span>
+                                                </label>
+                                                <small style="color: #666; font-size: 0.8rem;">Remove EXIF/metadata to reduce file size</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Output Settings -->
                     <div class="config-card">
                         <h3><i class="fas fa-cog"></i> Output Settings</h3>

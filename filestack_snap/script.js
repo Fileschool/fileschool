@@ -4801,6 +4801,136 @@ function collectTransformOptions() {
         options.pdfinfo = true;
     }
 
+    // Advanced Transformations - Image Enhancements
+    if (document.getElementById('enableEnhance')?.checked) {
+        options.enhance = true;
+    }
+
+    // Advanced Transformations - Artistic Filters
+    if (document.getElementById('enablePixelate')?.checked) {
+        const amount = validateIntegerInput('pixelateAmount');
+        if (amount !== null) {
+            options.pixelate = amount;
+        }
+    }
+
+    if (document.getElementById('enableOilPaint')?.checked) {
+        const amount = validateIntegerInput('oilPaintAmount');
+        if (amount !== null) {
+            options.oil_paint = amount;
+        }
+    }
+
+    if (document.getElementById('enableMonochrome')?.checked) {
+        const color = document.getElementById('monochromeColor')?.value;
+        if (color) {
+            options.monochrome = { color: color };
+        }
+    }
+
+    if (document.getElementById('enableModulate')?.checked) {
+        const brightness = validateIntegerInput('modulateBrightness');
+        const hue = validateIntegerInput('modulateHue');
+        const saturation = validateIntegerInput('modulateSaturation');
+
+        if (brightness !== null || hue !== null || saturation !== null) {
+            options.modulate = {};
+            if (brightness !== null) options.modulate.brightness = brightness;
+            if (hue !== null) options.modulate.hue = hue;
+            if (saturation !== null) options.modulate.saturation = saturation;
+        }
+    }
+
+    if (document.getElementById('enableAscii')?.checked) {
+        const colored = document.getElementById('asciiColored')?.checked;
+        const reverse = document.getElementById('asciiReverse')?.checked;
+        const size = validateIntegerInput('asciiSize');
+
+        options.ascii = {};
+        if (colored) options.ascii.colored = true;
+        if (reverse) options.ascii.reverse = true;
+        if (size !== null) options.ascii.size = size;
+    }
+
+    // Advanced Transformations - Photo Effects
+    if (document.getElementById('enableTornEdges')?.checked) {
+        const spread = validateIntegerInput('tornEdgesSpread');
+        const background = document.getElementById('tornEdgesBackground')?.value;
+
+        if (spread !== null || background) {
+            options.torn_edges = {};
+            if (spread !== null) options.torn_edges.spread = spread;
+            if (background) options.torn_edges.background = background;
+        }
+    }
+
+    if (document.getElementById('enablePolaroid')?.checked) {
+        const color = document.getElementById('polaroidColor')?.value;
+        const rotate = validateIntegerInput('polaroidRotate');
+        const background = document.getElementById('polaroidBackground')?.value;
+
+        if (color || rotate !== null || background) {
+            options.polaroid = {};
+            if (color) options.polaroid.color = color;
+            if (rotate !== null) options.polaroid.rotate = rotate;
+            if (background) options.polaroid.background = background;
+        }
+    }
+
+    // Advanced Transformations - Multi-Image
+    if (document.getElementById('enableCollage')?.checked) {
+        const filesStr = document.getElementById('collageFiles')?.value;
+        const width = validateIntegerInput('collageWidth');
+        const height = validateIntegerInput('collageHeight');
+        const fit = document.getElementById('collageFit')?.value;
+        const margin = validateIntegerInput('collageMargin');
+        const autorotate = document.getElementById('collageAutorotate')?.checked;
+
+        if (filesStr) {
+            try {
+                const files = JSON.parse(filesStr);
+                if (Array.isArray(files) && files.length > 0) {
+                    options.collage = { files: files };
+                    if (width !== null) options.collage.width = width;
+                    if (height !== null) options.collage.height = height;
+                    if (fit && fit !== 'auto') options.collage.fit = fit;
+                    if (margin !== null) options.collage.margin = margin;
+                    if (autorotate) options.collage.autorotate = true;
+                }
+            } catch (e) {
+                // ignore invalid JSON
+            }
+        }
+    }
+
+    // Advanced Transformations - URL & Optimization
+    if (document.getElementById('enableUrlScreenshot')?.checked) {
+        const url = document.getElementById('urlScreenshotUrl')?.value;
+        const agent = document.getElementById('urlScreenshotAgent')?.value;
+        const mode = document.getElementById('urlScreenshotMode')?.value;
+        const width = validateIntegerInput('urlScreenshotWidth');
+        const height = validateIntegerInput('urlScreenshotHeight');
+        const delay = validateIntegerInput('urlScreenshotDelay');
+
+        if (url) {
+            options.urlscreenshot = { url: url };
+            if (agent && agent !== 'desktop') options.urlscreenshot.agent = agent;
+            if (mode && mode !== 'window') options.urlscreenshot.mode = mode;
+            if (width !== null) options.urlscreenshot.width = width;
+            if (height !== null) options.urlscreenshot.height = height;
+            if (delay !== null && delay > 0) options.urlscreenshot.delay = delay;
+        }
+    }
+
+    if (document.getElementById('enableCompress')?.checked) {
+        const metadata = document.getElementById('compressMetadata')?.checked;
+        if (metadata) {
+            options.compress = { metadata: false };
+        } else {
+            options.compress = true;
+        }
+    }
+
     // Output settings with validation
     const format = document.getElementById('outputFormat').value;
     if (format !== 'auto') {
