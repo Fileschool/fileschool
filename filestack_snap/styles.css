@@ -132,19 +132,36 @@ body {
     font-size: 1rem;
 }
 
-/* Credentials Sidebar (Left, Above Jump to Section) */
-.credentials-sidebar {
+/* Left Sidebar Container */
+.left-sidebar-container {
     position: fixed;
-    left: 20px;
-    top: 180px;
-    width: 220px;
+    left: 0;
+    top: 80px;
+    width: 260px;
+    height: calc(100vh - 80px);
+    background: #f8f9fa;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+    padding: 20px;
+}
+
+/* Credentials Sidebar (Top of Left Sidebar) */
+.credentials-sidebar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 220px;
     background: white;
     border-radius: 12px;
     padding: 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 101;
+    z-index: 10;
     overflow: hidden;
     border: 2px solid var(--primary-orange);
+    margin-bottom: 20px;
 }
 
 .credentials-header {
@@ -334,12 +351,8 @@ body {
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     overflow-y: auto;
+    margin-left: 280px; /* Always account for left sidebar */
     transition: margin-left 0.3s ease;
-}
-
-/* Add left margin when sidebar is visible */
-body.sidebar-visible .main-content {
-    margin-left: 260px;
 }
 
 .content-section {
@@ -2684,20 +2697,15 @@ textarea:focus {
 
 /* Section Navigator (LEFT SIDEBAR - sticky throughout page) */
 .section-navigator {
-    position: fixed;
-    left: 20px;
-    top: 460px; /* Below credentials sidebar (180px top + ~260px height + 20px gap) */
-    width: 220px;
-    max-height: calc(100vh - 480px);
+    position: relative;
+    width: 100%;
+    max-width: 220px;
     background: white;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    z-index: 100;
     display: none; /* Hidden by default, shown via JS on long pages */
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
 .section-navigator.visible {
@@ -2992,16 +3000,12 @@ textarea:focus {
 
 /* Mobile responsiveness for new elements */
 @media (max-width: 768px) {
-    .credentials-sidebar {
-        display: none !important; /* Hide credentials on mobile */
+    .left-sidebar-container {
+        display: none !important; /* Hide entire left sidebar on mobile */
     }
 
-    .section-navigator {
-        display: none !important; /* Hide sidebar on mobile */
-    }
-
-    body.sidebar-visible .main-content {
-        margin-left: 0; /* Remove margin on mobile */
+    .main-content {
+        margin-left: 0 !important; /* Remove margin on mobile */
     }
 
     .back-to-top {
