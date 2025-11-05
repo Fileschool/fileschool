@@ -4980,6 +4980,11 @@ dnd.filstackSdk.picker(options).open();</pre>
                     body:has(#picker-styling.active) .code-panel {
                         display: none !important;
                     }
+
+                    /* Expand main content to full width when code panel is hidden */
+                    body:has(#picker-styling.active) .main-container {
+                        grid-template-columns: 1fr !important;
+                    }
                 </style>
             </section>
 
