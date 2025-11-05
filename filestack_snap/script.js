@@ -3006,11 +3006,17 @@ function collectFacesOptions() {
         // Faces detection parameters
         const minSize = document.getElementById('facesMinSize')?.value;
         const maxSize = document.getElementById('facesMaxSize')?.value;
+        const highlightColor = document.getElementById('facesColor')?.value;
         const exportFaces = document.getElementById('facesExport')?.checked;
+        const countOnly = document.getElementById('facesCountOnly')?.checked;
+        const blurFaces = document.getElementById('facesBlur')?.checked;
 
         if (minSize) options.minsize = parseFloat(minSize);
         if (maxSize) options.maxsize = parseFloat(maxSize);
+        if (highlightColor && highlightColor !== '') options.color = highlightColor;
         if (exportFaces) options.export = true;
+        if (countOnly) options.mode = 'count';
+        if (blurFaces) options.blur = true;
 
         return options;
     } catch (error) {
@@ -3214,12 +3220,95 @@ function setupManualCodeGeneration() {
         }
     };
 
+    // Validation function for transform section
+    function validateTransformInputs() {
+        // Clear previous validation errors
+        document.querySelectorAll('.validation-error').forEach(el => {
+            el.classList.remove('validation-error');
+        });
+        document.querySelectorAll('.validation-error-message').forEach(el => {
+            el.remove();
+        });
+        document.querySelectorAll('.has-validation-error').forEach(el => {
+            el.classList.remove('has-validation-error');
+        });
+
+        const errors = [];
+        let firstErrorElement = null;
+
+        // Check if crop is enabled with incomplete fields
+        if (document.getElementById('enableCrop')?.checked) {
+            const x = document.getElementById('cropX');
+            const y = document.getElementById('cropY');
+            const width = document.getElementById('cropWidth');
+            const height = document.getElementById('cropHeight');
+
+            const hasAllValues = x.value && y.value && width.value && height.value;
+
+            if (!hasAllValues) {
+                const cropOption = x.closest('.transform-option');
+                if (cropOption) cropOption.classList.add('has-validation-error');
+
+                [x, y, width, height].forEach(input => {
+                    if (!input.value) {
+                        input.classList.add('validation-error');
+                        if (!firstErrorElement) firstErrorElement = input;
+                    }
+                });
+
+                errors.push({ field: 'Crop', message: 'All fields required: X, Y, Width, Height' });
+            }
+        }
+
+        // Check if smart crop is enabled with incomplete fields
+        if (document.getElementById('enableSmartCrop')?.checked) {
+            const width = document.getElementById('smartCropWidth');
+            const height = document.getElementById('smartCropHeight');
+
+            if (!width.value || !height.value) {
+                const smartCropOption = width.closest('.transform-option');
+                if (smartCropOption) smartCropOption.classList.add('has-validation-error');
+
+                if (!width.value) {
+                    width.classList.add('validation-error');
+                    if (!firstErrorElement) firstErrorElement = width;
+                }
+                if (!height.value) {
+                    height.classList.add('validation-error');
+                    if (!firstErrorElement) firstErrorElement = height;
+                }
+
+                errors.push({ field: 'Smart Crop', message: 'Both Width and Height are required' });
+            }
+        }
+
+        return { valid: errors.length === 0, errors, firstErrorElement };
+    }
+
     // Manual generation function
     window.manualGenerateCode = function() {
         console.log('manualGenerateCode called, currentSection:', currentSection);
         if (!currentSection) {
             showUserFeedback('Please select a section first', 'warning');
             return;
+        }
+
+        // Validate transform inputs if in transform section
+        if (currentSection === 'transform') {
+            const validation = validateTransformInputs();
+            if (!validation.valid) {
+                // Show error feedback
+                const errorMessage = validation.errors.map(e => `${e.field}: ${e.message}`).join('\n');
+                showUserFeedback('Please fix validation errors:\n' + errorMessage, 'error');
+
+                // Scroll to first error
+                if (validation.firstErrorElement) {
+                    validation.firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    validation.firstErrorElement.focus();
+                }
+
+                return; // Don't generate code
+            }
         }
 
         // Check if current section is workflow-only (no client-side code generation)
@@ -7917,26 +8006,14 @@ function addChainStepToBuilder(builderId) {
                         presetBtn.textContent = preset.label;
                         presetBtn.title = preset.value;
                         presetBtn.style.cssText = `
-                            padding: 4px 10px;
+                            padding: 6px 12px;
                             font-size: 0.85em;
                             background: #f0f0f0;
                             border: 1px solid #d0d0d0;
                             border-radius: 4px;
                             cursor: pointer;
-                            transition: all 0.2s ease;
+                            font-weight: 600;
                         `;
-                        
-                        presetBtn.addEventListener('mouseover', () => {
-                            presetBtn.style.background = '#EF4A26';
-                            presetBtn.style.color = 'white';
-                            presetBtn.style.borderColor = '#EF4A26';
-                        });
-                        
-                        presetBtn.addEventListener('mouseout', () => {
-                            presetBtn.style.background = '#f0f0f0';
-                            presetBtn.style.color = 'inherit';
-                            presetBtn.style.borderColor = '#d0d0d0';
-                        });
                         
                         presetBtn.addEventListener('click', () => {
                             paramsInput.value = preset.value;
