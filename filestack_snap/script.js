@@ -9860,7 +9860,15 @@ function createCredentialsSidebar() {
     content.appendChild(signatureGroup);
 
     sidebar.appendChild(content);
-    document.body.appendChild(sidebar);
+
+    // Create or get left sidebar container
+    let leftSidebar = document.querySelector('.left-sidebar-container');
+    if (!leftSidebar) {
+        leftSidebar = document.createElement('div');
+        leftSidebar.className = 'left-sidebar-container';
+        document.body.appendChild(leftSidebar);
+    }
+    leftSidebar.appendChild(sidebar);
 }
 
 function initializeSectionNavigator() {
@@ -9878,7 +9886,14 @@ function initializeSectionNavigator() {
         if (configCards.length >= 5) {
             if (!navigator) {
                 navigator = createSectionNavigator(configCards);
-                document.body.appendChild(navigator);
+                // Append to left sidebar container
+                let leftSidebar = document.querySelector('.left-sidebar-container');
+                if (!leftSidebar) {
+                    leftSidebar = document.createElement('div');
+                    leftSidebar.className = 'left-sidebar-container';
+                    document.body.appendChild(leftSidebar);
+                }
+                leftSidebar.appendChild(navigator);
             } else {
                 // Update existing navigator for new section
                 updateSectionNavigator(navigator, configCards);
@@ -9910,7 +9925,14 @@ function initializeSectionNavigator() {
         const configCards = activeSection.querySelectorAll('.config-card');
         if (configCards.length >= 5) {
             const navigator = createSectionNavigator(configCards);
-            document.body.appendChild(navigator);
+            // Append to left sidebar container
+            let leftSidebar = document.querySelector('.left-sidebar-container');
+            if (!leftSidebar) {
+                leftSidebar = document.createElement('div');
+                leftSidebar.className = 'left-sidebar-container';
+                document.body.appendChild(leftSidebar);
+            }
+            leftSidebar.appendChild(navigator);
             setTimeout(() => {
                 navigator.classList.add('visible');
                 document.body.classList.add('sidebar-visible');
