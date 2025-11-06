@@ -2738,6 +2738,10 @@ function generateCodeEnhanced(section, tab = 'javascript') {
             case 'picker':
                 options = collectPickerOptions();
                 break;
+            case 'picker-styling':
+                // For Styling section, collect picker options to generate proper code
+                options = collectPickerOptions();
+                break;
             case 'transform':
                 options = collectTransformOptions();
                 break;
@@ -2781,7 +2785,13 @@ function generateCodeEnhanced(section, tab = 'javascript') {
                 options = {};
         }
 
-        // Try enhanced generation first
+        // For picker and picker-styling sections, use dedicated function that handles callbacks
+        if (section === 'picker' || section === 'picker-styling') {
+            generatePickerCode(tab);
+            return;
+        }
+
+        // Try enhanced generation first for other sections
         const enhancedCode = enhancedCodeGenerator.generateCode(section, tab, options);
 
         // Always use enhanced version if available, otherwise use fallback message
@@ -3006,11 +3016,17 @@ function collectFacesOptions() {
         // Faces detection parameters
         const minSize = document.getElementById('facesMinSize')?.value;
         const maxSize = document.getElementById('facesMaxSize')?.value;
+        const highlightColor = document.getElementById('facesColor')?.value;
         const exportFaces = document.getElementById('facesExport')?.checked;
+        const countOnly = document.getElementById('facesCountOnly')?.checked;
+        const blurFaces = document.getElementById('facesBlur')?.checked;
 
         if (minSize) options.minsize = parseFloat(minSize);
         if (maxSize) options.maxsize = parseFloat(maxSize);
+        if (highlightColor && highlightColor !== '') options.color = highlightColor;
         if (exportFaces) options.export = true;
+        if (countOnly) options.mode = 'count';
+        if (blurFaces) options.blur = true;
 
         return options;
     } catch (error) {
@@ -3214,12 +3230,323 @@ function setupManualCodeGeneration() {
         }
     };
 
+    // Validation function for transform section
+    function validateTransformInputs() {
+        // Clear previous validation errors
+        document.querySelectorAll('.validation-error').forEach(el => {
+            el.classList.remove('validation-error');
+        });
+        document.querySelectorAll('.validation-error-message').forEach(el => {
+            el.remove();
+        });
+        document.querySelectorAll('.has-validation-error').forEach(el => {
+            el.classList.remove('has-validation-error');
+        });
+
+        const errors = [];
+        let firstErrorElement = null;
+
+        // Check if crop is enabled with incomplete fields
+        if (document.getElementById('enableCrop')?.checked) {
+            const x = document.getElementById('cropX');
+            const y = document.getElementById('cropY');
+            const width = document.getElementById('cropWidth');
+            const height = document.getElementById('cropHeight');
+
+            const hasAllValues = x.value && y.value && width.value && height.value;
+
+            if (!hasAllValues) {
+                const cropOption = x.closest('.transform-option');
+                if (cropOption) cropOption.classList.add('has-validation-error');
+
+                [x, y, width, height].forEach(input => {
+                    if (!input.value) {
+                        input.classList.add('validation-error');
+                        if (!firstErrorElement) firstErrorElement = input;
+                    }
+                });
+
+                errors.push({ field: 'Crop', message: 'All fields required: X, Y, Width, Height' });
+            }
+        }
+
+        // Check if smart crop is enabled with incomplete fields
+        if (document.getElementById('enableSmartCrop')?.checked) {
+            const width = document.getElementById('smartCropWidth');
+            const height = document.getElementById('smartCropHeight');
+
+            if (!width.value || !height.value) {
+                const smartCropOption = width.closest('.transform-option');
+                if (smartCropOption) smartCropOption.classList.add('has-validation-error');
+
+                if (!width.value) {
+                    width.classList.add('validation-error');
+                    if (!firstErrorElement) firstErrorElement = width;
+                }
+                if (!height.value) {
+                    height.classList.add('validation-error');
+                    if (!firstErrorElement) firstErrorElement = height;
+                }
+
+                errors.push({ field: 'Smart Crop', message: 'Both Width and Height are required' });
+            }
+        }
+
+        // Check if watermark is enabled without file
+        if (document.getElementById('enableWatermark')?.checked) {
+            const file = document.getElementById('watermarkFile');
+
+            if (!file.value) {
+                const watermarkOption = file.closest('.transform-option');
+                if (watermarkOption) watermarkOption.classList.add('has-validation-error');
+
+                file.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = file;
+
+                errors.push({ field: 'Watermark', message: 'File handle is required' });
+            }
+        }
+
+        // Check if collage is enabled without files
+        if (document.getElementById('enableCollage')?.checked) {
+            const files = document.getElementById('collageFiles');
+
+            if (!files.value) {
+                const collageOption = files.closest('.transform-option');
+                if (collageOption) collageOption.classList.add('has-validation-error');
+
+                files.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = files;
+
+                errors.push({ field: 'Collage', message: 'Files array is required (e.g., ["handle1", "handle2"])' });
+            }
+        }
+
+        // Check if urlscreenshot is enabled without URL
+        if (document.getElementById('enableUrlScreenshot')?.checked) {
+            const url = document.getElementById('urlScreenshotUrl');
+
+            if (!url.value) {
+                const urlScreenshotOption = url.closest('.transform-option');
+                if (urlScreenshotOption) urlScreenshotOption.classList.add('has-validation-error');
+
+                url.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = url;
+
+                errors.push({ field: 'URL Screenshot', message: 'URL is required' });
+            }
+        }
+
+        // Check if resize is enabled but has no dimensions
+        if (document.getElementById('enableResize')?.checked) {
+            const width = document.getElementById('resizeWidth');
+            const height = document.getElementById('resizeHeight');
+
+            if (!width.value && !height.value) {
+                const resizeOption = width.closest('.transform-option');
+                if (resizeOption) resizeOption.classList.add('has-validation-error');
+
+                width.classList.add('validation-error');
+                height.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = width;
+
+                errors.push({ field: 'Resize', message: 'At least Width or Height is required' });
+            }
+        }
+
+        // Check if rotate is enabled without degrees
+        if (document.getElementById('enableRotate')?.checked) {
+            const degrees = document.getElementById('rotateDegrees');
+
+            if (!degrees.value) {
+                const rotateOption = degrees.closest('.transform-option');
+                if (rotateOption) rotateOption.classList.add('has-validation-error');
+
+                degrees.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = degrees;
+
+                errors.push({ field: 'Rotate', message: 'Degrees value is required' });
+            }
+        }
+
+        // Check if blur is enabled without amount
+        if (document.getElementById('enableBlur')?.checked) {
+            const amount = document.getElementById('blurAmount');
+
+            if (!amount.value) {
+                const blurOption = amount.closest('.transform-option');
+                if (blurOption) blurOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Blur', message: 'Amount value is required' });
+            }
+        }
+
+        // Check if sharpen is enabled without amount
+        if (document.getElementById('enableSharpen')?.checked) {
+            const amount = document.getElementById('sharpenAmount');
+
+            if (!amount.value) {
+                const sharpenOption = amount.closest('.transform-option');
+                if (sharpenOption) sharpenOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Sharpen', message: 'Amount value is required' });
+            }
+        }
+
+        // Check if sepia is enabled without tone
+        if (document.getElementById('enableSepia')?.checked) {
+            const tone = document.getElementById('sepiaTone');
+
+            if (!tone.value) {
+                const sepiaOption = tone.closest('.transform-option');
+                if (sepiaOption) sepiaOption.classList.add('has-validation-error');
+
+                tone.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = tone;
+
+                errors.push({ field: 'Sepia', message: 'Tone value is required' });
+            }
+        }
+
+        // Check if rounded corners is enabled without radius
+        if (document.getElementById('enableRoundedCorners')?.checked) {
+            const radius = document.getElementById('roundedCornersRadius');
+
+            if (!radius.value) {
+                const roundedOption = radius.closest('.transform-option');
+                if (roundedOption) roundedOption.classList.add('has-validation-error');
+
+                radius.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = radius;
+
+                errors.push({ field: 'Rounded Corners', message: 'Radius value is required' });
+            }
+        }
+
+        // Check if vignette is enabled without amount
+        if (document.getElementById('enableVignette')?.checked) {
+            const amount = document.getElementById('vignetteAmount');
+
+            if (!amount.value) {
+                const vignetteOption = amount.closest('.transform-option');
+                if (vignetteOption) vignetteOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Vignette', message: 'Amount value is required' });
+            }
+        }
+
+        // Check if partial blur is enabled without objects
+        if (document.getElementById('enablePartialBlur')?.checked) {
+            const objects = document.getElementById('partialBlurObjects');
+
+            if (!objects.value) {
+                const partialBlurOption = objects.closest('.transform-option');
+                if (partialBlurOption) partialBlurOption.classList.add('has-validation-error');
+
+                objects.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = objects;
+
+                errors.push({ field: 'Partial Blur', message: 'Objects JSON is required (e.g., [{"x":10,"y":10,"width":50,"height":50}])' });
+            }
+        }
+
+        // Check if partial pixelate is enabled without objects
+        if (document.getElementById('enablePartialPixelate')?.checked) {
+            const objects = document.getElementById('partialPixelateObjects');
+
+            if (!objects.value) {
+                const partialPixelateOption = objects.closest('.transform-option');
+                if (partialPixelateOption) partialPixelateOption.classList.add('has-validation-error');
+
+                objects.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = objects;
+
+                errors.push({ field: 'Partial Pixelate', message: 'Objects JSON is required (e.g., [{"x":10,"y":10,"width":50,"height":50}])' });
+            }
+        }
+
+        // Check advanced transformations
+        // Pixelate
+        if (document.getElementById('enablePixelate')?.checked) {
+            const amount = document.getElementById('pixelateAmount');
+
+            if (!amount.value) {
+                const pixelateOption = amount.closest('.transform-option');
+                if (pixelateOption) pixelateOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Pixelate', message: 'Amount value is required' });
+            }
+        }
+
+        // Oil Paint
+        if (document.getElementById('enableOilPaint')?.checked) {
+            const amount = document.getElementById('oilPaintAmount');
+
+            if (!amount.value) {
+                const oilPaintOption = amount.closest('.transform-option');
+                if (oilPaintOption) oilPaintOption.classList.add('has-validation-error');
+
+                amount.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = amount;
+
+                errors.push({ field: 'Oil Paint', message: 'Amount value is required' });
+            }
+        }
+
+        // Monochrome
+        if (document.getElementById('enableMonochrome')?.checked) {
+            const color = document.getElementById('monochromeColor');
+
+            if (!color.value) {
+                const monochromeOption = color.closest('.transform-option');
+                if (monochromeOption) monochromeOption.classList.add('has-validation-error');
+
+                color.classList.add('validation-error');
+                if (!firstErrorElement) firstErrorElement = color;
+
+                errors.push({ field: 'Monochrome', message: 'Color value is required' });
+            }
+        }
+
+        return { valid: errors.length === 0, errors, firstErrorElement };
+    }
+
     // Manual generation function
     window.manualGenerateCode = function() {
         console.log('manualGenerateCode called, currentSection:', currentSection);
         if (!currentSection) {
             showUserFeedback('Please select a section first', 'warning');
             return;
+        }
+
+        // Validate transform inputs if in transform section
+        if (currentSection === 'transform') {
+            const validation = validateTransformInputs();
+            if (!validation.valid) {
+                // Show error feedback
+                const errorMessage = validation.errors.map(e => `${e.field}: ${e.message}`).join('\n');
+                showUserFeedback('Please fix validation errors:\n' + errorMessage, 'error');
+
+                // Scroll to first error
+                if (validation.firstErrorElement) {
+                    validation.firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    validation.firstErrorElement.focus();
+                }
+
+                return; // Don't generate code
+            }
         }
 
         // Check if current section is workflow-only (no client-side code generation)
@@ -3245,8 +3572,16 @@ function setupManualCodeGeneration() {
                 generateBtn.disabled = true;
             }
 
-            // Generate code
-            generateCodeEnhanced(currentSection, tabName);
+            // Special handling for picker-styling section
+            if (currentSection === 'picker-styling') {
+                // Update the Styling section's code display instead of main code panel
+                if (window.PickerStyling && typeof window.PickerStyling.updateGeneratedCode === 'function') {
+                    window.PickerStyling.updateGeneratedCode();
+                }
+            } else {
+                // Generate code normally for other sections
+                generateCodeEnhanced(currentSection, tabName);
+            }
             markConfigUpToDate();
 
             // Restore button state
@@ -4344,6 +4679,104 @@ function collectPickerOptions() {
         }
     }
 
+    // Advanced Picker Options (New)
+
+    // UI Customization
+    if (document.getElementById('disableTransformer')?.checked) {
+        options.disableTransformer = true;
+    }
+    if (document.getElementById('transformationsUI')?.checked) {
+        options.transformationsUI = true;
+    }
+    if (document.getElementById('globalDropZone')?.checked) {
+        options.globalDropZone = true;
+    }
+    if (document.getElementById('disableThumbnails')?.checked) {
+        options.disableThumbnails = true;
+    }
+    if (document.getElementById('disableAltText')?.checked) {
+        options.disableAltText = true;
+    }
+    if (document.getElementById('disableDirectoryUpload')?.checked) {
+        options.disableDirectoryUpload = true;
+    }
+    if (document.getElementById('miniUploader')?.checked) {
+        options.miniUploader = true;
+    }
+
+    // Upload Behavior
+    if (document.getElementById('allowManualRetry')?.checked) {
+        options.allowManualRetry = true;
+    }
+    if (document.getElementById('startUploadingWhenMaxFilesReached')?.checked) {
+        options.startUploadingWhenMaxFilesReached = true;
+    }
+    if (document.getElementById('disableStorageKey')?.checked) {
+        options.disableStorageKey = true;
+    }
+    if (document.getElementById('useSentryBreadcrumbs')?.checked) {
+        options.useSentryBreadcrumbs = true;
+    }
+
+    // Dimensions
+    const imageDim = document.getElementById('imageDim')?.value;
+    if (imageDim) {
+        const dims = imageDim.split(',').map(d => parseInt(d.trim()));
+        if (dims.length === 2 && !isNaN(dims[0]) && !isNaN(dims[1])) {
+            options.imageDim = dims;
+        }
+    }
+
+    // View and Display
+    const viewType = document.getElementById('viewType')?.value;
+    if (viewType && viewType !== '') {
+        options.viewType = viewType;
+    }
+
+    const videoResolution = document.getElementById('videoResolution')?.value;
+    if (videoResolution) {
+        options.videoResolution = videoResolution;
+    }
+
+    const pickerContainer = document.getElementById('pickerContainer')?.value;
+    if (pickerContainer) {
+        options.container = pickerContainer;
+    }
+
+    const modalSize = document.getElementById('modalSize')?.value;
+    if (modalSize) {
+        const dims = modalSize.split(',').map(d => parseInt(d.trim()));
+        if (dims.length === 2 && !isNaN(dims[0]) && !isNaN(dims[1])) {
+            options.modalSize = dims;
+        }
+    }
+
+    // Custom Source
+    const customSourceName = document.getElementById('customSourceName')?.value;
+    const customSourcePath = document.getElementById('customSourcePath')?.value;
+    const customSourceContainer = document.getElementById('customSourceContainer')?.value;
+    if (customSourceName) options.customSourceName = customSourceName;
+    if (customSourcePath) options.customSourcePath = customSourcePath;
+    if (customSourceContainer) options.customSourceContainer = customSourceContainer;
+
+    // Miscellaneous
+    const rootId = document.getElementById('rootId')?.value;
+    if (rootId) options.rootId = rootId;
+
+    const supportEmail = document.getElementById('supportEmail')?.value;
+    if (supportEmail) options.supportEmail = supportEmail;
+
+    const googleDriveAppId = document.getElementById('googleDriveAppId')?.value;
+    if (googleDriveAppId) options.googleDriveAppID = googleDriveAppId;
+
+    const errorsTimeout = validateIntegerInput('errorsTimeout');
+    if (errorsTimeout !== null) {
+        options.errorsTimeout = errorsTimeout;
+    }
+
+    // Note: Callbacks are handled in code generation, not in options object
+    // They will be added as function stubs in generated code
+
     console.log('Final collected picker options:', options);
     return options;
 }
@@ -4351,6 +4784,7 @@ function collectPickerOptions() {
 // Collect transform options
 function collectTransformOptions() {
     const options = {};
+    const validationWarnings = []; // Track transformations that are enabled but missing required fields
 
     // File handle
     const handle = document.getElementById('transformHandle').value;
@@ -4364,10 +4798,13 @@ function collectTransformOptions() {
         const height = validateIntegerInput('resizeHeight');
         const fit = document.getElementById('resizeFit').value;
 
-        options.resize = {};
-        if (width !== null) options.resize.width = width;
-        if (height !== null) options.resize.height = height;
-        if (fit !== 'clip') options.resize.fit = fit;
+        // Only add resize if at least width or height is provided
+        if (width !== null || height !== null) {
+            options.resize = {};
+            if (width !== null) options.resize.width = width;
+            if (height !== null) options.resize.height = height;
+            if (fit !== 'clip') options.resize.fit = fit;
+        }
     }
 
     if (document.getElementById('enableCrop').checked) {
@@ -4380,6 +4817,8 @@ function collectTransformOptions() {
             options.crop = {
                 dim: [x, y, width, height]
             };
+        } else {
+            validationWarnings.push('Crop is enabled but missing required fields (x, y, width, height)');
         }
     }
 
@@ -4452,13 +4891,16 @@ function collectTransformOptions() {
         const opacity = validateIntegerInput('shadowOpacity');
         const vector = document.getElementById('shadowVector').value;
 
-        options.shadow = {};
-        if (blur !== null) options.shadow.blur = blur;
-        if (opacity !== null) options.shadow.opacity = opacity;
-        if (vector) {
-            const vectorArray = vector.split(',').map(v => parseInt(v.trim()));
-            if (vectorArray.length === 2) {
-                options.shadow.vector = vectorArray;
+        // Only add shadow if at least one parameter is provided
+        if (blur !== null || opacity !== null || vector) {
+            options.shadow = {};
+            if (blur !== null) options.shadow.blur = blur;
+            if (opacity !== null) options.shadow.opacity = opacity;
+            if (vector) {
+                const vectorArray = vector.split(',').map(v => parseInt(v.trim()));
+                if (vectorArray.length === 2) {
+                    options.shadow.vector = vectorArray;
+                }
             }
         }
     }
@@ -4467,9 +4909,12 @@ function collectTransformOptions() {
         const width = validateIntegerInput('borderWidth');
         const color = document.getElementById('borderColor').value;
 
-        options.border = {};
-        if (width !== null) options.border.width = width;
-        if (color) options.border.color = color;
+        // Only add border if at least width or color is provided
+        if (width !== null || color) {
+            options.border = {};
+            if (width !== null) options.border.width = width;
+            if (color) options.border.color = color;
+        }
     }
 
     if (document.getElementById('enableWatermark').checked) {
@@ -4513,10 +4958,13 @@ function collectTransformOptions() {
         const minSize = validateNumberInput('blurFacesMinSize');
         const maxSize = validateNumberInput('blurFacesMaxSize');
 
-        options.blur_faces = {};
-        if (amount !== null) options.blur_faces.amount = amount;
-        if (minSize !== null) options.blur_faces.minsize = minSize;
-        if (maxSize !== null) options.blur_faces.maxsize = maxSize;
+        // Only add blur_faces if at least one parameter is provided
+        if (amount !== null || minSize !== null || maxSize !== null) {
+            options.blur_faces = {};
+            if (amount !== null) options.blur_faces.amount = amount;
+            if (minSize !== null) options.blur_faces.minsize = minSize;
+            if (maxSize !== null) options.blur_faces.maxsize = maxSize;
+        }
     }
 
     if (document.getElementById('enableCropFaces').checked) {
@@ -4524,10 +4972,13 @@ function collectTransformOptions() {
         const height = validateIntegerInput('cropFacesHeight');
         const mode = document.getElementById('cropFacesMode').value;
 
-        options.crop_faces = {};
-        if (width !== null) options.crop_faces.width = width;
-        if (height !== null) options.crop_faces.height = height;
-        if (mode) options.crop_faces.mode = mode;
+        // Only add crop_faces if at least one parameter is provided
+        if (width !== null || height !== null || mode) {
+            options.crop_faces = {};
+            if (width !== null) options.crop_faces.width = width;
+            if (height !== null) options.crop_faces.height = height;
+            if (mode) options.crop_faces.mode = mode;
+        }
     }
 
     if (document.getElementById('enablePixelateFaces').checked) {
@@ -4535,10 +4986,13 @@ function collectTransformOptions() {
         const minSize = validateNumberInput('pixelateFacesMinSize');
         const maxSize = validateNumberInput('pixelateFacesMaxSize');
 
-        options.pixelate_faces = {};
-        if (amount !== null) options.pixelate_faces.amount = amount;
-        if (minSize !== null) options.pixelate_faces.minsize = minSize;
-        if (maxSize !== null) options.pixelate_faces.maxsize = maxSize;
+        // Only add pixelate_faces if at least one parameter is provided
+        if (amount !== null || minSize !== null || maxSize !== null) {
+            options.pixelate_faces = {};
+            if (amount !== null) options.pixelate_faces.amount = amount;
+            if (minSize !== null) options.pixelate_faces.minsize = minSize;
+            if (maxSize !== null) options.pixelate_faces.maxsize = maxSize;
+        }
     }
 
     // Smart crop with validation
@@ -4553,6 +5007,8 @@ function collectTransformOptions() {
                 height: height
             };
             if (mode !== 'auto') options.smart_crop.mode = mode;
+        } else {
+            validationWarnings.push('Smart Crop is enabled but missing required fields (width and height)');
         }
     }
 
@@ -4561,9 +5017,15 @@ function collectTransformOptions() {
         const noise = document.getElementById('upscaleNoise').value;
         const style = document.getElementById('upscaleStyle').value;
 
-        options.upscale = {};
-        if (noise !== 'none') options.upscale.noise = noise;
-        if (style) options.upscale.style = style;
+        // Only add upscale if at least one non-default parameter is provided
+        if ((noise && noise !== 'none') || style) {
+            options.upscale = {};
+            if (noise !== 'none') options.upscale.noise = noise;
+            if (style) options.upscale.style = style;
+        } else {
+            // If no parameters, just enable upscale with defaults
+            options.upscale = true;
+        }
     }
 
     // PDF processing
@@ -4572,14 +5034,147 @@ function collectTransformOptions() {
         const pageFormat = document.getElementById('pdfPageFormat').value;
         const orientation = document.getElementById('pdfOrientation').value;
 
-        options.pdfconvert = {};
-        if (pages) options.pdfconvert.pages = pages.split(',').map(p => p.trim());
-        if (pageFormat) options.pdfconvert.pageformat = pageFormat;
-        if (orientation) options.pdfconvert.pageorientation = orientation;
+        // Only add pdfconvert if at least one parameter is provided
+        if (pages || pageFormat || orientation) {
+            options.pdfconvert = {};
+            if (pages) options.pdfconvert.pages = pages.split(',').map(p => p.trim());
+            if (pageFormat) options.pdfconvert.pageformat = pageFormat;
+            if (orientation) options.pdfconvert.pageorientation = orientation;
+        }
     }
 
     if (document.getElementById('enablePdfInfo').checked) {
         options.pdfinfo = true;
+    }
+
+    // Advanced Transformations - Image Enhancements
+    if (document.getElementById('enableEnhance')?.checked) {
+        options.enhance = true;
+    }
+
+    // Advanced Transformations - Artistic Filters
+    if (document.getElementById('enablePixelate')?.checked) {
+        const amount = validateIntegerInput('pixelateAmount');
+        if (amount !== null) {
+            options.pixelate = amount;
+        }
+    }
+
+    if (document.getElementById('enableOilPaint')?.checked) {
+        const amount = validateIntegerInput('oilPaintAmount');
+        if (amount !== null) {
+            options.oil_paint = amount;
+        }
+    }
+
+    if (document.getElementById('enableMonochrome')?.checked) {
+        const color = document.getElementById('monochromeColor')?.value;
+        if (color) {
+            options.monochrome = { color: color };
+        }
+    }
+
+    if (document.getElementById('enableModulate')?.checked) {
+        const brightness = validateIntegerInput('modulateBrightness');
+        const hue = validateIntegerInput('modulateHue');
+        const saturation = validateIntegerInput('modulateSaturation');
+
+        if (brightness !== null || hue !== null || saturation !== null) {
+            options.modulate = {};
+            if (brightness !== null) options.modulate.brightness = brightness;
+            if (hue !== null) options.modulate.hue = hue;
+            if (saturation !== null) options.modulate.saturation = saturation;
+        }
+    }
+
+    if (document.getElementById('enableAscii')?.checked) {
+        const colored = document.getElementById('asciiColored')?.checked;
+        const reverse = document.getElementById('asciiReverse')?.checked;
+        const size = validateIntegerInput('asciiSize');
+
+        options.ascii = {};
+        if (colored) options.ascii.colored = true;
+        if (reverse) options.ascii.reverse = true;
+        if (size !== null) options.ascii.size = size;
+    }
+
+    // Advanced Transformations - Photo Effects
+    if (document.getElementById('enableTornEdges')?.checked) {
+        const spread = validateIntegerInput('tornEdgesSpread');
+        const background = document.getElementById('tornEdgesBackground')?.value;
+
+        if (spread !== null || background) {
+            options.torn_edges = {};
+            if (spread !== null) options.torn_edges.spread = spread;
+            if (background) options.torn_edges.background = background;
+        }
+    }
+
+    if (document.getElementById('enablePolaroid')?.checked) {
+        const color = document.getElementById('polaroidColor')?.value;
+        const rotate = validateIntegerInput('polaroidRotate');
+        const background = document.getElementById('polaroidBackground')?.value;
+
+        if (color || rotate !== null || background) {
+            options.polaroid = {};
+            if (color) options.polaroid.color = color;
+            if (rotate !== null) options.polaroid.rotate = rotate;
+            if (background) options.polaroid.background = background;
+        }
+    }
+
+    // Advanced Transformations - Multi-Image
+    if (document.getElementById('enableCollage')?.checked) {
+        const filesStr = document.getElementById('collageFiles')?.value;
+        const width = validateIntegerInput('collageWidth');
+        const height = validateIntegerInput('collageHeight');
+        const fit = document.getElementById('collageFit')?.value;
+        const margin = validateIntegerInput('collageMargin');
+        const autorotate = document.getElementById('collageAutorotate')?.checked;
+
+        if (filesStr) {
+            try {
+                const files = JSON.parse(filesStr);
+                if (Array.isArray(files) && files.length > 0) {
+                    options.collage = { files: files };
+                    if (width !== null) options.collage.width = width;
+                    if (height !== null) options.collage.height = height;
+                    if (fit && fit !== 'auto') options.collage.fit = fit;
+                    if (margin !== null) options.collage.margin = margin;
+                    if (autorotate) options.collage.autorotate = true;
+                }
+            } catch (e) {
+                // ignore invalid JSON
+            }
+        }
+    }
+
+    // Advanced Transformations - URL & Optimization
+    if (document.getElementById('enableUrlScreenshot')?.checked) {
+        const url = document.getElementById('urlScreenshotUrl')?.value;
+        const agent = document.getElementById('urlScreenshotAgent')?.value;
+        const mode = document.getElementById('urlScreenshotMode')?.value;
+        const width = validateIntegerInput('urlScreenshotWidth');
+        const height = validateIntegerInput('urlScreenshotHeight');
+        const delay = validateIntegerInput('urlScreenshotDelay');
+
+        if (url) {
+            options.urlscreenshot = { url: url };
+            if (agent && agent !== 'desktop') options.urlscreenshot.agent = agent;
+            if (mode && mode !== 'window') options.urlscreenshot.mode = mode;
+            if (width !== null) options.urlscreenshot.width = width;
+            if (height !== null) options.urlscreenshot.height = height;
+            if (delay !== null && delay > 0) options.urlscreenshot.delay = delay;
+        }
+    }
+
+    if (document.getElementById('enableCompress')?.checked) {
+        const metadata = document.getElementById('compressMetadata')?.checked;
+        if (metadata) {
+            options.compress = { metadata: false };
+        } else {
+            options.compress = true;
+        }
     }
 
     // Output settings with validation
@@ -4598,6 +5193,46 @@ function collectTransformOptions() {
     if (compress !== 80) {
         if (!options.output) options.output = {};
         options.output.compress = compress;
+    }
+
+    // Display validation warnings to user if any
+    if (validationWarnings.length > 0) {
+        console.warn('Transformation validation warnings:', validationWarnings);
+
+        // Display warnings in the UI
+        let warningDiv = document.getElementById('transformValidationWarnings');
+        if (!warningDiv) {
+            // Create warning div if it doesn't exist
+            warningDiv = document.createElement('div');
+            warningDiv.id = 'transformValidationWarnings';
+            warningDiv.style.cssText = 'background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 12px; margin: 10px 0; color: #856404;';
+
+            // Insert it before the code display area
+            const codeDisplay = document.querySelector('.code-output-container') || document.querySelector('.code-display');
+            if (codeDisplay && codeDisplay.parentNode) {
+                codeDisplay.parentNode.insertBefore(warningDiv, codeDisplay);
+            }
+        }
+
+        warningDiv.innerHTML = `
+            <strong>⚠️ Validation Warnings:</strong>
+            <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+                ${validationWarnings.map(w => `<li>${w}</li>`).join('')}
+            </ul>
+            <small>These transformations will not be included in the generated code.</small>
+        `;
+        warningDiv.style.display = 'block';
+    } else {
+        // Hide warnings if there are none
+        const warningDiv = document.getElementById('transformValidationWarnings');
+        if (warningDiv) {
+            warningDiv.style.display = 'none';
+        }
+    }
+
+    // Attach warnings to options for potential use in code generation
+    if (validationWarnings.length > 0) {
+        options._validationWarnings = validationWarnings;
     }
 
     return options;
@@ -4635,6 +5270,25 @@ function generateJavaScriptPickerCode(options) {
     if (options.modalSize) lines.push(`  modalSize: ${JSON.stringify(options.modalSize)},`);
     if (options.pasteMode) lines.push(`  pasteMode: '${options.pasteMode}',`);
 
+    // Additional advanced options
+    if (options.globalDropZone) lines.push(`  globalDropZone: true,`);
+    if (options.disableAltText) lines.push(`  disableAltText: true,`);
+    if (options.disableDirectoryUpload) lines.push(`  disableDirectoryUpload: true,`);
+    if (options.miniUploader) lines.push(`  miniUploader: true,`);
+    if (options.startUploadingWhenMaxFilesReached) lines.push(`  startUploadingWhenMaxFilesReached: true,`);
+    if (options.disableStorageKey) lines.push(`  disableStorageKey: true,`);
+    if (options.useSentryBreadcrumbs) lines.push(`  useSentryBreadcrumbs: true,`);
+    if (options.viewType) lines.push(`  viewType: '${options.viewType}',`);
+    if (options.videoResolution) lines.push(`  videoResolution: '${options.videoResolution}',`);
+    if (options.container) lines.push(`  container: '${options.container}',`);
+    if (options.customSourceName) lines.push(`  customSourceName: '${options.customSourceName}',`);
+    if (options.customSourcePath) lines.push(`  customSourcePath: '${options.customSourcePath}',`);
+    if (options.customSourceContainer) lines.push(`  customSourceContainer: '${options.customSourceContainer}',`);
+    if (options.rootId) lines.push(`  rootId: '${options.rootId}',`);
+    if (options.supportEmail) lines.push(`  supportEmail: '${options.supportEmail}',`);
+    if (options.googleDriveAppID) lines.push(`  googleDriveAppID: '${options.googleDriveAppID}',`);
+    if (options.errorsTimeout) lines.push(`  errorsTimeout: ${options.errorsTimeout},`);
+
     // storeTo
     if (options.storeTo) {
         lines.push(`  storeTo: ${JSON.stringify(options.storeTo, null, 2).replace(/\n/g, '\n  ')},`);
@@ -4665,6 +5319,36 @@ function generateJavaScriptPickerCode(options) {
     }
     if (document.getElementById('enableOnUploadDone')?.checked) {
         lines.push(`  onUploadDone: (res) => {\n    console.log('PickerResponse', res);\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadFinished')?.checked) {
+        lines.push(`  onFileUploadFinished: (file) => {\n    console.log('File upload finished', file);\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadFailed')?.checked) {
+        lines.push(`  onFileUploadFailed: (file, error) => {\n    console.error('File upload failed', file, error);\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadProgress')?.checked) {
+        lines.push(`  onFileUploadProgress: (file, event) => {\n    console.log('File upload progress', file.filename, event.totalPercent + '%');\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadStarted')?.checked) {
+        lines.push(`  onFileUploadStarted: (file) => {\n    console.log('File upload started', file);\n  },`);
+    }
+    if (document.getElementById('enableOnFileUploadCancel')?.checked) {
+        lines.push(`  onFileUploadCancel: (file) => {\n    console.log('File upload cancelled', file);\n  },`);
+    }
+    if (document.getElementById('enableOnOpen')?.checked) {
+        lines.push(`  onOpen: () => {\n    console.log('Picker opened');\n  },`);
+    }
+    if (document.getElementById('enableOnClose')?.checked) {
+        lines.push(`  onClose: () => {\n    console.log('Picker closed');\n  },`);
+    }
+    if (document.getElementById('enableOnCancel')?.checked) {
+        lines.push(`  onCancel: () => {\n    console.log('Picker cancelled');\n  },`);
+    }
+    if (document.getElementById('enableOnUploadStarted')?.checked) {
+        lines.push(`  onUploadStarted: (files) => {\n    console.log('Upload batch started', files.length + ' files');\n  },`);
+    }
+    if (document.getElementById('enableOnFileCropped')?.checked) {
+        lines.push(`  onFileCropped: (file) => {\n    console.log('File cropped', file);\n  },`);
     }
 
     const optionsCode = `const options = {\n${lines.join('\n')}\n};\n\n`;
@@ -5328,7 +6012,9 @@ function loadTemplate(templateName) {
 
     // Auto-generate code with the new configuration
     setTimeout(() => {
-        manualGenerateCode();
+        if (typeof window.manualGenerateCode === 'function') {
+            window.manualGenerateCode();
+        }
     }, 300);
 }
 
@@ -5453,7 +6139,9 @@ function loadTransformPipeline(pipelineName) {
 
     // Auto-generate code with the new configuration
     setTimeout(() => {
-        manualGenerateCode();
+        if (typeof window.manualGenerateCode === 'function') {
+            window.manualGenerateCode();
+        }
     }, 300);
 }
 
@@ -5576,7 +6264,9 @@ function loadChainPipeline(pipelineName) {
 
     // Auto-generate code with the new configuration
     setTimeout(() => {
-        manualGenerateCode();
+        if (typeof window.manualGenerateCode === 'function') {
+            window.manualGenerateCode();
+        }
     }, 300);
 }
 
@@ -7845,26 +8535,14 @@ function addChainStepToBuilder(builderId) {
                         presetBtn.textContent = preset.label;
                         presetBtn.title = preset.value;
                         presetBtn.style.cssText = `
-                            padding: 4px 10px;
+                            padding: 6px 12px;
                             font-size: 0.85em;
                             background: #f0f0f0;
                             border: 1px solid #d0d0d0;
                             border-radius: 4px;
                             cursor: pointer;
-                            transition: all 0.2s ease;
+                            font-weight: 600;
                         `;
-                        
-                        presetBtn.addEventListener('mouseover', () => {
-                            presetBtn.style.background = '#EF4A26';
-                            presetBtn.style.color = 'white';
-                            presetBtn.style.borderColor = '#EF4A26';
-                        });
-                        
-                        presetBtn.addEventListener('mouseout', () => {
-                            presetBtn.style.background = '#f0f0f0';
-                            presetBtn.style.color = 'inherit';
-                            presetBtn.style.borderColor = '#d0d0d0';
-                        });
                         
                         presetBtn.addEventListener('click', () => {
                             paramsInput.value = preset.value;
@@ -7899,59 +8577,145 @@ function addChainStepToBuilder(builderId) {
 
 function addChainStep() {
     const chainBuilder = document.getElementById('chainBuilder');
+    if (!chainBuilder) return;
+
     const stepDiv = document.createElement('div');
     stepDiv.className = 'chain-step';
     stepDiv.innerHTML = `
-        <select class="chain-operation track-changes">
-            <option value="">Select Operation</option>
-            <option value="resize">Resize</option>
-            <option value="crop">Crop</option>
-            <option value="rotate">Rotate</option>
-            <option value="blur">Blur</option>
-            <option value="sharpen">Sharpen</option>
-            <option value="quality">Quality</option>
-            <option value="convert">Convert Format</option>
-            <option value="watermark">Watermark</option>
-            <option value="sepia">Sepia</option>
-            <option value="blackwhite">Black & White</option>
-            <option value="flip">Flip</option>
-            <option value="flop">Flop</option>
-            <option value="negative">Negative</option>
-            <option value="circle">Circle</option>
-            <option value="rounded_corners">Rounded Corners</option>
-            <option value="vignette">Vignette</option>
-            <option value="shadow">Shadow</option>
-            <option value="border">Border</option>
-            <option value="upscale">Upscale</option>
-        </select>
-        <input type="text" class="chain-params track-changes" placeholder="Parameters (e.g., width:300,height:200)">
-        <button type="button" class="btn-remove-step">×</button>
+        <div class="chain-step-header">
+            <select class="chain-operation track-changes" title="Select a transformation to apply">
+                <option value="">Select Operation</option>
+                <option value="resize">Resize</option>
+                <option value="crop">Crop</option>
+                <option value="rotate">Rotate</option>
+                <option value="blur">Blur</option>
+                <option value="sharpen">Sharpen</option>
+                <option value="sepia">Sepia</option>
+                <option value="blackwhite">Black & White</option>
+                <option value="flip">Flip</option>
+                <option value="flop">Flop</option>
+                <option value="negative">Negative</option>
+                <option value="circle">Circle</option>
+                <option value="rounded_corners">Rounded Corners</option>
+                <option value="vignette">Vignette</option>
+                <option value="shadow">Shadow</option>
+                <option value="border">Border</option>
+                <option value="watermark">Watermark</option>
+                <option value="upscale">Upscale</option>
+                <option value="quality">Quality</option>
+                <option value="convert">Convert Format</option>
+            </select>
+            <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
+        </div>
+        <div class="chain-presets" style="display:none; margin: 0.5rem 0; gap: 0.3rem; flex-wrap: wrap;"></div>
+        <input type="text" class="chain-params track-changes" placeholder="Select operation first" title="Enter transformation parameters">
+        <div class="chain-param-hint" style="display:none;"></div>
     `;
 
-    // Add event listener for remove button
+    // Get elements
+    const operationSelect = stepDiv.querySelector('.chain-operation');
+    const paramsInput = stepDiv.querySelector('.chain-params');
+    const hintDiv = stepDiv.querySelector('.chain-param-hint');
+    const presetsContainer = stepDiv.querySelector('.chain-presets');
     const removeBtn = stepDiv.querySelector('.btn-remove-step');
+
+    // Update placeholder, hint, and presets when operation changes
+    operationSelect.addEventListener('change', () => {
+        const paramInfo = getParameterInfo(operationSelect.value);
+
+        if (operationSelect.value) {
+            paramsInput.placeholder = paramInfo.example;
+
+            if (paramInfo.example === '') {
+                paramsInput.disabled = true;
+                paramsInput.value = '';
+                hintDiv.style.display = 'none';
+                presetsContainer.style.display = 'none';
+            } else {
+                paramsInput.disabled = false;
+                hintDiv.innerHTML = `<strong>${paramInfo.description}</strong><br>${paramInfo.constraints}`;
+                hintDiv.style.display = 'block';
+
+                // Show presets if available
+                if (paramInfo.presets && paramInfo.presets.length > 0) {
+                    presetsContainer.innerHTML = '<div style="font-size: 0.85em; color: #666; margin-bottom: 0.3rem;"><i class="fas fa-magic"></i> Quick Presets:</div>';
+                    presetsContainer.style.display = 'flex';
+
+                    paramInfo.presets.forEach(preset => {
+                        const presetBtn = document.createElement('button');
+                        presetBtn.type = 'button';
+                        presetBtn.className = 'preset-btn';
+                        presetBtn.textContent = preset.label;
+                        presetBtn.title = preset.value;
+                        presetBtn.style.cssText = `
+                            padding: 6px 12px;
+                            font-size: 0.85em;
+                            background: #f0f0f0;
+                            border: 1px solid #d0d0d0;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-weight: 600;
+                        `;
+
+                        presetBtn.addEventListener('mouseover', () => {
+                            presetBtn.style.background = '#EF4A26';
+                            presetBtn.style.color = 'white';
+                            presetBtn.style.borderColor = '#EF4A26';
+                        });
+
+                        presetBtn.addEventListener('mouseout', () => {
+                            presetBtn.style.background = '#f0f0f0';
+                            presetBtn.style.color = 'inherit';
+                            presetBtn.style.borderColor = '#d0d0d0';
+                        });
+
+                        presetBtn.addEventListener('click', () => {
+                            paramsInput.value = preset.value;
+                            paramsInput.focus();
+                            if (typeof manualGenerateCode === 'function') {
+                                manualGenerateCode();
+                            }
+                        });
+
+                        presetsContainer.appendChild(presetBtn);
+                    });
+                } else {
+                    presetsContainer.style.display = 'none';
+                }
+            }
+        } else {
+            paramsInput.placeholder = 'Select operation first';
+            paramsInput.disabled = true;
+            paramsInput.value = '';
+            hintDiv.style.display = 'none';
+            presetsContainer.style.display = 'none';
+        }
+
+        if (typeof manualGenerateCode === 'function') {
+            manualGenerateCode();
+        }
+    });
+
+    // Trigger change to set initial state
+    const currentValue = operationSelect.value;
+    if (currentValue) {
+        operationSelect.dispatchEvent(new Event('change'));
+    }
+
+    // Add event listener for params input
+    paramsInput.addEventListener('input', debounce(() => {
+        if (typeof manualGenerateCode === 'function') {
+            manualGenerateCode();
+        }
+    }, 300));
+
+    // Add event listener for remove button
     removeBtn.addEventListener('click', () => {
         stepDiv.remove();
         if (typeof manualGenerateCode === 'function') {
             manualGenerateCode();
         }
     });
-
-    // Add event listeners for changes
-    const operationSelect = stepDiv.querySelector('.chain-operation');
-    const paramsInput = stepDiv.querySelector('.chain-params');
-
-    operationSelect.addEventListener('change', () => {
-        updateParameterPlaceholder(operationSelect, paramsInput);
-        if (typeof manualGenerateCode === 'function') {
-            manualGenerateCode();
-        }
-    });
-    paramsInput.addEventListener('input', debounce(() => {
-        if (typeof manualGenerateCode === 'function') {
-            manualGenerateCode();
-        }
-    }, 300));
 
     chainBuilder.appendChild(stepDiv);
     if (typeof manualGenerateCode === 'function') {
@@ -8988,3 +9752,485 @@ class TransformPlayground {
 document.addEventListener('DOMContentLoaded', () => {
     window.transformPlayground = new TransformPlayground();
 });
+
+/* ==========================================
+   UX IMPROVEMENTS FOR LONG PAGES
+   ========================================== */
+
+// Initialize UX improvements when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initializeUXImprovements();
+});
+
+function initializeUXImprovements() {
+    // Add scroll progress bar
+    const progressBar = document.createElement('div');
+    progressBar.className = 'scroll-progress';
+    document.body.appendChild(progressBar);
+
+    // Add back to top button
+    const backToTop = document.createElement('button');
+    backToTop.className = 'back-to-top';
+    backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    backToTop.setAttribute('title', 'Back to Top');
+    document.body.appendChild(backToTop);
+
+    // Update progress bar on scroll
+    window.addEventListener('scroll', () => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight - windowHeight;
+        const scrolled = window.scrollY;
+        const progress = (scrolled / documentHeight) * 100;
+        progressBar.style.width = progress + '%';
+
+        // Show/hide back to top button
+        if (scrolled > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    // Back to top click handler
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initialize section navigator for long pages
+    initializeSectionNavigator();
+
+    // Make long sections collapsible
+    makeConfigCardsCollapsible();
+
+    // Fix notification stacking
+    improveNotifications();
+
+    // Create credentials sidebar
+    createCredentialsSidebar();
+
+    // Setup collapsible headers (for manually created collapsibles in HTML)
+    setupCollapsibleHeaders();
+}
+
+function createCredentialsSidebar() {
+    // Get existing inputs from HTML
+    const apikeyInput = document.getElementById('globalApikey');
+    const policyInput = document.getElementById('securityPolicy');
+    const signatureInput = document.getElementById('securitySignature');
+
+    if (!apikeyInput || !policyInput || !signatureInput) {
+        console.error('Credentials inputs not found in DOM');
+        return;
+    }
+
+    // Create sidebar container
+    const sidebar = document.createElement('div');
+    sidebar.className = 'credentials-sidebar';
+
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'credentials-header';
+    header.innerHTML = `
+        <i class="fas fa-key"></i>
+        <h4>API Credentials</h4>
+    `;
+    sidebar.appendChild(header);
+
+    // Create content container
+    const content = document.createElement('div');
+    content.className = 'credentials-content';
+
+    // Create form groups and move existing inputs into them
+    const apikeyGroup = document.createElement('div');
+    apikeyGroup.className = 'form-group';
+    apikeyGroup.innerHTML = '<label for="globalApikey"><i class="fas fa-lock"></i> API Key</label>';
+    apikeyInput.placeholder = 'Enter API key';
+    apikeyInput.title = 'Your Filestack API key';
+    apikeyGroup.appendChild(apikeyInput);
+    content.appendChild(apikeyGroup);
+
+    const policyGroup = document.createElement('div');
+    policyGroup.className = 'form-group';
+    policyGroup.innerHTML = '<label for="securityPolicy"><i class="fas fa-shield-alt"></i> Policy</label>';
+    policyInput.placeholder = 'Security policy';
+    policyInput.title = 'Base64 encoded security policy';
+    policyGroup.appendChild(policyInput);
+    content.appendChild(policyGroup);
+
+    const signatureGroup = document.createElement('div');
+    signatureGroup.className = 'form-group';
+    signatureGroup.innerHTML = '<label for="securitySignature"><i class="fas fa-signature"></i> Signature</label>';
+    signatureInput.placeholder = 'Signature';
+    signatureInput.title = 'HMAC-SHA256 signature';
+    signatureGroup.appendChild(signatureInput);
+    content.appendChild(signatureGroup);
+
+    sidebar.appendChild(content);
+
+    // Create or get left sidebar container
+    let leftSidebar = document.querySelector('.left-sidebar-container');
+    if (!leftSidebar) {
+        leftSidebar = document.createElement('div');
+        leftSidebar.className = 'left-sidebar-container';
+        document.body.appendChild(leftSidebar);
+    }
+    leftSidebar.appendChild(sidebar);
+}
+
+function initializeSectionNavigator() {
+    // Check if current section has many cards (long page)
+    const observer = new MutationObserver(() => {
+        const activeSection = document.querySelector('.content-section.active');
+        if (!activeSection) return;
+
+        const configCards = activeSection.querySelectorAll('.config-card');
+
+        // Get or create navigator (only one in body)
+        let navigator = document.querySelector('.section-navigator');
+
+        // If page has 5+ config cards, show section navigator
+        if (configCards.length >= 5) {
+            if (!navigator) {
+                navigator = createSectionNavigator(configCards);
+                // Append to left sidebar container
+                let leftSidebar = document.querySelector('.left-sidebar-container');
+                if (!leftSidebar) {
+                    leftSidebar = document.createElement('div');
+                    leftSidebar.className = 'left-sidebar-container';
+                    document.body.appendChild(leftSidebar);
+                }
+                leftSidebar.appendChild(navigator);
+            } else {
+                // Update existing navigator for new section
+                updateSectionNavigator(navigator, configCards);
+            }
+
+            // Show navigator and add body class
+            setTimeout(() => {
+                navigator.classList.add('visible');
+                document.body.classList.add('sidebar-visible');
+            }, 100);
+        } else {
+            // Hide navigator for short sections
+            if (navigator) {
+                navigator.classList.remove('visible');
+                document.body.classList.remove('sidebar-visible');
+            }
+        }
+    });
+
+    // Observe section changes
+    const contentSections = document.querySelectorAll('.content-section');
+    contentSections.forEach(section => {
+        observer.observe(section, { attributes: true, attributeFilter: ['class'] });
+    });
+
+    // Initial check
+    const activeSection = document.querySelector('.content-section.active');
+    if (activeSection) {
+        const configCards = activeSection.querySelectorAll('.config-card');
+        if (configCards.length >= 5) {
+            const navigator = createSectionNavigator(configCards);
+            // Append to left sidebar container
+            let leftSidebar = document.querySelector('.left-sidebar-container');
+            if (!leftSidebar) {
+                leftSidebar = document.createElement('div');
+                leftSidebar.className = 'left-sidebar-container';
+                document.body.appendChild(leftSidebar);
+            }
+            leftSidebar.appendChild(navigator);
+            setTimeout(() => {
+                navigator.classList.add('visible');
+                document.body.classList.add('sidebar-visible');
+            }, 100);
+        }
+    }
+}
+
+function updateSectionNavigator(navigator, configCards) {
+    // Clear existing nav items
+    const navList = navigator.querySelector('.section-nav-list');
+    if (!navList) return;
+
+    navList.innerHTML = '';
+
+    // Rebuild nav items for new section
+    configCards.forEach((card, index) => {
+        const cardTitle = card.querySelector('h3');
+        if (!cardTitle) return;
+
+        // Add ID to card for scrolling
+        if (!card.id) {
+            card.id = `section-card-${index}`;
+        }
+
+        const navItem = document.createElement('li');
+        navItem.className = 'section-nav-item';
+        navItem.textContent = cardTitle.textContent.replace(/[^\w\s]/gi, '').trim();
+        navItem.setAttribute('data-target', card.id);
+
+        navItem.addEventListener('click', () => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Update active state
+            navList.querySelectorAll('.section-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            navItem.classList.add('active');
+        });
+
+        navList.appendChild(navItem);
+    });
+}
+
+function createSectionNavigator(configCards) {
+    const navigator = document.createElement('div');
+    navigator.className = 'section-navigator';
+    
+    const title = document.createElement('h4');
+    title.innerHTML = '<i class="fas fa-list"></i> Jump to Section';
+    navigator.appendChild(title);
+    
+    const navList = document.createElement('ul');
+    navList.className = 'section-nav-list';
+    
+    configCards.forEach((card, index) => {
+        const cardTitle = card.querySelector('h3');
+        if (!cardTitle) return;
+        
+        // Add ID to card for scrolling
+        if (!card.id) {
+            card.id = `section-card-${index}`;
+        }
+        
+        const navItem = document.createElement('li');
+        navItem.className = 'section-nav-item';
+        navItem.textContent = cardTitle.textContent.replace(/[^\w\s]/gi, '').trim();
+        navItem.setAttribute('data-target', card.id);
+        
+        navItem.addEventListener('click', () => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Update active state
+            navList.querySelectorAll('.section-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            navItem.classList.add('active');
+        });
+        
+        navList.appendChild(navItem);
+    });
+    
+    navigator.appendChild(navList);
+    
+    // Track scroll position to highlight active section
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                updateActiveNavItem(navList, configCards);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    return navigator;
+}
+
+function updateActiveNavItem(navList, configCards) {
+    const scrollPos = window.scrollY + 250;
+    
+    let activeIndex = 0;
+    configCards.forEach((card, index) => {
+        if (card.offsetTop <= scrollPos) {
+            activeIndex = index;
+        }
+    });
+    
+    navList.querySelectorAll('.section-nav-item').forEach((item, index) => {
+        if (index === activeIndex) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+}
+
+function makeConfigCardsCollapsible() {
+    // Observe when sections become active
+    const observer = new MutationObserver(() => {
+        const activeSection = document.querySelector('.content-section.active');
+        if (!activeSection) return;
+
+        const configCards = activeSection.querySelectorAll('.config-card:not(.collapsible-ready)');
+        
+        configCards.forEach((card, index) => {
+            // Skip if already made collapsible
+            if (card.classList.contains('collapsible-ready')) return;
+            
+            const h3 = card.querySelector('h3');
+            if (!h3) return;
+
+            // Don't make the first 2 cards collapsible (keep most important visible)
+            if (index < 2) {
+                card.classList.add('collapsible-ready');
+                return;
+            }
+
+            // Create collapsible header
+            const header = document.createElement('div');
+            header.className = 'collapsible-section-header';
+            
+            const headerTitle = document.createElement('h3');
+            headerTitle.innerHTML = h3.innerHTML;
+            
+            const collapseIcon = document.createElement('i');
+            collapseIcon.className = 'fas fa-chevron-down collapse-icon';
+            
+            header.appendChild(headerTitle);
+            header.appendChild(collapseIcon);
+            
+            // Wrap content
+            const content = document.createElement('div');
+            content.className = 'collapsible-content';
+            
+            // Move all children except h3 into content
+            Array.from(card.children).forEach(child => {
+                if (child !== h3) {
+                    content.appendChild(child);
+                }
+            });
+            
+            // Replace h3 with header and add content
+            card.replaceChild(header, h3);
+            card.appendChild(content);
+            
+            // Toggle collapse on click
+            header.addEventListener('click', () => {
+                header.classList.toggle('collapsed');
+                content.classList.toggle('collapsed');
+            });
+            
+            card.classList.add('collapsible-ready');
+        });
+    });
+
+    const contentSections = document.querySelectorAll('.content-section');
+    contentSections.forEach(section => {
+        observer.observe(section, { attributes: true, attributeFilter: ['class'] });
+    });
+}
+
+function setupCollapsibleHeaders() {
+    // Setup click handlers for all collapsible headers (manually created in HTML)
+    document.querySelectorAll('.collapsible-section-header').forEach(header => {
+        if (!header.hasAttribute('data-click-attached')) {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                if (content && content.classList.contains('collapsible-content')) {
+                    header.classList.toggle('collapsed');
+                    content.classList.toggle('collapsed');
+                }
+            });
+            header.setAttribute('data-click-attached', 'true');
+        }
+    });
+}
+
+function improveNotifications() {
+    // Override or improve the showUserFeedback function
+    const originalShowUserFeedback = window.showUserFeedback;
+    
+    window.showUserFeedback = function(message, type = 'info') {
+        // Remove "template loaded" notifications - they're not important
+        if (message.toLowerCase().includes('template') && message.toLowerCase().includes('loaded')) {
+            console.log(message); // Just log it
+            return;
+        }
+        
+        // Call original function
+        if (originalShowUserFeedback) {
+            originalShowUserFeedback(message, type);
+        }
+        
+        // Auto-dismiss after 3 seconds
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach((notification, index) => {
+            // Stack them vertically
+            notification.style.top = (100 + (index * 70)) + 'px';
+            
+            // Auto-dismiss
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+            
+            // Add dismiss button if not exists
+            if (!notification.querySelector('.notification-dismiss')) {
+                const dismissBtn = document.createElement('button');
+                dismissBtn.className = 'notification-dismiss';
+                dismissBtn.innerHTML = '×';
+                dismissBtn.onclick = () => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100px)';
+                    setTimeout(() => notification.remove(), 300);
+                };
+                notification.appendChild(dismissBtn);
+            }
+        });
+    };
+}
+
+// Add helpful hints for first-time users
+function showFirstTimeHints() {
+    // Check if user has seen hints before
+    const hasSeenHints = localStorage.getItem('filestack_snap_hints_seen');
+    if (hasSeenHints) return;
+
+    // Only show on File Picker section (most complex)
+    const pickerSection = document.getElementById('picker');
+    if (!pickerSection) return;
+
+    const hint = document.createElement('div');
+    hint.className = 'first-time-hint';
+    hint.innerHTML = `
+        <i class="fas fa-lightbulb"></i>
+        <div class="first-time-hint-content">
+            <h4>👋 First time here?</h4>
+            <p>
+                <strong>This page is long!</strong> Use the <strong>"Jump to Section"</strong> navigator above to quickly find what you need.
+                You can also collapse sections you're not using to keep things tidy.
+            </p>
+        </div>
+        <button class="first-time-hint-dismiss">×</button>
+    `;
+
+    const dismissBtn = hint.querySelector('.first-time-hint-dismiss');
+    dismissBtn.onclick = () => {
+        hint.style.opacity = '0';
+        setTimeout(() => hint.remove(), 300);
+        localStorage.setItem('filestack_snap_hints_seen', 'true');
+    };
+
+    // Insert at the top of the section
+    const sectionHeader = pickerSection.querySelector('.section-header');
+    if (sectionHeader && sectionHeader.nextSibling) {
+        sectionHeader.parentNode.insertBefore(hint, sectionHeader.nextSibling);
+    }
+
+    // Auto-dismiss after 10 seconds
+    setTimeout(() => {
+        if (hint.parentNode) {
+            hint.style.opacity = '0';
+            setTimeout(() => hint.remove(), 300);
+            localStorage.setItem('filestack_snap_hints_seen', 'true');
+        }
+    }, 10000);
+}
+
+// Show hints after a delay
+setTimeout(showFirstTimeHints, 1000);
+
+console.log('UX improvements initialized');

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+    <script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
@@ -32,22 +32,11 @@
         </div>
     </header>
 
-    <!-- API Key Section (Top Bar) -->
-    <div class="api-key-bar">
-        <div class="api-key-container">
-            <div class="form-group">
-                <label for="globalApikey">API Key</label>
-                <input type="text" id="globalApikey" placeholder="Enter your Filestack API key">
-            </div>
-            <div class="form-group">
-                <label for="securityPolicy">Security Policy</label>
-                <input type="text" id="securityPolicy" placeholder="Enter security policy">
-            </div>
-            <div class="form-group">
-                <label for="securitySignature">Security Signature</label>
-                <input type="text" id="securitySignature" placeholder="Enter security signature">
-            </div>
-        </div>
+    <!-- Hidden API Key Inputs (accessed by JS, displayed in sidebar) -->
+    <div style="display: none;">
+        <input type="text" id="globalApikey" placeholder="Enter your Filestack API key">
+        <input type="text" id="securityPolicy" placeholder="Enter security policy">
+        <input type="text" id="securitySignature" placeholder="Enter security signature">
     </div>
 
     <!-- Top Navigation Tabs (3 Tiers) -->
@@ -71,6 +60,9 @@
             </button>
             <button class="tier-tab" data-tier="advanced">
                 <i class="fas fa-cog"></i> Advanced
+            </button>
+            <button class="tier-tab" data-tier="styling">
+                <i class="fas fa-palette"></i> Styling
             </button>
         </div>
 
@@ -161,6 +153,13 @@
             </button>
             <button class="sub-tab" data-section="security">
                 <i class="fas fa-lock"></i> Security
+            </button>
+        </div>
+
+        <!-- Tier 2: Subcategories for Styling -->
+        <div class="nav-tier nav-tier-2" data-parent="styling">
+            <button class="sub-tab" data-section="picker-styling">
+                <i class="fas fa-palette"></i> Picker Styling
             </button>
         </div>
     </nav>
@@ -624,6 +623,475 @@
                             </ul>
                         </div>
                     </div>
+                    <!-- Advanced Picker Options (Collapsible) -->
+                    <div class="config-card">
+                        <div class="collapsible-section-header">
+                            <h3><i class="fas fa-cogs"></i> Advanced Picker Options</h3>
+                            <i class="fas fa-chevron-down collapse-icon"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <p class="card-description" style="margin-top: 1rem;">Advanced configuration options for power users. Most apps won't need these settings.</p>
+
+                            <!-- Additional Callbacks -->
+                            <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-bell"></i> Additional Event Callbacks</h4>
+                                
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadFinished" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadFinished</span>
+                                            <i class="fas fa-info-circle" title="Called when each individual file completes uploading. Use this to track per-file completion." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-check"></i> Triggered for each file upon completion
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadFailed" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadFailed</span>
+                                            <i class="fas fa-info-circle" title="Called when a file upload fails. Essential for error handling and retry logic." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-exclamation-triangle"></i> Handle upload failures gracefully
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadProgress" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadProgress</span>
+                                            <i class="fas fa-info-circle" title="Called repeatedly during upload with progress information. Perfect for progress bars." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-chart-line"></i> Track real-time upload progress
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadStarted" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadStarted</span>
+                                            <i class="fas fa-info-circle" title="Called when each file begins uploading. Use to show 'uploading' status." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-play"></i> Fired when upload starts for each file
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileUploadCancel" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileUploadCancel</span>
+                                            <i class="fas fa-info-circle" title="Called when user cancels a file upload." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-ban"></i> Handle user cancellations
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnOpen" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onOpen</span>
+                                            <i class="fas fa-info-circle" title="Called when picker UI is mounted/opened." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-door-open"></i> Picker opened event
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnClose" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onClose</span>
+                                            <i class="fas fa-info-circle" title="Called when picker UI is closed/unmounted." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-door-closed"></i> Picker closed event
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnCancel" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onCancel</span>
+                                            <i class="fas fa-info-circle" title="Called when user cancels the entire picker session." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-times-circle"></i> User cancelled picker
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnUploadStarted" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onUploadStarted</span>
+                                            <i class="fas fa-info-circle" title="Called when user clicks upload button to begin batch upload." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-upload"></i> Batch upload initiated
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="enableOnFileCropped" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">onFileCropped</span>
+                                            <i class="fas fa-info-circle" title="Called when user crops an image in the picker editor." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-crop"></i> Image cropped event
+                                        </small>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- UI Customization & Behavior -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-palette"></i> UI Customization & Behavior</h4>
+                                
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableTransformer" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Image Editor</span>
+                                            <i class="fas fa-info-circle" title="Remove the image editing/cropping UI from picker." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-ban"></i> Removes crop/edit capabilities
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="transformationsUI" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Enable New Transformations UI</span>
+                                            <i class="fas fa-info-circle" title="Use the newer transformation interface (if available)." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-wand-magic-sparkles"></i> Modern transform interface
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="globalDropZone" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Global Drop Zone</span>
+                                            <i class="fas fa-info-circle" title="Allow drag-drop anywhere in picker, not just specific zones." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-expand"></i> Drop files anywhere in picker
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableThumbnails" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Thumbnails</span>
+                                            <i class="fas fa-info-circle" title="Don't show image previews in summary screen." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-image"></i> Hide image previews
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableAltText" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Alt Text Editor</span>
+                                            <i class="fas fa-info-circle" title="Hide the alt text editing field in summary." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-text-slash"></i> Remove alt text input
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableDirectoryUpload" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Directory Upload</span>
+                                            <i class="fas fa-info-circle" title="Prevent users from uploading entire folders." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-folder-minus"></i> Only individual files allowed
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="miniUploader" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Mini Uploader Mode</span>
+                                            <i class="fas fa-info-circle" title="Use compact mini uploader interface." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-compress"></i> Compact uploader UI
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <div class="form-row" style="margin-top: 1rem;">
+                                    <div class="form-group">
+                                        <label for="viewType">
+                                            Default View Type
+                                            <i class="fas fa-info-circle" title="Set default view for file browser: list or grid."></i>
+                                        </label>
+                                        <select id="viewType" class="track-changes">
+                                            <option value="">Default</option>
+                                            <option value="list">List View</option>
+                                            <option value="grid">Grid View</option>
+                                        </select>
+                                        <small class="form-hint">
+                                            <i class="fas fa-th"></i> Browser layout preference
+                                        </small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="videoResolution">
+                                            Video Recording Resolution
+                                            <i class="fas fa-info-circle" title="Set resolution for video recording. Format: widthxheight (e.g., 1920x1080)"></i>
+                                        </label>
+                                        <input type="text" id="videoResolution" placeholder="1280x720" class="track-changes">
+                                        <small class="form-hint">
+                                            <i class="fas fa-video"></i> Example: <code>1920x1080</code>, <code>1280x720</code>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Behavior -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-arrow-up"></i> Upload Behavior</h4>
+                                
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="allowManualRetry" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Allow Manual Retry</span>
+                                            <i class="fas fa-info-circle" title="Keep modal open on failure so users can retry uploads manually." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-redo"></i> Let users retry failed uploads
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="startUploadingWhenMaxFilesReached" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Auto-Upload at Max Files</span>
+                                            <i class="fas fa-info-circle" title="Automatically start uploading when maxFiles limit is reached." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-bolt"></i> Auto-trigger upload at file limit
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="disableStorageKey" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Disable Storage Key Prefix</span>
+                                            <i class="fas fa-info-circle" title="Remove hash prefix from stored file keys." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-hashtag"></i> Cleaner file keys
+                                        </small>
+                                    </div>
+                                </label>
+
+                                <div class="form-group" style="margin-top: 1rem;">
+                                    <label for="imageDim">
+                                        Exact Image Dimensions (w,h)
+                                        <i class="fas fa-info-circle" title="Force exact image dimensions. Format: 'width,height' (e.g., '800,600'). Different from imageMax/imageMin."></i>
+                                    </label>
+                                    <input type="text" id="imageDim" placeholder="800,600" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-ruler-combined"></i> Forces exact dimensions, not max/min. Example: <code>800,600</code>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Inline/DropPane Configuration -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-window-maximize"></i> Inline/DropPane Configuration</h4>
+                                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                                    These options only apply when displayMode is set to 'inline' or 'dropPane'.
+                                </p>
+
+                                <div class="form-group">
+                                    <label for="pickerContainer">
+                                        Container Selector
+                                        <i class="fas fa-info-circle" title="CSS selector or DOM element where inline/dropPane picker will be mounted (e.g., '#my-uploader', '.upload-zone')."></i>
+                                    </label>
+                                    <input type="text" id="pickerContainer" placeholder="#my-uploader" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-crosshairs"></i> Required for inline/dropPane modes. Example: <code>#my-uploader</code>
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="modalSize">
+                                        Modal Size (w,h)
+                                        <i class="fas fa-info-circle" title="Custom modal dimensions in pixels. Format: 'width,height' (e.g., '1200,800'). Desktop only."></i>
+                                    </label>
+                                    <input type="text" id="modalSize" placeholder="1200,800" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-expand-alt"></i> Desktop modal dimensions. Example: <code>1200,800</code>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Custom Source Configuration -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-plug"></i> Custom Source Configuration</h4>
+                                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                                    Configure custom source integration. Only applies when 'customsource' is in fromSources.
+                                </p>
+
+                                <div class="form-group">
+                                    <label for="customSourceName">
+                                        Custom Source Name
+                                        <i class="fas fa-info-circle" title="Display name for your custom source in the picker."></i>
+                                    </label>
+                                    <input type="text" id="customSourceName" placeholder="My Files" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-tag"></i> Name shown in source list
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="customSourcePath">
+                                        Custom Source Path
+                                        <i class="fas fa-info-circle" title="Default path/directory in your custom source."></i>
+                                    </label>
+                                    <input type="text" id="customSourcePath" placeholder="/default/path/" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-folder-open"></i> Starting directory in custom source
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="customSourceContainer">
+                                        Custom Source Container ID
+                                        <i class="fas fa-info-circle" title="Container ID for custom source integration (advanced)."></i>
+                                    </label>
+                                    <input type="text" id="customSourceContainer" placeholder="my-custom-source" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-hashtag"></i> Advanced: Custom source container identifier
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Miscellaneous Advanced -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <h4 style="margin-bottom: 1rem; color: var(--dark-purple);"><i class="fas fa-toolbox"></i> Miscellaneous Advanced Options</h4>
+
+                                <div class="form-group">
+                                    <label for="rootId">
+                                        Root Mount ID
+                                        <i class="fas fa-info-circle" title="Unique ID for picker mount point. Useful for multiple pickers on one page."></i>
+                                    </label>
+                                    <input type="text" id="rootId" placeholder="filestack-picker-1" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-anchor"></i> Unique identifier for this picker instance
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="supportEmail">
+                                        Support Email
+                                        <i class="fas fa-info-circle" title="Email address shown in error messages for user support."></i>
+                                    </label>
+                                    <input type="email" id="supportEmail" placeholder="support@example.com" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-envelope"></i> Shown to users when errors occur
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="googleDriveAppId">
+                                        Google Drive App ID
+                                        <i class="fas fa-info-circle" title="Custom Google Drive Picker App ID for your own OAuth client."></i>
+                                    </label>
+                                    <input type="text" id="googleDriveAppId" placeholder="123456789012-..." class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-google-drive"></i> For custom Google Drive integration
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="errorsTimeout">
+                                        Error Message Timeout (ms)
+                                        <i class="fas fa-info-circle" title="How long error messages are displayed in milliseconds."></i>
+                                    </label>
+                                    <input type="number" id="errorsTimeout" min="0" placeholder="3000" class="track-changes">
+                                    <small class="form-hint">
+                                        <i class="fas fa-clock"></i> Duration in milliseconds. 3000ms = 3 seconds
+                                    </small>
+                                </div>
+
+                                <label class="checkbox-item" style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                                    <input type="checkbox" id="useSentryBreadcrumbs" class="track-changes" style="margin-right: 0.75rem; margin-top: 0.25rem;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                                            <span style="font-weight: 500; margin-right: 0.5rem;">Enable Sentry Breadcrumbs</span>
+                                            <i class="fas fa-info-circle" title="Enable Sentry error tracking breadcrumbs for debugging." style="color: #666;"></i>
+                                        </div>
+                                        <small class="form-hint">
+                                            <i class="fas fa-bug"></i> Error tracking integration
+                                        </small>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-top: 1.5rem;">
+                                <h4><i class="fas fa-code"></i> Note on Complex Options</h4>
+                                <p style="margin: 0.5rem 0; font-size: 0.9rem;">
+                                    Some advanced options like <code>acceptFn</code>, <code>customText</code>, <code>transformations</code>, 
+                                    <code>pasteMode</code>, <code>dropPane</code>, and <code>customAuthText</code> accept complex objects or functions.
+                                    These cannot be configured through this UI and must be added directly in your code.
+                                </p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+                                    <strong>Reference:</strong> See <a href="https://filestack.github.io/filestack-js/interfaces/PickerOptions.html" target="_blank">official PickerOptions documentation</a> for full details.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Store Options -->
                     <div class="config-card">
@@ -811,6 +1279,54 @@
                     <a href="https://www.filestack.com/docs/uploads/dnd/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
                         <i class="fas fa-book"></i> View Documentation
                     </a>
+                </div>
+
+                <!-- About Drag & Drop - Introduction -->
+                <div class="config-card config-full-width" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+                    <h3><i class="fas fa-rocket"></i> About Drag & Drop</h3>
+                    <p style="font-size: 1.05rem; color: #495057; margin-bottom: 1.5rem;">
+                        The Filestack Drag-and-Drop library makes it incredibly easy to add file upload functionality to your web applications.
+                        Simply configure the options below, and we'll generate the code for you!
+                    </p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-bolt"></i> Quick Setup (Just 3 Steps!)</h4>
+                        <ul class="feature-list" style="margin: 0.5rem 0;">
+                            <li><i class="fas fa-check"></i> <strong>Add HTML Element:</strong> Create a div with class <code>.drop-container</code></li>
+                            <li><i class="fas fa-check"></i> <strong>Include Library:</strong> Load the filestack-drag-and-drop UMD module via CDN</li>
+                            <li><i class="fas fa-check"></i> <strong>Initialize:</strong> Call <code>new filestackDnD.init(apiKey, element, options)</code></li>
+                        </ul>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0;">
+                            <h4><i class="fas fa-magic"></i> Key Features</h4>
+                            <ul class="feature-list" style="margin: 0.5rem 0; font-size: 0.9rem;">
+                                <li><i class="fas fa-filter"></i> File type filtering</li>
+                                <li><i class="fas fa-weight-hanging"></i> Size limits</li>
+                                <li><i class="fas fa-th"></i> Multiple drop zones</li>
+                                <li><i class="fas fa-chart-line"></i> Progress tracking</li>
+                                <li><i class="fas fa-pause-circle"></i> Upload control (pause/resume)</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
+                            <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
+                            <ul style="margin: 0.5rem 0; font-size: 0.9rem; padding-left: 1.5rem;">
+                                <li>Profile picture uploads</li>
+                                <li>Document management</li>
+                                <li>Photo galleries</li>
+                                <li>File attachments</li>
+                                <li>Bulk imports (CSV, JSON)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1.5rem; padding: 1rem; background: #e8f5e9; border-radius: 8px; border: 1px solid #4caf50;">
+                        <p style="margin: 0; color: #2e7d32; font-weight: 600;">
+                            <i class="fas fa-arrow-down"></i> Configure your settings below, then click "Generate Code" to get started!
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Basic Configuration -->
@@ -1135,50 +1651,73 @@
                     </div>
                 </div>
 
-                <div class="config-card config-full-width" style="margin-top: 1.5rem;">
-                    <h3><i class="fas fa-info-circle"></i> About Drag & Drop</h3>
-                    <p>The Filestack Drag-and-Drop library makes it incredibly easy to add file upload functionality to your web applications:</p>
+                <!-- Advanced API Methods -->
+                <div class="config-card config-full-width">
+                    <h3><i class="fas fa-code"></i> Advanced API Methods & Controls</h3>
+                    <p class="card-description">Programmatic control over the drag & drop instance after initialization.</p>
 
                     <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-rocket"></i> Quick Setup (Just 3 Lines!)</h4>
-                        <ul class="feature-list" style="margin: 0.5rem 0;">
-                            <li><i class="fas fa-check"></i> <strong>Add HTML Element:</strong> Create a div with class <code>.drop-container</code></li>
-                            <li><i class="fas fa-check"></i> <strong>Include Library:</strong> Load the filestack-drag-and-drop UMD module</li>
-                            <li><i class="fas fa-check"></i> <strong>Initialize:</strong> Call <code>new filestackDnD.init(apiKey, element, options)</code></li>
+                        <h4><i class="fas fa-th"></i> Element Management</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Dynamically add, remove, or replace drop zones after initialization:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.setElements(elements)</code> - Replace all drop zones with new elements</li>
+                            <li><code>dnd.setElement(element)</code> - Replace all with a single element</li>
+                            <li><code>dnd.addElement(element)</code> - Add one more drop zone to existing list</li>
+                            <li><code>dnd.addElements(elements)</code> - Add multiple drop zones to existing list</li>
                         </ul>
+                        <div style="background: #f0f8ff; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #1976d2;">dnd.addElement(document.querySelector('.another-drop-zone'));</pre>
+                        </div>
                     </div>
 
                     <div class="info-box" style="background: #f3e5f5; border-left: 4px solid #9c27b0; margin-bottom: 1rem;">
-                        <h4><i class="fas fa-magic"></i> Key Features</h4>
-                        <ul class="feature-list" style="margin: 0.5rem 0;">
-                            <li><i class="fas fa-check"></i> <strong>File Type Filtering:</strong> Accept only specific file types (images, PDFs, etc.)</li>
-                            <li><i class="fas fa-check"></i> <strong>Size Limits:</strong> Restrict file sizes to prevent large uploads</li>
-                            <li><i class="fas fa-check"></i> <strong>Multiple Elements:</strong> Add drag & drop to multiple elements on one page</li>
-                            <li><i class="fas fa-check"></i> <strong>Event Handling:</strong> Listen to progress, success, error events</li>
-                            <li><i class="fas fa-check"></i> <strong>Upload Control:</strong> Pause, resume, or cancel uploads programmatically</li>
+                        <h4><i class="fas fa-pause-circle"></i> Upload Control</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Pause, resume, or cancel uploads programmatically via events:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.emit('pause', {elementId})</code> - Pause all uploads from an element</li>
+                            <li><code>dnd.emit('pause', {fileId})</code> - Pause a specific file upload</li>
+                            <li><code>dnd.emit('resume', {elementId})</code> - Resume paused uploads</li>
+                            <li><code>dnd.emit('cancel', {elementId})</code> - Cancel uploads completely</li>
                         </ul>
+                        <div style="background: #faf5ff; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #9c27b0;">dnd.emit('pause', { elementId: 'drop-zone-1' });</pre>
+                        </div>
                     </div>
 
-                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800;">
-                        <h4><i class="fas fa-lightbulb"></i> Common Use Cases</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
-                            <li><strong>Profile Picture Upload:</strong> Single file drop zone for avatars</li>
-                            <li><strong>Document Management:</strong> Accept PDFs, Word docs, spreadsheets</li>
-                            <li><strong>Photo Gallery:</strong> Multi-file image uploads with previews</li>
-                            <li><strong>File Attachments:</strong> Email-style file attachment zones</li>
-                            <li><strong>Bulk Import:</strong> CSV, JSON, or data file uploads</li>
+                    <div class="info-box" style="background: #fff3e0; border-left: 4px solid #ff9800; margin-bottom: 1rem;">
+                        <h4><i class="fas fa-tools"></i> Helper Properties</h4>
+                        <p style="margin: 0.5rem 0 0.75rem 0; font-size: 0.9rem;">
+                            Access internal helpers for advanced control:
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><code>dnd.elementHelper</code> - Direct access to element manager (elements array)</li>
+                            <li><code>dnd.eventEmitterHelper</code> - Event emitter for custom events</li>
+                            <li><code>dnd.uploadsHelper</code> - Upload manager for configuration changes</li>
+                            <li><code>dnd.filstackSdk</code> - Full Filestack Client instance access</li>
                         </ul>
+                        <div style="background: #fff8e1; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+                            <strong>Example:</strong>
+                            <pre style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #f57c00;">// Open file picker from same SDK instance
+dnd.filstackSdk.picker(options).open();</pre>
+                        </div>
                     </div>
 
                     <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4caf50;">
-                        <h4><i class="fas fa-graduation-cap"></i> Quick Tips</h4>
+                        <h4><i class="fas fa-graduation-cap"></i> Quick Tips & Best Practices</h4>
                         <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>Visual Feedback:</strong> Style your drop zone with hover effects and drag-over indicators</li>
-                            <li><strong>Accept Patterns:</strong> Use MIME types (<code>image/*</code>) for broader matching</li>
-                            <li><strong>Size in Bytes:</strong> Remember 1MB = 1048576 bytes, 10MB = 10485760 bytes</li>
-                            <li><strong>Multiple Zones:</strong> Use <code>setElements()</code> to add more drop zones after initialization</li>
+                            <li><strong>Visual Feedback:</strong> Style your drop zone with CSS hover effects and drag-over indicators</li>
+                            <li><strong>Accept Patterns:</strong> Use MIME types like <code>image/*</code> for broader file matching</li>
+                            <li><strong>Size in Bytes:</strong> Remember: 1MB = 1,048,576 bytes, 10MB = 10,485,760 bytes</li>
+                            <li><strong>Multiple Zones:</strong> Use <code>setElements()</code> to manage multiple drop zones efficiently</li>
                             <li><strong>Event Listeners:</strong> Use <code>.on('uploadFileFinish', callback)</code> to track completed uploads</li>
-                            <li><strong>Security:</strong> Add policy/signature for private uploads or to enforce file restrictions server-side</li>
+                            <li><strong>Security:</strong> Add policy/signature for private uploads or server-side file restrictions</li>
+                            <li><strong>CDN + SRI:</strong> Use Subresource Integrity (SRI) hashes from manifest.json for security</li>
                         </ul>
                     </div>
                 </div>
@@ -1318,7 +1857,8 @@
                                     <span>Blur</span>
                                 </label>
                                 <div class="transform-inputs" id="blurInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="blurAmount" min="0" max="100">
+                                    <label for="blurAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Blur Amount</label>
+                                    <input type="number" placeholder="0-100" id="blurAmount" min="0" max="100">
                                 </div>
                             </div>
 
@@ -1328,7 +1868,8 @@
                                     <span>Sharpen</span>
                                 </label>
                                 <div class="transform-inputs" id="sharpenInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="sharpenAmount" min="0" max="100">
+                                    <label for="sharpenAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Sharpen Amount</label>
+                                    <input type="number" placeholder="0-100" id="sharpenAmount" min="0" max="100">
                                 </div>
                             </div>
 
@@ -1338,7 +1879,8 @@
                                     <span>Sepia</span>
                                 </label>
                                 <div class="transform-inputs" id="sepiaInputs" style="display: none;">
-                                    <input type="number" placeholder="Tone" id="sepiaTone" min="0" max="100">
+                                    <label for="sepiaTone" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Sepia Tone</label>
+                                    <input type="number" placeholder="0-100" id="sepiaTone" min="0" max="100">
                                 </div>
                             </div>
 
@@ -1369,7 +1911,8 @@
                                     <span>Rounded Corners</span>
                                 </label>
                                 <div class="transform-inputs" id="roundedCornersInputs" style="display: none;">
-                                    <input type="number" placeholder="Radius" id="roundedCornersRadius" min="0"
+                                    <label for="roundedCornersRadius" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Corner Radius</label>
+                                    <input type="number" placeholder="0-1000" id="roundedCornersRadius" min="0"
                                         max="1000">
                                 </div>
                             </div>
@@ -1409,7 +1952,7 @@
                                     <span>Blur Faces</span>
                                 </label>
                                 <div class="transform-inputs" id="blurFacesInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="blurFacesAmount" min="0" max="100">
+                                    <input type="number" placeholder="0-100" id="blurFacesAmount" min="0" max="100">
                                     <input type="number" placeholder="Min Size" id="blurFacesMinSize" min="0"
                                         max="10000" step="0.01">
                                     <input type="number" placeholder="Max Size" id="blurFacesMaxSize" min="0"
@@ -1439,7 +1982,7 @@
                                     <span>Pixelate Faces</span>
                                 </label>
                                 <div class="transform-inputs" id="pixelateFacesInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="pixelateFacesAmount" min="0"
+                                    <input type="number" placeholder="2-100" id="pixelateFacesAmount" min="0"
                                         max="100">
                                     <input type="number" placeholder="Min Size" id="pixelateFacesMinSize" min="0"
                                         max="10000" step="0.01">
@@ -1461,7 +2004,8 @@
                                     <span>Vignette</span>
                                 </label>
                                 <div class="transform-inputs" id="vignetteInputs" style="display: none;">
-                                    <input type="number" placeholder="Amount" id="vignetteAmount" min="0" max="100">
+                                    <label for="vignetteAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Vignette Amount</label>
+                                    <input type="number" placeholder="0-100" id="vignetteAmount" min="0" max="100">
                                 </div>
                             </div>
 
@@ -1471,9 +2015,12 @@
                                     <span>Shadow</span>
                                 </label>
                                 <div class="transform-inputs" id="shadowInputs" style="display: none;">
-                                    <input type="number" placeholder="Blur" id="shadowBlur" min="0">
-                                    <input type="number" placeholder="Opacity" id="shadowOpacity" min="0" max="100">
-                                    <input type="text" placeholder="Vector (x,y)" id="shadowVector">
+                                    <label for="shadowBlur" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Blur Amount</label>
+                                    <input type="number" placeholder="0+" id="shadowBlur" min="0">
+                                    <label for="shadowOpacity" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; margin-top: 0.5rem; display: block;">Opacity</label>
+                                    <input type="number" placeholder="0-100" id="shadowOpacity" min="0" max="100">
+                                    <label for="shadowVector" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; margin-top: 0.5rem; display: block;">Vector (x, y)</label>
+                                    <input type="text" placeholder="e.g., 10,10" id="shadowVector">
                                 </div>
                             </div>
 
@@ -1483,8 +2030,10 @@
                                     <span>Border</span>
                                 </label>
                                 <div class="transform-inputs" id="borderInputs" style="display: none;">
-                                    <input type="number" placeholder="Width" id="borderWidth" min="0" max="100">
-                                    <input type="text" placeholder="Color" id="borderColor" value="#000000">
+                                    <label for="borderWidth" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Border Width</label>
+                                    <input type="number" placeholder="0-100" id="borderWidth" min="0" max="100">
+                                    <label for="borderColor" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; margin-top: 0.5rem; display: block;">Border Color</label>
+                                    <input type="color" id="borderColor" value="#000000">
                                 </div>
                             </div>
 
@@ -1577,6 +2126,218 @@
                                     <input type="checkbox" id="enablePdfInfo">
                                     <span>PDF Info</span>
                                 </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Transformations (Collapsible) -->
+                    <div class="config-card config-full-width" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+                        <div class="collapsible-header" onclick="toggleCollapsible('advancedTransformations')">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-magic" style="color: var(--primary-orange);"></i>
+                                <h3 style="margin: 0;">Advanced Transformations</h3>
+                                <span class="badge" style="background: var(--primary-orange); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem;">11 Additional</span>
+                            </div>
+                            <i class="fas fa-chevron-down" id="advancedTransformationsIcon" style="transition: transform 0.3s ease; color: #666;"></i>
+                        </div>
+                        <p class="card-description" style="margin: 1rem 0 1.5rem 0; color: #666;">
+                            Additional image processing transformations including adjustments, artistic effects, document conversion, and more.
+                        </p>
+
+                        <div id="advancedTransformationsContent" style="display: none;">
+                            <div class="transform-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+
+                                <!-- Image Enhancements -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-magic"></i> Image Enhancements</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableEnhance">
+                                                <span>Enhance</span>
+                                            </label>
+                                            <small style="color: #666; display: block; margin-left: 1.5rem; margin-top: 0.25rem;">AI-powered automatic image enhancement</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Artistic Filters -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-palette"></i> Artistic Filters</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enablePixelate">
+                                                <span>Pixelate</span>
+                                            </label>
+                                            <div class="transform-inputs" id="pixelateInputs" style="display: none;">
+                                                <label for="pixelateAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Pixelate Amount</label>
+                                                <input type="number" placeholder="2-100" id="pixelateAmount" min="2" max="100" value="10">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 2 to 100</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableOilPaint">
+                                                <span>Oil Paint</span>
+                                            </label>
+                                            <div class="transform-inputs" id="oilPaintInputs" style="display: none;">
+                                                <label for="oilPaintAmount" style="font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; display: block;">Oil Paint Amount</label>
+                                                <input type="number" placeholder="2-100" id="oilPaintAmount" min="2" max="100" value="5">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 2 to 100</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableMonochrome">
+                                                <span>Monochrome</span>
+                                            </label>
+                                            <div class="transform-inputs" id="monochromeInputs" style="display: none;">
+                                                <input type="color" id="monochromeColor" value="#0000FF">
+                                                <small style="color: #666; font-size: 0.8rem;">Choose color</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableModulate">
+                                                <span>Modulate</span>
+                                            </label>
+                                            <div class="transform-inputs" id="modulateInputs" style="display: none;">
+                                                <input type="number" placeholder="Brightness" id="modulateBrightness" min="0" max="10000" step="100">
+                                                <input type="number" placeholder="Hue" id="modulateHue" min="0" max="10000" step="100">
+                                                <input type="number" placeholder="Saturation" id="modulateSaturation" min="0" max="10000" step="100">
+                                                <small style="color: #666; font-size: 0.8rem;">Range: 0 to 10000 each</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableAscii">
+                                                <span>ASCII Art</span>
+                                            </label>
+                                            <div class="transform-inputs" id="asciiInputs" style="display: none;">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="asciiColored">
+                                                    <span>Colored</span>
+                                                </label>
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="asciiReverse">
+                                                    <span>Reverse</span>
+                                                </label>
+                                                <input type="number" placeholder="Size" id="asciiSize" min="10" max="100" value="20">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Photo Effects -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-camera-retro"></i> Photo Effects</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableTornEdges">
+                                                <span>Torn Edges</span>
+                                            </label>
+                                            <div class="transform-inputs" id="tornEdgesInputs" style="display: none;">
+                                                <input type="number" placeholder="Spread" id="tornEdgesSpread" min="1" max="10000" value="10">
+                                                <input type="color" id="tornEdgesBackground" value="#FFFFFF">
+                                                <small style="color: #666; font-size: 0.8rem;">Spread & background color</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enablePolaroid">
+                                                <span>Polaroid</span>
+                                            </label>
+                                            <div class="transform-inputs" id="polaroidInputs" style="display: none;">
+                                                <input type="color" id="polaroidColor" value="#FFFFFF">
+                                                <input type="number" placeholder="Rotate (degrees)" id="polaroidRotate" min="-360" max="360" value="0">
+                                                <input type="color" id="polaroidBackground" value="#FFFFFF">
+                                                <small style="color: #666; font-size: 0.8rem;">Color, rotation & background</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Advanced Multi-Image -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-th"></i> Multi-Image</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableCollage">
+                                                <span>Collage</span>
+                                            </label>
+                                            <div class="transform-inputs" id="collageInputs" style="display: none;">
+                                                <textarea placeholder='["handle1", "handle2", "handle3"]' id="collageFiles" rows="2"></textarea>
+                                                <input type="number" placeholder="Width" id="collageWidth" min="1" max="10000">
+                                                <input type="number" placeholder="Height" id="collageHeight" min="1" max="10000">
+                                                <select id="collageFit">
+                                                    <option value="auto">Auto</option>
+                                                    <option value="crop">Crop</option>
+                                                    <option value="max">Max</option>
+                                                </select>
+                                                <input type="number" placeholder="Margin" id="collageMargin" min="0" max="100" value="10">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="collageAutorotate">
+                                                    <span>Auto-rotate</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- URL & Caching -->
+                                <div class="config-card" style="background: #ffffff; border: 1px solid var(--border-color);">
+                                    <h4><i class="fas fa-globe"></i> URL & Optimization</h4>
+
+                                    <div class="transform-options">
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableUrlScreenshot">
+                                                <span>URL Screenshot</span>
+                                            </label>
+                                            <div class="transform-inputs" id="urlScreenshotInputs" style="display: none;">
+                                                <input type="text" placeholder="URL to capture" id="urlScreenshotUrl">
+                                                <select id="urlScreenshotAgent">
+                                                    <option value="desktop">Desktop</option>
+                                                    <option value="mobile">Mobile</option>
+                                                </select>
+                                                <select id="urlScreenshotMode">
+                                                    <option value="window">Window</option>
+                                                    <option value="all">Full Page</option>
+                                                </select>
+                                                <input type="number" placeholder="Width" id="urlScreenshotWidth" min="1" max="3840" value="1920">
+                                                <input type="number" placeholder="Height" id="urlScreenshotHeight" min="1" max="2160" value="1080">
+                                                <input type="number" placeholder="Delay (ms)" id="urlScreenshotDelay" min="0" max="20000" value="0">
+                                            </div>
+                                        </div>
+
+                                        <div class="transform-option">
+                                            <label>
+                                                <input type="checkbox" id="enableCompress">
+                                                <span>Compress</span>
+                                            </label>
+                                            <div class="transform-inputs" id="compressInputs" style="display: none;">
+                                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <input type="checkbox" id="compressMetadata">
+                                                    <span>Strip metadata</span>
+                                                </label>
+                                                <small style="color: #666; font-size: 0.8rem;">Remove EXIF/metadata to reduce file size</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -3824,24 +4585,39 @@
                         <label>Transform Chain Builder</label>
                         <div id="chainBuilder" class="chain-builder">
                             <div class="chain-step">
-                                <select class="chain-operation track-changes">
-                                    <option value="">Select Operation</option>
-                                    <option value="resize">Resize</option>
-                                    <option value="crop">Crop</option>
-                                    <option value="rotate">Rotate</option>
-                                    <option value="blur">Blur</option>
-                                    <option value="sharpen">Sharpen</option>
-                                    <option value="quality">Quality</option>
-                                    <option value="convert">Convert Format</option>
-                                    <option value="watermark">Watermark</option>
-                                </select>
+                                <div class="chain-step-header">
+                                    <select class="chain-operation track-changes" title="Select a transformation to apply">
+                                        <option value="">Select Operation</option>
+                                        <option value="resize">Resize</option>
+                                        <option value="crop">Crop</option>
+                                        <option value="rotate">Rotate</option>
+                                        <option value="blur">Blur</option>
+                                        <option value="sharpen">Sharpen</option>
+                                        <option value="sepia">Sepia</option>
+                                        <option value="blackwhite">Black & White</option>
+                                        <option value="flip">Flip</option>
+                                        <option value="flop">Flop</option>
+                                        <option value="negative">Negative</option>
+                                        <option value="circle">Circle</option>
+                                        <option value="rounded_corners">Rounded Corners</option>
+                                        <option value="vignette">Vignette</option>
+                                        <option value="shadow">Shadow</option>
+                                        <option value="border">Border</option>
+                                        <option value="watermark">Watermark</option>
+                                        <option value="upscale">Upscale</option>
+                                        <option value="quality">Quality</option>
+                                        <option value="convert">Convert Format</option>
+                                    </select>
+                                    <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
+                                </div>
                                 <input type="text" class="chain-params track-changes"
-                                    placeholder="Parameters (e.g., width:300,height:200)">
-                                <button type="button" class="btn-remove-step">×</button>
+                                    placeholder="Parameters (e.g., width:300,height:200)" title="Enter transformation parameters">
+                                <div class="chain-param-hint" style="display:none;"></div>
                             </div>
                         </div>
-                        <button type="button" id="addChainStep" class="btn btn-secondary btn-small">Add
-                            Step</button>
+                        <button type="button" id="addChainStep" class="btn btn-secondary btn-small">
+                            <i class="fas fa-plus"></i> Add Step
+                        </button>
                     </div>
 
                     <div class="form-group">
@@ -3966,6 +4742,258 @@
                 </div>
             </section>
 
+            <!-- Picker Styling Section -->
+            <section id="picker-styling" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-palette"></i> Picker Styling & Preview</h2>
+                    <p>Add custom CSS styling to your file picker. This section uses the JavaScript code generated in <strong>Uploads → File Picker</strong> and adds visual styling on top of it.</p>
+                </div>
+
+                <!-- Important Notice -->
+                <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;"><i class="fas fa-exclamation-triangle"></i> Important: Configure File Picker First</h4>
+                    <p style="margin: 0; color: #856404; font-size: 0.95rem;">
+                        <strong>Step 1:</strong> Go to <strong>Uploads → File Picker</strong> and configure your picker options (sources, file types, etc.)<br>
+                        <strong>Step 2:</strong> Click <strong>"Generate Code"</strong> in the File Picker section<br>
+                        <strong>Step 3:</strong> Return here to add styling and see the combined result
+                    </p>
+                </div>
+
+                <div class="config-card">
+                    <h3><i class="fas fa-info-circle"></i> About Picker Styling</h3>
+                    <p class="card-description">This section adds visual styling (CSS) to the JavaScript code you generated in the <strong>Uploads → File Picker</strong> section. The picker preview and generated code both use your existing File Picker configuration.</p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
+                        <h4><i class="fas fa-lightbulb"></i> How It Works</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><strong>Uses Your Config:</strong> JavaScript code from <strong>Uploads → File Picker</strong> (not regenerated)</li>
+                            <li><strong>Adds Styling:</strong> Custom CSS on top of your picker configuration</li>
+                            <li><strong>Live Preview:</strong> See your picker with both configuration AND styling</li>
+                            <li><strong>Combined Output:</strong> Get CSS + JavaScript from File Picker in one place</li>
+                            <li><strong>Preset Themes:</strong> Quickly apply professional color schemes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Styling Controls and Preview Container -->
+                <div class="styling-container" style="display: flex; gap: 2rem; margin-top: 2rem; min-height: 600px;">
+                    <!-- Left Panel: Styling Controls -->
+                    <div class="styling-controls" style="flex: 0 0 350px; overflow-y: auto; max-height: 800px;">
+                        <!-- Tabs -->
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem;">
+                            <button class="styling-tab-btn active" data-styling-tab="visual" style="padding: 0.5rem 1rem; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                <i class="fas fa-paint-brush"></i> Visual Editor
+                            </button>
+                            <button class="styling-tab-btn" data-styling-tab="presets" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                <i class="fas fa-swatchbook"></i> Presets
+                            </button>
+                        </div>
+
+                        <!-- Visual Editor Tab Content -->
+                        <div id="styling-visual-tab" class="styling-tab-content">
+                            <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem;">
+                                <i class="fas fa-info-circle"></i> Click on an element in the list below to customize its appearance.
+                            </p>
+
+                            <!-- Back Button (hidden initially) -->
+                            <div id="styling-back-button" style="display: none; margin-bottom: 1rem;">
+                                <button onclick="backToStylingElementList()" style="padding: 0.5rem 1rem; background: #fb923c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+                                    <i class="fas fa-arrow-left"></i> Back to Elements
+                                </button>
+                            </div>
+
+                            <!-- Style Editor (hidden initially) -->
+                            <div id="styling-style-editor" style="display: none;">
+                                <div id="styling-style-properties" style="display: flex; flex-direction: column; gap: 1rem;">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Element Selector -->
+                            <div id="styling-element-selector">
+                                <div id="styling-element-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <!-- Elements will be added dynamically via JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Presets Tab Content -->
+                        <div id="styling-presets-tab" class="styling-tab-content" style="display: none;">
+                            <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem;">
+                                <i class="fas fa-palette"></i> Choose a preset theme to quickly apply a professional look.
+                            </p>
+
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <button class="styling-preset-btn" data-preset="dark" style="padding: 1rem; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Dark Theme</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Modern dark color scheme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="minimal" style="padding: 1rem; background: #ffffff; color: #000000; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Minimalist</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.6;">Clean and simple design</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="vibrant" style="padding: 1rem; background: #fef3c7; color: #78350f; border: 1px solid #f59e0b; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Vibrant</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Colorful amber/orange theme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="ocean" style="padding: 1rem; background: #e0f2fe; color: #164e63; border: 1px solid #0ea5e9; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Ocean</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Calm blue water vibes</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="forest" style="padding: 1rem; background: #dcfce7; color: #14532d; border: 1px solid #22c55e; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Forest</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Fresh green nature theme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="sunset" style="padding: 1rem; background: linear-gradient(135deg, #fecaca 0%, #fde68a 50%); color: #7c2d12; border: 1px solid #f97316; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Sunset</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Warm sunset gradient</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="neon" style="padding: 1rem; background: #18181b; color: #a78bfa; border: 1px solid #6366f1; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Neon</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Glowing neon dark theme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="pastel" style="padding: 1rem; background: #fef3f2; color: #831843; border: 1px solid #fbcfe8; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Pastel</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Soft pastel colors</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="corporate" style="padding: 1rem; background: #f8fafc; color: #1e293b; border: 1px solid #1e40af; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Corporate</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Professional business style</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="cyberpunk" style="padding: 1rem; background: #0a0a0a; color: #00ff9f; border: 1px solid #ff00ff; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Cyberpunk</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Futuristic neon cyberpunk</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="nature" style="padding: 1rem; background: #f0fdf4; color: #14532d; border: 1px solid #84cc16; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Nature</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Bright natural greens</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="midnight" style="padding: 1rem; background: #0c1445; color: #c7d2fe; border: 1px solid #4338ca; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Midnight</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Deep midnight blue</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="candy" style="padding: 1rem; background: linear-gradient(135deg, #fae8ff 0%, #fce7f3 50%); color: #831843; border: 1px solid #ec4899; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Candy</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Sweet candy pink gradients</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="autumn" style="padding: 1rem; background: #fef2f2; color: #7c2d12; border: 1px solid #ea580c; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Autumn</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Warm autumn colors</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="arctic" style="padding: 1rem; background: #f0f9ff; color: #0c4a6e; border: 1px solid #0ea5e9; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Arctic</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Cool arctic ice theme</div>
+                                </button>
+                                <button class="styling-preset-btn" data-preset="retro" style="padding: 1rem; background: #fffbeb; color: #78350f; border: 1px solid #fbbf24; border-radius: 6px; cursor: pointer; text-align: left;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Retro</div>
+                                    <div style="font-size: 0.75rem; opacity: 0.8;">Vintage retro style</div>
+                                </button>
+                            </div>
+
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e5e7eb;">
+                                <button id="styling-reset-all" style="width: 100%; padding: 0.75rem; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                    <i class="fas fa-undo"></i> Reset All Styles
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Live Preview -->
+                    <div class="styling-preview" style="flex: 1;">
+                        <!-- Picker Preview -->
+                        <div style="height: 100%; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: #f9fafb; display: flex; flex-direction: column;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
+                                    <i class="fas fa-eye"></i> Live Preview with Styling
+                                </h4>
+                                <!-- View Mode Toggles & Refresh -->
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <button id="styling-refresh-picker" style="padding: 0.5rem 1rem; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
+                                        <i class="fas fa-sync-alt"></i> Refresh Preview
+                                    </button>
+                                    <button id="styling-tab-empty" class="styling-view-tab active" style="padding: 0.5rem 1rem; background: #fb923c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
+                                        Drop Zone View
+                                    </button>
+                                    <button id="styling-tab-files" class="styling-view-tab" style="padding: 0.5rem 1rem; background: #fed7aa; color: #7c2d12; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
+                                        File List View
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Picker Container (fixed size like styling_playground.html) -->
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <div id="styling-picker-container" style="width: 1000px; height: 580px; transform-origin: center; overflow: hidden;">
+                                    <!-- Filestack picker will be rendered here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CSS + JavaScript Code Output -->
+                <div class="config-card" style="margin-top: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3><i class="fas fa-code"></i> Generated Code (CSS + JavaScript)</h3>
+                        <button id="styling-copy-code" style="padding: 0.5rem 1rem; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                            <i class="fas fa-copy"></i> Copy All
+                        </button>
+                    </div>
+
+                    <p class="card-description" style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #0c4a6e;">
+                        <strong><i class="fas fa-info-circle"></i> Code Source:</strong> CSS styling below + JavaScript from <strong>Uploads → File Picker</strong>
+                    </p>
+
+                    <pre id="styling-generated-code" style="background: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 4px; overflow-x: auto; max-height: 500px; margin: 0; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6;"><code>// Configure your picker in "Uploads → File Picker" and click "Generate Code"
+// Then style elements here to see the combined CSS + JavaScript code</code></pre>
+                </div>
+
+                <!-- Dynamic Styles Container -->
+                <style id="styling-dynamic-styles"></style>
+
+                <!-- Picker Highlighting Styles -->
+                <style>
+                    .picker-highlight {
+                        position: relative !important;
+                        z-index: 1000 !important;
+                        outline: 4px solid #3b82f6 !important;
+                        outline-offset: -4px !important;
+                        animation: snake-border-colors 3s ease-in-out infinite !important;
+                    }
+
+                    @keyframes snake-border-colors {
+                        0% {
+                            outline-color: #3b82f6;
+                            filter: drop-shadow(0 0 8px #3b82f6);
+                        }
+                        25% {
+                            outline-color: #06b6d4;
+                            filter: drop-shadow(0 0 8px #06b6d4);
+                        }
+                        50% {
+                            outline-color: #10b981;
+                            filter: drop-shadow(0 0 8px #10b981);
+                        }
+                        75% {
+                            outline-color: #f59e0b;
+                            filter: drop-shadow(0 0 8px #f59e0b);
+                        }
+                        100% {
+                            outline-color: #3b82f6;
+                            filter: drop-shadow(0 0 8px #3b82f6);
+                        }
+                    }
+
+                    /* Hide right-side code panel when in styling section */
+                    body:has(#picker-styling.active) .code-panel {
+                        display: none !important;
+                    }
+
+                    /* Expand main content to full width when code panel is hidden */
+                    body:has(#picker-styling.active) .main-container {
+                        grid-template-columns: 1fr !important;
+                    }
+                </style>
+            </section>
+
         </main>
 
         <!-- Code Panel -->
@@ -4055,6 +5083,869 @@
                 });
             });
         });
+    </script>
+
+    <!-- Picker Styling JavaScript -->
+    <script>
+    (function() {
+        // Picker Styling Module
+        const PickerStyling = {
+            appliedStyles: {},
+            currentElement: null,
+            pickerInstance: null,
+            currentView: 'empty', // Track current view mode
+            filesLoaded: false, // Track if files are loaded
+
+            // Element definitions (complete from styling_playground.html)
+            elements: {
+                'Container': [
+                    { id: 'modal', label: 'Picker Modal/Container', selector: '.fsp-picker', desc: 'Entire picker container/modal' },
+                ],
+                'Header': [
+                    { id: 'header', label: 'Top Header Bar', selector: '.fsp-header', desc: 'Bar at the very top' },
+                ],
+                'Sidebar': [
+                    { id: 'source-list', label: 'Left Sidebar', selector: '.fsp-source-list', desc: 'List of sources (Computer, URL, etc)' },
+                    { id: 'source-item', label: 'Source Items', selector: '.fsp-source-list__item', desc: 'Computer, URL, Instagram items' },
+                    { id: 'source-item-active', label: 'Active Source Item', selector: '.fsp-source-list__item--active', desc: 'The selected source' },
+                ],
+                'Drop Area': [
+                    { id: 'drop-area-container', label: 'Whole Upload Area', selector: '.fsp-drop-area-container', desc: 'Full background area' },
+                    { id: 'drop-area', label: 'Drop Zone Box', selector: '.fsp-drop-area', desc: 'Dashed box "Drag and drop..."' },
+                    { id: 'drop-area-title', label: 'Drop Title Text', selector: '.fsp-drop-area__title', desc: '"Drag and drop..." text' },
+                    { id: 'drop-area-subtitle', label: 'Drop Subtitle', selector: '.fsp-drop-area__subtitle', desc: '"or click to browse" text' },
+                    { id: 'drop-area-button', label: 'Browse Button', selector: '.fsp-drop-area__button', desc: '"Choose Files" button' },
+                ],
+                'Buttons': [
+                    { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button-upload', desc: 'Main action button', needsFiles: true },
+                    { id: 'button-cancel', label: 'Cancel Button', selector: '.fsp-button--cancel', desc: 'Cancel/back button', needsFiles: true },
+                ],
+                'File Grid': [
+                    { id: 'grid', label: 'File Grid', selector: '.fsp-grid', desc: 'Grid of files/folders' },
+                    { id: 'grid-cell', label: 'File/Folder Items', selector: '.fsp-grid__cell', desc: 'Individual file boxes' },
+                    { id: 'grid-cell-selected', label: 'Selected Files', selector: '.fsp-grid__cell--selected', desc: 'Checked files' },
+                ],
+                'Footer': [
+                    { id: 'footer', label: 'Bottom Footer', selector: '.fsp-footer', desc: 'Bar at the bottom', needsFiles: true },
+                    { id: 'footer-badge', label: 'File Count Badge', selector: '.fsp-badge', desc: 'Number badge on upload button', needsFiles: true },
+                ],
+                'Summary View (File List)': [
+                    { id: 'content', label: 'Main Content Area', selector: '.fsp-content', desc: 'Main content container for file list', needsFiles: true },
+                    { id: 'summary-title', label: 'Selected Files Title', selector: '.fsp-summary .filestack-text-center', desc: '"Selected Files" heading text', needsFiles: true },
+                    { id: 'summary-body', label: 'Summary Container', selector: '.fsp-summary__body', desc: 'Container for file list', needsFiles: true },
+                    { id: 'summary-item', label: 'File Item Row', selector: '.fsp-summary__item', desc: 'Each file in the list', needsFiles: true },
+                    { id: 'summary-item-name', label: 'File Name', selector: '.fsp-summary__item-name', desc: 'File name text', needsFiles: true },
+                    { id: 'summary-thumbnail', label: 'File Thumbnail', selector: '.fsp-summary__thumbnail-container', desc: 'File icon container', needsFiles: true },
+                    { id: 'summary-size', label: 'File Size', selector: '.fsp-summary__size', desc: 'File size text', needsFiles: true },
+                    { id: 'summary-remove', label: 'Delete Button', selector: '.fsp-summary__action--remove', desc: 'Remove file button', needsFiles: true },
+                    { id: 'summary-actions', label: 'Actions Container', selector: '.fsp-summary__actions-container', desc: 'File action buttons area', needsFiles: true },
+                ],
+            },
+
+            // Style properties (complete from styling_playground.html)
+            styleProperties: {
+                colors: [
+                    { id: 'background', label: 'Background', type: 'color', cssProperty: 'background-color' },
+                    { id: 'text-color', label: 'Text Color', type: 'color', cssProperty: 'color' },
+                    { id: 'border-color', label: 'Border Color', type: 'color', cssProperty: 'border-color' },
+                ],
+                layout: [
+                    { id: 'padding', label: 'Padding', type: 'text', cssProperty: 'padding', unit: 'px' },
+                    { id: 'margin', label: 'Margin', type: 'text', cssProperty: 'margin', unit: 'px' },
+                    { id: 'border-radius', label: 'Border Radius', type: 'text', cssProperty: 'border-radius', unit: 'px' },
+                ],
+                border: [
+                    { id: 'border-width', label: 'Border Width', type: 'text', cssProperty: 'border-width', unit: 'px' },
+                    { id: 'border-style', label: 'Border Style', type: 'select', cssProperty: 'border-style', options: ['none', 'solid', 'dashed', 'dotted'] },
+                ],
+                typography: [
+                    { id: 'font-size', label: 'Font Size', type: 'text', cssProperty: 'font-size', unit: 'px' },
+                    { id: 'font-weight', label: 'Font Weight', type: 'select', cssProperty: 'font-weight', options: ['normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900'] },
+                    { id: 'text-align', label: 'Text Align', type: 'select', cssProperty: 'text-align', options: ['left', 'center', 'right'] },
+                ],
+                effects: [
+                    { id: 'opacity', label: 'Opacity', type: 'range', cssProperty: 'opacity', min: 0, max: 1, step: 0.1 },
+                    { id: 'box-shadow', label: 'Box Shadow', type: 'text', cssProperty: 'box-shadow', placeholder: '0 4px 6px rgba(0,0,0,0.1)' },
+                ],
+            },
+
+            // Preset themes
+            presets: {
+                dark: {
+                    'modal': { 'background-color': '#1e293b', 'color': '#e2e8f0' },
+                    'header': { 'background-color': '#0f172a', 'color': '#e2e8f0', 'border-bottom': '1px solid #334155' },
+                    'source-list': { 'background-color': '#0f172a', 'border-right': '1px solid #334155' },
+                    'source-item': { 'color': '#94a3b8' },
+                    'source-item-active': { 'background-color': '#3b82f6', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#1e293b' },
+                    'drop-area': { 'background-color': '#334155', 'border': '2px dashed #64748b', 'border-radius': '8px' },
+                    'button-primary': { 'background-color': '#3b82f6', 'color': '#ffffff', 'border-radius': '6px' },
+                    'button-cancel': { 'background-color': '#475569', 'color': '#e2e8f0', 'border-radius': '6px' },
+                    'footer': { 'background-color': '#0f172a', 'border-top': '1px solid #334155' },
+                    'content': { 'background-color': '#1e293b' },
+                    'summary-body': { 'background-color': '#1e293b' },
+                    'summary-item': { 'background-color': '#334155', 'color': '#e2e8f0', 'border-radius': '6px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#e2e8f0' },
+                    'summary-size': { 'color': '#94a3b8' },
+                    'summary-remove': { 'color': '#ef4444' },
+                },
+                minimal: {
+                    'modal': { 'background-color': '#ffffff', 'border-radius': '0px' },
+                    'header': { 'background-color': '#ffffff', 'border-bottom': '1px solid #e5e7eb' },
+                    'source-list': { 'background-color': '#fafafa' },
+                    'source-item-active': { 'background-color': '#000000', 'color': '#ffffff' },
+                    'drop-area': { 'border': '1px solid #d1d5db' },
+                    'button-primary': { 'background-color': '#000000', 'color': '#ffffff' },
+                },
+                vibrant: {
+                    'modal': { 'background-color': '#fef3c7', 'color': '#78350f' },
+                    'header': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#fef3c7' },
+                    'source-item-active': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#fef3c7', 'border': '2px dashed #f59e0b' },
+                    'button-primary': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                },
+                ocean: {
+                    'modal': { 'background-color': '#e0f2fe', 'color': '#164e63' },
+                    'header': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#bae6fd' },
+                    'source-item-active': { 'background-color': '#0284c7', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#bae6fd', 'border': '2px dashed #0ea5e9' },
+                    'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                },
+                forest: {
+                    'modal': { 'background-color': '#dcfce7', 'color': '#14532d' },
+                    'header': { 'background-color': '#22c55e', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#bbf7d0' },
+                    'source-item-active': { 'background-color': '#16a34a', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#bbf7d0', 'border': '2px dashed #22c55e' },
+                    'button-primary': { 'background-color': '#22c55e', 'color': '#ffffff' },
+                },
+                sunset: {
+                    'modal': { 'background': 'linear-gradient(135deg, #fecaca 0%, #fde68a 50%, #fbcfe8 100%)', 'color': '#7c2d12' },
+                    'header': { 'background-color': '#f97316', 'color': '#ffffff' },
+                    'source-list': { 'background': 'rgba(254, 202, 202, 0.7)' },
+                    'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
+                    'drop-area': { 'background': 'rgba(254, 202, 202, 0.8)', 'border': '2px dashed #f97316' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #f97316, #ef4444)', 'color': '#ffffff' },
+                },
+                neon: {
+                    'modal': { 'background-color': '#18181b', 'color': '#fafafa' },
+                    'header': { 'background-color': '#09090b', 'color': '#a78bfa', 'border-bottom': '2px solid #a78bfa' },
+                    'source-list': { 'background-color': '#27272a', 'border-right': '2px solid #6366f1' },
+                    'source-item-active': { 'background-color': '#6366f1', 'color': '#ffffff', 'box-shadow': '0 0 20px rgba(99, 102, 241, 0.5)' },
+                    'drop-area': { 'background-color': '#27272a', 'border': '2px solid #a78bfa', 'box-shadow': '0 0 30px rgba(167, 139, 250, 0.3)' },
+                    'button-primary': { 'background-color': '#a78bfa', 'color': '#18181b', 'box-shadow': '0 0 15px rgba(167, 139, 250, 0.5)' },
+                },
+                pastel: {
+                    'modal': { 'background-color': '#fef3f2', 'color': '#7c2d12' },
+                    'header': { 'background-color': '#fce7f3', 'color': '#831843', 'border-bottom': '1px solid #fbcfe8' },
+                    'source-list': { 'background-color': '#f5f3ff', 'border-right': '1px solid #e9d5ff' },
+                    'source-item-active': { 'background-color': '#f0abfc', 'color': '#701a75' },
+                    'drop-area': { 'background-color': '#fce7f3', 'border': '2px dashed #f9a8d4' },
+                    'button-primary': { 'background-color': '#f0abfc', 'color': '#701a75' },
+                },
+                corporate: {
+                    'modal': { 'background-color': '#f8fafc', 'color': '#1e293b' },
+                    'header': { 'background-color': '#1e40af', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#eff6ff' },
+                    'source-item-active': { 'background-color': '#2563eb', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#f1f5f9', 'border': '2px solid #cbd5e1' },
+                    'button-primary': { 'background-color': '#1e40af', 'color': '#ffffff' },
+                },
+                cyberpunk: {
+                    'modal': { 'background-color': '#0a0a0a', 'color': '#00ff9f' },
+                    'header': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'border-bottom': '2px solid #00ff9f' },
+                    'source-list': { 'background-color': '#1a1a1a', 'border-right': '2px solid #ff00ff' },
+                    'source-item-active': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000' },
+                    'drop-area': { 'background-color': '#1a1a1a', 'border': '3px solid #00ff9f', 'box-shadow': '0 0 25px rgba(0, 255, 159, 0.4)' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'box-shadow': '0 0 15px rgba(255, 0, 255, 0.5)' },
+                },
+                nature: {
+                    'modal': { 'background-color': '#f0fdf4', 'color': '#14532d' },
+                    'header': { 'background': 'linear-gradient(135deg, #84cc16, #059669)', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#ecfccb' },
+                    'source-item-active': { 'background-color': '#65a30d', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#dcfce7', 'border': '2px dashed #16a34a' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #84cc16, #22c55e)', 'color': '#ffffff' },
+                },
+                midnight: {
+                    'modal': { 'background-color': '#0c1445', 'color': '#c7d2fe' },
+                    'header': { 'background-color': '#1e1b4b', 'color': '#c7d2fe', 'border-bottom': '1px solid #312e81' },
+                    'source-list': { 'background-color': '#1e1b4b', 'border-right': '1px solid #312e81' },
+                    'source-item-active': { 'background-color': '#4338ca', 'color': '#e0e7ff' },
+                    'drop-area': { 'background-color': '#1e1b4b', 'border': '2px dashed #6366f1' },
+                    'button-primary': { 'background-color': '#4f46e5', 'color': '#ffffff' },
+                },
+                candy: {
+                    'modal': { 'background': 'linear-gradient(135deg, #fdf2f8 0%, #fae8ff 100%)', 'color': '#831843' },
+                    'header': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#fdf4ff' },
+                    'source-item-active': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#fdf4ff', 'border': '3px dashed #ec4899' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6, #a855f7)', 'color': '#ffffff' },
+                },
+                autumn: {
+                    'modal': { 'background': 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)', 'color': '#7c2d12' },
+                    'header': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c)', 'color': '#ffffff' },
+                    'source-list': { 'background-color': '#fed7aa', 'border-right': '1px solid #fdba74' },
+                    'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#fed7aa', 'border': '2px dashed #dc2626' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c, #f97316)', 'color': '#ffffff' },
+                },
+                arctic: {
+                    'modal': { 'background': 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', 'color': '#0c4a6e' },
+                    'header': { 'background-color': '#7dd3fc', 'color': '#0c4a6e' },
+                    'source-list': { 'background-color': '#e0f2fe', 'border-right': '1px solid #bae6fd' },
+                    'source-item-active': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                    'drop-area': { 'background-color': '#e0f2fe', 'border': '2px dashed #38bdf8' },
+                    'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                },
+                retro: {
+                    'modal': { 'background-color': '#fffbeb', 'color': '#78350f' },
+                    'header': { 'background-color': '#fbbf24', 'color': '#78350f', 'border-bottom': '3px solid #78350f' },
+                    'source-list': { 'background-color': '#fef3c7', 'border-right': '3px solid #78350f' },
+                    'source-item-active': { 'background-color': '#78350f', 'color': '#fbbf24' },
+                    'drop-area': { 'background-color': '#fef3c7', 'border': '3px solid #78350f' },
+                    'button-primary': { 'background-color': '#78350f', 'color': '#fbbf24', 'border': '3px solid #78350f' },
+                },
+            },
+
+            init() {
+                this.renderElementList();
+                this.attachEventListeners();
+                // Don't init picker yet - wait until section is visible
+            },
+
+            attachEventListeners() {
+                // Styling tab buttons
+                document.querySelectorAll('.styling-tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.switchStylingTab(btn.dataset.stylingTab));
+                });
+
+                // Preset buttons
+                document.querySelectorAll('.styling-preset-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.applyPreset(btn.dataset.preset));
+                });
+
+                // Reset button
+                document.getElementById('styling-reset-all')?.addEventListener('click', () => this.resetAllStyles());
+
+                // Refresh picker button
+                document.getElementById('styling-refresh-picker')?.addEventListener('click', () => {
+                    console.log('%c🔄 REFRESH PICKER CLICKED', 'background: #10b981; color: white; padding: 4px 8px; font-weight: bold');
+                    this.reinitPicker();
+                });
+
+                // View mode toggle buttons
+                document.getElementById('styling-tab-empty')?.addEventListener('click', () => this.switchPickerView('empty'));
+                document.getElementById('styling-tab-files')?.addEventListener('click', () => this.switchPickerView('files'));
+
+                // Copy code button
+                document.getElementById('styling-copy-code')?.addEventListener('click', () => this.copyGeneratedCode());
+
+                // Watch for when the styling section becomes visible
+                const observer = new MutationObserver(() => {
+                    const stylingSection = document.getElementById('picker-styling');
+                    if (stylingSection && stylingSection.classList.contains('active')) {
+                        // Init picker if not already done
+                        if (!this.pickerInstance) {
+                            setTimeout(() => this.initPicker(), 100);
+                        }
+                        // Always update generated code when section becomes active
+                        this.updateGeneratedCode();
+                    }
+                });
+
+                const stylingSection = document.getElementById('picker-styling');
+                if (stylingSection) {
+                    observer.observe(stylingSection, { attributes: true, attributeFilter: ['class'] });
+                }
+
+                // Watch for changes in File Picker configuration to auto-update Styling section
+                // Listen to all form inputs with class "track-changes" in the File Picker section
+                const updateStylingCode = () => {
+                    if (document.getElementById('picker-styling')?.classList.contains('active')) {
+                        this.updateGeneratedCode();
+                    }
+                };
+
+                // Watch for changes to File Picker form inputs
+                document.querySelectorAll('.track-changes').forEach(input => {
+                    input.addEventListener('change', updateStylingCode);
+                    input.addEventListener('input', updateStylingCode);
+                });
+
+                // Also watch for changes in File Picker's generated code (for when user clicks Generate Code)
+                const filePickerCodeObserver = new MutationObserver(() => {
+                    if (document.getElementById('picker-styling')?.classList.contains('active')) {
+                        this.updateGeneratedCode();
+                    }
+                });
+
+                const filePickerCodeElement = document.getElementById('generatedCode');
+                if (filePickerCodeElement) {
+                    filePickerCodeObserver.observe(filePickerCodeElement, {
+                        childList: true,
+                        characterData: true,
+                        subtree: true
+                    });
+                }
+            },
+
+            switchStylingTab(tabName) {
+                // Update button styles
+                document.querySelectorAll('.styling-tab-btn').forEach(btn => {
+                    if (btn.dataset.stylingTab === tabName) {
+                        btn.style.background = '#2196f3';
+                        btn.style.color = 'white';
+                        btn.style.border = 'none';
+                        btn.classList.add('active');
+                    } else {
+                        btn.style.background = 'white';
+                        btn.style.color = '#374151';
+                        btn.style.border = '1px solid #d1d5db';
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // Update tab content
+                document.getElementById('styling-visual-tab').style.display = tabName === 'visual' ? 'block' : 'none';
+                document.getElementById('styling-presets-tab').style.display = tabName === 'presets' ? 'block' : 'none';
+            },
+
+            renderElementList() {
+                const container = document.getElementById('styling-element-list');
+                if (!container) {
+                    console.error('styling-element-list container not found');
+                    return;
+                }
+
+                console.log('Rendering element list with', Object.keys(this.elements).length, 'categories');
+                container.innerHTML = '';
+
+                Object.entries(this.elements).forEach(([category, items]) => {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.style.marginBottom = '1rem';
+
+                    const categoryTitle = document.createElement('div');
+                    categoryTitle.textContent = category;
+                    categoryTitle.style.fontWeight = '600';
+                    categoryTitle.style.fontSize = '0.9rem';
+                    categoryTitle.style.color = '#374151';
+                    categoryTitle.style.marginBottom = '0.5rem';
+                    categoryDiv.appendChild(categoryTitle);
+
+                    items.forEach(element => {
+                        const elementBtn = document.createElement('button');
+                        elementBtn.textContent = element.label;
+                        elementBtn.style.cssText = 'width: 100%; padding: 0.75rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.85rem; transition: all 0.2s;';
+                        elementBtn.addEventListener('mouseover', () => {
+                            elementBtn.style.borderColor = '#2196f3';
+                            elementBtn.style.background = '#f0f9ff';
+                        });
+                        elementBtn.addEventListener('mouseout', () => {
+                            elementBtn.style.borderColor = '#e5e7eb';
+                            elementBtn.style.background = 'white';
+                        });
+                        elementBtn.addEventListener('click', () => this.selectElement(element));
+                        categoryDiv.appendChild(elementBtn);
+                    });
+
+                    container.appendChild(categoryDiv);
+                });
+            },
+
+            selectElement(element) {
+                this.currentElement = element;
+                document.getElementById('styling-element-selector').style.display = 'none';
+                document.getElementById('styling-style-editor').style.display = 'block';
+                document.getElementById('styling-back-button').style.display = 'block';
+                this.renderStyleEditor(element);
+
+                // Switch view mode if element needs files
+                if (element.needsFiles) {
+                    this.switchPickerView('files');
+                } else {
+                    this.switchPickerView('empty');
+                }
+
+                // Highlight the element in picker
+                this.highlightElementInPicker(element);
+            },
+
+            renderStyleEditor(element) {
+                const container = document.getElementById('styling-style-properties');
+                container.innerHTML = `<h4 style="margin-bottom: 1rem; color: #374151;">Styling: ${element.label}</h4>`;
+
+                Object.entries(this.styleProperties).forEach(([groupName, properties]) => {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.style.marginBottom = '1.5rem';
+
+                    const groupTitle = document.createElement('div');
+                    groupTitle.textContent = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+                    groupTitle.style.fontWeight = '600';
+                    groupTitle.style.fontSize = '0.85rem';
+                    groupTitle.style.color = '#6b7280';
+                    groupTitle.style.marginBottom = '0.75rem';
+                    groupTitle.style.textTransform = 'uppercase';
+                    groupDiv.appendChild(groupTitle);
+
+                    properties.forEach(prop => {
+                        const propDiv = document.createElement('div');
+                        propDiv.style.marginBottom = '0.75rem';
+
+                        const label = document.createElement('label');
+                        label.textContent = prop.label;
+                        label.style.display = 'block';
+                        label.style.fontSize = '0.85rem';
+                        label.style.fontWeight = '500';
+                        label.style.marginBottom = '0.25rem';
+                        label.style.color = '#374151';
+                        propDiv.appendChild(label);
+
+                        let input;
+
+                        // Handle different input types
+                        if (prop.type === 'select') {
+                            input = document.createElement('select');
+                            input.style.cssText = 'width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; background: white;';
+                            prop.options.forEach(optionValue => {
+                                const option = document.createElement('option');
+                                option.value = optionValue;
+                                option.textContent = optionValue;
+                                input.appendChild(option);
+                            });
+                        } else if (prop.type === 'range') {
+                            input = document.createElement('input');
+                            input.type = 'range';
+                            input.min = prop.min;
+                            input.max = prop.max;
+                            input.step = prop.step;
+                            input.style.cssText = 'width: 100%;';
+
+                            // Add value display
+                            const valueDisplay = document.createElement('span');
+                            valueDisplay.style.cssText = 'display: inline-block; margin-left: 0.5rem; font-size: 0.85rem; color: #6b7280;';
+                            valueDisplay.textContent = input.value;
+
+                            input.addEventListener('input', (e) => {
+                                valueDisplay.textContent = e.target.value;
+                            });
+
+                            propDiv.appendChild(input);
+                            propDiv.appendChild(valueDisplay);
+                        } else {
+                            input = document.createElement('input');
+                            input.type = prop.type;
+                            input.style.cssText = 'width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;';
+                            if (prop.placeholder) {
+                                input.placeholder = prop.placeholder;
+                            }
+                        }
+
+                        const currentValue = this.appliedStyles[element.id]?.[prop.cssProperty];
+                        if (currentValue) {
+                            if (prop.type === 'color') {
+                                input.value = currentValue;
+                            } else if (prop.type === 'range') {
+                                input.value = currentValue;
+                            } else if (prop.unit) {
+                                input.value = currentValue.replace(prop.unit, '').trim();
+                            } else {
+                                input.value = currentValue;
+                            }
+                        }
+
+                        input.addEventListener('input', (e) => {
+                            const value = prop.unit && prop.type !== 'color' && prop.type !== 'range' ? e.target.value + prop.unit : e.target.value;
+                            this.applyStyle(element.id, element.selector, prop.cssProperty, value);
+                        });
+
+                        input.addEventListener('change', (e) => {
+                            const value = prop.unit && prop.type !== 'color' && prop.type !== 'range' ? e.target.value + prop.unit : e.target.value;
+                            this.applyStyle(element.id, element.selector, prop.cssProperty, value);
+                        });
+
+                        if (prop.type !== 'range') {
+                            propDiv.appendChild(input);
+                        }
+                        groupDiv.appendChild(propDiv);
+                    });
+
+                    container.appendChild(groupDiv);
+                });
+            },
+
+            applyStyle(elementId, selector, cssProperty, value) {
+                if (!this.appliedStyles[elementId]) {
+                    this.appliedStyles[elementId] = { selector };
+                }
+                this.appliedStyles[elementId][cssProperty] = value;
+                this.updateDynamicStyles();
+            },
+
+            applyPreset(presetName) {
+                const preset = this.presets[presetName];
+                if (!preset) return;
+
+                this.appliedStyles = {};
+                Object.entries(preset).forEach(([elementId, styles]) => {
+                    const element = Object.values(this.elements).flat().find(el => el.id === elementId);
+                    if (element) {
+                        this.appliedStyles[elementId] = { selector: element.selector, ...styles };
+                    }
+                });
+
+                this.updateDynamicStyles();
+            },
+
+            resetAllStyles() {
+                this.appliedStyles = {};
+                this.updateDynamicStyles();
+            },
+
+            updateDynamicStyles() {
+                const styleElement = document.getElementById('styling-dynamic-styles');
+                if (!styleElement) return;
+
+                let css = '';
+
+                // Scope CSS to only affect the styling picker container
+                // This prevents styles from affecting the main File Picker preview
+                Object.values(this.appliedStyles).forEach(elementStyles => {
+                    const { selector, ...styles } = elementStyles;
+                    if (Object.keys(styles).length > 0) {
+                        // Add #styling-picker-container prefix to scope the styles
+                        css += `#styling-picker-container ${selector} {\n`;
+                        Object.entries(styles).forEach(([prop, value]) => {
+                            css += `  ${prop}: ${value};\n`;
+                        });
+                        css += `}\n\n`;
+                    }
+                });
+
+                styleElement.textContent = css;
+
+                // Update generated code if the section is active
+                try {
+                    if (document.getElementById('picker-styling')?.classList.contains('active')) {
+                        this.updateGeneratedCode();
+                    }
+                } catch (e) {
+                    console.log('Could not update generated code:', e);
+                }
+            },
+
+            generateCSS() {
+                let css = '';
+                Object.values(this.appliedStyles).forEach(elementStyles => {
+                    const { selector, ...styles } = elementStyles;
+                    if (Object.keys(styles).length > 0) {
+                        css += `${selector} {\n`;
+                        Object.entries(styles).forEach(([prop, value]) => {
+                            css += `  ${prop}: ${value};\n`;
+                        });
+                        css += `}\n\n`;
+                    }
+                });
+                return css.trim();
+            },
+
+            generateJavaScript() {
+                // Get the actual generated JavaScript code from File Picker's code panel
+                try {
+                    const filePickerCode = document.getElementById('generatedCode');
+
+                    // Check if File Picker has generated code
+                    if (filePickerCode && filePickerCode.textContent) {
+                        let codeText = filePickerCode.textContent.trim();
+
+                        // Check if it's actual generated code (not the placeholder text)
+                        if (!codeText.includes('Your generated code will appear here')) {
+                            // Remove the metadata comments (Generated on:, Section:, etc.)
+                            const lines = codeText.split('\n');
+                            const codeWithoutMetadata = lines.filter(line => {
+                                const trimmed = line.trim();
+                                return !(trimmed.startsWith('// Generated on:') ||
+                                       trimmed.startsWith('// Section:') ||
+                                       trimmed.startsWith('// Language:') ||
+                                       trimmed.startsWith('// API Key:'));
+                            }).join('\n').trim();
+
+                            // Check if there's actual code (not just comments)
+                            if (codeWithoutMetadata.length > 50 && codeWithoutMetadata.includes('const')) {
+                                console.log('%c✅ USING GENERATED CODE FROM FILE PICKER PANEL', 'background: #10b981; color: white; padding: 4px 8px; font-weight: bold');
+                                console.log('Code length:', codeWithoutMetadata.length, 'characters');
+                                return codeWithoutMetadata;
+                            }
+                        }
+                    }
+
+                    // If no generated code exists, generate fresh from current config
+                    console.log('%c⚠️ NO FILE PICKER CODE FOUND - Auto-generating from config', 'background: #f59e0b; color: white; padding: 4px 8px; font-weight: bold');
+
+                    let pickerOptions = {};
+                    if (typeof collectPickerOptions === 'function') {
+                        pickerOptions = collectPickerOptions();
+                    }
+
+                    if (typeof generateJavaScriptPickerCode === 'function') {
+                        const jsCode = generateJavaScriptPickerCode(pickerOptions);
+                        return jsCode;
+                    }
+
+                    // Final fallback
+                    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+                    let code = `// Filestack Picker Configuration\n`;
+                    code += `const apikey = "${apiKey}";\n`;
+                    code += `const client = filestack.init(apikey);\n\n`;
+                    code += `const options = {};\n\n`;
+                    code += `const picker = client.picker(options);\n`;
+                    code += `picker.open();\n`;
+                    return code;
+                } catch (e) {
+                    console.error('Error generating JavaScript:', e);
+                    return '// Error: Could not generate JavaScript from picker options';
+                }
+            },
+
+            updateGeneratedCode() {
+                const codeElement = document.getElementById('styling-generated-code');
+                if (!codeElement) return;
+
+                const css = this.generateCSS();
+                const js = this.generateJavaScript();
+
+                let combinedCode = '';
+
+                if (css) {
+                    combinedCode += '/* CSS Styling */\n<style>\n' + css + '\n<\/style>\n\n';
+                }
+
+                combinedCode += '/* JavaScript Configuration */\n<script>\n' + js + '\n<\/script>';
+
+                codeElement.textContent = combinedCode;
+            },
+
+            copyGeneratedCode() {
+                const codeElement = document.getElementById('styling-generated-code');
+                if (!codeElement) return;
+
+                const code = codeElement.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = document.getElementById('styling-copy-code');
+                    if (btn) {
+                        const originalText = btn.textContent;
+                        btn.textContent = 'Copied!';
+                        btn.style.background = '#10b981';
+                        setTimeout(() => {
+                            btn.textContent = originalText;
+                            btn.style.background = '';
+                        }, 2000);
+                    }
+                }).catch(err => {
+                    console.error('Failed to copy code:', err);
+                    alert('Failed to copy code to clipboard');
+                });
+            },
+
+            initPicker() {
+                // Use API key from sidebar, or default demo key
+                const apiKey = document.getElementById('globalApikey')?.value || 'AzYGVlXhTVGcG1GYJXsWuz';
+
+                try {
+                    // Check if filestack is loaded
+                    if (typeof filestack === 'undefined') {
+                        throw new Error('Filestack library not loaded');
+                    }
+
+                    const client = filestack.init(apiKey);
+
+                    // Get user-configured options from File Picker section
+                    let userOptions = {};
+                    if (typeof collectPickerOptions === 'function') {
+                        userOptions = collectPickerOptions();
+                        console.log('%c🔍 DEBUG: collectPickerOptions() returned:', 'background: #8b5cf6; color: white; padding: 4px 8px; font-weight: bold');
+                        console.log(JSON.stringify(userOptions, null, 2));
+                    } else {
+                        console.error('collectPickerOptions function not found!');
+                    }
+
+                    // Use inline mode with fixed container (like styling_playground.html)
+                    const pickerOptions = {
+                        ...userOptions,
+                        container: '#styling-picker-container',
+                        displayMode: 'inline',
+                        uploadInBackground: false
+                    };
+
+                    console.log('%c📝 STYLING PREVIEW PICKER OPTIONS (FINAL):', 'background: #3b82f6; color: white; padding: 4px 8px; font-weight: bold');
+                    console.log(JSON.stringify(pickerOptions, null, 2));
+
+                    this.pickerInstance = client.picker(pickerOptions);
+                    this.pickerInstance.open();
+                } catch (error) {
+                    console.error('Error initializing picker:', error);
+                    document.getElementById('styling-picker-container').innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 2rem;">
+                            <div>
+                                <h3 style="color: #dc2626; margin-bottom: 0.5rem;">Error Loading Picker</h3>
+                                <p style="color: #6b7280; font-size: 0.9rem;">${error.message}</p>
+                            </div>
+                        </div>`;
+                }
+            },
+
+            // Reinitialize picker with latest File Picker options
+            reinitPicker() {
+                console.log('%c♻️ Reinitializing picker...', 'background: #10b981; color: white; padding: 4px 8px; font-weight: bold');
+
+                // Close existing picker if it exists
+                if (this.pickerInstance) {
+                    try {
+                        this.pickerInstance.close();
+                        this.pickerInstance = null;
+                    } catch (e) {
+                        console.log('Could not close existing picker:', e);
+                    }
+                }
+
+                // Clear container
+                const container = document.getElementById('styling-picker-container');
+                if (container) {
+                    container.innerHTML = '';
+                }
+
+                // Reinitialize
+                setTimeout(() => this.initPicker(), 100);
+            },
+
+            // Switch between Drop Zone and File List views
+            switchPickerView(view) {
+                if (this.currentView === view) return; // Already in this view
+
+                this.currentView = view;
+
+                // Update tab styles
+                const emptyTab = document.getElementById('styling-tab-empty');
+                const filesTab = document.getElementById('styling-tab-files');
+
+                if (view === 'empty') {
+                    emptyTab.style.background = '#fb923c';
+                    emptyTab.style.color = 'white';
+                    filesTab.style.background = '#fed7aa';
+                    filesTab.style.color = '#7c2d12';
+
+                    // Clear file list to go back to drop zone
+                    this.clearFileList();
+                } else {
+                    filesTab.style.background = '#fb923c';
+                    filesTab.style.color = 'white';
+                    emptyTab.style.background = '#fed7aa';
+                    emptyTab.style.color = '#7c2d12';
+
+                    // Load mock files to show file list view
+                    this.loadMockFiles();
+                }
+            },
+
+            // Highlight element in picker with animated border
+            highlightElementInPicker(element) {
+                // Remove previous highlights
+                document.querySelectorAll('.picker-highlight').forEach(el => {
+                    el.classList.remove('picker-highlight');
+                });
+
+                // Add highlight to matching elements in picker
+                setTimeout(() => {
+                    const pickerElements = document.querySelectorAll(`.fsp-picker ${element.selector}`);
+                    pickerElements.forEach(el => {
+                        el.classList.add('picker-highlight');
+                    });
+                }, 100);
+            },
+
+            // Load mock files for file list view
+            loadMockFiles() {
+                if (this.filesLoaded) return; // Only load once
+
+                setTimeout(() => {
+                    try {
+                        const dummyFiles = [
+                            new File(['Sample content 1'], 'document.txt', { type: 'text/plain' }),
+                            new File(['Sample content 2'], 'presentation.pdf', { type: 'application/pdf' }),
+                            new File(['Sample content 3'], 'spreadsheet.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+                        ];
+
+                        // Find the file input in the picker and add files to it
+                        const fileInput = document.querySelector('.fsp-drop-pane__input, input[type="file"]');
+                        if (fileInput) {
+                            const dataTransfer = new DataTransfer();
+                            dummyFiles.forEach(file => dataTransfer.items.add(file));
+                            fileInput.files = dataTransfer.files;
+
+                            const event = new Event('change', { bubbles: true });
+                            fileInput.dispatchEvent(event);
+                            this.filesLoaded = true;
+                            console.log('Loaded dummy files to show file list view');
+                        }
+                    } catch (e) {
+                        console.log('Could not auto-add dummy files:', e);
+                    }
+                }, 100);
+            },
+
+            // Clear file list to show drop zone
+            clearFileList() {
+                try {
+                    // Find and click any "go back" or clear buttons in the picker
+                    const backButtons = document.querySelectorAll('.fsp-summary__go-back, .fsp-header__back');
+                    if (backButtons.length > 0) {
+                        backButtons[0].click();
+                        this.filesLoaded = false;
+                        console.log('Clicked back button to show drop zone');
+                    }
+
+                    // Alternative: try to remove files from summary
+                    const removeButtons = document.querySelectorAll('.fsp-summary__action--remove');
+                    removeButtons.forEach((btn, index) => {
+                        setTimeout(() => btn.click(), 50 * index);
+                    });
+
+                    if (removeButtons.length > 0) {
+                        this.filesLoaded = false;
+                        console.log('Removed files to show drop zone');
+                    }
+                } catch (e) {
+                    console.log('Could not clear file list:', e);
+                }
+            }
+        };
+
+        // Global functions for button handlers
+        window.backToStylingElementList = function() {
+            document.getElementById('styling-element-selector').style.display = 'block';
+            document.getElementById('styling-style-editor').style.display = 'none';
+            document.getElementById('styling-back-button').style.display = 'none';
+            PickerStyling.currentElement = null;
+
+            // Remove highlights
+            document.querySelectorAll('.picker-highlight').forEach(el => {
+                el.classList.remove('picker-highlight');
+            });
+        };
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => PickerStyling.init());
+        } else {
+            PickerStyling.init();
+        }
+
+        // Store reference globally if needed
+        window.PickerStyling = PickerStyling;
+    })();
     </script>
 
 </body>
