@@ -437,6 +437,7 @@
                 transform: translateY(-20px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -846,7 +847,7 @@
 
         // Close modal handlers
         closeModal.addEventListener('click', hideFeatures);
-        featuresModal.addEventListener('click', function(e) {
+        featuresModal.addEventListener('click', function (e) {
             if (e.target === featuresModal) {
                 hideFeatures();
             }
@@ -880,7 +881,7 @@
 
         // Also make clicking anywhere on the plan-option select the radio
         document.querySelectorAll('.plan-option').forEach(option => {
-            option.addEventListener('click', function(e) {
+            option.addEventListener('click', function (e) {
                 // Don't trigger if clicking the features button
                 if (e.target.classList.contains('features-btn') || e.target.closest('.features-btn')) {
                     return;
@@ -902,7 +903,7 @@
         const prioritySupportCheckbox = document.getElementById('priority-support');
 
         // Toggle addon selection
-        prioritySupportCheckbox.addEventListener('change', function() {
+        prioritySupportCheckbox.addEventListener('change', function () {
             if (this.checked) {
                 addonCard.classList.add('selected');
             } else {
@@ -911,7 +912,7 @@
         });
 
         // Make the entire addon card clickable
-        addonCard.addEventListener('click', function(e) {
+        addonCard.addEventListener('click', function (e) {
             // Don't toggle if the checkbox itself was clicked
             if (e.target === prioritySupportCheckbox) {
                 return;
