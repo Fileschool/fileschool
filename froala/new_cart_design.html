@@ -87,31 +87,56 @@
             background: #f0f9ff;
         }
 
+        .plans {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .plan-option {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid #d0d5dd;
+            padding: 20px;
+            background: white;
+            border: 2px solid #e0f2ff;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
         }
 
-        .plan-option:last-of-type {
-            border-bottom: none;
+        .plan-option:hover {
+            border-color: #0098f7;
+            box-shadow: 0 4px 12px rgba(0, 152, 247, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .plan-option.selected {
+            background: #f0f9ff;
+            border-color: #0098f7;
+            border-width: 3px;
+            box-shadow: 0 4px 16px rgba(0, 152, 247, 0.25);
         }
 
         .plan-option input[type="radio"] {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             cursor: pointer;
             accent-color: #0098F7;
+            flex-shrink: 0;
         }
 
         .plan-option label {
             flex: 0 0 140px;
-            font-size: 15px;
+            font-size: 16px;
             color: #1a1a1a;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
+        }
+
+        .plan-option.selected label {
+            color: #0098f7;
         }
 
         .features-btn {
@@ -157,20 +182,100 @@
             font-weight: 600;
         }
 
+        .addon-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e0f2ff;
+        }
+
+        .addon-card {
+            background: transparent;
+            border: 1px dashed #d0d5dd;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .addon-card:hover {
+            border-color: #0098f7;
+            border-style: solid;
+            background: rgba(240, 249, 255, 0.3);
+        }
+
+        .addon-card.selected {
+            background: rgba(240, 249, 255, 0.5);
+            border-color: #0098f7;
+            border-style: solid;
+        }
+
         .platinum-checkbox {
-            margin-top: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #1a1a1a;
+            gap: 12px;
         }
 
         .platinum-checkbox input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
             accent-color: #0098F7;
+            flex-shrink: 0;
+        }
+
+        .addon-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .addon-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .addon-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .addon-card.selected .addon-title {
+            color: #0098f7;
+        }
+
+        .addon-badge {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1a1a1a;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .addon-description {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .addon-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .addon-card.selected .addon-price {
+            color: #0098f7;
         }
 
         .form-section {
@@ -411,6 +516,11 @@
 
             .plan-option {
                 flex-wrap: wrap;
+                padding: 15px;
+            }
+
+            .plan-option label {
+                flex: 0 0 auto;
             }
 
             .price {
@@ -425,6 +535,20 @@
 
             .features-title {
                 font-size: 20px;
+            }
+
+            .addon-card {
+                padding: 15px;
+            }
+
+            .addon-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .addon-price {
+                align-self: flex-start;
             }
         }
     </style>
@@ -464,9 +588,22 @@
             </div>
         </div>
 
-        <div class="platinum-checkbox">
-            <input type="checkbox" id="priority-support">
-            <label for="priority-support">Priority Support - Pay $ 299.00 billed annually</label>
+        <div class="addon-section">
+            <div class="addon-card" id="addonCard">
+                <div class="platinum-checkbox">
+                    <input type="checkbox" id="priority-support">
+                    <div class="addon-content">
+                        <div class="addon-info">
+                            <div class="addon-title">
+                                Priority Support
+                                <span class="addon-badge">Premium</span>
+                            </div>
+                            <div class="addon-description">Get faster response times and dedicated assistance</div>
+                        </div>
+                        <div class="addon-price">$299.00 / year</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="form-section">
@@ -730,7 +867,57 @@
         document.querySelectorAll('input[name="plan"]').forEach(radio => {
             radio.addEventListener('change', function () {
                 console.log('Selected plan:', this.value);
+
+                // Remove selected class from all plan options
+                document.querySelectorAll('.plan-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                // Add selected class to the selected plan option
+                this.closest('.plan-option').classList.add('selected');
             });
+        });
+
+        // Also make clicking anywhere on the plan-option select the radio
+        document.querySelectorAll('.plan-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                // Don't trigger if clicking the features button
+                if (e.target.classList.contains('features-btn') || e.target.closest('.features-btn')) {
+                    return;
+                }
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                radio.dispatchEvent(new Event('change'));
+            });
+        });
+
+        // Set initial selected state
+        const checkedRadio = document.querySelector('input[name="plan"]:checked');
+        if (checkedRadio) {
+            checkedRadio.closest('.plan-option').classList.add('selected');
+        }
+
+        // Addon card functionality
+        const addonCard = document.getElementById('addonCard');
+        const prioritySupportCheckbox = document.getElementById('priority-support');
+
+        // Toggle addon selection
+        prioritySupportCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                addonCard.classList.add('selected');
+            } else {
+                addonCard.classList.remove('selected');
+            }
+        });
+
+        // Make the entire addon card clickable
+        addonCard.addEventListener('click', function(e) {
+            // Don't toggle if the checkbox itself was clicked
+            if (e.target === prioritySupportCheckbox) {
+                return;
+            }
+            prioritySupportCheckbox.checked = !prioritySupportCheckbox.checked;
+            prioritySupportCheckbox.dispatchEvent(new Event('change'));
         });
     </script>
 </body>
