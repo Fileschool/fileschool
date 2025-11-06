@@ -37,13 +37,12 @@
             text-align: center;
         }
 
-        .subscription-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .subscription-section {
             margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
+        }
+
+        .subscription-header {
+            margin-bottom: 20px;
         }
 
         .subscription-header h3 {
@@ -52,39 +51,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #1a1a1a;
-        }
-
-        .plan-toggle {
-            display: inline-flex;
-            background: white;
-            border-radius: 10px;
-            padding: 4px;
-            box-shadow: 0 2px 8px rgba(0, 152, 247, 0.15);
-            border: 2px solid #e0f2ff;
-        }
-
-        .plan-toggle button {
-            padding: 10px 28px;
-            border: none;
-            background: transparent;
-            color: #666;
-            font-size: 14px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .plan-toggle button.active {
-            background: #0098f7;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0, 152, 247, 0.3);
-        }
-
-        .plan-toggle button:not(.active):hover {
-            color: #0098f7;
-            background: #f0f9ff;
         }
 
         .plans {
@@ -559,32 +525,56 @@
     <div class="container">
         <h1>Sign Up: Choose Your Plan</h1>
 
-        <div class="subscription-header">
-            <h3>Subscription</h3>
-            <div class="plan-toggle">
-                <button id="annualBtn" class="active">ANNUAL</button>
-                <button id="perpetualBtn">PERPETUAL</button>
+        <div class="subscription-section">
+            <div class="subscription-header">
+                <h3>Annual Plans</h3>
+            </div>
+            <div class="plans">
+                <div class="plan-option">
+                    <input type="radio" id="professional-annual" name="plan" value="professional-annual" checked>
+                    <label for="professional-annual">Professional</label>
+                    <button class="features-btn" data-plan="professional">Features</button>
+                    <div class="price">
+                        <span class="price-amount">$719.00 / Year</span>
+                        <span class="discount-badge">20% discount</span>
+                    </div>
+                </div>
+
+                <div class="plan-option">
+                    <input type="radio" id="enterprise-annual" name="plan" value="enterprise-annual">
+                    <label for="enterprise-annual">Enterprise</label>
+                    <button class="features-btn" data-plan="enterprise">Features</button>
+                    <div class="price">
+                        <span class="price-amount">$1,599.00 / Year</span>
+                        <span class="discount-badge">20% discount</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="plans">
-            <div class="plan-option">
-                <input type="radio" id="professional" name="plan" value="professional" checked>
-                <label for="professional">Professional</label>
-                <button class="features-btn">Features</button>
-                <div class="price">
-                    <span class="price-amount">$719.00 / Year</span>
-                    <span class="discount-badge">20% discount</span>
-                </div>
+        <div class="subscription-section">
+            <div class="subscription-header">
+                <h3>Perpetual Plans</h3>
             </div>
+            <div class="plans">
+                <div class="plan-option">
+                    <input type="radio" id="professional-perpetual" name="plan" value="professional-perpetual">
+                    <label for="professional-perpetual">Professional</label>
+                    <button class="features-btn" data-plan="professional">Features</button>
+                    <div class="price">
+                        <span class="price-amount">$1,889.00 / Perpetual</span>
+                        <span class="discount-badge">30% discount</span>
+                    </div>
+                </div>
 
-            <div class="plan-option">
-                <input type="radio" id="enterprise" name="plan" value="enterprise">
-                <label for="enterprise">Enterprise</label>
-                <button class="features-btn">Features</button>
-                <div class="price">
-                    <span class="price-amount">$1,599.00 / Year</span>
-                    <span class="discount-badge">20% discount</span>
+                <div class="plan-option">
+                    <input type="radio" id="enterprise-perpetual" name="plan" value="enterprise-perpetual">
+                    <label for="enterprise-perpetual">Enterprise</label>
+                    <button class="features-btn" data-plan="enterprise">Features</button>
+                    <div class="price">
+                        <span class="price-amount">$4,199.00 / Perpetual</span>
+                        <span class="discount-badge">30% discount</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -601,7 +591,7 @@
                             </div>
                             <div class="addon-description">Get faster response times and dedicated assistance</div>
                         </div>
-                        <div class="addon-price">$299.00 / year</div>
+                        <div class="addon-price">$499.00 / year</div>
                     </div>
                 </div>
             </div>
@@ -711,75 +701,6 @@
     </div>
 
     <script>
-        // Plan pricing data
-        const pricingData = {
-            annual: {
-                professional: {
-                    price: '$719.00 / Year',
-                    discount: '20% discount'
-                },
-                enterprise: {
-                    price: '$1,599.00 / Year',
-                    discount: '20% discount'
-                }
-            },
-            perpetual: {
-                professional: {
-                    price: '$1,889.00 / Perpetual',
-                    discount: '30% discount'
-                },
-                enterprise: {
-                    price: '$4,199.00 / Perpetual',
-                    discount: '30% discount'
-                }
-            }
-        };
-
-        const annualBtn = document.getElementById('annualBtn');
-        const perpetualBtn = document.getElementById('perpetualBtn');
-        let currentPeriod = 'annual';
-
-        function updatePricing(period) {
-            currentPeriod = period;
-
-            // Update button states
-            if (period === 'perpetual') {
-                perpetualBtn.classList.add('active');
-                annualBtn.classList.remove('active');
-            } else {
-                annualBtn.classList.add('active');
-                perpetualBtn.classList.remove('active');
-            }
-
-            // Update Professional plan
-            const professionalOption = document.querySelector('input[value="professional"]').closest('.plan-option');
-            const professionalPrice = professionalOption.querySelector('.price-amount');
-            const professionalDiscount = professionalOption.querySelector('.discount-badge');
-            professionalPrice.textContent = pricingData[period].professional.price;
-
-            if (pricingData[period].professional.discount) {
-                professionalDiscount.textContent = pricingData[period].professional.discount;
-                professionalDiscount.style.display = 'inline-block';
-            } else {
-                professionalDiscount.style.display = 'none';
-            }
-
-            // Update Enterprise plan
-            const enterpriseOption = document.querySelector('input[value="enterprise"]').closest('.plan-option');
-            const enterprisePrice = enterpriseOption.querySelector('.price-amount');
-            const enterpriseDiscount = enterpriseOption.querySelector('.discount-badge');
-            enterprisePrice.textContent = pricingData[period].enterprise.price;
-
-            if (pricingData[period].enterprise.discount) {
-                enterpriseDiscount.textContent = pricingData[period].enterprise.discount;
-                enterpriseDiscount.style.display = 'inline-block';
-            } else {
-                enterpriseDiscount.style.display = 'none';
-            }
-        }
-
-        annualBtn.addEventListener('click', () => updatePricing('annual'));
-        perpetualBtn.addEventListener('click', () => updatePricing('perpetual'));
 
         // Features data
         const featuresData = {
@@ -839,8 +760,7 @@
         document.querySelectorAll('.features-btn').forEach(btn => {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
-                const planRadio = this.closest('.plan-option').querySelector('input[type="radio"]');
-                const planName = planRadio.value;
+                const planName = this.getAttribute('data-plan');
                 showFeatures(planName);
             });
         });
