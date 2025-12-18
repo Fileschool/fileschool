@@ -106,26 +106,36 @@
         }
 
         .features-btn {
-            padding: 6px 14px;
-            background: white;
-            border: 1px solid #d0d5dd;
-            border-radius: 4px;
+            padding: 0;
+            background: transparent;
+            border: none;
             font-size: 13px;
-            color: #666;
+            color: #0098f7;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             transition: all 0.3s ease;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-thickness: 1px;
+            font-weight: 500;
         }
 
         .features-btn:hover {
-            border-color: #0098F7;
-            color: #0098F7;
+            color: #0077c7;
+            text-decoration-thickness: 2px;
         }
 
-        .features-btn:before {
-            content: "⭐";
+        .features-btn:after {
+            content: "›";
+            font-size: 18px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .features-btn:hover:after {
+            transform: translateX(2px);
         }
 
         .price {
