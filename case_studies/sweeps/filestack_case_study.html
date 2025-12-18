@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Case Study: How Sweeps empowered users with Filestack">
+    <title>Sweeps Case Study | Filestack</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --filestack-orange: #ef4a25;
+            --filestack-dark: #181325;
+            --filestack-text: #181325;
+            --filestack-gray: #555555;
+            /* Darker gray for better contrast */
+            --bg-light: #f8f9fa;
+            --border-radius: 4px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.8;
+            /* Increased line height for readability */
+            color: var(--filestack-text);
+            background-color: #ffffff;
+            overflow-x: hidden;
+            /* Fix unwanted horizontal scroll/lines */
+        }
+
+        a {
+            color: var(--filestack-orange);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #d63f1f;
+        }
+
+        /* Hero - Flat Dark Background */
+        .hero {
+            background-color: var(--filestack-dark);
+            color: #ffffff;
+            padding: 6rem 0 7rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            /* Increased from 800px */
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero-logo {
+            /* background: white; Removed white background */
+            /* padding: 1rem 2rem; Removed padding */
+            border-radius: var(--border-radius);
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .hero-logo img {
+            height: 40px;
+            display: block;
+            filter: brightness(0) invert(1);
+            /* Make logo white */
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            color: #ffffff;
+        }
+
+        .hero .subtitle {
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .hero-badges {
+            max-width: 1600px;
+            /* Significantly increased width */
+            margin: 0 auto;
+            position: relative;
+            padding: 0 2rem;
+            /* Add side padding */
+        }
+
+        .badge {
+            background: rgba(239, 74, 37, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--filestack-orange);
+            border: 1px solid var(--filestack-orange);
+        }
+
+        /* Layout with Right Sidebar */
+        .layout-wrapper {
+            display: flex;
+            max-width: 1600px;
+            /* Significantly increased width */
+            margin: 0 auto;
+            position: relative;
+            padding: 0 2rem;
+            /* Add side padding */
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .toc-sidebar {
+            width: 300px;
+            /* Slightly wider sidebar */
+            flex-shrink: 0;
+            padding: 4rem 0 0 4rem;
+            /* Adjusted padding */
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .toc-sidebar {
+                display: block;
+            }
+        }
+
+        .toc-sticky {
+            position: sticky;
+            top: 40px;
+            /* Adjusted top since header is gone */
+        }
+
+        .toc-sidebar h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--filestack-dark);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            border-left: 2px solid #e5e7eb;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: block;
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            color: var(--filestack-gray);
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .toc-list a:hover {
+            color: var(--filestack-orange);
+        }
+
+        .toc-list a.active {
+            color: var(--filestack-orange);
+            font-weight: 600;
+        }
+
+        .toc-list a.active::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--filestack-orange);
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+            /* Removed side padding since wrapper handles it */
+        }
+
+        .bg-light {
+            background-color: var(--bg-light);
+            margin: 0 -2000px;
+            /* Negative margin hack for full width bg */
+            padding: 5rem 2000px;
+            /* Padding to compensate */
+        }
+
+        /* Ensure content inside bg-light stays aligned */
+        .bg-light>* {
+            max-width: 100%;
+        }
+
+        h2 {
+            font-size: 36px;
+            /* Increased size */
+            color: var(--filestack-dark);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        h3 {
+            font-size: 28px;
+            /* Increased size */
+            color: var(--filestack-dark);
+            margin: 2rem 0 1rem;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        p {
+            color: var(--filestack-gray);
+            margin-bottom: 1.5rem;
+            font-size: 18px;
+            /* Increased font size */
+            line-height: 1.8;
+        }
+
+        strong {
+            color: var(--filestack-dark);
+            font-weight: 600;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            /* Wider cards */
+            gap: 2.5rem;
+            margin: 4rem 0;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            /* More padding */
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--filestack-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            color: var(--filestack-orange);
+        }
+
+        .card h4 {
+            color: var(--filestack-dark);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: var(--filestack-gray);
+            margin: 0;
+        }
+
+        /* Teachable Style Quote */
+        .quote {
+            background-color: #f9fafb;
+            /* Slightly different gray */
+            border-left: 4px solid var(--filestack-orange);
+            /* Orange accent border */
+            padding: 3rem 3rem;
+            margin: 4rem 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            /* Square left corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            text-align: left;
+            /* Align left for better readability with border */
+            position: relative;
+        }
+
+        .quote::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 60px;
+            color: rgba(239, 74, 37, 0.1);
+            /* Faint orange quote mark */
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .bg-light .quote {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .quote p {
+            font-size: 28px;
+            /* Larger font size */
+            color: var(--filestack-dark);
+            font-style: italic;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+
+        .quote cite {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            /* Align left */
+            gap: 0.25rem;
+            font-style: normal;
+            font-size: 15px;
+            color: var(--filestack-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .quote cite strong {
+            color: var(--filestack-orange);
+            font-size: 18px;
+        }
+
+        /* Split Layout */
+        .split-layout {
+            display: flex;
+            gap: 5rem;
+            /* Increased gap */
+            align-items: center;
+            margin: 5rem 0;
+        }
+
+        .split-content-left {
+            flex: 1;
+        }
+
+        .split-content-right {
+            flex: 1;
+        }
+
+        .section-header-image {
+            width: 100%;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background-color: var(--filestack-dark);
+            padding: 8rem 2rem;
+            /* Larger padding */
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 42px;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            font-size: 20px;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 18px;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--filestack-orange);
+            color: white;
+            border: 1px solid var(--filestack-orange);
+        }
+
+        .btn-primary:hover {
+            background-color: #d63f1f;
+            border-color: #d63f1f;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .layout-wrapper {
+                padding: 0 1.5rem;
+            }
+
+            .bg-light {
+                margin: 0 -1.5rem;
+                padding: 4rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .split-layout {
+                flex-direction: column;
+                gap: 3rem;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            section {
+                padding: 3rem 0;
+            }
+
+            .quote p {
+                font-size: 22px;
+            }
+
+            .cta-section h2 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Removed as requested -->
+
+    <div class="hero">
+        <div class="hero-content">
+            <!-- Logo Added -->
+            <div class="hero-logo">
+                <img src="images/sweeps_logo.png" alt="Sweeps Logo">
+            </div>
+
+            <h1>How a labor marketplace built trust across 15,000+ users with reliable file uploads</h1>
+            <p class="subtitle">Near 100% upload success rate • Verified on-site attendance • Increased repeat business
+            </p>
+            <div class="hero-badges">
+                <span class="badge">100% Upload Success</span>
+                <span class="badge">Verified Attendance</span>
+                <span class="badge">Repeat Business</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="layout-wrapper">
+
+        <main class="main-content">
+
+            <!-- About Section -->
+            <section id="about">
+                <h2>About Sweeps</h2>
+                <p><a href="https://sweeps.jobs/" target="_blank">Sweeps</a> is a labor marketplace for moving, odd
+                    jobs, and more. The platform connects local workers
+                    with homeowners and businesses, serving over 5,000 workers and 10,000+ customers.</p>
+                <p>In a marketplace built on trust, visual verification matters. All members have profile photos,
+                    onboarding videos, and can create and upload files throughout their workflow.</p>
+                <p><strong>How they measure success:</strong> Successful jobs completed.</p>
+
+                <div class="quote">
+                    <p>"Developer and user friendly attachments."</p>
+                    <cite>
+                        <strong>Morris Gelblum</strong>
+                        <span>Founder, Sweeps</span>
+                    </cite>
+                </div>
+            </section>
+
+            <!-- Challenge Section -->
+            <section id="challenge" class="bg-light">
+                <h2>The Challenge</h2>
+                <p>Before implementing Filestack, Sweeps faced a fundamental trust problem.</p>
+                <p>The team needed easy, multiplatform file uploads for photos, timeclocks, timesheets, and general file
+                    uploads. Without reliable photo capture across web and mobile, there was no way to verify worker
+                    identity or confirm on-site attendance.</p>
+
+                <div class="quote" style="background: white; margin: 2rem 0;">
+                    <p>"Lack of trust without profile photos, timeclock photos, etc."</p>
+                    <cite>
+                        <strong>Morris Gelblum</strong>
+                        <span>Founder, Sweeps</span>
+                    </cite>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="card">
+                        <span class="card-icon">⚠️</span>
+                        <h4>Trust Issues</h4>
+                        <p>Lack of trust without profile photos or timeclock verification.</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">📱</span>
+                        <h4>Multiplatform Needs</h4>
+                        <p>Needed consistent uploads across web, iOS, and Android.</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🚫</span>
+                        <h4>Verification Gap</h4>
+                        <p>No way to verify worker identity or on-site attendance.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Solution Section -->
+            <section id="solution">
+                <h2>The Solution</h2>
+                <div class="split-layout">
+                    <div class="split-content-left">
+                        <h3>Why Sweeps Chose Filestack</h3>
+                        <p>When evaluating solutions, Sweeps considered both third-party options and building in-house.
+                            The deciding factors were clear:</p>
+                        <div class="quote" style="padding: 2rem; margin: 2rem 0;">
+                            <p style="font-size: 20px; margin: 0;">"Price, developer ease, multiplatform."</p>
+                            <cite style="margin-top: 1rem;">
+                                <strong>Morris Gelblum</strong>
+                                <span>Founder, Sweeps</span>
+                            </cite>
+                        </div>
+
+                        <h3>Integration</h3>
+                        <p>Sweeps integrated Filestack's File Picker into their <a
+                                href="https://github.com/filestack/filestack-rails" target="_blank">Ruby on Rails</a>
+                            app along with Turbo on
+                            iOS and Android, giving them consistent upload functionality across all platforms.</p>
+                        <p>For teams building cross-platform applications, Filestack's <a
+                                href="https://www.filestack.com/docs/file-picker/" target="_blank">File Picker</a>
+                            provided the perfect drop-in solution, handling the complexities of camera access, file
+                            selection, and cloud storage across different devices.</p>
+                    </div>
+                    <div class="split-content-right">
+                        <figure style="margin: 0;">
+                            <img src="images/sweeps_interface.png" alt="Unified Upload Experience"
+                                class="section-header-image">
+                            <figcaption
+                                style="text-align: center; color: var(--filestack-gray); font-size: 14px; margin-top: 0.5rem;">
+                                Sweeps Website</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results" class="bg-light">
+                <h2>The Results</h2>
+
+                <h3>Measurable improvements</h3>
+                <p>Since implementing Filestack, Sweeps has seen concrete results:</p>
+                <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                    <li
+                        style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 18px; color: var(--filestack-gray);">
+                        <span style="color: var(--filestack-orange);">✓</span> Near 100% success rate on
+                        profile photos
+                    </li>
+                    <li
+                        style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 18px; color: var(--filestack-gray);">
+                        <span style="color: var(--filestack-orange);">✓</span> Timeclock photos now
+                        required
+                    </li>
+                </ul>
+
+                <div class="feature-grid">
+                    <div class="card">
+                        <span class="card-icon">✅</span>
+                        <h4>100% Success Rate</h4>
+                        <p>Near 100% success rate on profile photos.</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🕒</span>
+                        <h4>Verified Attendance</h4>
+                        <p>Timeclock photos now required, solving on-site verification.</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🤝</span>
+                        <h4>Increased Trust</h4>
+                        <p>More trust throughout the system and increased repeat business.</p>
+                    </div>
+                </div>
+
+                <h3>Solving a critical problem</h3>
+                <div class="quote">
+                    <p>"We were not sure whether workers were on-site, timeclock photos solve that
+                        problem."</p>
+                    <cite>
+                        <strong>Morris Gelblum</strong>
+                        <span>Founder, Sweeps</span>
+                    </cite>
+                </div>
+
+                <h3>Unexpected benefits</h3>
+                <p>What started as a solution for profile photos evolved into something bigger. Reliable uploads created
+                    a ripple effect across the entire platform.</p>
+                <div class="quote">
+                    <p>"More trust throughout the system"</p>
+                    <cite>
+                        <strong>Morris Gelblum</strong>
+                        <span>Founder, Sweeps</span>
+                    </cite>
+                </div>
+                <p>When workers and customers can see verified photos at every touchpoint, it changes how they interact
+                    with the marketplace. Trust compounds.</p>
+            </section>
+
+            <!-- User Experience Section -->
+            <section id="ux">
+                <h2>User Experience</h2>
+
+                <h3>The "aha" moment</h3>
+                <p>For many teams, file uploads start as a single use case. But once the infrastructure is reliable, new
+                    possibilities open up. Sweeps discovered that photo-based workflows could extend far beyond their
+                    original scope.</p>
+                <div class="quote" style="background: white; margin: 2rem 0;">
+                    <p>"We realize more and more of our system can be done via users taking photos and uploading
+                        documents. i.e. posting jobs with a photo, submitting timesheets and timeclocks with photos."
+                    </p>
+                    <cite>
+                        <strong>Morris Gelblum</strong>
+                        <span>Founder, Sweeps</span>
+                    </cite>
+                </div>
+                <p>This is a pattern we see often: teams implement Filestack for one workflow, then realize the same
+                    reliability can power features they hadn't planned for.</p>
+
+                <h3>Most valuable feature</h3>
+                <p>The File Picker has had the biggest positive impact on their workflow. For a platform serving users
+                    across web, iOS, and Android, having a consistent upload experience matters. The File Picker
+                    abstracts away the complexity of handling uploads across different devices and network conditions.
+                </p>
+
+                <h3>Serving customers better</h3>
+                <p>At the end of the day, file handling is invisible when it works. Users don't think about uploads -
+                    they think about getting their job done.</p>
+                <div class="quote" style="background: white; margin: 2rem 0;">
+                    <p>"Fast, trustworthy attachments"</p>
+                    <cite>
+                        <strong>Morris Gelblum</strong>
+                        <span>Founder, Sweeps</span>
+                    </cite>
+                </div>
+                <p>That's the goal: infrastructure that disappears into the background while making every interaction
+                    feel seamless.</p>
+            </section>
+
+            <!-- Business Impact Section -->
+            <section id="impact" class="bg-light">
+                <h2>Driving Business Growth</h2>
+                <p style="max-width: 800px; margin-bottom: 3rem;">For a labor marketplace, repeat business is the
+                    ultimate metric. It means workers delivered, customers were satisfied, and the platform facilitated
+                    a successful transaction. Reliable file uploads play a quieter role here than you might expect - but
+                    when profile photos, timeclock verification, and document sharing all work without friction, the
+                    entire experience feels more professional.</p>
+
+                <div class="feature-grid">
+                    <div class="card">
+                        <span class="card-icon">🛡️</span>
+                        <h4>Building Trust</h4>
+                        <p>By verifying on-site attendance through reliable photo uploads, Sweeps eliminated
+                            "he-said-she-said" disputes, creating a transparent marketplace where homeowners feel
+                            secure.</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">📈</span>
+                        <h4>Repeat Business</h4>
+                        <p><strong>"Increased trust and repeat business"</strong></p>
+                        <p>When customers trust the platform, they return. The reliability of the upload experience
+                            directly correlates to user satisfaction and higher Lifetime Value (LTV).</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">🚀</span>
+                        <h4>Operational Scale</h4>
+                        <p>The File Picker is now indispensable for Sweeps' operations. It's no longer a feature—it's
+                            infrastructure.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Looking Forward Section -->
+            <section id="future">
+                <h2>Looking Forward</h2>
+                <p>Sweeps sees Filestack as central to their mobile-first strategy. Their workers are in the field, not
+                    at desks. Every interaction happens on a phone, often on unpredictable networks. That's where upload
+                    reliability matters most.</p>
+                <p>Areas they're focused on next:</p>
+                <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                    <li
+                        style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 18px; color: var(--filestack-gray);">
+                        <span style="color: var(--filestack-orange);">➜</span> Faster uploads, uploads in the background
+                    </li>
+                    <li
+                        style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 18px; color: var(--filestack-gray);">
+                        <span style="color: var(--filestack-orange);">➜</span> More and more photo and file based work
+                        on mobile particularly
+                    </li>
+                </ul>
+                <p>As their platform grows, so does their reliance on photo and document-based workflows. The foundation
+                    they've built with Filestack scales with them.</p>
+            </section>
+
+        </main>
+
+        <!-- Right TOC Sidebar -->
+        <aside class="toc-sidebar">
+            <div class="toc-sticky">
+                <h4>On this page</h4>
+                <ul class="toc-list">
+                    <li><a href="#about">About Sweeps</a></li>
+                    <li><a href="#challenge">The Challenge</a></li>
+                    <li><a href="#solution">The Solution</a></li>
+                    <li><a href="#results">The Results</a></li>
+                    <li><a href="#ux">User Experience</a></li>
+                    <li><a href="#impact">Business Impact</a></li>
+                    <li><a href="#future">Looking Forward</a></li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2>Try Filestack for Your Platform</h2>
+        <p>If your team needs reliable file uploads across web and mobile, start a free trial or explore the
+            documentation.</p>
+        <a href="https://www.filestack.com/signup-free/" class="btn btn-primary">Start Free Trial</a>
+    </div>
+
+    <script>
+        // Active TOC highlighting
+        const tocLinks = document.querySelectorAll('.toc-list a');
+        const sections = document.querySelectorAll('section[id]');
+
+        function updateActiveLink() {
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150; // Offset for sticky header
+                const sectionHeight = section.offsetHeight;
+
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveLink);
+        window.addEventListener('load', updateActiveLink);
+    </script>
+
+</body>
+
+</html>
