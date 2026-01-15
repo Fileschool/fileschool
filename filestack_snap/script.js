@@ -1476,11 +1476,9 @@ GET ${statusUrl}
     }
 
     generateTransformChainsCode(tab, options) {
-        console.log('generateTransformChainsCode called with:', { tab, options });
         const apiKey = document.getElementById('globalApikey')?.value || 'YOUR_API_KEY';
         const handle = options.handle || 'YOUR_FILE_HANDLE';
         const chains = options.steps || [];
-        console.log('Chains collected:', chains);
 
         if (chains.length === 0) {
             return `// No transformation steps configured\n// Please add transformation steps to the chain builder`;
@@ -2604,7 +2602,6 @@ const enhancedCodeGenerator = new CodeGeneratorEnhanced();
 function updateCodeDisplayEnhanced(code, language, section) {
     const codeElement = document.getElementById('generatedCode');
     if (!codeElement) {
-        console.error('Code display element not found');
         return;
     }
 
@@ -2633,7 +2630,6 @@ function updateCodeDisplayEnhanced(code, language, section) {
         try {
             Prism.highlightElement(codeElement);
         } catch (e) {
-            console.warn('Syntax highlighting failed:', e);
         }
     }
 
@@ -2654,7 +2650,6 @@ window.enhancedCopyHandler = {
             navigator.clipboard.writeText(this.currentCode).then(() => {
                 this.showNotification('Code copied to clipboard!');
             }).catch(err => {
-                console.error('Copy failed:', err);
                 this.fallbackCopy();
             });
         } else {
@@ -2798,7 +2793,6 @@ function generateCodeEnhanced(section, tab = 'javascript') {
         updateCodeDisplayEnhanced(enhancedCode, tab, section);
 
     } catch (error) {
-        console.error(`Enhanced ${section} generation failed:`, error);
         const fallbackCode = `// Error generating code for ${section}\n// Please check your configuration and try again.\n// Error: ${error.message}`;
         updateCodeDisplayEnhanced(fallbackCode, tab, section);
     }
@@ -2813,7 +2807,6 @@ function collectUploadOptions() {
             tags: document.getElementById('uploadTags')?.value || null
         };
     } catch (error) {
-        console.warn('Error collecting upload options:', error);
         return {};
     }
 }
@@ -2915,7 +2908,6 @@ function collectDndOptions() {
 
         return options;
     } catch (error) {
-        console.warn('Error collecting DND options:', error);
         return {};
     }
 }
@@ -2928,7 +2920,6 @@ function collectDownloadOptions() {
             signature: document.getElementById('downloadSignature')?.value || null
         };
     } catch (error) {
-        console.warn('Error collecting download options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
     }
 }
@@ -2964,7 +2955,6 @@ function collectSfwOptions() {
 
         return options;
     } catch (error) {
-        console.warn('Error collecting SFW options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
     }
 }
@@ -3000,7 +2990,6 @@ function collectTaggingOptions() {
 
         return options;
     } catch (error) {
-        console.warn('Error collecting tagging options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
     }
 }
@@ -3030,7 +3019,6 @@ function collectFacesOptions() {
 
         return options;
     } catch (error) {
-        console.warn('Error collecting faces options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
     }
 }
@@ -3066,7 +3054,6 @@ function collectOcrOptions() {
 
         return options;
     } catch (error) {
-        console.warn('Error collecting OCR options:', error);
         return { handle: 'YOUR_FILE_HANDLE' };
     }
 }
@@ -3085,7 +3072,6 @@ function collectWorkflowsOptions() {
             jobId: document.getElementById('workflowJobId')?.value || null
         };
     } catch (error) {
-        console.warn('Error collecting workflows options:', error);
         return {};
     }
 }
@@ -3102,26 +3088,21 @@ function collectWebhooksOptions() {
             }
         };
     } catch (error) {
-        console.warn('Error collecting webhooks options:', error);
         return {};
     }
 }
 
 function collectTransformChainsOptions() {
     try {
-        console.log('collectTransformChainsOptions called');
         const chainBuilder = document.getElementById('chainBuilder');
-        console.log('chainBuilder element:', chainBuilder);
         const handle = document.getElementById('chainHandle')?.value || 'YOUR_FILE_HANDLE';
         const chains = [];
 
         if (chainBuilder) {
             const steps = chainBuilder.querySelectorAll('.chain-step');
-            console.log('Found chain steps:', steps.length);
             steps.forEach(step => {
                 const operation = step.querySelector('.chain-operation')?.value;
                 const params = step.querySelector('.chain-params')?.value;
-                console.log('Step operation:', operation, 'params:', params);
                 if (operation) {
                     chains.push({ operation, params });
                 }
@@ -3135,10 +3116,8 @@ function collectTransformChainsOptions() {
             conditional: document.getElementById('chainConditional')?.checked || false,
             fallback: document.getElementById('chainFallback')?.checked || false
         };
-        console.log('collectTransformChainsOptions result:', result);
         return result;
     } catch (error) {
-        console.warn('Error collecting transform chains options:', error);
         return { handle: 'YOUR_FILE_HANDLE', chains: [] };
     }
 }
@@ -3169,7 +3148,6 @@ function collectVideoProcessingOptions() {
             title: document.getElementById('videoTitle')?.value || null
         };
     } catch (error) {
-        console.warn('Error collecting video processing options:', error);
         return {};
     }
 }
@@ -3188,7 +3166,6 @@ function collectAudioProcessingOptions() {
             clipOffset: document.getElementById('audioClipOffset')?.value || null
         };
     } catch (error) {
-        console.warn('Error collecting audio processing options:', error);
         return {};
     }
 }
@@ -3199,7 +3176,6 @@ function setupManualCodeGeneration() {
     const generateBtn = document.getElementById('generateCodeBtn');
 
     if (!generateBtn) {
-        console.error('Generate Code button not found');
         return;
     }
 
@@ -3525,7 +3501,6 @@ function setupManualCodeGeneration() {
 
     // Manual generation function
     window.manualGenerateCode = function() {
-        console.log('manualGenerateCode called, currentSection:', currentSection);
         if (!currentSection) {
             showUserFeedback('Please select a section first', 'warning');
             return;
@@ -3598,7 +3573,6 @@ function setupManualCodeGeneration() {
                 showUserFeedback('Code generated successfully!', 'success');
             }
         } catch (error) {
-            console.error('Code generation error:', error);
             showUserFeedback('Error generating code. Please check your configuration.', 'error');
 
             // Restore button state on error
@@ -3664,7 +3638,6 @@ function setupManualCodeGeneration() {
                 try {
                     filestackClient = filestack.init(apiKeyInput.value);
                 } catch (error) {
-                    console.warn('Invalid API key:', error);
                 }
             }
             markConfigChanged();
@@ -3834,7 +3807,6 @@ function enhancedInitialization() {
         setupKeyboardShortcuts();
 
     } catch (error) {
-        console.error('Enhanced initialization failed:', error);
         showUserFeedback('Initialization failed. Some features may not work correctly.', 'error');
     }
 }
@@ -3870,6 +3842,194 @@ function setupKeyboardShortcuts() {
     });
 }
 
+// Initialize all "Pick/Upload Image" buttons throughout the application
+function initializePickerButtons() {
+    // List of all picker button IDs used throughout the app
+    const pickerButtons = [
+        { id: 'transformPickerBtn', statusId: 'transformPickerStatus', statusTextId: 'transformPickerStatusText', inputId: 'transformFileHandle' },
+        { id: 'sfwPickerBtn', statusId: 'sfwPickerStatus', statusTextId: 'sfwPickerStatusText', inputId: 'sfwFileHandle' },
+        { id: 'tagging_PickerBtn', statusId: 'tagging_PickerStatus', statusTextId: 'tagging_PickerStatusText', inputId: 'taggingFileHandle' },
+        { id: 'faces_PickerBtn', statusId: 'faces_PickerStatus', statusTextId: 'faces_PickerStatusText', inputId: 'facesFileHandle' },
+        { id: 'chainsPickerBtn', statusId: 'chainsPickerStatus', statusTextId: 'chainsPickerStatusText', inputId: 'chainsFileHandle' }
+    ];
+
+    pickerButtons.forEach(config => {
+        const button = document.getElementById(config.id);
+        if (button) {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openPickerForTransform(config);
+            });
+        }
+    });
+}
+
+// Open the configured file picker for image transformation/analysis
+function openPickerForTransform(config) {
+    // Get API key from the sidebar
+    const apiKey = document.getElementById('globalApikey')?.value;
+
+    if (!apiKey || apiKey === 'YOUR_API_KEY' || apiKey === '') {
+        showNotification('Please enter your API key in the left sidebar first', 'error');
+        return;
+    }
+
+    // Check if filestack is available
+    if (typeof filestack === 'undefined') {
+        showNotification('Filestack library not loaded. Please refresh the page.', 'error');
+        return;
+    }
+
+    // Get security credentials
+    const policy = document.getElementById('securityPolicy')?.value || '';
+    const signature = document.getElementById('securitySignature')?.value || '';
+
+    // Initialize Filestack client with the API key
+    try {
+        // Determine if we should use security
+        const hasPolicy = policy && policy.trim() && policy !== 'YOUR_POLICY';
+        const hasSignature = signature && signature.trim() && signature !== 'YOUR_SIGNATURE';
+
+        let client;
+        if (hasPolicy && hasSignature) {
+            client = filestack.init(apiKey, {
+                security: {
+                    policy: policy,
+                    signature: signature
+                }
+            });
+            console.log('🔐 TRANSFORM PICKER INITIALIZED WITH SECURITY:');
+            console.log('API Key:', apiKey);
+            console.log('Policy:', policy);
+            console.log('Signature:', signature);
+        } else {
+            client = filestack.init(apiKey);
+            console.log('🔓 TRANSFORM PICKER INITIALIZED WITHOUT SECURITY:');
+            console.log('API Key:', apiKey);
+            console.log('Policy: NOT SET');
+            console.log('Signature: NOT SET');
+        }
+
+        // Get picker options from Styling section
+        let pickerOptions = {};
+        try {
+            pickerOptions = collectPickerOptions();
+            // Remove any callback options that will be overridden
+            delete pickerOptions.onUploadDone;
+            delete pickerOptions.onFileUploadFailed;
+            delete pickerOptions.onFileSelected;
+            delete pickerOptions.container; // Remove container for overlay mode
+            delete pickerOptions.transformations; // Remove transformations from picker options
+            delete pickerOptions.customText; // Remove customText
+        } catch (e) {
+        }
+
+        // Override with settings for transformation uploads
+        pickerOptions.accept = pickerOptions.accept || ['image/*'];
+        pickerOptions.maxFiles = 1; // Only one file for transformations
+        pickerOptions.uploadInBackground = false; // CRITICAL: Required for upload to work properly
+
+        // Only override displayMode if it's inline (which won't work here)
+        if (pickerOptions.displayMode === 'inline') {
+            pickerOptions.displayMode = 'overlay';
+        }
+        // If no displayMode set, default to overlay
+        if (!pickerOptions.displayMode) {
+            pickerOptions.displayMode = 'overlay';
+        }
+
+        // Ensure fromSources is set
+        if (!pickerOptions.fromSources || pickerOptions.fromSources.length === 0) {
+            pickerOptions.fromSources = ['local_file_system'];
+        }
+
+        console.log('📦 FINAL PICKER OPTIONS:', JSON.stringify(pickerOptions, null, 2));
+
+        // Store the uploaded file handle globally so collectTransformOptions can use it
+        pickerOptions.onUploadDone = (result) => {
+            if (result.filesUploaded && result.filesUploaded.length > 0) {
+                const file = result.filesUploaded[0];
+                const handle = file.handle;
+                const filename = file.filename || 'uploaded file';
+                let url = file.url;
+
+                // Store the handle globally for the transform section
+                window.currentTransformHandle = handle;
+                window.currentTransformUrl = url;
+                window.currentTransformFilename = filename;
+
+                // If we're in the transform section, collect transformations and apply them
+                if (config.id === 'transformPickerBtn') {
+                    // Display the original image
+                    const originalImg = document.getElementById('transformOriginal');
+                    const originalUrl = document.getElementById('transformOriginalUrl');
+                    if (originalImg && originalUrl) {
+                        originalImg.src = file.url;
+                        originalUrl.textContent = file.url;
+                    }
+
+                    try {
+                        const transformOptions = collectTransformOptions();
+                        // Remove the handle from transformOptions since we already have it
+                        delete transformOptions.handle;
+
+                        // Build transform URL if there are any transformations selected
+                        const transformKeys = Object.keys(transformOptions).filter(key => key !== 'output');
+                        if (transformKeys.length > 0) {
+                            const transformUrl = client.transform(handle, transformOptions);
+                            url = transformUrl;
+                            window.currentTransformUrl = url;
+
+                            // Display the transformed image
+                            const transformedImg = document.getElementById('transformTransformed');
+                            const transformedUrl = document.getElementById('transformTransformedUrl');
+                            if (transformedImg && transformedUrl) {
+                                transformedImg.src = transformUrl;
+                                transformedUrl.textContent = transformUrl;
+                            }
+                        }
+                    } catch (e) {
+                        // Silently fail if transformations can't be applied
+                    }
+                }
+
+                // Update the status display
+                const statusDiv = document.getElementById(config.statusId);
+                const statusText = document.getElementById(config.statusTextId);
+                if (statusDiv && statusText) {
+                    statusDiv.style.display = 'block';
+                    statusText.innerHTML = `<strong>Uploaded:</strong> ${filename} (Handle: ${handle})`;
+                }
+
+                showNotification(`File uploaded successfully: ${filename}`, 'success');
+
+                // Regenerate code with the new handle (like loadTransformPipeline does)
+                setTimeout(() => {
+                    if (typeof window.manualGenerateCode === 'function') {
+                        window.manualGenerateCode();
+                    }
+                }, 300);
+            }
+        };
+
+        pickerOptions.onFileUploadFailed = (file, error) => {
+            showNotification('Upload failed: ' + (error.message || 'Unknown error'), 'error');
+        };
+
+        // Remove any existing picker instances from the DOM
+        const existingPickers = document.querySelectorAll('.fsp-picker, [data-fsp-element="picker"]');
+        existingPickers.forEach(el => el.remove());
+
+        // Open the picker
+        const picker = client.picker(pickerOptions);
+        picker.open();
+
+    } catch (error) {
+        showNotification('Error opening file picker: ' + error.message, 'error');
+    }
+}
+
 // Add to document ready
 document.addEventListener('DOMContentLoaded', function () {
     initializeApp();
@@ -3878,6 +4038,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupRangeSliders();
     setupInputValidation();
     enhancedInitialization();
+    initializePickerButtons();
 });
 
 // Validation helper function
@@ -4294,6 +4455,32 @@ function setupRealTimeCodeGeneration() {
 
 // Show section
 function showSection(sectionName) {
+    // Close any picker instances from Styling section before switching
+    if (window.PickerStyling && window.PickerStyling.pickerInstance) {
+        try {
+            window.PickerStyling.pickerInstance.close();
+            window.PickerStyling.pickerInstance = null;
+        } catch (e) {
+            // Ignore errors closing picker
+        }
+    }
+
+    // Clean up any existing picker instances when switching sections
+    const existingPickers = document.querySelectorAll('.fsp-picker, [data-fsp-element="picker"], .fsp-modal, .fsp-drop-pane__container');
+    existingPickers.forEach(el => {
+        try {
+            el.remove();
+        } catch (e) {
+            // Ignore errors removing elements
+        }
+    });
+
+    // Also clear the styling picker container specifically
+    const stylingContainer = document.getElementById('styling-picker-container');
+    if (stylingContainer) {
+        stylingContainer.innerHTML = '';
+    }
+
     // Hide all sections
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
@@ -4441,7 +4628,6 @@ function generatePickerCodeEnhanced(tab = 'javascript') {
         // Fall back to original generation if enhanced fails
         generatePickerCode(tab);
     } catch (error) {
-        console.error('Enhanced picker generation failed:', error);
         generatePickerCode(tab);
     }
 }
@@ -4491,7 +4677,6 @@ function generateTransformCodeEnhanced(tab = 'javascript') {
         // Fall back to original generation if enhanced fails
         generateTransformCode(tab);
     } catch (error) {
-        console.error('Enhanced transform generation failed:', error);
         generateTransformCode(tab);
     }
 }
@@ -4548,18 +4733,14 @@ function collectPickerOptions() {
     const fileAcceptanceCard = Array.from(document.querySelectorAll('#picker .config-card')).find(card =>
         card.textContent.includes('File Acceptance')
     );
-    console.log('File Acceptance Card found:', fileAcceptanceCard);
     if (fileAcceptanceCard) {
         const checkboxes = fileAcceptanceCard.querySelectorAll('input[type="checkbox"][value]');
-        console.log('File acceptance checkboxes:', checkboxes.length);
         checkboxes.forEach(checkbox => {
-            console.log('Checkbox:', checkbox.value, 'Checked:', checkbox.checked);
             if (checkbox.checked) {
                 acceptFiles.push(checkbox.value);
             }
         });
     }
-    console.log('Accept files collected:', acceptFiles);
     if (acceptFiles.length > 0) {
         options.accept = acceptFiles;
     }
@@ -4569,18 +4750,14 @@ function collectPickerOptions() {
     const sourcesCard = Array.from(document.querySelectorAll('#picker .config-card')).find(card =>
         card.textContent.includes('Sources') && !card.textContent.includes('From')
     );
-    console.log('Sources Card found:', sourcesCard);
     if (sourcesCard) {
         const checkboxes = sourcesCard.querySelectorAll('input[type="checkbox"][value]');
-        console.log('Sources checkboxes:', checkboxes.length);
         checkboxes.forEach(checkbox => {
-            console.log('Source checkbox:', checkbox.value, 'Checked:', checkbox.checked);
             if (checkbox.checked) {
                 sources.push(checkbox.value);
             }
         });
     }
-    console.log('Sources collected:', sources);
     if (sources.length > 0) {
         options.fromSources = sources;
     }
@@ -4777,7 +4954,6 @@ function collectPickerOptions() {
     // Note: Callbacks are handled in code generation, not in options object
     // They will be added as function stubs in generated code
 
-    console.log('Final collected picker options:', options);
     return options;
 }
 
@@ -4786,8 +4962,8 @@ function collectTransformOptions() {
     const options = {};
     const validationWarnings = []; // Track transformations that are enabled but missing required fields
 
-    // File handle
-    const handle = document.getElementById('transformHandle').value;
+    // File handle - use uploaded handle if available, otherwise use input field
+    let handle = window.currentTransformHandle || document.getElementById('transformHandle')?.value;
     if (handle) {
         options.handle = handle;
     }
@@ -5197,8 +5373,6 @@ function collectTransformOptions() {
 
     // Display validation warnings to user if any
     if (validationWarnings.length > 0) {
-        console.warn('Transformation validation warnings:', validationWarnings);
-
         // Display warnings in the UI
         let warningDiv = document.getElementById('transformValidationWarnings');
         if (!warningDiv) {
@@ -5242,8 +5416,23 @@ function collectTransformOptions() {
 function generateJavaScriptPickerCode(options) {
     let code = `// Filestack Picker Configuration\n`;
     const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+    const policy = document.getElementById('securityPolicy')?.value || '';
+    const signature = document.getElementById('securitySignature')?.value || '';
+
     code += `const apikey = "${apiKey}";\n`;
-    code += `const client = filestack.init(apikey);\n\n`;
+
+    // Add security if configured
+    const hasPolicy = policy && policy.trim() && policy !== 'YOUR_POLICY';
+    const hasSignature = signature && signature.trim() && signature !== 'YOUR_SIGNATURE';
+    if (hasPolicy && hasSignature) {
+        code += `const security = {\n`;
+        code += `  policy: "${policy}",\n`;
+        code += `  signature: "${signature}"\n`;
+        code += `};\n`;
+        code += `const client = filestack.init(apikey, security);\n\n`;
+    } else {
+        code += `const client = filestack.init(apikey);\n\n`;
+    }
 
     // Build options object as code to preserve functions
     const lines = [];
@@ -5533,73 +5722,137 @@ function generateURLPickerCode(options) {
 }
 
 // Generate JavaScript transform code
-function generateJavaScriptTransformCode(options) {
-    let code = `// Filestack Image Transform\n`;
-    code += `const apikey = "YOUR_APIKEY";\n`;
-    code += `const client = filestack.init(apikey);\n\n`;
+function generateJavaScriptTransformCode(transformOptions) {
+    const pickerOptions = collectPickerOptions();
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
+    const policy = document.getElementById('securityPolicy')?.value || '';
+    const signature = document.getElementById('securitySignature')?.value || '';
 
-    if (options.handle) {
-        code += `const handle = "${options.handle}";\n`;
+    let code = `// Generated on: ${new Date().toISOString()}\n`;
+    code += `// Section: transform\n`;
+    code += `// Language: javascript\n`;
+    code += `// API Key: ${apiKey === 'YOUR_API_KEY' ? 'Not Configured' : 'Configured'}\n\n`;
+
+    code += `// Filestack Picker Configuration with Transformations\n`;
+    code += `const apikey = "${apiKey}";\n`;
+
+    // Add security if configured
+    const hasPolicy = policy && policy.trim() && policy !== 'YOUR_POLICY';
+    const hasSignature = signature && signature.trim() && signature !== 'YOUR_SIGNATURE';
+    if (hasPolicy && hasSignature) {
+        code += `const security = {\n`;
+        code += `  policy: "${policy}",\n`;
+        code += `  signature: "${signature}"\n`;
+        code += `};\n`;
+        code += `const client = filestack.init(apikey, security);\n\n`;
     } else {
-        code += `const handle = "YOUR_FILE_HANDLE";\n`;
+        code += `const client = filestack.init(apikey);\n\n`;
     }
 
-    code += `\nconst transformOptions = ${JSON.stringify(options, null, 2)};\n\n`;
+    // Build picker options
+    code += `const options = ${JSON.stringify(pickerOptions, null, 2)};\n\n`;
 
-    code += `// Method 1: Using transform method\n`;
-    code += `const transformedUrl = client.transform(handle, transformOptions);\n`;
-    code += `console.log('Transformed URL:', transformedUrl);\n\n`;
+    // Add transformation configuration
+    const transformKeys = Object.keys(transformOptions).filter(key => key !== 'handle' && key !== 'output');
+    if (transformKeys.length > 0) {
+        code += `// Transformation configuration\n`;
+        const transformConfig = { ...transformOptions };
+        delete transformConfig.handle;
+        code += `const transformOptions = ${JSON.stringify(transformConfig, null, 2)};\n\n`;
+    }
 
-    code += `// Method 2: Using Filelink\n`;
-    code += `const filelink = client.filelink(handle);\n`;
-    code += `Object.entries(transformOptions).forEach(([key, value]) => {\n`;
-    code += `  filelink[key](value);\n`;
-    code += `});\n`;
-    code += `const finalUrl = filelink.toString();\n`;
-    code += `console.log('Final URL:', finalUrl);\n`;
+    // Create the onUploadDone callback with transformations
+    code += `// Handle upload completion\n`;
+    code += `options.onUploadDone = (res) => {\n`;
+    code += `  console.log('PickerResponse', res);\n`;
+
+    if (transformKeys.length > 0) {
+        code += `  \n`;
+        code += `  // Apply transformations to uploaded file\n`;
+        code += `  if (res.filesUploaded && res.filesUploaded.length > 0) {\n`;
+        code += `    const file = res.filesUploaded[0];\n`;
+        code += `    const handle = file.handle;\n`;
+        code += `    \n`;
+        code += `    // Build transformed URL\n`;
+        code += `    const transformedUrl = client.transform(handle, transformOptions);\n`;
+        code += `    console.log('Original URL:', file.url);\n`;
+        code += `    console.log('Transformed URL:', transformedUrl);\n`;
+        code += `    \n`;
+        code += `    // Display the transformed image\n`;
+        code += `    // Example: document.getElementById('myImage').src = transformedUrl;\n`;
+        code += `  }\n`;
+    }
+
+    code += `};\n\n`;
+
+    // Create and open the picker
+    code += `const picker = client.picker(options);\n`;
+    code += `picker.open();\n`;
 
     return code;
 }
 
 // Generate React transform code
-function generateReactTransformCode(options) {
-    let code = `// React Component with Filestack Transform\n`;
-    code += `import React, { useState, useEffect } from 'react';\n`;
-    code += `import { filestack } from 'filestack-js';\n\n`;
+function generateReactTransformCode(transformOptions) {
+    const pickerOptions = collectPickerOptions();
+    const apiKey = (document.getElementById('globalApikey') && document.getElementById('globalApikey').value) || 'YOUR_API_KEY';
 
-    code += `const FilestackTransform = () => {\n`;
-    code += `  const [transformedUrl, setTransformedUrl] = useState('');\n\n`;
+    let code = `// React Component with Filestack Picker and Transformations\n`;
+    code += `import React, { useState } from 'react';\n`;
+    code += `import * as filestack from 'filestack-js';\n\n`;
 
-    code += `  useEffect(() => {\n`;
-    code += `    const apikey = "YOUR_APIKEY";\n`;
-    code += `    const client = filestack.init(apikey);\n`;
+    code += `const FilestackPickerWithTransform = () => {\n`;
+    code += `  const [transformedUrl, setTransformedUrl] = useState('');\n`;
+    code += `  const apikey = "${apiKey}";\n`;
+    code += `  const client = filestack.init(apikey);\n\n`;
 
-    if (options.handle) {
-        code += `    const handle = "${options.handle}";\n`;
-    } else {
-        code += `    const handle = "YOUR_FILE_HANDLE";\n`;
+    // Picker options
+    code += `  const pickerOptions = ${JSON.stringify(pickerOptions, null, 4)};\n\n`;
+
+    // Transform options
+    const transformKeys = Object.keys(transformOptions).filter(key => key !== 'handle' && key !== 'output');
+    if (transformKeys.length > 0) {
+        const transformConfig = { ...transformOptions };
+        delete transformConfig.handle;
+        code += `  const transformOptions = ${JSON.stringify(transformConfig, null, 4)};\n\n`;
     }
 
-    code += `\n    const transformOptions = ${JSON.stringify(options, null, 4)};\n\n`;
+    code += `  const openPicker = () => {\n`;
+    code += `    const options = {\n`;
+    code += `      ...pickerOptions,\n`;
+    code += `      onUploadDone: (res) => {\n`;
+    code += `        console.log('PickerResponse', res);\n`;
 
-    code += `    const url = client.transform(handle, transformOptions);\n`;
-    code += `    setTransformedUrl(url);\n`;
-    code += `  }, []);\n\n`;
+    if (transformKeys.length > 0) {
+        code += `        \n`;
+        code += `        if (res.filesUploaded && res.filesUploaded.length > 0) {\n`;
+        code += `          const file = res.filesUploaded[0];\n`;
+        code += `          const handle = file.handle;\n`;
+        code += `          \n`;
+        code += `          // Apply transformations\n`;
+        code += `          const transformedUrl = client.transform(handle, transformOptions);\n`;
+        code += `          setTransformedUrl(transformedUrl);\n`;
+        code += `          console.log('Transformed URL:', transformedUrl);\n`;
+        code += `        }\n`;
+    }
+
+    code += `      }\n`;
+    code += `    };\n\n`;
+    code += `    const picker = client.picker(options);\n`;
+    code += `    picker.open();\n`;
+    code += `  };\n\n`;
 
     code += `  return (\n`;
     code += `    <div>\n`;
+    code += `      <button onClick={openPicker}>Pick/Upload Image</button>\n`;
     code += `      {transformedUrl && (\n`;
-    code += `        <img src={transformedUrl} alt="Transformed" />\n`;
+    code += `        <img src={transformedUrl} alt="Transformed" style={{ maxWidth: '100%' }} />\n`;
     code += `      )}\n`;
     code += `    </div>\n`;
-    code += `  );
-`;
-    code += `};
+    code += `  );\n`;
+    code += `};\n\n`;
 
-`;
-
-    code += `export default FilestackTransform;
-`;
+    code += `export default FilestackPickerWithTransform;\n`;
 
     return code;
 }
@@ -5816,12 +6069,28 @@ function generateURLTransformCode(options) {
     return code;
 }
 
+// Store previous code for diff detection
+let previousCode = '';
+
 // Update code display
 function updateCodeDisplay(code, language) {
     const codeElement = document.getElementById('generatedCode');
     const codePanel = document.querySelector('.code-panel');
 
     if (codeElement) {
+        // Detect changed lines
+        const oldLines = previousCode.split('\n');
+        const newLines = code.split('\n');
+        const changedLineNumbers = [];
+
+        // Find which lines are different
+        newLines.forEach((line, index) => {
+            if (oldLines[index] !== line) {
+                changedLineNumbers.push(index);
+            }
+        });
+
+        // Update the code
         codeElement.textContent = code;
 
         // Set the language class for syntax highlighting
@@ -5836,14 +6105,73 @@ function updateCodeDisplay(code, language) {
             Prism.highlightElement(codeElement);
         }
 
+        // Highlight changed lines if there are any changes
+        if (changedLineNumbers.length > 0 && previousCode !== '') {
+            highlightChangedLines(codeElement, changedLineNumbers);
+        }
+
+        // Store current code for next comparison
+        previousCode = code;
+
         // Add glow animation to code panel
         if (codePanel) {
             codePanel.classList.add('code-updated');
             setTimeout(() => {
                 codePanel.classList.remove('code-updated');
-            }, 600);
+            }, 1000);
         }
     }
+}
+
+// Highlight specific changed lines
+function highlightChangedLines(codeElement, lineNumbers) {
+    // Remove any existing highlights
+    const existingHighlights = codeElement.parentElement.querySelectorAll('.line-highlight');
+    existingHighlights.forEach(el => el.remove());
+
+    // Get the pre element that contains the code
+    const preElement = codeElement.parentElement;
+
+    // Create wrapper if it doesn't exist
+    if (!preElement.classList.contains('line-numbers')) {
+        preElement.style.position = 'relative';
+    }
+
+    // Calculate line heights and positions
+    const codeText = codeElement.textContent;
+    const lines = codeText.split('\n');
+    const lineHeight = parseFloat(getComputedStyle(codeElement).lineHeight) || 20;
+    const paddingTop = parseFloat(getComputedStyle(preElement).paddingTop) || 0;
+
+    // Create highlights for changed lines
+    lineNumbers.forEach(lineNum => {
+        if (lineNum < lines.length) {
+            const highlight = document.createElement('div');
+            highlight.className = 'line-highlight';
+            highlight.style.cssText = `
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: ${paddingTop + (lineNum * lineHeight)}px;
+                height: ${lineHeight}px;
+                background-color: rgba(239, 74, 38, 0.25);
+                pointer-events: none;
+                z-index: 0;
+                animation: lineHighlightPulse 2s ease-out forwards;
+            `;
+            preElement.insertBefore(highlight, codeElement);
+        }
+    });
+
+    // Make sure code element is above highlights
+    codeElement.style.position = 'relative';
+    codeElement.style.zIndex = '1';
+
+    // Remove highlights after animation
+    setTimeout(() => {
+        const highlights = preElement.querySelectorAll('.line-highlight');
+        highlights.forEach(el => el.remove());
+    }, 2000);
 }
 
 // Quick Start Templates
@@ -7149,6 +7477,9 @@ function closePreviewModal() {
 }
 
 
+// Notification queue management
+let notificationQueue = [];
+
 // Show notification
 function showNotification(message, type = 'info') {
     // Create notification element
@@ -7156,18 +7487,43 @@ function showNotification(message, type = 'info') {
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
 
+    // Add close button
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '×';
+    closeBtn.style.cssText = `
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        opacity: 0.8;
+    `;
+    closeBtn.onmouseover = () => closeBtn.style.opacity = '1';
+    closeBtn.onmouseout = () => closeBtn.style.opacity = '0.8';
+    closeBtn.onclick = () => removeNotification(notification);
+
     // Add styles
     notification.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
-        padding: 1rem 1.5rem;
+        padding: 1rem 2.5rem 1rem 1.5rem;
         border-radius: 8px;
         color: white;
         font-weight: 600;
         z-index: 3000;
         animation: slideIn 0.3s ease;
         max-width: 300px;
+        transition: top 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     `;
 
     if (type === 'success') {
@@ -7178,18 +7534,52 @@ function showNotification(message, type = 'info') {
         notification.style.background = '#EF4A26';
     }
 
-    // Add to page
+    notification.appendChild(closeBtn);
+
+    // Add to page and queue
     document.body.appendChild(notification);
+    notificationQueue.push(notification);
+
+    // Reposition all notifications immediately after adding
+    requestAnimationFrame(() => {
+        repositionNotifications();
+    });
 
     // Remove after 3 seconds
     setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
+        removeNotification(notification);
     }, 3000);
+}
+
+// Remove notification with animation
+function removeNotification(notification) {
+    if (!notification || !notification.parentNode) return;
+
+    notification.style.animation = 'slideOut 0.3s ease';
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+        // Remove from queue
+        const index = notificationQueue.indexOf(notification);
+        if (index > -1) {
+            notificationQueue.splice(index, 1);
+        }
+        // Reposition remaining notifications
+        repositionNotifications();
+    }, 300);
+}
+
+// Helper function to reposition notifications when one is removed
+function repositionNotifications() {
+    const notifications = document.querySelectorAll('.notification');
+    let topPosition = 20;
+
+    notifications.forEach(notif => {
+        notif.style.top = `${topPosition}px`;
+        const rect = notif.getBoundingClientRect();
+        topPosition += rect.height + 10;
+    });
 }
 
 // Add notification animations
@@ -8221,8 +8611,6 @@ function testTagging() {
             return response.json();
         })
         .then(data => {
-            console.log('Tagging Test Result:', data);
-            
             if (data.tags && data.tags.auto) {
                 const tags = data.tags.auto;
                 const tagCount = Object.keys(tags).length;
@@ -8251,7 +8639,6 @@ function testTagging() {
             }
         })
         .catch(error => {
-            console.error('Tagging Test Error:', error);
             let errorMessage = error.message;
             
             if (error.message.includes('403')) {
@@ -9819,7 +10206,6 @@ function createCredentialsSidebar() {
     const signatureInput = document.getElementById('securitySignature');
 
     if (!apikeyInput || !policyInput || !signatureInput) {
-        console.error('Credentials inputs not found in DOM');
         return;
     }
 
@@ -9827,45 +10213,83 @@ function createCredentialsSidebar() {
     const sidebar = document.createElement('div');
     sidebar.className = 'credentials-sidebar';
 
-    // Create header
-    const header = document.createElement('div');
-    header.className = 'credentials-header';
-    header.innerHTML = `
+    // Create API Key section (separate from credentials)
+    const apikeySection = document.createElement('div');
+    apikeySection.className = 'api-key-section';
+
+    const apikeyHeader = document.createElement('div');
+    apikeyHeader.className = 'credentials-header';
+    apikeyHeader.innerHTML = `
         <i class="fas fa-key"></i>
-        <h4>API Credentials</h4>
+        <h4>API KEY</h4>
     `;
-    sidebar.appendChild(header);
+    apikeySection.appendChild(apikeyHeader);
 
-    // Create content container
-    const content = document.createElement('div');
-    content.className = 'credentials-content';
+    const apikeyContent = document.createElement('div');
+    apikeyContent.className = 'credentials-content';
 
-    // Create form groups and move existing inputs into them
     const apikeyGroup = document.createElement('div');
     apikeyGroup.className = 'form-group';
-    apikeyGroup.innerHTML = '<label for="globalApikey"><i class="fas fa-lock"></i> API Key</label>';
+    apikeyGroup.innerHTML = '<label for="globalApikey">Enter API key</label>';
     apikeyInput.placeholder = 'Enter API key';
     apikeyInput.title = 'Your Filestack API key';
     apikeyGroup.appendChild(apikeyInput);
-    content.appendChild(apikeyGroup);
+    apikeyContent.appendChild(apikeyGroup);
+
+    apikeySection.appendChild(apikeyContent);
+    sidebar.appendChild(apikeySection);
+
+    // Create Policy section
+    const policySection = document.createElement('div');
+    policySection.className = 'policy-section';
+
+    const policyHeader = document.createElement('div');
+    policyHeader.className = 'credentials-header';
+    policyHeader.innerHTML = `
+        <i class="fas fa-shield-alt"></i>
+        <h4>POLICY</h4>
+    `;
+    policySection.appendChild(policyHeader);
+
+    const policyContent = document.createElement('div');
+    policyContent.className = 'credentials-content';
 
     const policyGroup = document.createElement('div');
     policyGroup.className = 'form-group';
-    policyGroup.innerHTML = '<label for="securityPolicy"><i class="fas fa-shield-alt"></i> Policy</label>';
+    policyGroup.innerHTML = '<label for="securityPolicy">Security policy</label>';
     policyInput.placeholder = 'Security policy';
     policyInput.title = 'Base64 encoded security policy';
     policyGroup.appendChild(policyInput);
-    content.appendChild(policyGroup);
+    policyContent.appendChild(policyGroup);
+
+    policySection.appendChild(policyContent);
+    sidebar.appendChild(policySection);
+
+    // Create Signature section
+    const signatureSection = document.createElement('div');
+    signatureSection.className = 'signature-section';
+
+    const signatureHeader = document.createElement('div');
+    signatureHeader.className = 'credentials-header';
+    signatureHeader.innerHTML = `
+        <i class="fas fa-signature"></i>
+        <h4>SIGNATURE</h4>
+    `;
+    signatureSection.appendChild(signatureHeader);
+
+    const signatureContent = document.createElement('div');
+    signatureContent.className = 'credentials-content';
 
     const signatureGroup = document.createElement('div');
     signatureGroup.className = 'form-group';
-    signatureGroup.innerHTML = '<label for="securitySignature"><i class="fas fa-signature"></i> Signature</label>';
+    signatureGroup.innerHTML = '<label for="securitySignature">Signature</label>';
     signatureInput.placeholder = 'Signature';
     signatureInput.title = 'HMAC-SHA256 signature';
     signatureGroup.appendChild(signatureInput);
-    content.appendChild(signatureGroup);
+    signatureContent.appendChild(signatureGroup);
 
-    sidebar.appendChild(content);
+    signatureSection.appendChild(signatureContent);
+    sidebar.appendChild(signatureSection);
 
     // Create or get left sidebar container
     let leftSidebar = document.querySelector('.left-sidebar-container');
@@ -10145,7 +10569,6 @@ function improveNotifications() {
     window.showUserFeedback = function(message, type = 'info') {
         // Remove "template loaded" notifications - they're not important
         if (message.toLowerCase().includes('template') && message.toLowerCase().includes('loaded')) {
-            console.log(message); // Just log it
             return;
         }
         
@@ -10232,5 +10655,3 @@ function showFirstTimeHints() {
 
 // Show hints after a delay
 setTimeout(showFirstTimeHints, 1000);
-
-console.log('UX improvements initialized');

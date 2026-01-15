@@ -46,6 +46,9 @@
             <button class="tier-tab active" data-tier="uploads">
                 <i class="fas fa-upload"></i> Uploads
             </button>
+            <button class="tier-tab" data-tier="styling">
+                <i class="fas fa-palette"></i> Styling
+            </button>
             <button class="tier-tab" data-tier="transformations">
                 <i class="fas fa-magic"></i> Transformations
             </button>
@@ -60,9 +63,6 @@
             </button>
             <button class="tier-tab" data-tier="advanced">
                 <i class="fas fa-cog"></i> Advanced
-            </button>
-            <button class="tier-tab" data-tier="styling">
-                <i class="fas fa-palette"></i> Styling
             </button>
         </div>
 
@@ -1726,60 +1726,114 @@ dnd.filstackSdk.picker(options).open();</pre>
             <!-- Image Transform Section -->
             <section id="transform" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-magic"></i> Image Transformations</h2>
-                    <p>Apply advanced image transformations and filters to your uploaded images.</p>
+                    <h2><i class="fas fa-magic"></i> Image Transformations Playground</h2>
+                    <p>Upload an image using your configured picker (from Uploads & Styling), then apply transformations to see the results instantly.</p>
                 </div>
 
-                <!-- Transformation Pipeline Templates -->
-                <div class="config-card quick-start-card">
-                    <h3><i class="fas fa-layer-group"></i> Transformation Pipelines</h3>
-                    <p class="card-description">Pre-built transformation chains for common image processing workflows. Click to auto-configure.</p>
+                <div class="playground-layout">
+                    <!-- Left side: Configuration and Transformations -->
+                    <div class="playground-left">
+                        <!-- Upload Section -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-cloud-upload-alt"></i> Upload Image</h3>
+                            <p class="card-description">Use your configured File Picker to upload an image</p>
+                            <button type="button" id="transformPickerBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem; margin-top: 0.5rem;">
+                                <i class="fas fa-upload"></i> Pick/Upload Image
+                            </button>
+                            <div id="transformPickerStatus" style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; display: none;">
+                                <small style="color: #0c4a6e;"><i class="fas fa-info-circle"></i> <span id="transformPickerStatusText">No image uploaded</span></small>
+                            </div>
+                        </div>
 
-                    <div class="template-grid">
-                        <button class="template-btn" onclick="loadTransformPipeline('profile')">
-                            <i class="fas fa-user-circle"></i>
-                            <span class="template-name">Profile Picture</span>
-                            <small>Square crop, resize 400x400, optimize</small>
-                        </button>
-                        <button class="template-btn" onclick="loadTransformPipeline('thumbnail')">
-                            <i class="fas fa-th"></i>
-                            <span class="template-name">Thumbnail</span>
-                            <small>Resize 200x200, compress, sharpen</small>
-                        </button>
-                        <button class="template-btn" onclick="loadTransformPipeline('product')">
-                            <i class="fas fa-box"></i>
-                            <span class="template-name">Product Image</span>
-                            <small>Resize 1200x1200, white background, watermark</small>
-                        </button>
-                        <button class="template-btn" onclick="loadTransformPipeline('social')">
-                            <i class="fas fa-share-alt"></i>
-                            <span class="template-name">Social Media</span>
-                            <small>1080x1080, enhance colors, compress</small>
-                        </button>
-                        <button class="template-btn" onclick="loadTransformPipeline('banner')">
-                            <i class="fas fa-image"></i>
-                            <span class="template-name">Hero Banner</span>
-                            <small>Resize 1920x600, blur background, overlay</small>
-                        </button>
-                        <button class="template-btn" onclick="loadTransformPipeline('print')">
-                            <i class="fas fa-print"></i>
-                            <span class="template-name">Print Ready</span>
-                            <small>High-res 3000px, 300 DPI, no compression</small>
-                        </button>
-                        <button class="template-btn" onclick="loadTransformPipeline('vintage')">
-                            <i class="fas fa-film"></i>
-                            <span class="template-name">Vintage Filter</span>
-                            <small>Sepia, vignette, noise, blur edges</small>
-                        </button>
-                        <button class="template-btn" onclick="loadTransformPipeline('modern')">
-                            <i class="fas fa-sparkles"></i>
-                            <span class="template-name">Modern & Clean</span>
-                            <small>Enhance, sharpen, auto-adjust, compress</small>
-                        </button>
+                        <!-- Transformation Pipeline Templates -->
+                        <div class="config-card quick-start-card">
+                            <h3><i class="fas fa-layer-group"></i> Transformation Pipelines</h3>
+                            <p class="card-description">Pre-built transformation chains for common image processing workflows. Click to auto-configure.</p>
+
+                            <div class="template-grid">
+                                <button class="template-btn" onclick="loadTransformPipeline('profile')">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span class="template-name">Profile Picture</span>
+                                    <small>Square crop, resize 400x400, optimize</small>
+                                </button>
+                                <button class="template-btn" onclick="loadTransformPipeline('thumbnail')">
+                                    <i class="fas fa-th"></i>
+                                    <span class="template-name">Thumbnail</span>
+                                    <small>Resize 200x200, compress, sharpen</small>
+                                </button>
+                                <button class="template-btn" onclick="loadTransformPipeline('product')">
+                                    <i class="fas fa-box"></i>
+                                    <span class="template-name">Product Image</span>
+                                    <small>Resize 1200x1200, white background, watermark</small>
+                                </button>
+                                <button class="template-btn" onclick="loadTransformPipeline('social')">
+                                    <i class="fas fa-share-alt"></i>
+                                    <span class="template-name">Social Media</span>
+                                    <small>1080x1080, enhance colors, compress</small>
+                                </button>
+                                <button class="template-btn" onclick="loadTransformPipeline('banner')">
+                                    <i class="fas fa-image"></i>
+                                    <span class="template-name">Hero Banner</span>
+                                    <small>Resize 1920x600, blur background, overlay</small>
+                                </button>
+                                <button class="template-btn" onclick="loadTransformPipeline('print')">
+                                    <i class="fas fa-print"></i>
+                                    <span class="template-name">Print Ready</span>
+                                    <small>High-res 3000px, 300 DPI, no compression</small>
+                                </button>
+                                <button class="template-btn" onclick="loadTransformPipeline('vintage')">
+                                    <i class="fas fa-film"></i>
+                                    <span class="template-name">Vintage Filter</span>
+                                    <small>Sepia, vignette, noise, blur edges</small>
+                                </button>
+                                <button class="template-btn" onclick="loadTransformPipeline('modern')">
+                                    <i class="fas fa-sparkles"></i>
+                                    <span class="template-name">Modern & Clean</span>
+                                    <small>Enhance, sharpen, auto-adjust, compress</small>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Transformation Options -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-sliders-h"></i> Transformations</h3>
+                            <div id="transformPlaygroundList" class="playground-transforms-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right side: Image Preview -->
+                    <div class="playground-right">
+                        <div class="playground-images-vertical">
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-magic"></i> Transformed Image</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="transformTransformed" src="https://via.placeholder.com/400x300.png?text=Apply+Transformations" alt="Transformed Image" />
+                                    <div class="image-loader" id="transformTransformedLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="transformTransformedUrl">No transformations applied</code>
+                                </div>
+                            </div>
+
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-image"></i> Original Image</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="transformOriginal" src="https://via.placeholder.com/400x300.png?text=Upload+an+Image" alt="Original Image" />
+                                    <div class="image-loader" id="transformOriginalLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="transformOriginalUrl">No image uploaded</code>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="transform-grid">
+                <div class="transform-grid" style="display: none;">
                     <!-- Basic Transformations -->
                     <div class="config-card">
                         <h3><i class="fas fa-crop"></i> Basic Transformations</h3>
@@ -2384,187 +2438,77 @@ dnd.filstackSdk.picker(options).open();</pre>
             <!-- Intelligence Section: Safe for Work Detection -->
             <section id="sfw" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-shield-alt"></i> Safe for Work Detection</h2>
-                    <p>AI-powered image content moderation that analyzes images and determines if they contain appropriate content for workplace environments. Returns a simple boolean response in real-time.</p>
+                    <h2><i class="fas fa-shield-alt"></i> Safe for Work Detection Playground</h2>
+                    <p>Upload an image using your configured picker (from Uploads & Styling), then analyze it for safe-for-work content in real-time.</p>
                     <a href="https://www.filestack.com/docs/transformations/intelligence/sfw/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
                         <i class="fas fa-book"></i> View Documentation
                     </a>
                 </div>
 
-                <div class="config-grid">
-                    <!-- Configuration Panel -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
-
-                        <div class="form-group">
-                            <label><strong>Input Type</strong></label>
-                            <div class="radio-group">
-                                <label class="radio-item" title="Use a file handle from an uploaded file">
-                                    <input type="radio" name="sfwInputType" value="handle" checked>
-                                    <span>File Handle</span>
-                                </label>
-                                <label class="radio-item" title="Analyze an image from any public URL">
-                                    <input type="radio" name="sfwInputType" value="external">
-                                    <span>External URL</span>
-                                </label>
-                                <label class="radio-item" title="Use a custom storage location configured in your portal">
-                                    <input type="radio" name="sfwInputType" value="storage">
-                                    <span>Storage Alias</span>
-                                </label>
+                <div class="playground-layout">
+                    <!-- Left side: Configuration -->
+                    <div class="playground-left">
+                        <!-- Upload Section -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-cloud-upload-alt"></i> Upload Image</h3>
+                            <p class="card-description">Use your configured File Picker to upload an image</p>
+                            <button type="button" id="sfwPickerBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem; margin-top: 0.5rem;">
+                                <i class="fas fa-upload"></i> Pick/Upload Image
+                            </button>
+                            <div id="sfwPickerStatus" style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; display: none;">
+                                <small style="color: #0c4a6e;"><i class="fas fa-info-circle"></i> <span id="sfwPickerStatusText">No image uploaded</span></small>
                             </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to identify the image for content analysis
-                            </small>
                         </div>
 
-                        <!-- Handle Input -->
-                        <div class="form-group" id="sfwHandleGroup">
-                            <label for="sfwHandle"><i class="fas fa-file"></i> File Handle</label>
-                            <input type="text" id="sfwHandle" placeholder="e.g., H2swKXwhRxKFrylkjGcz" title="Enter the file handle returned after uploading to Filestack">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The unique handle returned after uploading a file to Filestack (most common method)
-                            </small>
-                        </div>
-
-                        <!-- External URL Input -->
-                        <div class="form-group" id="sfwExternalGroup" style="display: none;">
-                            <label for="sfwExternalUrl"><i class="fas fa-link"></i> External Image URL</label>
-                            <input type="text" id="sfwExternalUrl" placeholder="https://example.com/image.jpg" title="Enter the full URL to a publicly accessible image">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Direct URL to any publicly accessible image (requires API key in the generated URL)
-                            </small>
-                        </div>
-
-                        <!-- Storage Alias Input -->
-                        <div class="form-group" id="sfwStorageGroup" style="display: none;">
-                            <label for="sfwStorageAlias"><i class="fas fa-database"></i> Storage Alias</label>
-                            <input type="text" id="sfwStorageAlias" placeholder="e.g., my-s3-bucket" title="Enter your storage alias name">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Custom storage alias configured in the Developer Portal (e.g., S3, Azure, GCS)
-                            </small>
-                            <label for="sfwStoragePath" style="margin-top: 1rem;"><i class="fas fa-folder"></i> File Path</label>
-                            <input type="text" id="sfwStoragePath" placeholder="/path/to/image.jpg" title="Enter the full path to the file in your storage">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The full path to the file within your storage location
-                            </small>
-                        </div>
-
-                        <!-- Advanced Options -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <label class="checkbox-item" title="Apply transformations before analyzing the image">
-                                <input type="checkbox" id="sfwEnableChaining">
-                                <span><strong>Chain with Transformations</strong></span>
-                            </label>
-                            <small style="color: #666; display: block; margin-top: 0.3rem; margin-left: 1.75rem;">
-                                <i class="fas fa-magic"></i> Apply image transformations before SFW detection (e.g., crop specific area, resize, or blur portions)
-                            </small>
-                        </div>
-
-                        <!-- Transformation Chain Builder -->
-                        <div class="form-group" id="sfwChainingGroup" style="display: none;">
-                            <label><i class="fas fa-layer-group"></i> Pre-SFW Transformations</label>
-                            <small style="color: #666; display: block; margin-bottom: 0.5rem;">
-                                Transformations are applied in order before SFW analysis
-                            </small>
-                            <div id="sfwPreChainBuilder" class="chain-builder">
-                                <div class="chain-step">
-                                    <div class="chain-step-header">
-                                        <select class="chain-operation" title="Select a transformation to apply">
-                                            <option value="">Select Operation</option>
-                                            <option value="resize">Resize</option>
-                                            <option value="crop">Crop</option>
-                                            <option value="rotate">Rotate</option>
-                                            <option value="blur">Blur</option>
-                                            <option value="sharpen">Sharpen</option>
-                                            <option value="sepia">Sepia</option>
-                                            <option value="blackwhite">Black & White</option>
-                                            <option value="flip">Flip</option>
-                                            <option value="flop">Flop</option>
-                                            <option value="negative">Negative</option>
-                                            <option value="circle">Circle</option>
-                                            <option value="rounded_corners">Rounded Corners</option>
-                                            <option value="vignette">Vignette</option>
-                                            <option value="shadow">Shadow</option>
-                                            <option value="border">Border</option>
-                                            <option value="watermark">Watermark</option>
-                                            <option value="upscale">Upscale</option>
-                                            <option value="quality">Quality</option>
-                                            <option value="convert">Convert Format</option>
-                                        </select>
-                                        <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
-                                    </div>
-                                    <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)" title="Enter transformation parameters">
-                                    <div class="chain-param-hint" style="display:none;"></div>
-                                </div>
-                            </div>
-                            <button type="button" id="addSfwPreStep" class="btn btn-secondary btn-small">
-                                <i class="fas fa-plus"></i> Add Transformation
+                        <!-- Analyze Button -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-brain"></i> Analyze</h3>
+                            <button type="button" id="sfwAnalyzeBtn" class="btn btn-success" style="width: 100%; padding: 1rem; font-size: 1rem;" disabled>
+                                <i class="fas fa-shield-alt"></i> Analyze for SFW
                             </button>
                         </div>
 
+                        <!-- About Section -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-info-circle"></i> About SFW Detection</h3>
+                            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                                AI-powered content moderation that analyzes if images contain appropriate workplace content.
+                            </p>
+                            <div class="info-box" style="background: #e8f4f8; border-left: 4px solid #17a2b8; padding: 0.75rem; margin-bottom: 0.75rem;">
+                                <strong style="color: #0c5460;">Response:</strong>
+                                <div style="color: #0c5460; font-size: 0.85rem; margin-top: 0.25rem;">
+                                    <code style="background: #d4edda; padding: 2px 6px; border-radius: 3px;">{"sfw": true}</code> or
+                                    <code style="background: #f8d7da; padding: 2px 6px; border-radius: 3px;">{"sfw": false}</code>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Information Panel -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Safe for Work Detection</h3>
-                        <p style="margin-bottom: 1rem; line-height: 1.7;">
-                            Safe for Work (SFW) detection is an AI-powered intelligence service that analyzes image content and returns a boolean value indicating whether the image contains appropriate content for workplace environments.
-                        </p>
+                    <!-- Right side: Results -->
+                    <div class="playground-right">
+                        <div class="playground-images-vertical">
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-check-circle"></i> Analysis Result</h3>
+                                <div id="sfwResult" style="padding: 2rem; text-align: center; background: #f9fafb; border-radius: 8px; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                                    <div style="color: #9ca3af;">
+                                        <i class="fas fa-info-circle" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                        <p>Upload and analyze an image to see results</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="info-box" style="background: #e8f4f8; border-color: #17a2b8;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-brain"></i> How It Works</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.7;">
-                                The AI model analyzes visual content including objects, people, context, and scenes to determine if the image contains inappropriate content such as adult content, violence, or other NSFW material. The analysis happens in real-time and returns instant results.
-                            </p>
-                        </div>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-code"></i> Response Format</h4>
-                            <p style="line-height: 1.8; margin: 0;">
-                                <strong style="color: #28a745;">✓ Safe Image:</strong> <code style="background: #d4edda; padding: 4px 8px; border-radius: 3px; color: #155724;">{"sfw": true}</code><br>
-                                <strong style="color: #dc3545;">✗ Unsafe Image:</strong> <code style="background: #f8d7da; padding: 4px 8px; border-radius: 3px; color: #721c24;">{"sfw": false}</code>
-                            </p>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                Simple boolean response makes it easy to implement conditional logic in your application
-                            </small>
-                        </div>
-
-                        <ul class="feature-list">
-                            <li><i class="fas fa-bolt"></i> <strong>Real-Time Processing</strong> - Synchronous API with instant results</li>
-                            <li><i class="fas fa-link"></i> <strong>Workflows Compatible</strong> - Can be used in automated workflows</li>
-                            <li><i class="fas fa-layer-group"></i> <strong>Chainable</strong> - Combine with other transformations in a single URL</li>
-                            <li><i class="fas fa-lock"></i> <strong>Security Required</strong> - Needs policy & signature for protection</li>
-                            <li><i class="fas fa-images"></i> <strong>Universal Support</strong> - Works with handles, external URLs, and storage aliases</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-rocket"></i> Common Use Cases</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                • <strong>User-Generated Content Filtering</strong> - Automatically flag inappropriate uploads<br>
-                                • <strong>Content Moderation Queues</strong> - Route unsafe content for manual review<br>
-                                • <strong>Compliance & Safety</strong> - Ensure all displayed images meet workplace standards<br>
-                                • <strong>Workflow Automation</strong> - Create conditional logic based on SFW status<br>
-                                • <strong>Profile Image Validation</strong> - Verify user avatars before publishing<br>
-                                • <strong>Marketplace & E-Commerce</strong> - Screen product images before listing
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
-                            <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
-                            <p style="color: #856404; margin: 0; line-height: 1.7;">
-                                SFW detection requires a <strong>security policy and signature</strong> to prevent unauthorized usage. Configure these credentials in the API Key section at the top of the page. Learn more about <a href="https://www.filestack.com/docs/security/policies/" target="_blank" style="color: #856404; text-decoration: underline;">security policies</a>.
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #d1ecf1; border-color: #bee5eb;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-lightbulb"></i> Pro Tips</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.8;">
-                                • Combine with <strong>tagging</strong> for more detailed content analysis<br>
-                                • Use <strong>crop</strong> transformation to check specific areas of an image<br>
-                                • Implement <strong>retry logic</strong> for handling temporary failures<br>
-                                • Cache results to reduce API calls for the same images<br>
-                                • Use in workflows to automatically move unsafe files to quarantine
-                            </p>
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-image"></i> Uploaded Image</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="sfwOriginal" src="https://via.placeholder.com/400x300.png?text=Upload+an+Image" alt="Original Image" />
+                                    <div class="image-loader" id="sfwOriginalLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="sfwOriginalUrl">No image uploaded</code>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2573,209 +2517,70 @@ dnd.filstackSdk.picker(options).open();</pre>
             <!-- Image Tagging Section -->
             <section id="tagging" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-tags"></i> Image Tagging & Recognition</h2>
-                    <p>AI-powered image analysis that automatically identifies objects, scenes, activities, and concepts in images. Returns detailed tags with confidence scores in real-time.</p>
+                    <h2><i class="fas fa-tags"></i> Image Tagging & Recognition Playground</h2>
+                    <p>Upload an image using your configured picker (from Uploads & Styling), then analyze it for AI-powered object and scene recognition.</p>
                     <a href="https://www.filestack.com/docs/transformations/intelligence/tagging/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
                         <i class="fas fa-book"></i> View Documentation
                     </a>
                 </div>
 
-                <div class="config-grid">
-                    <!-- Configuration Panel -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
-
-                        <div class="form-group">
-                            <label><strong>Input Type</strong></label>
-                            <div class="radio-group">
-                                <label class="radio-item" title="Use a file handle from an uploaded file">
-                                    <input type="radio" name="taggingInputType" value="handle" checked>
-                                    <span>File Handle</span>
-                                </label>
-                                <label class="radio-item" title="Analyze an image from any public URL">
-                                    <input type="radio" name="taggingInputType" value="external">
-                                    <span>External URL</span>
-                                </label>
-                                <label class="radio-item" title="Use a custom storage location">
-                                    <input type="radio" name="taggingInputType" value="storage">
-                                    <span>Storage Alias</span>
-                                </label>
+                <div class="playground-layout">
+                    <!-- Left side: Configuration -->
+                    <div class="playground-left">
+                        <!-- Upload Section -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-cloud-upload-alt"></i> Upload Image</h3>
+                            <p class="card-description">Use your configured File Picker to upload an image</p>
+                            <button type="button" id="tagging_PickerBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem; margin-top: 0.5rem;">
+                                <i class="fas fa-upload"></i> Pick/Upload Image
+                            </button>
+                            <div id="tagging_PickerStatus" style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; display: none;">
+                                <small style="color: #0c4a6e;"><i class="fas fa-info-circle"></i> <span id="tagging_PickerStatusText">No image uploaded</span></small>
                             </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to identify the image for tagging analysis
-                            </small>
                         </div>
 
-                        <!-- Handle Input -->
-                        <div class="form-group" id="taggingHandleGroup">
-                            <label for="taggingHandle"><i class="fas fa-file"></i> Image Handle</label>
-                            <input type="text" id="taggingHandle" placeholder="e.g., fyR6gNKmQ8OGntKuNnrs" title="Enter the file handle returned after uploading to Filestack">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The unique handle returned after uploading an image to Filestack
-                            </small>
-                        </div>
-
-                        <!-- External URL Input -->
-                        <div class="form-group" id="taggingExternalGroup" style="display: none;">
-                            <label for="taggingExternalUrl"><i class="fas fa-link"></i> External Image URL</label>
-                            <input type="text" id="taggingExternalUrl" placeholder="https://example.com/image.jpg" title="Enter the full URL to a publicly accessible image">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Direct URL to any publicly accessible image (requires API key in the generated URL)
-                            </small>
-                        </div>
-
-                        <!-- Storage Alias Input -->
-                        <div class="form-group" id="taggingStorageGroup" style="display: none;">
-                            <label for="taggingStorageAlias"><i class="fas fa-database"></i> Storage Alias</label>
-                            <input type="text" id="taggingStorageAlias" placeholder="e.g., my-s3-bucket" title="Enter your storage alias name">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Custom storage alias configured in the Developer Portal
-                            </small>
-                            <label for="taggingStoragePath" style="margin-top: 1rem;"><i class="fas fa-folder"></i> File Path</label>
-                            <input type="text" id="taggingStoragePath" placeholder="/path/to/image.jpg" title="Enter the full path to the file">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The full path to the file within your storage location
-                            </small>
-                        </div>
-
-                        <!-- Advanced Options -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <label class="checkbox-item" title="Apply transformations before tagging">
-                                <input type="checkbox" id="taggingEnableChaining">
-                                <span><strong>Chain with Transformations</strong></span>
-                            </label>
-                            <small style="color: #666; display: block; margin-top: 0.3rem; margin-left: 1.75rem;">
-                                <i class="fas fa-magic"></i> Apply image transformations before tagging (e.g., crop, resize, enhance contrast)
-                            </small>
-                        </div>
-
-                        <!-- Transformation Chain Builder -->
-                        <div class="form-group" id="taggingChainingGroup" style="display: none;">
-                            <label><i class="fas fa-layer-group"></i> Pre-Tagging Transformations</label>
-                            <small style="color: #666; display: block; margin-bottom: 0.5rem;">
-                                Transformations are applied in order before tagging analysis
-                            </small>
-                            <div id="taggingPreChainBuilder" class="chain-builder">
-                                <div class="chain-step">
-                                    <div class="chain-step-header">
-                                        <select class="chain-operation" title="Select a transformation to apply">
-                                            <option value="">Select Operation</option>
-                                            <option value="resize">Resize</option>
-                                            <option value="crop">Crop</option>
-                                            <option value="rotate">Rotate</option>
-                                            <option value="blur">Blur</option>
-                                            <option value="sharpen">Sharpen</option>
-                                            <option value="sepia">Sepia</option>
-                                            <option value="blackwhite">Black & White</option>
-                                            <option value="flip">Flip</option>
-                                            <option value="flop">Flop</option>
-                                            <option value="negative">Negative</option>
-                                            <option value="circle">Circle</option>
-                                            <option value="rounded_corners">Rounded Corners</option>
-                                            <option value="vignette">Vignette</option>
-                                            <option value="shadow">Shadow</option>
-                                            <option value="border">Border</option>
-                                            <option value="watermark">Watermark</option>
-                                            <option value="upscale">Upscale</option>
-                                            <option value="quality">Quality</option>
-                                            <option value="convert">Convert Format</option>
-                                        </select>
-                                        <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
-                                    </div>
-                                    <input type="text" class="chain-params" placeholder="Parameters (e.g., width:300,height:200)" title="Enter transformation parameters">
-                                    <div class="chain-param-hint" style="display:none;"></div>
-                                </div>
-                            </div>
-                            <button type="button" id="addTaggingPreStep" class="btn btn-secondary btn-small">
-                                <i class="fas fa-plus"></i> Add Transformation
+                        <!-- Analyze Button -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-brain"></i> Analyze</h3>
+                            <button type="button" id="tagging_AnalyzeBtn" class="btn btn-success" style="width: 100%; padding: 1rem; font-size: 1rem;" disabled>
+                                <i class="fas fa-tags"></i> Analyze Tags
                             </button>
                         </div>
 
-                        <!-- Test Button -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <button type="button" id="testTaggingBtn" class="btn btn-primary" style="width: 100%;" onclick="testTagging()">
-                                <i class="fas fa-play"></i> Test Image Tagging
-                            </button>
-                            <small style="color: #666; display: block; margin-top: 0.5rem; text-align: center;">
-                                Requires valid API credentials and an image handle
-                            </small>
+                        <!-- About Section -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-info-circle"></i> About Image Tagging</h3>
+                            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                                Image Tagging is an AI-powered intelligence service that analyzes image content and returns descriptive tags with confidence scores. It can identify objects, scenes, activities, concepts, and more.
+                            </p>
                         </div>
-
-                        <!-- Test Result Display -->
-                        <div id="taggingTestResult" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 5px;"></div>
                     </div>
 
-                    <!-- Information Panel -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Image Tagging</h3>
-                        <p style="margin-bottom: 1rem; line-height: 1.7;">
-                            Image Tagging is an AI-powered intelligence service that analyzes image content and returns descriptive tags with confidence scores. It can identify objects, scenes, activities, concepts, and more.
-                        </p>
+                    <!-- Right side: Results -->
+                    <div class="playground-right">
+                        <div class="playground-images-vertical">
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-check-circle"></i> Analysis Result</h3>
+                                <div id="tagging_Result" style="padding: 2rem; text-align: center; background: #f9fafb; border-radius: 8px; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                                    <div style="color: #9ca3af;">
+                                        <i class="fas fa-info-circle" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                        <p>Upload and analyze an image to see results</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="info-box" style="background: #e8f4f8; border-color: #17a2b8;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-brain"></i> How It Works</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.7;">
-                                The AI model analyzes visual elements in the image including objects (e.g., "umbrella", "car"), scenes (e.g., "outdoor", "street"), activities (e.g., "concert", "travel"), and abstract concepts. Each tag comes with a confidence score from 0-100.
-                            </p>
-                        </div>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-code"></i> Response Format</h4>
-                            <p style="line-height: 1.6; margin: 0; font-family: monospace; font-size: 0.9em;">
-                                <code style="background: #f8f9fa; padding: 8px; border-radius: 3px; display: block; white-space: pre-wrap;">{
-  "tags": {
-    "auto": {
-      "people": 96,
-      "concert": 88,
-      "outdoor": 90,
-      "music": 84,
-      "umbrella": 97
-    }
-  }
-}</code>
-                            </p>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                Tags are sorted by relevance with confidence scores (0-100)
-                            </small>
-                        </div>
-
-                        <ul class="feature-list">
-                            <li><i class="fas fa-bolt"></i> <strong>Real-Time Analysis</strong> - Synchronous API with instant results</li>
-                            <li><i class="fas fa-chart-line"></i> <strong>Confidence Scores</strong> - Each tag includes accuracy percentage</li>
-                            <li><i class="fas fa-link"></i> <strong>Workflows Compatible</strong> - Use in automated pipelines</li>
-                            <li><i class="fas fa-layer-group"></i> <strong>Chainable</strong> - Combine with transformations</li>
-                            <li><i class="fas fa-lock"></i> <strong>Security Required</strong> - Needs policy & signature</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-rocket"></i> Common Use Cases</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                • <strong>Content Discovery</strong> - Build search functionality based on image content<br>
-                                • <strong>Auto-Categorization</strong> - Organize photos into categories automatically<br>
-                                • <strong>Content Moderation</strong> - Flag specific types of content for review<br>
-                                • <strong>Metadata Enhancement</strong> - Add rich metadata to images<br>
-                                • <strong>E-commerce</strong> - Auto-tag product images for better searchability<br>
-                                • <strong>Social Media</strong> - Suggest hashtags based on image content<br>
-                                • <strong>DAM Systems</strong> - Improve digital asset management workflows
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
-                            <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
-                            <p style="color: #856404; margin: 0; line-height: 1.7;">
-                                Image Tagging requires a <strong>security policy and signature</strong>. Configure these in the API Key section at the top of the page.
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #d1ecf1; border-color: #bee5eb;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-lightbulb"></i> Pro Tips</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.8;">
-                                • Use <strong>version:2</strong> parameter for the latest tagging model<br>
-                                • Combine with <strong>SFW detection</strong> for comprehensive content analysis<br>
-                                • Filter tags by confidence score for better accuracy<br>
-                                • Cache results to reduce API calls for duplicate images<br>
-                                • Use <strong>sharpen</strong> transformation before tagging for better accuracy
-                            </p>
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-image"></i> Uploaded Image</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="tagging_Original" src="https://via.placeholder.com/400x300.png?text=Upload+an+Image" alt="Original Image" />
+                                    <div class="image-loader" id="tagging_OriginalLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="tagging_OriginalUrl">No image uploaded</code>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2785,231 +2590,70 @@ dnd.filstackSdk.picker(options).open();</pre>
             <!-- Face Detection Section -->
             <section id="faces" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-user-friends"></i> Face Detection & Analysis</h2>
-                    <p>AI-powered face detection that identifies and analyzes human faces in images. Detect face locations, count faces, and optionally pixelate or blur detected faces for privacy protection.</p>
-                    <a href="https://www.filestack.com/docs/api/processing/#detect-faces" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
+                    <h2><i class="fas fa-user"></i> Face Detection Playground</h2>
+                    <p>Upload an image using your configured picker (from Uploads & Styling), then analyze it for detect faces in images.</p>
+                    <a href="https://www.filestack.com/docs/transformations/intelligence/faces/" target="_blank" class="btn btn-secondary btn-small" style="margin-top: 0.5rem;">
                         <i class="fas fa-book"></i> View Documentation
                     </a>
                 </div>
 
-                <div class="config-grid">
-                    <!-- Configuration Panel -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-cog"></i> Configuration</h3>
-
-                        <div class="form-group">
-                            <label><strong>Input Type</strong></label>
-                            <div class="radio-group">
-                                <label class="radio-item" title="Use a file handle from an uploaded file">
-                                    <input type="radio" name="facesInputType" value="handle" checked>
-                                    <span>File Handle</span>
-                                </label>
-                                <label class="radio-item" title="Analyze an image from any public URL">
-                                    <input type="radio" name="facesInputType" value="external">
-                                    <span>External URL</span>
-                                </label>
-                                <label class="radio-item" title="Use a custom storage location">
-                                    <input type="radio" name="facesInputType" value="storage">
-                                    <span>Storage Alias</span>
-                                </label>
+                <div class="playground-layout">
+                    <!-- Left side: Configuration -->
+                    <div class="playground-left">
+                        <!-- Upload Section -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-cloud-upload-alt"></i> Upload Image</h3>
+                            <p class="card-description">Use your configured File Picker to upload an image</p>
+                            <button type="button" id="faces_PickerBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem; margin-top: 0.5rem;">
+                                <i class="fas fa-upload"></i> Pick/Upload Image
+                            </button>
+                            <div id="faces_PickerStatus" style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; display: none;">
+                                <small style="color: #0c4a6e;"><i class="fas fa-info-circle"></i> <span id="faces_PickerStatusText">No image uploaded</span></small>
                             </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to identify the image for face detection
-                            </small>
                         </div>
 
-                        <!-- Handle Input -->
-                        <div class="form-group" id="facesHandleGroup">
-                            <label for="facesHandle"><i class="fas fa-file"></i> File Handle</label>
-                            <input type="text" id="facesHandle" placeholder="e.g., ABC123xyz789" title="Enter the file handle returned after uploading to Filestack">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The unique handle returned after uploading an image to Filestack
-                            </small>
+                        <!-- Analyze Button -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-brain"></i> Analyze</h3>
+                            <button type="button" id="faces_AnalyzeBtn" class="btn btn-success" style="width: 100%; padding: 1rem; font-size: 1rem;" disabled>
+                                <i class="fas fa-user"></i> Detect Faces
+                            </button>
                         </div>
 
-                        <!-- External URL Input -->
-                        <div class="form-group" id="facesExternalGroup" style="display: none;">
-                            <label for="facesExternalUrl"><i class="fas fa-link"></i> External Image URL</label>
-                            <input type="text" id="facesExternalUrl" placeholder="https://example.com/photo.jpg" title="Enter the full URL to a publicly accessible image">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Direct URL to any publicly accessible image (requires API key in the generated URL)
-                            </small>
+                        <!-- About Section -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-info-circle"></i> About Face Detection</h3>
+                            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                                Face Detection is an AI-powered service that identifies and locates human faces in images. It can detect multiple faces, return coordinates, count faces, or apply privacy effects like blurring or pixelation.
+                            </p>
                         </div>
-
-                        <!-- Storage Alias Input -->
-                        <div class="form-group" id="facesStorageGroup" style="display: none;">
-                            <label for="facesStorageAlias"><i class="fas fa-database"></i> Storage Alias</label>
-                            <input type="text" id="facesStorageAlias" placeholder="e.g., my-s3-bucket" title="Enter your storage alias name">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Custom storage alias configured in the Developer Portal
-                            </small>
-                            <label for="facesStoragePath" style="margin-top: 1rem;"><i class="fas fa-folder"></i> File Path</label>
-                            <input type="text" id="facesStoragePath" placeholder="/path/to/photo.jpg" title="Enter the full path to the file">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                The full path to the file within your storage location
-                            </small>
-                        </div>
-
-                        <!-- Detection Parameters -->
-                        <div class="form-group" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
-                            <label for="facesMinSize"><i class="fas fa-search-minus"></i> Minimum Face Size</label>
-                            <input type="number" id="facesMinSize" min="0.01" max="1" step="0.01" placeholder="0.25" title="Minimum face size as proportion of image (0.01 - 1.0)">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Minimum face size as a proportion of image dimensions (0.01 - 1.0). Lower values detect smaller faces. Default: 0.25
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="facesMaxSize"><i class="fas fa-search-plus"></i> Maximum Face Size</label>
-                            <input type="number" id="facesMaxSize" min="0.01" max="1" step="0.01" placeholder="0.55" title="Maximum face size as proportion of image (0.01 - 1.0)">
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Maximum face size as a proportion of image dimensions (0.01 - 1.0). Higher values detect larger faces. Default: 0.55
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="facesColor"><i class="fas fa-palette"></i> Highlight Color</label>
-                            <select id="facesColor" title="Color for face detection boxes">
-                                <option value="">No highlighting</option>
-                                <option value="red" selected>Red</option>
-                                <option value="green">Green</option>
-                                <option value="blue">Blue</option>
-                                <option value="yellow">Yellow</option>
-                                <option value="white">White</option>
-                                <option value="black">Black</option>
-                            </select>
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Draw colored boxes around detected faces (for visualization)
-                            </small>
-                        </div>
-
-                        <!-- Detection Options -->
-                        <div class="form-group">
-                            <label><strong>Detection Options</strong></label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item" title="Return face coordinates as JSON data">
-                                    <input type="checkbox" id="facesExport">
-                                    <span>Export Face Data (JSON)</span>
-                                </label>
-                                <label class="checkbox-item" title="Return number of faces detected">
-                                    <input type="checkbox" id="facesCountOnly">
-                                    <span>Count Faces Only</span>
-                                </label>
-                                <label class="checkbox-item" title="Blur detected faces for privacy">
-                                    <input type="checkbox" id="facesBlur">
-                                    <span>Blur Faces</span>
-                                </label>
-                                <label class="checkbox-item" title="Pixelate detected faces for privacy">
-                                    <input type="checkbox" id="facesPixelate">
-                                    <span>Pixelate Faces</span>
-                                </label>
-                            </div>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                <i class="fas fa-info-circle"></i> Choose how to process and return face detection results
-                            </small>
-                        </div>
-
-                        <!-- Blur/Pixelate Amount -->
-                        <div class="form-group" id="facesPrivacyAmountGroup" style="display: none;">
-                            <label for="facesPrivacyAmount"><i class="fas fa-sliders-h"></i> Privacy Effect Amount</label>
-                            <input type="range" id="facesPrivacyAmount" min="1" max="20" value="10" style="width: 100%;" 
-                                   oninput="document.getElementById('facesPrivacyAmountValue').value = this.value">
-                            <output id="facesPrivacyAmountValue" style="display: block; text-align: center; font-weight: bold; color: var(--primary-orange);">10</output>
-                            <small style="color: #666; display: block; margin-top: 0.3rem;">
-                                Intensity of blur or pixelation effect (1-20, higher = stronger effect)
-                            </small>
-                        </div>
-                        
-                        <script>
-                            // Show/hide privacy amount based on blur or pixelate checkbox
-                            document.getElementById('facesBlur').addEventListener('change', function() {
-                                const group = document.getElementById('facesPrivacyAmountGroup');
-                                const pixelate = document.getElementById('facesPixelate');
-                                group.style.display = (this.checked || pixelate.checked) ? 'block' : 'none';
-                                if (this.checked && pixelate.checked) {
-                                    pixelate.checked = false; // Only one can be active
-                                }
-                            });
-                            
-                            document.getElementById('facesPixelate').addEventListener('change', function() {
-                                const group = document.getElementById('facesPrivacyAmountGroup');
-                                const blur = document.getElementById('facesBlur');
-                                group.style.display = (this.checked || blur.checked) ? 'block' : 'none';
-                                if (this.checked && blur.checked) {
-                                    blur.checked = false; // Only one can be active
-                                }
-                            });
-                        </script>
-
                     </div>
 
-                    <!-- Information Panel -->
-                    <div class="config-card">
-                        <h3><i class="fas fa-info-circle"></i> About Face Detection</h3>
-                        <p style="margin-bottom: 1rem; line-height: 1.7;">
-                            Face Detection is an AI-powered service that identifies and locates human faces in images. It can detect multiple faces, return coordinates, count faces, or apply privacy effects like blurring or pixelation.
-                        </p>
+                    <!-- Right side: Results -->
+                    <div class="playground-right">
+                        <div class="playground-images-vertical">
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-check-circle"></i> Analysis Result</h3>
+                                <div id="faces_Result" style="padding: 2rem; text-align: center; background: #f9fafb; border-radius: 8px; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                                    <div style="color: #9ca3af;">
+                                        <i class="fas fa-info-circle" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                        <p>Upload and analyze an image to see results</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="info-box" style="background: #e8f4f8; border-color: #17a2b8;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-brain"></i> How It Works</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.7;">
-                                The AI model scans the image for human faces using advanced computer vision. It returns bounding box coordinates for each face, allowing you to highlight, count, blur, pixelate, or extract face regions. You can control the size range of faces to detect.
-                            </p>
-                        </div>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-code"></i> Detection Tasks</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                <strong style="color: var(--primary-orange);">detect_faces</strong> - Detect and mark faces<br>
-                                <strong style="color: var(--primary-orange);">pixelate_faces</strong> - Pixelate detected faces<br>
-                                <strong style="color: var(--primary-orange);">blur_faces</strong> - Blur detected faces<br>
-                                <strong style="color: var(--primary-orange);">faces (export)</strong> - Return JSON with face data
-                            </p>
-                            <small style="color: #666; display: block; margin-top: 0.5rem;">
-                                All tasks can be combined with other transformations in a processing chain
-                            </small>
-                        </div>
-
-                        <ul class="feature-list">
-                            <li><i class="fas fa-eye"></i> <strong>Multiple Faces</strong> - Detect unlimited faces per image</li>
-                            <li><i class="fas fa-crosshairs"></i> <strong>Precise Coordinates</strong> - Get exact bounding box positions</li>
-                            <li><i class="fas fa-shield-alt"></i> <strong>Privacy Protection</strong> - Blur or pixelate faces automatically</li>
-                            <li><i class="fas fa-chart-bar"></i> <strong>Count & Statistics</strong> - Get face count and locations</li>
-                            <li><i class="fas fa-sliders-h"></i> <strong>Configurable</strong> - Control size range and detection parameters</li>
-                            <li><i class="fas fa-lock"></i> <strong>Security Required</strong> - Needs policy & signature</li>
-                        </ul>
-
-                        <div class="info-box">
-                            <h4><i class="fas fa-rocket"></i> Common Use Cases</h4>
-                            <p style="margin: 0; line-height: 1.8;">
-                                • <strong>Photo Organization</strong> - Automatically tag and sort photos with people<br>
-                                • <strong>Privacy Compliance</strong> - Blur faces in photos for GDPR/privacy laws<br>
-                                • <strong>Access Control</strong> - Verify presence of faces for authentication<br>
-                                • <strong>Content Moderation</strong> - Detect and review images with people<br>
-                                • <strong>Social Media</strong> - Auto-tag friends or suggest tags<br>
-                                • <strong>Analytics</strong> - Count people in crowd photos<br>
-                                • <strong>Security</strong> - Surveillance and monitoring applications<br>
-                                • <strong>Publishing</strong> - Automatically blur bystander faces
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
-                            <h4 style="color: #856404;"><i class="fas fa-shield-alt"></i> Security Requirement</h4>
-                            <p style="color: #856404; margin: 0; line-height: 1.7;">
-                                Face Detection requires a <strong>security policy and signature</strong>. Configure these in the API Key section at the top of the page.
-                            </p>
-                        </div>
-
-                        <div class="info-box" style="background: #d1ecf1; border-color: #bee5eb;">
-                            <h4 style="color: #0c5460;"><i class="fas fa-lightbulb"></i> Pro Tips</h4>
-                            <p style="color: #0c5460; margin: 0; line-height: 1.8;">
-                                • Adjust <strong>minsize/maxsize</strong> to focus on specific face sizes<br>
-                                • Use <strong>detect_faces with color</strong> for visual debugging<br>
-                                • Combine with <strong>crop</strong> to extract individual faces<br>
-                                • Use <strong>pixelate_faces</strong> for stronger privacy protection<br>
-                                • Export face data to build face recognition systems<br>
-                                • Chain with <strong>resize</strong> for faster processing on large images
-                            </p>
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-image"></i> Uploaded Image</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="faces_Original" src="https://via.placeholder.com/400x300.png?text=Upload+an+Image" alt="Original Image" />
+                                    <div class="image-loader" id="faces_OriginalLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="faces_OriginalUrl">No image uploaded</code>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3128,7 +2772,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                             <small style="color: #666; display: block; margin-bottom: 0.5rem;">
                                 Transformations are applied in order before OCR processing
                             </small>
-                            <div id="ocrPreChainBuilder" class="chain-builder">
+                            <div id="ocrPreChainBuilder" class="chain-builder-vertical">
                                 <div class="chain-step">
                                     <div class="chain-step-header">
                                         <select class="chain-operation" title="Select a transformation to apply">
@@ -3583,7 +3227,7 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                         <div class="form-group" id="captionChainingGroup" style="display: none;">
                             <label>Pre-Caption Transformations</label>
-                            <div id="captionPreChainBuilder" class="chain-builder">
+                            <div id="captionPreChainBuilder" class="chain-builder-vertical">
                                 <div class="chain-step">
                                     <div class="chain-step-header">
                                         <select class="chain-operation">
@@ -3791,7 +3435,7 @@ dnd.filstackSdk.picker(options).open();</pre>
 
                         <div class="form-group" id="sentimentChainingGroup" style="display: none;">
                             <label>Pre-Sentiment Transformations</label>
-                            <div id="sentimentPreChainBuilder" class="chain-builder">
+                            <div id="sentimentPreChainBuilder" class="chain-builder-vertical">
                                 <div class="chain-step">
                                     <div class="chain-step-header">
                                         <select class="chain-operation">
@@ -4530,132 +4174,100 @@ dnd.filstackSdk.picker(options).open();</pre>
             <!-- Transform Chains Section -->
             <section id="transform-chains" class="content-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-link"></i> Advanced Transform Chains</h2>
-                    <p>Create complex transformation pipelines by chaining multiple operations together.</p>
+                    <h2><i class="fas fa-link"></i> Transform Chains Playground</h2>
+                    <p>Upload an image using your configured picker (from Uploads & Styling), then apply multiple transformation chains to see the results instantly.</p>
                 </div>
 
-                <!-- Transform Chain Pipeline Templates -->
-                <div class="config-card quick-start-card">
-                    <h3><i class="fas fa-project-diagram"></i> Chain Pipelines</h3>
-                    <p class="card-description">Pre-built multi-step transformation chains for complex workflows. Click to auto-configure.</p>
-
-                    <div class="template-grid">
-                        <button class="template-btn" onclick="loadChainPipeline('responsive')">
-                            <i class="fas fa-mobile-alt"></i>
-                            <span class="template-name">Responsive Images</span>
-                            <small>Generate multiple sizes: 320, 768, 1024, 1920</small>
-                        </button>
-                        <button class="template-btn" onclick="loadChainPipeline('watermark')">
-                            <i class="fas fa-copyright"></i>
-                            <span class="template-name">Watermark & Protect</span>
-                            <small>Resize, watermark, optimize, secure</small>
-                        </button>
-                        <button class="template-btn" onclick="loadChainPipeline('ecommerce')">
-                            <i class="fas fa-shopping-bag"></i>
-                            <span class="template-name">E-Commerce Suite</span>
-                            <small>Main, thumb, zoom images with optimization</small>
-                        </button>
-                        <button class="template-btn" onclick="loadChainPipeline('social-pack')">
-                            <i class="fas fa-hashtag"></i>
-                            <span class="template-name">Social Media Pack</span>
-                            <small>Instagram, Facebook, Twitter formats</small>
-                        </button>
-                        <button class="template-btn" onclick="loadChainPipeline('content-moderation')">
-                            <i class="fas fa-user-shield"></i>
-                            <span class="template-name">Content Moderation</span>
-                            <small>SFW check, blur faces, watermark</small>
-                        </button>
-                        <button class="template-btn" onclick="loadChainPipeline('artistic')">
-                            <i class="fas fa-palette"></i>
-                            <span class="template-name">Artistic Effects</span>
-                            <small>Filters, borders, vignette, color grading</small>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="config-card">
-                    <h3><i class="fas fa-cog"></i> Configuration</h3>
-
-                    <div class="form-group">
-                        <label for="chainHandle">Source Handle or URL</label>
-                        <input type="text" id="chainHandle" placeholder="Enter file handle or URL" class="track-changes">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Transform Chain Builder</label>
-                        <div id="chainBuilder" class="chain-builder">
-                            <div class="chain-step">
-                                <div class="chain-step-header">
-                                    <select class="chain-operation track-changes" title="Select a transformation to apply">
-                                        <option value="">Select Operation</option>
-                                        <option value="resize">Resize</option>
-                                        <option value="crop">Crop</option>
-                                        <option value="rotate">Rotate</option>
-                                        <option value="blur">Blur</option>
-                                        <option value="sharpen">Sharpen</option>
-                                        <option value="sepia">Sepia</option>
-                                        <option value="blackwhite">Black & White</option>
-                                        <option value="flip">Flip</option>
-                                        <option value="flop">Flop</option>
-                                        <option value="negative">Negative</option>
-                                        <option value="circle">Circle</option>
-                                        <option value="rounded_corners">Rounded Corners</option>
-                                        <option value="vignette">Vignette</option>
-                                        <option value="shadow">Shadow</option>
-                                        <option value="border">Border</option>
-                                        <option value="watermark">Watermark</option>
-                                        <option value="upscale">Upscale</option>
-                                        <option value="quality">Quality</option>
-                                        <option value="convert">Convert Format</option>
-                                    </select>
-                                    <button type="button" class="btn-remove-step" title="Remove this transformation">×</button>
-                                </div>
-                                <input type="text" class="chain-params track-changes"
-                                    placeholder="Parameters (e.g., width:300,height:200)" title="Enter transformation parameters">
-                                <div class="chain-param-hint" style="display:none;"></div>
+                <div class="playground-layout">
+                    <!-- Left side: Configuration -->
+                    <div class="playground-left">
+                        <!-- Upload Section -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-cloud-upload-alt"></i> Upload Image</h3>
+                            <p class="card-description">Use your configured File Picker to upload an image</p>
+                            <button type="button" id="chainsPickerBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem; margin-top: 0.5rem;">
+                                <i class="fas fa-upload"></i> Pick/Upload Image
+                            </button>
+                            <div id="chainsPickerStatus" style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 4px; display: none;">
+                                <small style="color: #0c4a6e;"><i class="fas fa-info-circle"></i> <span id="chainsPickerStatusText">No image uploaded</span></small>
                             </div>
                         </div>
-                        <button type="button" id="addChainStep" class="btn btn-secondary btn-small">
-                            <i class="fas fa-plus"></i> Add Step
-                        </button>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Conditional Logic</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="chainConditional" class="track-changes">
-                                <span>Enable Conditional transformations</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="chainOptimize" class="track-changes">
-                                <span>Auto-optimize Chain</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" id="chainFallback" class="track-changes">
-                                <span>Fallback on Error</span>
-                            </label>
+                        <!-- Transform Chain Pipeline Templates -->
+                        <div class="config-card quick-start-card">
+                            <h3><i class="fas fa-project-diagram"></i> Chain Pipelines</h3>
+                            <p class="card-description">Pre-built multi-step transformation chains for complex workflows. Click to auto-configure.</p>
+
+                            <div class="template-grid">
+                                <button class="template-btn" onclick="loadChainPipeline('responsive')">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <span class="template-name">Responsive Images</span>
+                                    <small>Generate multiple sizes: 320, 768, 1024, 1920</small>
+                                </button>
+                                <button class="template-btn" onclick="loadChainPipeline('watermark')">
+                                    <i class="fas fa-copyright"></i>
+                                    <span class="template-name">Watermark & Protect</span>
+                                    <small>Resize, watermark, optimize, secure</small>
+                                </button>
+                                <button class="template-btn" onclick="loadChainPipeline('ecommerce')">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    <span class="template-name">E-Commerce Suite</span>
+                                    <small>Main, thumb, zoom images with optimization</small>
+                                </button>
+                                <button class="template-btn" onclick="loadChainPipeline('social-pack')">
+                                    <i class="fas fa-hashtag"></i>
+                                    <span class="template-name">Social Media Pack</span>
+                                    <small>Instagram, Facebook, Twitter formats</small>
+                                </button>
+                                <button class="template-btn" onclick="loadChainPipeline('content-moderation')">
+                                    <i class="fas fa-user-shield"></i>
+                                    <span class="template-name">Content Moderation</span>
+                                    <small>SFW check, blur faces, watermark</small>
+                                </button>
+                                <button class="template-btn" onclick="loadChainPipeline('artistic')">
+                                    <i class="fas fa-palette"></i>
+                                    <span class="template-name">Artistic Effects</span>
+                                    <small>Filters, borders, vignette, color grading</small>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Chain Builder -->
+                        <div class="config-card">
+                            <h3><i class="fas fa-sliders-h"></i> Transform Chain Builder</h3>
+                            <div id="chainsPlaygroundList" class="playground-transforms-grid"></div>
                         </div>
                     </div>
-                </div>
 
-                <div class="config-card">
-                    <h3><i class="fas fa-info-circle"></i> About Transform Chains</h3>
-                    <p>Advanced transformation pipelines for complex processing:</p>
+                    <!-- Right side: Image Preview -->
+                    <div class="playground-right">
+                        <div class="playground-images-vertical">
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-link"></i> Chained Result</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="chainsTransformed" src="https://via.placeholder.com/400x300.png?text=Apply+Chain+Transformations" alt="Transformed Image" />
+                                    <div class="image-loader" id="chainsTransformedLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="chainsTransformedUrl">No chain transformations applied</code>
+                                </div>
+                            </div>
 
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> Multi-step transformations</li>
-                        <li><i class="fas fa-check"></i> Conditional logic support</li>
-                        <li><i class="fas fa-check"></i> Chain optimization</li>
-                        <li><i class="fas fa-check"></i> Error handling and fallbacks</li>
-                        <li><i class="fas fa-check"></i> Performance optimization</li>
-                        <li><i class="fas fa-check"></i> Batch processing</li>
-                    </ul>
-
-                    <div class="info-box">
-                        <h4><i class="fas fa-lightbulb"></i> Use Cases</h4>
-                        <p>Ideal for complex image processing workflows, automated content optimization, and
-                            sophisticated file transformation pipelines.</p>
+                            <div class="playground-image-card">
+                                <h3><i class="fas fa-image"></i> Original Image</h3>
+                                <div class="playground-image-wrapper">
+                                    <img id="chainsOriginal" src="https://via.placeholder.com/400x300.png?text=Upload+an+Image" alt="Original Image" />
+                                    <div class="image-loader" id="chainsOriginalLoader">
+                                        <div class="loader-spinner"></div>
+                                    </div>
+                                </div>
+                                <div class="url-display">
+                                    <code id="chainsOriginalUrl">No image uploaded</code>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -4749,48 +4361,22 @@ dnd.filstackSdk.picker(options).open();</pre>
                     <p>Add custom CSS styling to your file picker. This section uses the JavaScript code generated in <strong>Uploads → File Picker</strong> and adds visual styling on top of it.</p>
                 </div>
 
-                <!-- Important Notice -->
-                <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
-                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;"><i class="fas fa-exclamation-triangle"></i> Important: Configure File Picker First</h4>
-                    <p style="margin: 0; color: #856404; font-size: 0.95rem;">
-                        <strong>Step 1:</strong> Go to <strong>Uploads → File Picker</strong> and configure your picker options (sources, file types, etc.)<br>
-                        <strong>Step 2:</strong> Click <strong>"Generate Code"</strong> in the File Picker section<br>
-                        <strong>Step 3:</strong> Return here to add styling and see the combined result
-                    </p>
-                </div>
-
-                <div class="config-card">
-                    <h3><i class="fas fa-info-circle"></i> About Picker Styling</h3>
-                    <p class="card-description">This section adds visual styling (CSS) to the JavaScript code you generated in the <strong>Uploads → File Picker</strong> section. The picker preview and generated code both use your existing File Picker configuration.</p>
-
-                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
-                        <h4><i class="fas fa-lightbulb"></i> How It Works</h4>
-                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                            <li><strong>Uses Your Config:</strong> JavaScript code from <strong>Uploads → File Picker</strong> (not regenerated)</li>
-                            <li><strong>Adds Styling:</strong> Custom CSS on top of your picker configuration</li>
-                            <li><strong>Live Preview:</strong> See your picker with both configuration AND styling</li>
-                            <li><strong>Combined Output:</strong> Get CSS + JavaScript from File Picker in one place</li>
-                            <li><strong>Preset Themes:</strong> Quickly apply professional color schemes</li>
-                        </ul>
-                    </div>
-                </div>
-
                 <!-- Styling Controls and Preview Container -->
                 <div class="styling-container" style="display: flex; gap: 2rem; margin-top: 2rem; min-height: 600px;">
                     <!-- Left Panel: Styling Controls -->
                     <div class="styling-controls" style="flex: 0 0 350px; overflow-y: auto; max-height: 800px;">
                         <!-- Tabs -->
                         <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem;">
-                            <button class="styling-tab-btn active" data-styling-tab="visual" style="padding: 0.5rem 1rem; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
-                                <i class="fas fa-paint-brush"></i> Visual Editor
-                            </button>
-                            <button class="styling-tab-btn" data-styling-tab="presets" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                            <button class="styling-tab-btn active" data-styling-tab="presets" style="padding: 0.5rem 1rem; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
                                 <i class="fas fa-swatchbook"></i> Presets
+                            </button>
+                            <button class="styling-tab-btn" data-styling-tab="visual" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; background: white; color: #374151; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                <i class="fas fa-paint-brush"></i> Visual Editor
                             </button>
                         </div>
 
                         <!-- Visual Editor Tab Content -->
-                        <div id="styling-visual-tab" class="styling-tab-content">
+                        <div id="styling-visual-tab" class="styling-tab-content" style="display: none;">
                             <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem;">
                                 <i class="fas fa-info-circle"></i> Click on an element in the list below to customize its appearance.
                             </p>
@@ -4818,7 +4404,7 @@ dnd.filstackSdk.picker(options).open();</pre>
                         </div>
 
                         <!-- Presets Tab Content -->
-                        <div id="styling-presets-tab" class="styling-tab-content" style="display: none;">
+                        <div id="styling-presets-tab" class="styling-tab-content">
                             <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem;">
                                 <i class="fas fa-palette"></i> Choose a preset theme to quickly apply a professional look.
                             </p>
@@ -4906,11 +4492,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                 <h4 style="color: #374151; font-size: 1.1rem; margin: 0;">
                                     <i class="fas fa-eye"></i> Live Preview with Styling
                                 </h4>
-                                <!-- View Mode Toggles & Refresh -->
+                                <!-- View Mode Toggles -->
                                 <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                    <button id="styling-refresh-picker" style="padding: 0.5rem 1rem; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
-                                        <i class="fas fa-sync-alt"></i> Refresh Preview
-                                    </button>
                                     <button id="styling-tab-empty" class="styling-view-tab active" style="padding: 0.5rem 1rem; background: #fb923c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;">
                                         Drop Zone View
                                     </button>
@@ -4920,8 +4503,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                                 </div>
                             </div>
                             <!-- Picker Container (fixed size like styling_playground.html) -->
-                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                <div id="styling-picker-container" style="width: 1000px; height: 580px; transform-origin: center; overflow: hidden;">
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+                                <div id="styling-picker-container" style="width: 1000px; height: 580px; transform-origin: center; overflow: hidden; position: relative;">
                                     <!-- Filestack picker will be rendered here -->
                                 </div>
                             </div>
@@ -4946,8 +4529,67 @@ dnd.filstackSdk.picker(options).open();</pre>
 // Then style elements here to see the combined CSS + JavaScript code</code></pre>
                 </div>
 
+                <!-- Important Notice -->
+                <div class="info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-top: 2rem; margin-bottom: 1.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #856404;"><i class="fas fa-exclamation-triangle"></i> Important: Configure File Picker First</h4>
+                    <p style="margin: 0; color: #856404; font-size: 0.95rem;">
+                        <strong>Step 1:</strong> Go to <strong>Uploads → File Picker</strong> and configure your picker options (sources, file types, etc.)<br>
+                        <strong>Step 2:</strong> Click <strong>"Generate Code"</strong> in the File Picker section<br>
+                        <strong>Step 3:</strong> Return here to add styling and see the combined result
+                    </p>
+                </div>
+
+                <div class="config-card">
+                    <h3><i class="fas fa-info-circle"></i> About Picker Styling</h3>
+                    <p class="card-description">This section adds visual styling (CSS) to the JavaScript code you generated in the <strong>Uploads → File Picker</strong> section. The picker preview and generated code both use your existing File Picker configuration.</p>
+
+                    <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; margin-top: 1rem;">
+                        <h4><i class="fas fa-lightbulb"></i> How It Works</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li><strong>Uses Your Config:</strong> JavaScript code from <strong>Uploads → File Picker</strong> (not regenerated)</li>
+                            <li><strong>Adds Styling:</strong> Custom CSS on top of your picker configuration</li>
+                            <li><strong>Live Preview:</strong> See your picker with both configuration AND styling</li>
+                            <li><strong>Combined Output:</strong> Get CSS + JavaScript from File Picker in one place</li>
+                            <li><strong>Preset Themes:</strong> Quickly apply professional color schemes</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <!-- Dynamic Styles Container -->
                 <style id="styling-dynamic-styles"></style>
+
+                <!-- Constrain Filestack Picker to Container -->
+                <style>
+                    /* Ensure picker modal stays within the styling-picker-container */
+                    #styling-picker-container .fsp-picker,
+                    #styling-picker-container .fsp-picker__modal-container {
+                        position: absolute !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        right: 0 !important;
+                        bottom: 0 !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                        transform: none !important;
+                    }
+
+                    /* Remove any overlay/backdrop that might appear outside the container */
+                    #styling-picker-container .fsp-picker__overlay {
+                        position: absolute !important;
+                    }
+
+                    /* Make sure the picker container itself constrains its children */
+                    #styling-picker-container {
+                        position: relative !important;
+                        overflow: hidden !important;
+                        isolation: isolate !important;
+                    }
+
+                    /* Prevent any Filestack modals from escaping to body level */
+                    body > .fsp-picker:has([data-container="#styling-picker-container"]) {
+                        display: none !important;
+                    }
+                </style>
 
                 <!-- Picker Highlighting Styles -->
                 <style>
@@ -5192,122 +4834,268 @@ dnd.filstackSdk.picker(options).open();</pre>
                 minimal: {
                     'modal': { 'background-color': '#ffffff', 'border-radius': '0px' },
                     'header': { 'background-color': '#ffffff', 'border-bottom': '1px solid #e5e7eb' },
-                    'source-list': { 'background-color': '#fafafa' },
+                    'source-list': { 'background-color': '#fafafa', 'border-right': '1px solid #e5e7eb' },
                     'source-item-active': { 'background-color': '#000000', 'color': '#ffffff' },
-                    'drop-area': { 'border': '1px solid #d1d5db' },
-                    'button-primary': { 'background-color': '#000000', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#ffffff' },
+                    'drop-area': { 'border': '1px solid #d1d5db', 'border-radius': '0px' },
+                    'button-primary': { 'background-color': '#000000', 'color': '#ffffff', 'border-radius': '0px' },
+                    'button-cancel': { 'background-color': '#ffffff', 'color': '#000000', 'border': '1px solid #000000', 'border-radius': '0px' },
+                    'content': { 'background-color': '#ffffff' },
+                    'summary-body': { 'background-color': '#ffffff' },
+                    'summary-item': { 'background-color': '#fafafa', 'color': '#000000', 'border': '1px solid #e5e7eb', 'border-radius': '0px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#000000' },
+                    'summary-size': { 'color': '#6b7280' },
+                    'summary-remove': { 'color': '#000000' },
                 },
                 vibrant: {
                     'modal': { 'background-color': '#fef3c7', 'color': '#78350f' },
                     'header': { 'background-color': '#f59e0b', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#fef3c7' },
                     'source-item-active': { 'background-color': '#f59e0b', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#fef3c7', 'border': '2px dashed #f59e0b' },
-                    'button-primary': { 'background-color': '#f59e0b', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#fef3c7' },
+                    'drop-area': { 'background-color': '#fef3c7', 'border': '2px dashed #f59e0b', 'border-radius': '12px' },
+                    'button-primary': { 'background-color': '#f59e0b', 'color': '#ffffff', 'border-radius': '20px' },
+                    'button-cancel': { 'background-color': '#fef3c7', 'color': '#78350f', 'border': '2px solid #f59e0b', 'border-radius': '20px' },
+                    'content': { 'background-color': '#fef3c7' },
+                    'summary-body': { 'background-color': '#fef3c7' },
+                    'summary-item': { 'background-color': '#fed7aa', 'color': '#78350f', 'border-radius': '12px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#78350f', 'font-weight': '600' },
+                    'summary-size': { 'color': '#92400e' },
+                    'summary-remove': { 'color': '#dc2626' },
                 },
                 ocean: {
                     'modal': { 'background-color': '#e0f2fe', 'color': '#164e63' },
                     'header': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
-                    'source-list': { 'background-color': '#bae6fd' },
+                    'source-list': { 'background-color': '#bae6fd', 'border-right': '1px solid #7dd3fc' },
+                    'source-item': { 'color': '#0c4a6e' },
                     'source-item-active': { 'background-color': '#0284c7', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#bae6fd', 'border': '2px dashed #0ea5e9' },
-                    'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#e0f2fe' },
+                    'drop-area': { 'background-color': '#bae6fd', 'border': '2px dashed #0ea5e9', 'border-radius': '10px' },
+                    'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff', 'border-radius': '8px' },
+                    'button-cancel': { 'background-color': '#e0f2fe', 'color': '#0c4a6e', 'border': '2px solid #0ea5e9', 'border-radius': '8px' },
+                    'footer': { 'background-color': '#bae6fd', 'border-top': '1px solid #7dd3fc' },
+                    'content': { 'background-color': '#e0f2fe' },
+                    'summary-body': { 'background-color': '#e0f2fe' },
+                    'summary-item': { 'background-color': '#bae6fd', 'color': '#164e63', 'border-radius': '10px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#0c4a6e', 'font-weight': '500' },
+                    'summary-size': { 'color': '#0369a1' },
+                    'summary-remove': { 'color': '#0ea5e9' },
                 },
                 forest: {
                     'modal': { 'background-color': '#dcfce7', 'color': '#14532d' },
                     'header': { 'background-color': '#22c55e', 'color': '#ffffff' },
-                    'source-list': { 'background-color': '#bbf7d0' },
+                    'source-list': { 'background-color': '#bbf7d0', 'border-right': '1px solid #86efac' },
+                    'source-item': { 'color': '#166534' },
                     'source-item-active': { 'background-color': '#16a34a', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#bbf7d0', 'border': '2px dashed #22c55e' },
-                    'button-primary': { 'background-color': '#22c55e', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#dcfce7' },
+                    'drop-area': { 'background-color': '#bbf7d0', 'border': '2px dashed #22c55e', 'border-radius': '12px' },
+                    'button-primary': { 'background-color': '#22c55e', 'color': '#ffffff', 'border-radius': '8px' },
+                    'button-cancel': { 'background-color': '#dcfce7', 'color': '#166534', 'border': '2px solid #22c55e', 'border-radius': '8px' },
+                    'footer': { 'background-color': '#bbf7d0', 'border-top': '1px solid #86efac' },
+                    'content': { 'background-color': '#dcfce7' },
+                    'summary-body': { 'background-color': '#dcfce7' },
+                    'summary-item': { 'background-color': '#bbf7d0', 'color': '#14532d', 'border-radius': '12px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#166534', 'font-weight': '600' },
+                    'summary-size': { 'color': '#15803d' },
+                    'summary-remove': { 'color': '#dc2626' },
                 },
                 sunset: {
                     'modal': { 'background': 'linear-gradient(135deg, #fecaca 0%, #fde68a 50%, #fbcfe8 100%)', 'color': '#7c2d12' },
                     'header': { 'background-color': '#f97316', 'color': '#ffffff' },
                     'source-list': { 'background': 'rgba(254, 202, 202, 0.7)' },
+                    'source-item': { 'color': '#7c2d12' },
                     'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
-                    'drop-area': { 'background': 'rgba(254, 202, 202, 0.8)', 'border': '2px dashed #f97316' },
-                    'button-primary': { 'background': 'linear-gradient(90deg, #f97316, #ef4444)', 'color': '#ffffff' },
+                    'drop-area-container': { 'background': 'rgba(254, 202, 202, 0.5)' },
+                    'drop-area': { 'background': 'rgba(254, 202, 202, 0.8)', 'border': '2px dashed #f97316', 'border-radius': '15px' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #f97316, #ef4444)', 'color': '#ffffff', 'border-radius': '25px' },
+                    'button-cancel': { 'background': 'transparent', 'color': '#7c2d12', 'border': '2px solid #f97316', 'border-radius': '25px' },
+                    'footer': { 'background': 'rgba(254, 202, 202, 0.7)', 'border-top': '1px solid #f97316' },
+                    'content': { 'background': 'rgba(254, 202, 202, 0.5)' },
+                    'summary-body': { 'background': 'rgba(254, 202, 202, 0.5)' },
+                    'summary-item': { 'background': 'rgba(254, 202, 202, 0.8)', 'color': '#7c2d12', 'border-radius': '15px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#7c2d12', 'font-weight': '600' },
+                    'summary-size': { 'color': '#9a3412' },
+                    'summary-remove': { 'color': '#ef4444' },
                 },
                 neon: {
                     'modal': { 'background-color': '#18181b', 'color': '#fafafa' },
                     'header': { 'background-color': '#09090b', 'color': '#a78bfa', 'border-bottom': '2px solid #a78bfa' },
                     'source-list': { 'background-color': '#27272a', 'border-right': '2px solid #6366f1' },
+                    'source-item': { 'color': '#d4d4d8' },
                     'source-item-active': { 'background-color': '#6366f1', 'color': '#ffffff', 'box-shadow': '0 0 20px rgba(99, 102, 241, 0.5)' },
-                    'drop-area': { 'background-color': '#27272a', 'border': '2px solid #a78bfa', 'box-shadow': '0 0 30px rgba(167, 139, 250, 0.3)' },
-                    'button-primary': { 'background-color': '#a78bfa', 'color': '#18181b', 'box-shadow': '0 0 15px rgba(167, 139, 250, 0.5)' },
+                    'drop-area-container': { 'background-color': '#18181b' },
+                    'drop-area': { 'background-color': '#27272a', 'border': '2px solid #a78bfa', 'border-radius': '8px', 'box-shadow': '0 0 30px rgba(167, 139, 250, 0.3)' },
+                    'button-primary': { 'background-color': '#a78bfa', 'color': '#18181b', 'border-radius': '6px', 'box-shadow': '0 0 15px rgba(167, 139, 250, 0.5)' },
+                    'button-cancel': { 'background-color': '#27272a', 'color': '#a78bfa', 'border': '2px solid #a78bfa', 'border-radius': '6px' },
+                    'footer': { 'background-color': '#09090b', 'border-top': '2px solid #6366f1' },
+                    'content': { 'background-color': '#18181b' },
+                    'summary-body': { 'background-color': '#18181b' },
+                    'summary-item': { 'background-color': '#27272a', 'color': '#fafafa', 'border': '2px solid #a78bfa', 'border-radius': '8px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#a78bfa', 'font-weight': '600' },
+                    'summary-size': { 'color': '#d4d4d8' },
+                    'summary-remove': { 'color': '#ef4444', 'box-shadow': '0 0 10px rgba(239, 68, 68, 0.5)' },
                 },
                 pastel: {
                     'modal': { 'background-color': '#fef3f2', 'color': '#7c2d12' },
                     'header': { 'background-color': '#fce7f3', 'color': '#831843', 'border-bottom': '1px solid #fbcfe8' },
                     'source-list': { 'background-color': '#f5f3ff', 'border-right': '1px solid #e9d5ff' },
+                    'source-item': { 'color': '#581c87' },
                     'source-item-active': { 'background-color': '#f0abfc', 'color': '#701a75' },
-                    'drop-area': { 'background-color': '#fce7f3', 'border': '2px dashed #f9a8d4' },
-                    'button-primary': { 'background-color': '#f0abfc', 'color': '#701a75' },
+                    'drop-area-container': { 'background-color': '#fef3f2' },
+                    'drop-area': { 'background-color': '#fce7f3', 'border': '2px dashed #f9a8d4', 'border-radius': '16px' },
+                    'button-primary': { 'background-color': '#f0abfc', 'color': '#701a75', 'border-radius': '16px' },
+                    'button-cancel': { 'background-color': '#fef3f2', 'color': '#831843', 'border': '2px solid #f9a8d4', 'border-radius': '16px' },
+                    'footer': { 'background-color': '#fce7f3', 'border-top': '1px solid #fbcfe8' },
+                    'content': { 'background-color': '#fef3f2' },
+                    'summary-body': { 'background-color': '#fef3f2' },
+                    'summary-item': { 'background-color': '#fce7f3', 'color': '#831843', 'border-radius': '16px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#701a75', 'font-weight': '600' },
+                    'summary-size': { 'color': '#9f1239' },
+                    'summary-remove': { 'color': '#e11d48' },
                 },
                 corporate: {
                     'modal': { 'background-color': '#f8fafc', 'color': '#1e293b' },
-                    'header': { 'background-color': '#1e40af', 'color': '#ffffff' },
-                    'source-list': { 'background-color': '#eff6ff' },
+                    'header': { 'background-color': '#1e40af', 'color': '#ffffff', 'border-bottom': 'none' },
+                    'source-list': { 'background-color': '#eff6ff', 'border-right': '1px solid #dbeafe' },
+                    'source-item': { 'color': '#1e3a8a' },
                     'source-item-active': { 'background-color': '#2563eb', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#f1f5f9', 'border': '2px solid #cbd5e1' },
-                    'button-primary': { 'background-color': '#1e40af', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#f8fafc' },
+                    'drop-area': { 'background-color': '#f1f5f9', 'border': '2px solid #cbd5e1', 'border-radius': '6px' },
+                    'button-primary': { 'background-color': '#1e40af', 'color': '#ffffff', 'border-radius': '4px' },
+                    'button-cancel': { 'background-color': '#f8fafc', 'color': '#1e40af', 'border': '2px solid #1e40af', 'border-radius': '4px' },
+                    'footer': { 'background-color': '#eff6ff', 'border-top': '1px solid #dbeafe' },
+                    'content': { 'background-color': '#f8fafc' },
+                    'summary-body': { 'background-color': '#f8fafc' },
+                    'summary-item': { 'background-color': '#eff6ff', 'color': '#1e293b', 'border': '1px solid #dbeafe', 'border-radius': '6px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#1e3a8a', 'font-weight': '600' },
+                    'summary-size': { 'color': '#475569' },
+                    'summary-remove': { 'color': '#dc2626' },
                 },
                 cyberpunk: {
                     'modal': { 'background-color': '#0a0a0a', 'color': '#00ff9f' },
                     'header': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'border-bottom': '2px solid #00ff9f' },
                     'source-list': { 'background-color': '#1a1a1a', 'border-right': '2px solid #ff00ff' },
+                    'source-item': { 'color': '#00ffff' },
                     'source-item-active': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000' },
-                    'drop-area': { 'background-color': '#1a1a1a', 'border': '3px solid #00ff9f', 'box-shadow': '0 0 25px rgba(0, 255, 159, 0.4)' },
-                    'button-primary': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'box-shadow': '0 0 15px rgba(255, 0, 255, 0.5)' },
+                    'drop-area-container': { 'background-color': '#0a0a0a' },
+                    'drop-area': { 'background-color': '#1a1a1a', 'border': '3px solid #00ff9f', 'border-radius': '0px', 'box-shadow': '0 0 25px rgba(0, 255, 159, 0.4)' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #ff00ff, #00ffff)', 'color': '#000000', 'border-radius': '0px', 'box-shadow': '0 0 15px rgba(255, 0, 255, 0.5)' },
+                    'button-cancel': { 'background-color': '#1a1a1a', 'color': '#00ff9f', 'border': '2px solid #00ff9f', 'border-radius': '0px' },
+                    'footer': { 'background-color': '#1a1a1a', 'border-top': '2px solid #ff00ff' },
+                    'content': { 'background-color': '#0a0a0a' },
+                    'summary-body': { 'background-color': '#0a0a0a' },
+                    'summary-item': { 'background-color': '#1a1a1a', 'color': '#00ff9f', 'border': '3px solid #00ff9f', 'border-radius': '0px', 'padding': '12px', 'box-shadow': '0 0 15px rgba(0, 255, 159, 0.3)' },
+                    'summary-item-name': { 'color': '#00ffff', 'font-weight': '700' },
+                    'summary-size': { 'color': '#ff00ff' },
+                    'summary-remove': { 'color': '#ff00ff', 'box-shadow': '0 0 10px rgba(255, 0, 255, 0.5)' },
                 },
                 nature: {
                     'modal': { 'background-color': '#f0fdf4', 'color': '#14532d' },
                     'header': { 'background': 'linear-gradient(135deg, #84cc16, #059669)', 'color': '#ffffff' },
-                    'source-list': { 'background-color': '#ecfccb' },
+                    'source-list': { 'background-color': '#ecfccb', 'border-right': '1px solid #bef264' },
+                    'source-item': { 'color': '#365314' },
                     'source-item-active': { 'background-color': '#65a30d', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#dcfce7', 'border': '2px dashed #16a34a' },
-                    'button-primary': { 'background': 'linear-gradient(90deg, #84cc16, #22c55e)', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#f0fdf4' },
+                    'drop-area': { 'background-color': '#dcfce7', 'border': '2px dashed #16a34a', 'border-radius': '20px' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #84cc16, #22c55e)', 'color': '#ffffff', 'border-radius': '30px' },
+                    'button-cancel': { 'background-color': '#ecfccb', 'color': '#365314', 'border': '2px solid #84cc16', 'border-radius': '30px' },
+                    'footer': { 'background-color': '#ecfccb', 'border-top': '1px solid #bef264' },
+                    'content': { 'background-color': '#f0fdf4' },
+                    'summary-body': { 'background-color': '#f0fdf4' },
+                    'summary-item': { 'background-color': '#dcfce7', 'color': '#14532d', 'border-radius': '20px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#166534', 'font-weight': '600' },
+                    'summary-size': { 'color': '#15803d' },
+                    'summary-remove': { 'color': '#dc2626' },
                 },
                 midnight: {
-                    'modal': { 'background-color': '#0c1445', 'color': '#c7d2fe' },
+                    'modal': { 'background-color': '#0c1445', 'color': '#e0e7ff' },
                     'header': { 'background-color': '#1e1b4b', 'color': '#c7d2fe', 'border-bottom': '1px solid #312e81' },
                     'source-list': { 'background-color': '#1e1b4b', 'border-right': '1px solid #312e81' },
+                    'source-item': { 'color': '#a5b4fc' },
                     'source-item-active': { 'background-color': '#4338ca', 'color': '#e0e7ff' },
-                    'drop-area': { 'background-color': '#1e1b4b', 'border': '2px dashed #6366f1' },
-                    'button-primary': { 'background-color': '#4f46e5', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#0c1445' },
+                    'drop-area': { 'background-color': '#1e1b4b', 'border': '2px dashed #6366f1', 'border-radius': '10px' },
+                    'button-primary': { 'background-color': '#4f46e5', 'color': '#ffffff', 'border-radius': '8px' },
+                    'button-cancel': { 'background-color': '#1e1b4b', 'color': '#c7d2fe', 'border': '2px solid #4338ca', 'border-radius': '8px' },
+                    'footer': { 'background-color': '#1e1b4b', 'border-top': '1px solid #312e81' },
+                    'content': { 'background-color': '#0c1445' },
+                    'summary-body': { 'background-color': '#0c1445' },
+                    'summary-item': { 'background-color': '#1e1b4b', 'color': '#e0e7ff', 'border-radius': '10px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#c7d2fe', 'font-weight': '600' },
+                    'summary-size': { 'color': '#a5b4fc' },
+                    'summary-remove': { 'color': '#f87171' },
                 },
                 candy: {
-                    'modal': { 'background': 'linear-gradient(135deg, #fdf2f8 0%, #fae8ff 100%)', 'color': '#831843' },
+                    'modal': { 'background': 'linear-gradient(135deg, #fae8ff 0%, #fce7f3 50%, #fbcfe8 100%)', 'color': '#831843' },
                     'header': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#fdf4ff' },
+                    'source-item': { 'color': '#9f1239' },
                     'source-item-active': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6)', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#fdf4ff', 'border': '3px dashed #ec4899' },
-                    'button-primary': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6, #a855f7)', 'color': '#ffffff' },
+                    'drop-area-container': { 'background': 'linear-gradient(135deg, #fae8ff, #fce7f3)' },
+                    'drop-area': { 'background-color': '#fdf4ff', 'border': '3px dashed #ec4899', 'border-radius': '24px' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #ec4899, #f472b6, #a855f7)', 'color': '#ffffff', 'border-radius': '30px' },
+                    'button-cancel': { 'background-color': '#fdf4ff', 'color': '#9f1239', 'border': '2px solid #ec4899', 'border-radius': '30px' },
+                    'footer': { 'background-color': '#fdf4ff', 'border-top': '2px solid #f9a8d4' },
+                    'content': { 'background': 'linear-gradient(135deg, #fae8ff, #fce7f3)' },
+                    'summary-body': { 'background': 'linear-gradient(135deg, #fae8ff, #fce7f3)' },
+                    'summary-item': { 'background-color': '#fdf4ff', 'color': '#831843', 'border-radius': '24px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#9f1239', 'font-weight': '600' },
+                    'summary-size': { 'color': '#be123c' },
+                    'summary-remove': { 'color': '#ec4899' },
                 },
                 autumn: {
-                    'modal': { 'background': 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)', 'color': '#7c2d12' },
+                    'modal': { 'background-color': '#fef2f2', 'color': '#7c2d12' },
                     'header': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c)', 'color': '#ffffff' },
                     'source-list': { 'background-color': '#fed7aa', 'border-right': '1px solid #fdba74' },
+                    'source-item': { 'color': '#9a3412' },
                     'source-item-active': { 'background-color': '#ea580c', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#fed7aa', 'border': '2px dashed #dc2626' },
-                    'button-primary': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c, #f97316)', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#fef2f2' },
+                    'drop-area': { 'background-color': '#fed7aa', 'border': '2px dashed #dc2626', 'border-radius': '12px' },
+                    'button-primary': { 'background': 'linear-gradient(90deg, #dc2626, #ea580c, #f97316)', 'color': '#ffffff', 'border-radius': '10px' },
+                    'button-cancel': { 'background-color': '#fed7aa', 'color': '#9a3412', 'border': '2px solid #ea580c', 'border-radius': '10px' },
+                    'footer': { 'background-color': '#fed7aa', 'border-top': '1px solid #fdba74' },
+                    'content': { 'background-color': '#fef2f2' },
+                    'summary-body': { 'background-color': '#fef2f2' },
+                    'summary-item': { 'background-color': '#fed7aa', 'color': '#7c2d12', 'border-radius': '12px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#9a3412', 'font-weight': '600' },
+                    'summary-size': { 'color': '#c2410c' },
+                    'summary-remove': { 'color': '#dc2626' },
                 },
                 arctic: {
-                    'modal': { 'background': 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', 'color': '#0c4a6e' },
+                    'modal': { 'background-color': '#f0f9ff', 'color': '#0c4a6e' },
                     'header': { 'background-color': '#7dd3fc', 'color': '#0c4a6e' },
                     'source-list': { 'background-color': '#e0f2fe', 'border-right': '1px solid #bae6fd' },
+                    'source-item': { 'color': '#075985' },
                     'source-item-active': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
-                    'drop-area': { 'background-color': '#e0f2fe', 'border': '2px dashed #38bdf8' },
-                    'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff' },
+                    'drop-area-container': { 'background-color': '#f0f9ff' },
+                    'drop-area': { 'background-color': '#e0f2fe', 'border': '2px dashed #38bdf8', 'border-radius': '8px' },
+                    'button-primary': { 'background-color': '#0ea5e9', 'color': '#ffffff', 'border-radius': '6px' },
+                    'button-cancel': { 'background-color': '#e0f2fe', 'color': '#075985', 'border': '2px solid #0ea5e9', 'border-radius': '6px' },
+                    'footer': { 'background-color': '#e0f2fe', 'border-top': '1px solid #bae6fd' },
+                    'content': { 'background-color': '#f0f9ff' },
+                    'summary-body': { 'background-color': '#f0f9ff' },
+                    'summary-item': { 'background-color': '#e0f2fe', 'color': '#0c4a6e', 'border-radius': '8px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#075985', 'font-weight': '600' },
+                    'summary-size': { 'color': '#0369a1' },
+                    'summary-remove': { 'color': '#0ea5e9' },
                 },
                 retro: {
                     'modal': { 'background-color': '#fffbeb', 'color': '#78350f' },
                     'header': { 'background-color': '#fbbf24', 'color': '#78350f', 'border-bottom': '3px solid #78350f' },
                     'source-list': { 'background-color': '#fef3c7', 'border-right': '3px solid #78350f' },
+                    'source-item': { 'color': '#92400e' },
                     'source-item-active': { 'background-color': '#78350f', 'color': '#fbbf24' },
-                    'drop-area': { 'background-color': '#fef3c7', 'border': '3px solid #78350f' },
-                    'button-primary': { 'background-color': '#78350f', 'color': '#fbbf24', 'border': '3px solid #78350f' },
+                    'drop-area-container': { 'background-color': '#fffbeb' },
+                    'drop-area': { 'background-color': '#fef3c7', 'border': '3px solid #78350f', 'border-radius': '0px' },
+                    'button-primary': { 'background-color': '#78350f', 'color': '#fbbf24', 'border-radius': '0px', 'border': '3px solid #78350f' },
+                    'button-cancel': { 'background-color': '#fffbeb', 'color': '#78350f', 'border': '3px solid #78350f', 'border-radius': '0px' },
+                    'footer': { 'background-color': '#fef3c7', 'border-top': '3px solid #78350f' },
+                    'content': { 'background-color': '#fffbeb' },
+                    'summary-body': { 'background-color': '#fffbeb' },
+                    'summary-item': { 'background-color': '#fef3c7', 'color': '#78350f', 'border': '3px solid #78350f', 'border-radius': '0px', 'padding': '12px' },
+                    'summary-item-name': { 'color': '#78350f', 'font-weight': '700' },
+                    'summary-size': { 'color': '#92400e' },
+                    'summary-remove': { 'color': '#dc2626' },
                 },
             },
 
@@ -5367,6 +5155,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                 const updateStylingCode = () => {
                     if (document.getElementById('picker-styling')?.classList.contains('active')) {
                         this.updateGeneratedCode();
+                        // Auto-reinitialize picker when File Picker config changes
+                        this.reinitPicker();
                     }
                 };
 
@@ -5380,6 +5170,8 @@ dnd.filstackSdk.picker(options).open();</pre>
                 const filePickerCodeObserver = new MutationObserver(() => {
                     if (document.getElementById('picker-styling')?.classList.contains('active')) {
                         this.updateGeneratedCode();
+                        // Auto-reinitialize picker when generated code changes
+                        this.reinitPicker();
                     }
                 });
 
@@ -5754,13 +5546,33 @@ dnd.filstackSdk.picker(options).open();</pre>
                 // Use API key from sidebar, or default demo key
                 const apiKey = document.getElementById('globalApikey')?.value || 'AzYGVlXhTVGcG1GYJXsWuz';
 
+                // Get security credentials
+                const policy = document.getElementById('securityPolicy')?.value || '';
+                const signature = document.getElementById('securitySignature')?.value || '';
+
                 try {
                     // Check if filestack is loaded
                     if (typeof filestack === 'undefined') {
                         throw new Error('Filestack library not loaded');
                     }
 
-                    const client = filestack.init(apiKey);
+                    // Initialize client with security if available
+                    const hasPolicy = policy && policy.trim() && policy !== 'YOUR_POLICY';
+                    const hasSignature = signature && signature.trim() && signature !== 'YOUR_SIGNATURE';
+
+                    let client;
+                    if (hasPolicy && hasSignature) {
+                        client = filestack.init(apiKey, {
+                            security: {
+                                policy: policy,
+                                signature: signature
+                            }
+                        });
+                        console.log('🔐 PICKER INITIALIZED WITH SECURITY');
+                    } else {
+                        client = filestack.init(apiKey);
+                        console.log('🔓 PICKER INITIALIZED WITHOUT SECURITY (may cause 403 errors on upload)');
+                    }
 
                     // Get user-configured options from File Picker section
                     let userOptions = {};
