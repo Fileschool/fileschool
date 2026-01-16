@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snap Filestack - Real Configurator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Prism.js for Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <!-- Real Filestack SDK -->
+    <script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Left Sidebar: Configuration -->
+        <aside id="config-panel" class="sidebar">
+            <header class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Snap Filestack</span>
+                </div>
+                <div class="api-key-section">
+                    <label>API Key</label>
+                    <input type="text" id="api-key-input" placeholder="Enter your Filestack API Key">
+                    <small>Needed for full functionality</small>
+                </div>
+            </header>
+
+            <nav class="config-nav">
+                <button class="nav-btn active" data-tab="picker">Picker</button>
+                <button class="nav-btn" data-tab="styling">Styling</button>
+                <button class="nav-btn" data-tab="transformations">Transformations</button>
+                <button class="nav-btn" data-tab="security">Security</button>
+            </nav>
+
+            <div class="config-content">
+                <!-- Picker Configuration -->
+                <div id="picker-config" class="config-section active">
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Sources <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content open">
+                            <div class="toggle-group" id="sources-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Accept Types <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content">
+                            <div class="toggle-group" id="accept-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Constraints <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content">
+                            <div class="input-group">
+                                <label>Max Files</label>
+                                <input type="number" id="constraint-maxfiles" value="5">
+                            </div>
+                            <div class="input-group">
+                                <label>Max Size (MB)</label>
+                                <input type="number" id="constraint-maxsize" value="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Display Mode <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content">
+                            <select id="display-mode-select">
+                                <option value="overlay">Overlay</option>
+                                <option value="inline">Inline</option>
+                                <option value="dropPane">Drop Pane</option>
+                            </select>
+                            <div class="input-group" style="margin-top: 10px;">
+                                <label>Container Selector (Inline/Drop)</label>
+                                <input type="text" id="container-selector" value="#inline-container" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Security <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content">
+                            <div class="input-group">
+                                <label>Policy</label>
+                                <input type="text" id="picker-policy" placeholder="Policy string">
+                            </div>
+                            <div class="input-group">
+                                <label>Signature</label>
+                                <input type="text" id="picker-signature" placeholder="Signature string">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Styling Configuration -->
+                <div id="styling-config" class="config-section">
+                    <!-- Styling Tabs -->
+                    <div class="styling-tabs">
+                        <button class="styling-tab-btn active" data-styling-tab="visual">Visual Editor</button>
+                        <button class="styling-tab-btn" data-styling-tab="code">CSS Code</button>
+                        <button class="styling-tab-btn" data-styling-tab="presets">Presets</button>
+                    </div>
+
+                    <!-- Visual Editor Tab -->
+                    <div id="visual-styling-tab" class="styling-tab-content active">
+                        <!-- Instructions Box -->
+                        <div id="styling-instructions-box" class="instructions-box">
+                            <div class="instructions-icon">💡</div>
+                            <div class="instructions-content">
+                                <h4>Quick Start:</h4>
+                                <p>Click any element below. It will light up in the picker!</p>
+                            </div>
+                        </div>
+
+                        <!-- Element Selector -->
+                        <div id="styling-element-selector" class="element-selector">
+                            <!-- Category Navigation -->
+                            <div id="styling-category-nav" class="category-nav">
+                                <!-- Populated dynamically -->
+                            </div>
+
+                            <label class="section-label">Click an Element to Style:</label>
+                            <div id="styling-element-list" class="element-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CSS Code Tab -->
+                    <div id="code-styling-tab" class="styling-tab-content hidden">
+                        <div class="css-code-header">
+                            <h4>Export Your Styles</h4>
+                            <p>This is the CSS code generated from your customizations.</p>
+                        </div>
+                        <div class="css-code-actions">
+                            <button class="btn secondary" id="copy-generated-css-btn">
+                                <i class="fa-solid fa-copy"></i> Copy CSS
+                            </button>
+                        </div>
+                        <div id="styling-css-output" class="css-code-output">
+                            <div class="css-code-empty">No styles applied yet</div>
+                        </div>
+                    </div>
+
+                    <!-- Presets Tab -->
+                    <div id="presets-styling-tab" class="styling-tab-content hidden">
+                        <div class="presets-header">
+                            <h4>Quick Start</h4>
+                            <p>Click any preset to apply a theme.</p>
+                        </div>
+                        <div class="presets-grid" id="styling-presets-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <div class="presets-actions">
+                            <button class="btn danger" id="reset-all-styles-btn">
+                                <i class="fa-solid fa-rotate-left"></i> Reset All Styles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Transformations Configuration -->
+                <div id="transformations-config" class="config-section">
+                    <div class="transformations-header">
+                        <h3>CDN Transformations</h3>
+                        <p class="section-description">Upload an image using the picker, then apply real-time
+                            transformations via CDN URL chains</p>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Image Source <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content open">
+                            <div id="trans-upload-status" class="upload-status">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Upload via picker or enter an existing handle below</span>
+                            </div>
+                            <div id="trans-current-image" class="current-image-info" style="display:none;">
+                                <div class="image-info-row">
+                                    <label>Handle:</label>
+                                    <code id="trans-current-handle">-</code>
+                                </div>
+                                <div class="image-info-row">
+                                    <label>Filename:</label>
+                                    <span id="trans-current-filename">-</span>
+                                </div>
+                            </div>
+
+                            <div class="manual-handle-input">
+                                <div class="input-group">
+                                    <label>Or enter an existing handle:</label>
+                                    <input type="text" id="trans-manual-handle"
+                                        placeholder="e.g., wSPGjTiQtuImifba6aAQ">
+                                </div>
+                                <div class="input-group">
+                                    <label>Security Policy (optional):</label>
+                                    <input type="text" id="trans-policy-input" placeholder="Policy">
+                                </div>
+                                <div class="input-group">
+                                    <label>Signature (optional):</label>
+                                    <input type="text" id="trans-signature-input" placeholder="Signature">
+                                </div>
+                                <button class="btn secondary" id="trans-load-manual-btn">
+                                    <i class="fa-solid fa-arrow-down-to-bracket"></i> Load Handle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Quick Presets <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content">
+                            <p class="preset-description">Apply popular transformation combinations with one click:</p>
+                            <div class="preset-buttons">
+                                <button class="preset-btn" data-transforms="resize=width:200,height:200,fit:crop,align:faces/circle/compress" data-label="Circular Avatar">
+                                    <i class="fa-solid fa-user-circle"></i> Circular Avatar
+                                </button>
+                                <button class="preset-btn" data-transforms="resize=width:800,height:800,fit:clip/quality=value:80/auto_image" data-label="Product Detail">
+                                    <i class="fa-solid fa-image"></i> Product Detail
+                                </button>
+                                <button class="preset-btn" data-transforms="rotate=deg:exif/no_metadata/resize=width:1000,fit:max/compress" data-label="UGC (Strip Meta)">
+                                    <i class="fa-solid fa-shield-halved"></i> UGC Safe
+                                </button>
+                                <button class="preset-btn intelligence-preset" data-transforms="resize=width:800,fit:max/tags" data-label="Auto-tag Image" data-requires-security="true">
+                                    <i class="fa-solid fa-tags"></i> Auto-tag
+                                </button>
+                                <button class="preset-btn intelligence-preset" data-transforms="resize=width:800,fit:max/sfw" data-label="SFW Check" data-requires-security="true">
+                                    <i class="fa-solid fa-check-circle"></i> SFW Check
+                                </button>
+                                <button class="preset-btn intelligence-preset" data-transforms="resize=width:800,fit:max/ocr" data-label="Extract Text" data-requires-security="true">
+                                    <i class="fa-solid fa-font"></i> OCR
+                                </button>
+                            </div>
+                            <p class="intelligence-note">
+                                <i class="fa-solid fa-info-circle"></i> Intelligence presets (dashed border) require Policy & Signature above.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Image Transformations <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content">
+                            <div id="transformations-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h4 class="accordion-header">Intelligence Features <i class="fa-solid fa-chevron-down"></i></h4>
+                        <div class="accordion-content">
+                            <p class="intelligence-note">
+                                <i class="fa-solid fa-info-circle"></i> Intelligence features require Policy & Signature (enter above in Image Source section).
+                            </p>
+                            <div id="intelligence-transformations-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Intelligence Configuration -->
+                <div id="intelligence-config" class="config-section">
+                    <div class="intelligence-info-box">
+                        <div class="info-icon">💡</div>
+                        <div class="info-content">
+                            <h3>Intelligence Features</h3>
+                            <p>AI-powered image analysis features are integrated into the <strong>Transformations</strong> tab.</p>
+                            <p>Intelligence features include:</p>
+                            <ul>
+                                <li><strong>Tags</strong> - Auto-tagging with AI recognition</li>
+                                <li><strong>SFW</strong> - Safe for work content check</li>
+                                <li><strong>OCR</strong> - Text extraction from images</li>
+                            </ul>
+                            <p class="security-note">⚠️ Intelligence features require a <strong>Security Policy</strong> and <strong>Signature</strong>.</p>
+                            <button class="btn primary" id="goto-transformations-btn">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Go to Transformations
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Configuration -->
+                <div id="security-config" class="config-section">
+                    <div class="input-group">
+                        <label>Secret</label>
+                        <input type="password" id="security-secret" placeholder="App Secret">
+                    </div>
+                    <div class="input-group">
+                        <label>Expiry (Unix Timestamp)</label>
+                        <input type="number" id="security-expiry" placeholder="1767970000">
+                    </div>
+                    <h3>Permissions</h3>
+                    <div class="toggle-group" id="permissions-list">
+                        <!-- Populated by JS -->
+                    </div>
+                    <button class="btn secondary" id="generate-policy-btn">Generate Policy</button>
+                    <div class="code-output">
+                        <pre id="policy-output">-- Policy will appear here --</pre>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Main: Preview -->
+        <main id="preview-panel" class="preview-area">
+            <header class="preview-header">
+                <h2>Live Preview</h2>
+                <div class="actions">
+                    <span id="status-indicator" class="status-badge error">No API Key</span>
+                    <button id="view-code-btn" class="btn secondary">
+                        <i class="fa-solid fa-code"></i> Get Code
+                    </button>
+                    <button id="view-css-btn" class="btn secondary">
+                        <i class="fa-solid fa-palette"></i> View CSS
+                    </button>
+                </div>
+            </header>
+
+            <div class="preview-stage">
+                <!-- Button for Overlay Mode -->
+                <button id="open-picker-btn" class="btn primary big-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Files
+                </button>
+
+                <!-- Containers for Inline/Drop Modes -->
+                <div id="inline-container" class="sdk-container"></div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar: Transformation Preview -->
+        <aside id="transformation-preview-panel" class="transformation-sidebar">
+            <header class="sidebar-header">
+                <h3>Transformation Preview</h3>
+                <button id="toggle-transformation-sidebar" class="collapse-btn" title="Toggle Sidebar">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </header>
+            <div class="transformation-preview-content">
+                <div class="preview-section">
+                    <h4>Original</h4>
+                    <div class="preview-image-wrapper">
+                        <img id="trans-original-img" src="https://via.placeholder.com/300x400.png?text=Upload+Image"
+                            alt="Original">
+                    </div>
+                    <div class="preview-url-display" id="original-url-display" style="display:none;">
+                        <label>Handle:</label>
+                        <code id="original-url-text"></code>
+                    </div>
+                </div>
+                <div class="preview-section">
+                    <h4>Transformed</h4>
+                    <div class="preview-image-wrapper">
+                        <img id="trans-transformed-img"
+                            src="https://via.placeholder.com/300x400.png?text=Apply+Transforms" alt="Transformed">
+                    </div>
+                    <div class="preview-url-display" id="transformed-url-display" style="display:none;">
+                        <label>URL:</label>
+                        <code id="transformed-url-text"></code>
+                    </div>
+                </div>
+                <div class="preview-section intelligence-section" id="intelligence-preview-section" style="display:none;">
+                    <h4><i class="fa-solid fa-brain"></i> Intelligence Data</h4>
+                    <div id="intelligence-tabs" class="intelligence-tabs" style="display:none;"></div>
+                    <div class="intelligence-data-wrapper">
+                        <div id="intelligence-loading" class="intelligence-loading" style="display:none;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+                        </div>
+                        <div id="intelligence-placeholder" class="intelligence-placeholder">
+                            Enable intelligence features to see AI analysis
+                        </div>
+                        <pre id="intelligence-data-output" class="intelligence-output" style="display:none;"></pre>
+                    </div>
+                    <div class="preview-url-display" id="intelligence-url-display" style="display:none;">
+                        <label>API URL:</label>
+                        <code id="intelligence-url-text"></code>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Code Drawer -->
+    <div id="code-drawer" class="drawer">
+        <div class="drawer-header">
+            <h3>Generated Code</h3>
+            <button id="close-drawer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <pre><code id="generated-code" class="language-javascript"></code></pre>
+    </div>
+
+    <!-- CSS Drawer -->
+    <div id="css-drawer" class="drawer">
+        <div class="drawer-header">
+            <h3>Generated CSS</h3>
+            <button id="close-css-drawer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-actions">
+            <button class="btn secondary" id="copy-css-drawer-btn">
+                <i class="fa-solid fa-copy"></i> Copy CSS
+            </button>
+        </div>
+        <div id="css-drawer-output" class="drawer-css-output">
+            <div class="css-code-empty">No styles applied yet</div>
+        </div>
+    </div>
+
+    <!-- Style Editor Modal Backdrop -->
+    <div id="styling-modal-backdrop" class="style-editor-backdrop"></div>
+
+    <!-- Style Editor Modal (moved outside sidebar for floating) -->
+    <div id="styling-style-editor-modal" class="style-editor hidden">
+        <div id="styling-style-properties" class="style-properties-grid">
+            <!-- Populated dynamically -->
+        </div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
