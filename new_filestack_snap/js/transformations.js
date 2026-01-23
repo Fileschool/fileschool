@@ -651,6 +651,18 @@ function handleIntelligenceToggle(btn) {
 
     console.log('Intelligence Toggle Clicked:', feature);
 
+    // Map HTML data attribute names to internal keys
+    const intelligenceKeyMap = {
+        'tags': 'tags',
+        'sfw': 'sfw',
+        'ocr': 'ocr',
+        'caption': 'caption',
+        'sentiment': 'imageSentiment'
+    };
+
+    const internalKey = intelligenceKeyMap[feature] || feature;
+    console.log('Mapped to internal key:', internalKey);
+
     // Double check DOM if state is missing
     if (!state.transformations.policy) {
         const el = document.getElementById('trans-policy-input');
@@ -678,15 +690,15 @@ function handleIntelligenceToggle(btn) {
     if (isActive) {
         // Remove the feature
         btn.classList.remove('active');
-        state.transformations.active = state.transformations.active.filter(f => f !== feature);
+        state.transformations.active = state.transformations.active.filter(f => f !== internalKey);
     } else {
         // Add the feature
         btn.classList.add('active');
-        if (!state.transformations.active.includes(feature)) {
-            state.transformations.active.push(feature);
+        if (!state.transformations.active.includes(internalKey)) {
+            state.transformations.active.push(internalKey);
         }
         // Set this as the active intelligence tab so it shows in the preview
-        state.transformations.activeIntelligenceTab = feature;
+        state.transformations.activeIntelligenceTab = internalKey;
     }
 
     console.log('Updated transformations:', state.transformations.active);
@@ -986,7 +998,15 @@ function renderIntelligenceTabs(features) {
         'imageSentiment': 'Sentiment'
     };
 
-    intelligenceTabs.innerHTML = features.map(feature => `
+    // Define consistent order matching the visual order in the UI
+    const featureOrder = ['tags', 'sfw', 'ocr', 'caption', 'imageSentiment'];
+
+    // Sort features by the defined order
+    const sortedFeatures = features.sort((a, b) => {
+        return featureOrder.indexOf(a) - featureOrder.indexOf(b);
+    });
+
+    intelligenceTabs.innerHTML = sortedFeatures.map(feature => `
         <button class="intelligence-tab ${state.transformations.activeIntelligenceTab === feature ? 'active' : ''}"
                 data-feature="${feature}">
             ${featureLabels[feature] || feature}

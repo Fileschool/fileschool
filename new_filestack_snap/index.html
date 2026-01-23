@@ -167,7 +167,7 @@
                         <!-- Styling Tabs -->
                         <div class="styling-tabs">
                             <button class="styling-tab-btn active" data-styling-tab="visual">Visual Editor</button>
-                            <button class="styling-tab-btn" data-styling-tab="code">CSS Code</button>
+                            <button class="styling-tab-btn" data-styling-tab="code">CSS</button>
                             <button class="styling-tab-btn" data-styling-tab="presets">Presets</button>
                         </div>
 
@@ -640,7 +640,75 @@
         </div>
     </div>
 
+    <!-- Onboarding Tour -->
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+        <div class="onboarding-spotlight" style="display: none;"></div>
+        <div id="onboarding-tooltip" class="onboarding-tooltip" style="display: none;">
+            <div class="onboarding-header">
+                <div class="onboarding-progress">
+                    <span id="onboarding-step-indicator">Step 1 of 3</span>
+                </div>
+                <button id="onboarding-skip-btn" class="onboarding-skip">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="onboarding-content">
+                <div class="onboarding-icon">
+                    <i class="fa-solid fa-rocket"></i>
+                </div>
+                <h3 id="onboarding-title">Welcome to Snap Filestack!</h3>
+                <p id="onboarding-description">Let's take a quick tour to get you started.</p>
+            </div>
+            <div class="onboarding-footer">
+                <button id="onboarding-prev-btn" class="btn secondary onboarding-btn" style="display:none;">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+                <button id="onboarding-next-btn" class="btn primary onboarding-btn">
+                    Start Tour <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Welcome Modal -->
+    <div id="onboarding-welcome" class="onboarding-welcome hidden">
+        <div class="onboarding-welcome-content">
+            <div class="onboarding-welcome-icon">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <h2>Welcome to Snap Filestack!</h2>
+            <p>Your interactive Filestack API playground</p>
+            <div class="onboarding-welcome-features">
+                <div class="welcome-feature">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Configure picker options</span>
+                </div>
+                <div class="welcome-feature">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>Customize styling</span>
+                </div>
+                <div class="welcome-feature">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Transform images</span>
+                </div>
+            </div>
+            <div class="onboarding-welcome-actions">
+                <button id="start-tour-btn" class="btn primary big-btn">
+                    <i class="fa-solid fa-rocket"></i> Take the Tour
+                </button>
+                <button id="skip-tour-btn" class="btn secondary">
+                    Skip for now
+                </button>
+            </div>
+            <label class="onboarding-checkbox">
+                <input type="checkbox" id="dont-show-again">
+                <span>Don't show this again</span>
+            </label>
+        </div>
+    </div>
+
     <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/onboarding.js"></script>
 </body>
 
 </html>
