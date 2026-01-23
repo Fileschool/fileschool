@@ -25,18 +25,18 @@
                 <i class="fa-solid fa-layer-group"></i>
                 <span>Snap Filestack</span>
             </div>
-            <div class="api-key-fields">
+            <div class="api-key-fields" style="display: none;">
                 <div class="api-key-field">
                     <label>API Key</label>
-                    <input type="text" id="api-key-input" placeholder="Enter your Filestack API Key">
+                    <input type="text" id="api-key-input" value="APlp4hNNuQAShEv9VSgB0z" placeholder="Enter your Filestack API Key">
                 </div>
                 <div class="api-key-field">
                     <label>Security Policy (optional)</label>
-                    <input type="text" id="trans-policy-input" placeholder="Enter Policy">
+                    <input type="text" id="trans-policy-input" value="eyJleHBpcnkiOjE3Nzc0ODM4MDAsImNhbGwiOlsicGljayIsInJlYWQiLCJzdGF0Iiwid3JpdGUiLCJ3cml0ZVVybCIsInN0b3JlIiwiY29udmVydCIsInJlbW92ZSIsImV4aWYiLCJydW5Xb3JrZmxvdyJdfQ==" placeholder="Enter Policy">
                 </div>
                 <div class="api-key-field">
                     <label>Signature (optional)</label>
-                    <input type="text" id="trans-signature-input" placeholder="Enter Signature">
+                    <input type="text" id="trans-signature-input" value="b81b5830ac77e3705ad482d8d1b216f4543b65960e1913ecefc104788f30d180" placeholder="Enter Signature">
                 </div>
             </div>
         </header>
@@ -377,40 +377,40 @@
                                         </span>
                                     </h5>
                                     <div class="preset-grid intelligence-grid">
-                                        <button class="preset-card intelligence-preset"
-                                            data-transforms="resize=width:800,fit:max/tags" data-label="Auto-tag Image"
+                                        <button class="preset-card intelligence-preset intelligence-toggle"
+                                            data-intelligence-feature="tags" data-label="Auto-tag Image"
                                             data-requires-security="true">
                                             <div class="preset-card-icon">
                                                 <i class="fa-solid fa-tags"></i>
                                             </div>
                                             <span class="preset-card-label">Tags</span>
                                         </button>
-                                        <button class="preset-card intelligence-preset"
-                                            data-transforms="resize=width:800,fit:max/sfw" data-label="SFW Check"
+                                        <button class="preset-card intelligence-preset intelligence-toggle"
+                                            data-intelligence-feature="sfw" data-label="SFW Check"
                                             data-requires-security="true">
                                             <div class="preset-card-icon">
                                                 <i class="fa-solid fa-check-circle"></i>
                                             </div>
                                             <span class="preset-card-label">SFW</span>
                                         </button>
-                                        <button class="preset-card intelligence-preset"
-                                            data-transforms="resize=width:800,fit:max/ocr" data-label="Extract Text"
+                                        <button class="preset-card intelligence-preset intelligence-toggle"
+                                            data-intelligence-feature="ocr" data-label="Extract Text"
                                             data-requires-security="true">
                                             <div class="preset-card-icon">
                                                 <i class="fa-solid fa-font"></i>
                                             </div>
                                             <span class="preset-card-label">OCR</span>
                                         </button>
-                                        <button class="preset-card intelligence-preset"
-                                            data-transforms="resize=width:800,fit:max/caption" data-label="AI Caption"
+                                        <button class="preset-card intelligence-preset intelligence-toggle"
+                                            data-intelligence-feature="caption" data-label="AI Caption"
                                             data-requires-security="true">
                                             <div class="preset-card-icon">
                                                 <i class="fa-solid fa-comment"></i>
                                             </div>
                                             <span class="preset-card-label">Caption</span>
                                         </button>
-                                        <button class="preset-card intelligence-preset"
-                                            data-transforms="resize=width:800,fit:max/sentiment"
+                                        <button class="preset-card intelligence-preset intelligence-toggle"
+                                            data-intelligence-feature="sentiment"
                                             data-label="Image Sentiment" data-requires-security="true">
                                             <div class="preset-card-icon">
                                                 <i class="fa-solid fa-face-smile"></i>
@@ -445,27 +445,6 @@
                             </div>
                         </div>
 
-                        <!-- Advanced Intelligence Section -->
-                        <div class="transformation-section intelligence-section-wrapper">
-                            <div class="section-header">
-                                <div class="section-header-left">
-                                    <i class="fa-solid fa-brain section-icon"></i>
-                                    <h4>Advanced Intelligence</h4>
-                                </div>
-                                <button class="section-toggle-btn" data-section="intelligence">
-                                    <i class="fa-solid fa-chevron-down"></i>
-                                </button>
-                            </div>
-                            <div class="section-content collapsed" data-section-content="intelligence">
-                                <div class="hint-banner warning-banner">
-                                    <i class="fa-solid fa-shield-halved"></i>
-                                    <span>Intelligence features require Policy & Signature configured above</span>
-                                </div>
-                                <div id="intelligence-transformations-list">
-                                    <!-- Populated by JS -->
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Intelligence Configuration -->

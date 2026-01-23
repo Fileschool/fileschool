@@ -2,7 +2,7 @@ import { updatePreview } from './preview.js';
 import { updateCode } from './codegen.js';
 
 export const state = {
-    apiKey: '',
+    apiKey: 'APlp4hNNuQAShEv9VSgB0z',
     customCSS: '',
     picker: {
         sources: [
@@ -16,8 +16,8 @@ export const state = {
     },
     transformations: {
         handle: '',
-        policy: '',
-        signature: '',
+        policy: 'eyJleHBpcnkiOjE3Nzc0ODM4MDAsImNhbGwiOlsicGljayIsInJlYWQiLCJzdGF0Iiwid3JpdGUiLCJ3cml0ZVVybCIsInN0b3JlIiwiY29udmVydCIsInJlbW92ZSIsImV4aWYiLCJydW5Xb3JrZmxvdyJdfQ==',
+        signature: 'b81b5830ac77e3705ad482d8d1b216f4543b65960e1913ecefc104788f30d180',
         active: [],
         values: {
             rotate: 180,

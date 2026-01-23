@@ -592,12 +592,19 @@ function updatePresetButtons() {
 function initPresetButtons() {
     // Select both old and new class names
     const presetButtons = document.querySelectorAll('.preset-btn, .preset-card');
+    const intelligenceToggles = document.querySelectorAll('.intelligence-toggle');
 
     // Initial update
     updatePresetButtons();
 
     presetButtons.forEach(btn => {
         btn.addEventListener('click', function () {
+            // Check if this is an intelligence toggle button
+            if (this.classList.contains('intelligence-toggle')) {
+                handleIntelligenceToggle(this);
+                return;
+            }
+
             const transforms = this.dataset.transforms;
             const requiresSecurity = this.dataset.requiresSecurity === 'true';
 
@@ -618,7 +625,7 @@ function initPresetButtons() {
 
             // Check if security is required but not provided
             if (requiresSecurity && (!state.transformations.policy || !state.transformations.signature)) {
-                alert('⚠️ This preset requires Security Policy and Signature.\n\nPlease enter them in the header section above.');
+                alert('⚠️ This preset requires Security Policy and Signature.\n\nSecurity credentials are not configured properly. Please contact support.');
                 return;
             }
 
@@ -630,11 +637,64 @@ function initPresetButtons() {
             // Parse and apply transformations
             applyPresetTransformations(transforms);
 
-            // Visual feedback
-            presetButtons.forEach(b => b.classList.remove('active'));
+            // Visual feedback - only remove active from non-intelligence buttons
+            const standardButtons = document.querySelectorAll('.preset-card:not(.intelligence-toggle)');
+            standardButtons.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
         });
     });
+}
+
+function handleIntelligenceToggle(btn) {
+    const feature = btn.dataset.intelligenceFeature;
+    const requiresSecurity = btn.dataset.requiresSecurity === 'true';
+
+    console.log('Intelligence Toggle Clicked:', feature);
+
+    // Double check DOM if state is missing
+    if (!state.transformations.policy) {
+        const el = document.getElementById('trans-policy-input');
+        if (el) state.transformations.policy = el.value.trim();
+    }
+    if (!state.transformations.signature) {
+        const el = document.getElementById('trans-signature-input');
+        if (el) state.transformations.signature = el.value.trim();
+    }
+
+    // Check if security is required but not provided
+    if (requiresSecurity && (!state.transformations.policy || !state.transformations.signature)) {
+        alert('⚠️ This feature requires Security Policy and Signature.\n\nSecurity credentials are not configured properly. Please contact support.');
+        return;
+    }
+
+    if (!state.transformations.handle) {
+        alert('⚠️ Please upload an image or enter a handle first.');
+        return;
+    }
+
+    // Toggle the intelligence feature
+    const isActive = btn.classList.contains('active');
+
+    if (isActive) {
+        // Remove the feature
+        btn.classList.remove('active');
+        state.transformations.active = state.transformations.active.filter(f => f !== feature);
+    } else {
+        // Add the feature
+        btn.classList.add('active');
+        if (!state.transformations.active.includes(feature)) {
+            state.transformations.active.push(feature);
+        }
+        // Set this as the active intelligence tab so it shows in the preview
+        state.transformations.activeIntelligenceTab = feature;
+    }
+
+    console.log('Updated transformations:', state.transformations.active);
+    console.log('Active intelligence tab:', state.transformations.activeIntelligenceTab);
+
+    // Update the preview
+    updateTransformedImage();
+    updateCode(state);
 }
 
 function applyPresetTransformations(transformChain) {

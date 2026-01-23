@@ -24,7 +24,7 @@ export function updatePreview(state) {
 
         openBtn.onclick = () => {
             if (!state.apiKey) {
-                alert("Please enter a valid API Key in the top left corner.");
+                alert("API Key configuration error. Please contact support.");
                 return;
             }
             launchPicker(state);
@@ -39,7 +39,7 @@ export function updatePreview(state) {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => launchPicker(state), 500);
         } else {
-            inlineContainer.innerHTML = '<p style="color:#666">Enter API Key to load inline picker</p>';
+            inlineContainer.innerHTML = '<p style="color:#666">API Key configuration error</p>';
         }
     }
 }
