@@ -25,18 +25,36 @@
                 <i class="fa-solid fa-layer-group"></i>
                 <span>Snap Filestack</span>
             </div>
-            <div class="api-key-fields" style="display: none;">
+            <!-- Hidden inputs that hold the default/internal credentials -->
+            <input type="hidden" id="api-key-input" value="APlp4hNNuQAShEv9VSgB0z">
+            <input type="hidden" id="trans-policy-input" value="eyJleHBpcnkiOjE3Nzc0ODM4MDAsImNhbGwiOlsicGljayIsInJlYWQiLCJzdGF0Iiwid3JpdGUiLCJ3cml0ZVVybCIsInN0b3JlIiwiY29udmVydCIsInJlbW92ZSIsImV4aWYiLCJydW5Xb3JrZmxvdyJdfQ==">
+            <input type="hidden" id="trans-signature-input" value="b81b5830ac77e3705ad482d8d1b216f4543b65960e1913ecefc104788f30d180">
+
+            <button id="toggle-credentials-btn" class="btn secondary credentials-toggle-btn">
+                <i class="fa-solid fa-key"></i> Use Your Own API Key
+            </button>
+
+            <!-- Collapsible user credentials panel -->
+            <div id="user-credentials-panel" class="user-credentials-panel hidden">
                 <div class="api-key-field">
                     <label>API Key</label>
-                    <input type="text" id="api-key-input" value="APlp4hNNuQAShEv9VSgB0z" placeholder="Enter your Filestack API Key">
+                    <input type="text" id="user-api-key-input" placeholder="Enter your Filestack API Key">
                 </div>
                 <div class="api-key-field">
-                    <label>Security Policy (optional)</label>
-                    <input type="text" id="trans-policy-input" value="eyJleHBpcnkiOjE3Nzc0ODM4MDAsImNhbGwiOlsicGljayIsInJlYWQiLCJzdGF0Iiwid3JpdGUiLCJ3cml0ZVVybCIsInN0b3JlIiwiY29udmVydCIsInJlbW92ZSIsImV4aWYiLCJydW5Xb3JrZmxvdyJdfQ==" placeholder="Enter Policy">
+                    <label>Security Policy <span class="optional-badge">optional</span></label>
+                    <input type="text" id="user-policy-input" placeholder="Enter Policy">
                 </div>
                 <div class="api-key-field">
-                    <label>Signature (optional)</label>
-                    <input type="text" id="trans-signature-input" value="b81b5830ac77e3705ad482d8d1b216f4543b65960e1913ecefc104788f30d180" placeholder="Enter Signature">
+                    <label>Signature <span class="optional-badge">optional</span></label>
+                    <input type="text" id="user-signature-input" placeholder="Enter Signature">
+                </div>
+                <div class="credentials-actions">
+                    <button id="apply-credentials-btn" class="btn primary">
+                        <i class="fa-solid fa-check"></i> Apply
+                    </button>
+                    <button id="reset-credentials-btn" class="btn secondary">
+                        <i class="fa-solid fa-rotate-left"></i> Reset to Demo
+                    </button>
                 </div>
             </div>
         </header>

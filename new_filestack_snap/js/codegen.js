@@ -144,7 +144,7 @@ export function updateCode(state) {
 
 `;
 
-    code += `const client = filestack.init('${state.apiKey || 'YOUR_API_KEY'}');
+    code += `const client = filestack.init('YOUR_API_KEY');
 `;
 
     // Check if transformations are active
@@ -176,8 +176,8 @@ const pickerOptions = ${JSON.stringify(options, null, 2)};
     if (hasIntelligence && state.transformations.policy && state.transformations.signature) {
         code += `
 // Intelligence features require security policy and signature
-const SECURITY_POLICY = '${state.transformations.policy}';
-const SECURITY_SIGNATURE = '${state.transformations.signature}';
+const SECURITY_POLICY = 'YOUR_SECURITY_POLICY';
+const SECURITY_SIGNATURE = 'YOUR_SECURITY_SIGNATURE';
 
 `;
     }

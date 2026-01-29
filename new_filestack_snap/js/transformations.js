@@ -318,13 +318,16 @@ function renderTransformationOptions() {
     if (intelligenceContainer) intelligenceContainer.innerHTML = '';
 
     for (const [key, config] of Object.entries(TRANSFORMATIONS)) {
+        // Skip intelligence features - they are managed by the Quick Presets toggle buttons
+        if (config.requiresSecurity) continue;
+
         const optionDiv = document.createElement('div');
         optionDiv.className = 'transform-option';
         optionDiv.dataset.key = key;
 
         // Check if this transformation requires security
-        const needsSecurity = config.requiresSecurity && (!state.transformations.policy || !state.transformations.signature);
-        const securityWarning = needsSecurity ? '<span class="security-required" title="Requires Policy & Signature">🔒</span>' : '';
+        const needsSecurity = false;
+        const securityWarning = '';
 
         let html = `
             <label>
@@ -456,9 +459,21 @@ function attachTransformationListeners() {
 
                 updateTransformedImage();
                 updateCode(state);
+
+                // Flash the transformed section in the right sidebar
+                if (e.target.checked) {
+                    flashSidebarSection('transformed');
+                }
             });
         });
     });
+
+    // Debounce timer for flashing on continuous inputs (sliders/number fields)
+    let flashDebounce = null;
+    function debouncedFlash() {
+        clearTimeout(flashDebounce);
+        flashDebounce = setTimeout(() => flashSidebarSection('transformed'), 300);
+    }
 
     // Range slider listeners
     allContainers.forEach(cont => {
@@ -473,6 +488,7 @@ function attachTransformationListeners() {
 
                 updateTransformedImage();
                 updateCode(state);
+                debouncedFlash();
             });
         });
     });
@@ -486,6 +502,7 @@ function attachTransformationListeners() {
 
                 updateTransformedImage();
                 updateCode(state);
+                debouncedFlash();
             });
         });
     });
@@ -641,6 +658,9 @@ function initPresetButtons() {
             const standardButtons = document.querySelectorAll('.preset-card:not(.intelligence-toggle)');
             standardButtons.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
+
+            // Flash the transformed section in the right sidebar
+            flashSidebarSection('transformed');
         });
     });
 }
@@ -707,17 +727,24 @@ function handleIntelligenceToggle(btn) {
     // Update the preview
     updateTransformedImage();
     updateCode(state);
+
+    // Flash the relevant right sidebar section for feedback
+    if (!isActive) {
+        flashSidebarSection('intelligence');
+    }
 }
 
 function applyPresetTransformations(transformChain) {
     console.log('Applying Preset Transformations:', transformChain);
-    // Clear current active transformations
-    state.transformations.active = [];
+    // Preserve any active intelligence features before clearing
+    const INTELLIGENCE_FEATURES = ['tags', 'sfw', 'ocr', 'caption', 'imageSentiment'];
+    const activeIntelligence = state.transformations.active.filter(key => INTELLIGENCE_FEATURES.includes(key));
+
+    // Clear non-intelligence transformations, keep intelligence ones
+    state.transformations.active = [...activeIntelligence];
 
     // Parse the transformation chain
     const transforms = transformChain.split('/');
-
-    const INTELLIGENCE_FEATURES = ['tags', 'sfw', 'ocr', 'caption', 'imageSentiment'];
     let intelligenceFeatureFound = null;
 
     transforms.forEach(t => {
@@ -1105,6 +1132,48 @@ function fetchIntelligenceData(feature) {
                 intelligenceEmptyState.style.display = 'flex';
             }
         });
+}
+
+/**
+ * Scrolls to and flashes a section in the right sidebar to give visual feedback.
+ * @param {'transformed'|'intelligence'} sectionType - Which section to highlight
+ */
+function flashSidebarSection(sectionType) {
+    const sidebar = document.getElementById('transformation-preview-panel');
+    if (!sidebar) return;
+
+    // Expand sidebar if collapsed
+    if (sidebar.classList.contains('collapsed')) {
+        const toggleBtn = document.getElementById('toggle-transformation-sidebar');
+        if (toggleBtn) toggleBtn.click();
+    }
+
+    const scrollContainer = sidebar.querySelector('.transformation-preview-content');
+    let targetSection;
+
+    if (sectionType === 'intelligence') {
+        targetSection = document.getElementById('intelligence-preview-section');
+    } else {
+        // "Transformed" is the second .preview-section
+        const sections = sidebar.querySelectorAll('.preview-section');
+        targetSection = sections[1]; // 0 = Original, 1 = Transformed
+    }
+
+    if (!targetSection || !scrollContainer) return;
+
+    // Scroll the section into view within the sidebar
+    targetSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Trigger flash animation
+    targetSection.classList.remove('highlight-flash');
+    // Force reflow so re-adding the class restarts the animation
+    void targetSection.offsetWidth;
+    targetSection.classList.add('highlight-flash');
+
+    // Remove class after animation ends
+    targetSection.addEventListener('animationend', () => {
+        targetSection.classList.remove('highlight-flash');
+    }, { once: true });
 }
 
 function hideIntelligencePreview() {

@@ -139,6 +139,96 @@ export class App {
                 }
             });
         }
+
+        // User Credentials Panel
+        this.initCredentialsPanel();
+    }
+
+    initCredentialsPanel() {
+        const toggleBtn = document.getElementById('toggle-credentials-btn');
+        const panel = document.getElementById('user-credentials-panel');
+        const applyBtn = document.getElementById('apply-credentials-btn');
+        const resetBtn = document.getElementById('reset-credentials-btn');
+
+        if (!toggleBtn || !panel) return;
+
+        // Store default credentials for reset
+        this.defaultCredentials = {
+            apiKey: document.getElementById('api-key-input').value,
+            policy: document.getElementById('trans-policy-input').value,
+            signature: document.getElementById('trans-signature-input').value
+        };
+
+        toggleBtn.addEventListener('click', () => {
+            const isHidden = panel.classList.contains('hidden');
+            panel.classList.toggle('hidden');
+            toggleBtn.innerHTML = isHidden
+                ? '<i class="fa-solid fa-xmark"></i> Close'
+                : '<i class="fa-solid fa-key"></i> Use Your Own API Key';
+        });
+
+        if (applyBtn) {
+            applyBtn.addEventListener('click', () => {
+                const userApiKey = document.getElementById('user-api-key-input').value.trim();
+                const userPolicy = document.getElementById('user-policy-input').value.trim();
+                const userSignature = document.getElementById('user-signature-input').value.trim();
+
+                if (!userApiKey) {
+                    if (window.stylingPlayground) {
+                        window.stylingPlayground.showToast('Please enter an API Key', 'error');
+                    } else {
+                        alert('Please enter an API Key');
+                    }
+                    return;
+                }
+
+                // Update the hidden inputs (which drive state via config.js bindings)
+                const apiKeyInput = document.getElementById('api-key-input');
+                const policyInput = document.getElementById('trans-policy-input');
+                const signatureInput = document.getElementById('trans-signature-input');
+
+                apiKeyInput.value = userApiKey;
+                apiKeyInput.dispatchEvent(new Event('input'));
+
+                if (userPolicy) {
+                    policyInput.value = userPolicy;
+                    policyInput.dispatchEvent(new Event('input'));
+                }
+                if (userSignature) {
+                    signatureInput.value = userSignature;
+                    signatureInput.dispatchEvent(new Event('input'));
+                }
+
+                if (window.stylingPlayground) {
+                    window.stylingPlayground.showToast('Credentials applied!', 'success');
+                }
+            });
+        }
+
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                // Reset hidden inputs to defaults
+                const apiKeyInput = document.getElementById('api-key-input');
+                const policyInput = document.getElementById('trans-policy-input');
+                const signatureInput = document.getElementById('trans-signature-input');
+
+                apiKeyInput.value = this.defaultCredentials.apiKey;
+                apiKeyInput.dispatchEvent(new Event('input'));
+                policyInput.value = this.defaultCredentials.policy;
+                policyInput.dispatchEvent(new Event('input'));
+                signatureInput.value = this.defaultCredentials.signature;
+                signatureInput.dispatchEvent(new Event('input'));
+
+                // Clear user inputs
+                document.getElementById('user-api-key-input').value = '';
+                document.getElementById('user-policy-input').value = '';
+                document.getElementById('user-signature-input').value = '';
+
+                if (window.stylingPlayground) {
+                    window.stylingPlayground.showToast('Reset to demo credentials', 'success');
+                }
+            });
+        }
     }
 
     openCodeModal(initialTab = 'js') {

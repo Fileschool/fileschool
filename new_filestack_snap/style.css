@@ -3322,3 +3322,91 @@ body.onboarding-active [class*="fsp-"][style*="position: fixed"],
 body.onboarding-active [class*="fsp-"][style*="position: absolute"] {
     z-index: 1 !important;
 }
+
+/* User Credentials Panel */
+.credentials-toggle-btn {
+    margin-left: auto;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.user-credentials-panel {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex: 1;
+    animation: fadeIn 0.2s ease;
+}
+
+.user-credentials-panel.hidden {
+    display: none;
+}
+
+.user-credentials-panel .api-key-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.user-credentials-panel .api-key-field label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-credentials-panel .api-key-field input {
+    padding: 6px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-main);
+    transition: border-color 0.2s;
+}
+
+.user-credentials-panel .api-key-field input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.optional-badge {
+    font-weight: 400;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: lowercase;
+    letter-spacing: 0;
+}
+
+.credentials-actions {
+    display: flex;
+    gap: 6px;
+    padding-bottom: 1px;
+}
+
+.credentials-actions .btn {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    white-space: nowrap;
+}
+
+/* Highlight flash animation for sidebar feedback */
+@keyframes sidebarFlash {
+    0% { box-shadow: 0 0 0 0 rgba(236, 60, 32, 0); }
+    20% { box-shadow: 0 0 0 4px rgba(236, 60, 32, 0.5); }
+    100% { box-shadow: 0 0 0 0 rgba(236, 60, 32, 0); }
+}
+
+.preview-section.highlight-flash {
+    animation: sidebarFlash 1s ease-out;
+    border-radius: 12px;
+}
+
+.preview-section.highlight-flash > h4 {
+    color: var(--primary);
+    transition: color 0.3s;
+}
