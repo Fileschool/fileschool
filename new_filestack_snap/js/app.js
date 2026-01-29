@@ -167,6 +167,21 @@ export class App {
                 : '<i class="fa-solid fa-key"></i> Use Your Own API Key';
         });
 
+        // Show hint + pulse Apply button when user types in credential fields
+        const hint = document.getElementById('credentials-hint');
+        const userInputs = panel.querySelectorAll('input[type="text"]');
+        const showApplyHint = () => {
+            const hasValue = document.getElementById('user-api-key-input').value.trim().length > 0;
+            if (hasValue) {
+                hint.classList.add('visible');
+                applyBtn.classList.add('needs-apply');
+            } else {
+                hint.classList.remove('visible');
+                applyBtn.classList.remove('needs-apply');
+            }
+        };
+        userInputs.forEach(input => input.addEventListener('input', showApplyHint));
+
         if (applyBtn) {
             applyBtn.addEventListener('click', () => {
                 const userApiKey = document.getElementById('user-api-key-input').value.trim();
@@ -182,6 +197,9 @@ export class App {
                     return;
                 }
 
+                // Set flag BEFORE dispatching so updateCode sees it
+                state.usingOwnCredentials = true;
+
                 // Update the hidden inputs (which drive state via config.js bindings)
                 const apiKeyInput = document.getElementById('api-key-input');
                 const policyInput = document.getElementById('trans-policy-input');
@@ -190,16 +208,15 @@ export class App {
                 apiKeyInput.value = userApiKey;
                 apiKeyInput.dispatchEvent(new Event('input'));
 
-                if (userPolicy) {
-                    policyInput.value = userPolicy;
-                    policyInput.dispatchEvent(new Event('input'));
-                }
-                if (userSignature) {
-                    signatureInput.value = userSignature;
-                    signatureInput.dispatchEvent(new Event('input'));
-                }
+                // Always update policy/signature - clear them if user left them empty
+                policyInput.value = userPolicy;
+                policyInput.dispatchEvent(new Event('input'));
+                signatureInput.value = userSignature;
+                signatureInput.dispatchEvent(new Event('input'));
 
-                state.usingOwnCredentials = true;
+                // Hide the hint and stop pulsing
+                hint.classList.remove('visible');
+                applyBtn.classList.remove('needs-apply');
 
                 if (window.stylingPlayground) {
                     window.stylingPlayground.showToast('Credentials applied!', 'success');
@@ -209,6 +226,9 @@ export class App {
 
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
+                // Set flag BEFORE dispatching so updateCode sees it
+                state.usingOwnCredentials = false;
+
                 // Reset hidden inputs to defaults
                 const apiKeyInput = document.getElementById('api-key-input');
                 const policyInput = document.getElementById('trans-policy-input');
@@ -225,8 +245,6 @@ export class App {
                 document.getElementById('user-api-key-input').value = '';
                 document.getElementById('user-policy-input').value = '';
                 document.getElementById('user-signature-input').value = '';
-
-                state.usingOwnCredentials = false;
 
                 if (window.stylingPlayground) {
                     window.stylingPlayground.showToast('Reset to demo credentials', 'success');

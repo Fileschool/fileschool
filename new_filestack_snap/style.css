@@ -3394,6 +3394,29 @@ body.onboarding-active [class*="fsp-"][style*="position: absolute"] {
     white-space: nowrap;
 }
 
+.credentials-hint {
+    font-size: 0.7rem;
+    color: var(--primary);
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    gap: 4px;
+    animation: fadeIn 0.3s ease;
+}
+
+.credentials-hint.visible {
+    display: flex;
+}
+
+@keyframes applyPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(236, 60, 32, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(236, 60, 32, 0); }
+}
+
+.credentials-apply-btn.needs-apply {
+    animation: applyPulse 1.5s ease infinite;
+}
+
 /* Highlight flash animation for sidebar feedback */
 @keyframes sidebarFlash {
     0% { box-shadow: 0 0 0 0 rgba(236, 60, 32, 0); }
