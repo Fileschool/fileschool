@@ -3335,6 +3335,7 @@ body.onboarding-active [class*="fsp-"][style*="position: absolute"] {
     align-items: flex-end;
     gap: 12px;
     flex: 1;
+    flex-wrap: wrap;
     animation: fadeIn 0.2s ease;
 }
 
@@ -3401,6 +3402,8 @@ body.onboarding-active [class*="fsp-"][style*="position: absolute"] {
     display: none;
     align-items: center;
     gap: 4px;
+    width: 100%;
+    justify-content: flex-end;
     animation: fadeIn 0.3s ease;
 }
 
