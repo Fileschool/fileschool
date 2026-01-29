@@ -9,7 +9,7 @@ export const state = {
         sources: [
             'local_file_system', 'url', 'imagesearch', 'facebook', 'instagram', 'googledrive', 'dropbox', 'box', 'onedrive', 'webcam', 'audio', 'video'
         ],
-        accept: ['image/*', 'video/*', 'audio/*', 'application/pdf', '.docx'],
+        accept: [],
         maxFiles: 5,
         maxSize: 10, // MB
         displayMode: 'inline', // overlay, inline, dropPane

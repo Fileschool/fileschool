@@ -885,7 +885,7 @@ export class StylingPlayground {
                     const dummyFiles = [
                         new File([''], 'document.pdf', { type: 'application/pdf' }),
                         new File([''], 'image.jpg', { type: 'image/jpeg' }),
-                        new File([''], 'spreadsheet.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+                        new File([''], 'report.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
                     ];
 
                     // Create a new DataTransfer object
