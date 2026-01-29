@@ -70,7 +70,7 @@
                     <button class="nav-btn active" data-tab="picker">Picker</button>
                     <button class="nav-btn" data-tab="styling">Styling</button>
                     <button class="nav-btn" data-tab="transformations">Transformations</button>
-                    <button class="nav-btn" data-tab="security">Security</button>
+                    <!-- <button class="nav-btn" data-tab="security">Security</button> -->
                 </nav>
 
                 <div class="config-content">
@@ -254,23 +254,22 @@
                                     <p class="section-description">Transform images in real-time via CDN</p>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Step Indicator -->
-                        <div class="transformation-steps">
-                            <div class="step-item active" data-step="1">
-                                <div class="step-number">1</div>
-                                <span class="step-label">Upload Image</span>
-                            </div>
-                            <div class="step-divider"></div>
-                            <div class="step-item" data-step="2">
-                                <div class="step-number">2</div>
-                                <span class="step-label">Apply Effects</span>
-                            </div>
-                            <div class="step-divider"></div>
-                            <div class="step-item" data-step="3">
-                                <div class="step-number">3</div>
-                                <span class="step-label">Preview</span>
+                            <!-- Step Indicator -->
+                            <div class="transformation-steps">
+                                <div class="step-item" data-step="1">
+                                    <div class="step-number">1</div>
+                                    <span class="step-label">Upload Image</span>
+                                </div>
+                                <div class="step-divider"></div>
+                                <div class="step-item" data-step="2">
+                                    <div class="step-number">2</div>
+                                    <span class="step-label">Apply Effects</span>
+                                </div>
+                                <div class="step-divider"></div>
+                                <div class="step-item" data-step="3">
+                                    <div class="step-number">3</div>
+                                    <span class="step-label">Preview</span>
+                                </div>
                             </div>
                         </div>
 
@@ -482,7 +481,7 @@
                         </div>
                     </div>
 
-                    <!-- Security Configuration -->
+                    <!-- Security Configuration (hidden)
                     <div id="security-config" class="config-section">
                         <div class="input-group">
                             <label>Secret</label>
@@ -493,14 +492,13 @@
                             <input type="number" id="security-expiry" placeholder="1767970000">
                         </div>
                         <h3>Permissions</h3>
-                        <div class="toggle-group" id="permissions-list">
-                            <!-- Populated by JS -->
-                        </div>
+                        <div class="toggle-group" id="permissions-list"></div>
                         <button class="btn secondary" id="generate-policy-btn">Generate Policy</button>
                         <div class="code-output">
                             <pre id="policy-output">-- Policy will appear here --</pre>
                         </div>
                     </div>
+                    -->
                 </div>
             </aside>
 
