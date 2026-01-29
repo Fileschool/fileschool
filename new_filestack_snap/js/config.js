@@ -3,12 +3,13 @@ import { updateCode } from './codegen.js';
 
 export const state = {
     apiKey: 'APlp4hNNuQAShEv9VSgB0z',
+    usingOwnCredentials: false,
     customCSS: '',
     picker: {
         sources: [
-            'local_file_system', 'url', 'webcam', 'facebook', 'instagram', 'googledrive', 'dropbox'
+            'local_file_system', 'url', 'imagesearch', 'facebook', 'instagram', 'googledrive', 'dropbox', 'box', 'onedrive', 'webcam', 'audio', 'video'
         ],
-        accept: [], // Empty = all
+        accept: ['image/*', 'video/*', 'audio/*', 'application/pdf', '.docx'],
         maxFiles: 5,
         maxSize: 10, // MB
         displayMode: 'inline', // overlay, inline, dropPane

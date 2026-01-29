@@ -199,6 +199,8 @@ export class App {
                     signatureInput.dispatchEvent(new Event('input'));
                 }
 
+                state.usingOwnCredentials = true;
+
                 if (window.stylingPlayground) {
                     window.stylingPlayground.showToast('Credentials applied!', 'success');
                 }
@@ -223,6 +225,8 @@ export class App {
                 document.getElementById('user-api-key-input').value = '';
                 document.getElementById('user-policy-input').value = '';
                 document.getElementById('user-signature-input').value = '';
+
+                state.usingOwnCredentials = false;
 
                 if (window.stylingPlayground) {
                     window.stylingPlayground.showToast('Reset to demo credentials', 'success');
