@@ -27,14 +27,14 @@ export class StylingPlayground {
                 { id: 'drop-area-button', label: 'Browse Button', selector: '.fsp-drop-area__button', desc: '"Choose Files" button' },
             ],
             'Buttons': [
-                { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button--upload', desc: 'Main action button', needsFiles: true },
+                { id: 'button-primary', label: 'Upload Button', selector: '.fsp-button-upload', desc: 'Main action button', needsFiles: true },
                 { id: 'button-cancel', label: 'Cancel Button', selector: '.fsp-button--cancel', desc: 'Cancel/back button', needsFiles: true },
             ],
-            'File Grid': [
-                { id: 'grid', label: 'File Grid', selector: '.fsp-grid', desc: 'Grid of files/folders' },
-                { id: 'grid-cell', label: 'File/Folder Items', selector: '.fsp-grid__cell', desc: 'Individual file boxes' },
-                { id: 'grid-cell-selected', label: 'Selected Files', selector: '.fsp-grid__cell--selected', desc: 'Checked files' },
-            ],
+            // 'File Grid': [
+            //     { id: 'grid', label: 'File Grid', selector: '.fsp-grid', desc: 'Grid of files/folders', needsFiles: true },
+            //     { id: 'grid-cell', label: 'File/Folder Items', selector: '.fsp-grid__cell', desc: 'Individual file boxes', needsFiles: true },
+            //     { id: 'grid-cell-selected', label: 'Selected Files', selector: '.fsp-grid__cell--selected', desc: 'Checked files', needsFiles: true },
+            // ],
             'Footer': [
                 { id: 'footer', label: 'Bottom Footer', selector: '.fsp-footer', desc: 'Bar at the bottom', needsFiles: true },
                 { id: 'footer-badge', label: 'File Count Badge', selector: '.fsp-badge', desc: 'Number badge on upload button', needsFiles: true },
@@ -49,6 +49,15 @@ export class StylingPlayground {
                 { id: 'summary-size', label: 'File Size', selector: '.fsp-summary__size', desc: 'File size text', needsFiles: true },
                 { id: 'summary-remove', label: 'Delete Button', selector: '.fsp-summary__action--remove', desc: 'Remove file button', needsFiles: true },
                 { id: 'summary-actions', label: 'Actions Container', selector: '.fsp-summary__actions-container', desc: 'File action buttons area', needsFiles: true },
+            ],
+            'Folder View': [
+                { id: 'accordion-content', label: 'Folder Content Area', selector: '.accordion-content', desc: 'Expanded folder file list container', needsFiles: true },
+                { id: 'accordion-arrow', label: 'Expand/Collapse Arrow', selector: '.fsp-grid__icon-arrow.accordion-arrow', desc: 'Arrow to expand/collapse folder', needsFiles: true },
+                { id: 'folder-summary', label: 'Folder File Row', selector: '.folder-summary', desc: 'Each file row inside a folder', needsFiles: true },
+                { id: 'folder-file-name', label: 'Folder File Name', selector: '.folder-summary__item-name', desc: 'File name container in folder', needsFiles: true },
+                { id: 'nested-file-name', label: 'Nested File Name Text', selector: '.fsp-nested-file-name', desc: 'File name text inside folder', needsFiles: true },
+                { id: 'nested-file-size', label: 'Nested File Size', selector: '.folder-summary .fsp-summary__size', desc: 'File size text inside folder', needsFiles: true },
+                { id: 'nested-file-remove', label: 'Nested Remove Button', selector: '.folder-summary .fsp-summary__action--remove', desc: 'Remove file button inside folder', needsFiles: true },
             ],
         };
 
@@ -226,6 +235,14 @@ export class StylingPlayground {
             categoryLabel.textContent = category;
             categoryDiv.appendChild(categoryLabel);
 
+            // Add a note for Folder View category
+            if (category === 'Folder View') {
+                const note = document.createElement('div');
+                note.className = 'element-category-note';
+                note.innerHTML = '<i class="fa-solid fa-circle-info"></i> To style folder elements, upload a folder in the picker first.';
+                categoryDiv.appendChild(note);
+            }
+
             items.forEach(element => {
                 const item = document.createElement('div');
                 item.className = 'element-item';
@@ -402,13 +419,19 @@ export class StylingPlayground {
 
         if (!elementInfo) return;
 
-        // Add highlight to matching elements
-        setTimeout(() => {
+        // Try to highlight with retries (view switch may need time to render)
+        const tryHighlight = (attempts) => {
             const pickerElements = document.querySelectorAll(`.fsp-picker ${elementInfo.selector}`);
-            pickerElements.forEach(el => {
-                el.classList.add('picker-highlight');
-            });
-        }, 100);
+            if (pickerElements.length > 0) {
+                pickerElements.forEach(el => {
+                    el.classList.add('picker-highlight');
+                });
+            } else if (attempts > 0) {
+                setTimeout(() => tryHighlight(attempts - 1), 300);
+            }
+        };
+
+        setTimeout(() => tryHighlight(3), 100);
     }
 
     removeHighlights() {
@@ -610,7 +633,7 @@ export class StylingPlayground {
         if (selector && this.appliedStyles[this.currentElement]) {
             const styles = this.appliedStyles[this.currentElement];
             const styleString = Object.entries(styles)
-                .map(([prop, val]) => `  ${prop}: ${val};`)
+                .map(([prop, val]) => `  ${prop}: ${val} !important;`)
                 .join('\n');
 
             if (styleString) {
@@ -629,7 +652,7 @@ export class StylingPlayground {
 
             if (elementSelector && Object.keys(styles).length > 0) {
                 const styleString = Object.entries(styles)
-                    .map(([prop, val]) => `  ${prop}: ${val};`)
+                    .map(([prop, val]) => `  ${prop}: ${val} !important;`)
                     .join('\n');
                 allCSS += `.fsp-picker ${elementSelector} {\n${styleString}\n}\n\n`;
             }
@@ -733,7 +756,7 @@ export class StylingPlayground {
 
             if (elementSelector && Object.keys(styles).length > 0) {
                 const styleString = Object.entries(styles)
-                    .map(([prop, val]) => `  ${prop}: ${val};`)
+                    .map(([prop, val]) => `  ${prop}: ${val} !important;`)
                     .join('\n');
                 css += `.fsp-picker ${elementSelector} {\n${styleString}\n}\n\n`;
             }
@@ -760,7 +783,7 @@ export class StylingPlayground {
 
             if (elementSelector && Object.keys(styles).length > 0) {
                 const styleString = Object.entries(styles)
-                    .map(([prop, val]) => `  ${prop}: ${val};`)
+                    .map(([prop, val]) => `  ${prop}: ${val} !important;`)
                     .join('\n');
                 css += `.fsp-picker ${elementSelector} {\n${styleString}\n}\n\n`;
             }
@@ -784,7 +807,7 @@ export class StylingPlayground {
 
             if (elementSelector && Object.keys(styles).length > 0) {
                 const styleString = Object.entries(styles)
-                    .map(([prop, val]) => `  ${prop}: ${val};`)
+                    .map(([prop, val]) => `  ${prop}: ${val} !important;`)
                     .join('\n');
                 css += `.fsp-picker ${elementSelector} {\n${styleString}\n}\n\n`;
             }
@@ -800,13 +823,9 @@ export class StylingPlayground {
     }
 
     addViewToggle() {
-        // Add view toggle controls to Visual Editor tab
-        const visualTab = document.getElementById('visual-styling-tab');
-        if (!visualTab) return;
-
-        // Find the instructions box
-        const instructionsBox = document.getElementById('styling-instructions-box');
-        if (!instructionsBox) return;
+        // Add view toggle controls to visual tab header
+        const headerContainer = document.querySelector('.visual-tab-header');
+        if (!headerContainer) return;
 
         // Create view toggle controls
         const viewToggle = document.createElement('div');
@@ -823,8 +842,8 @@ export class StylingPlayground {
             </div>
         `;
 
-        // Insert after instructions box
-        instructionsBox.after(viewToggle);
+        // Append to header container
+        headerContainer.appendChild(viewToggle);
 
         // Add event listeners
         viewToggle.querySelectorAll('.view-toggle-btn').forEach(btn => {
@@ -881,16 +900,18 @@ export class StylingPlayground {
                 const fileInput = document.querySelector('.fsp-picker input[type="file"]');
 
                 if (fileInput) {
-                    // Create dummy files
+                    // Create dummy files to show the files/summary view
                     const dummyFiles = [
-                        new File([''], 'document.pdf', { type: 'application/pdf' }),
-                        new File([''], 'image.jpg', { type: 'image/jpeg' }),
-                        new File([''], 'report.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+                        new File(['dummy-content-1'], 'document.pdf', { type: 'application/pdf' }),
+                        new File(['dummy-content-2'], 'image.jpg', { type: 'image/jpeg' }),
+                        new File(['dummy-content-3'], 'report.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
                     ];
+
+                    const allFiles = [...dummyFiles];
 
                     // Create a new DataTransfer object
                     const dataTransfer = new DataTransfer();
-                    dummyFiles.forEach(file => dataTransfer.items.add(file));
+                    allFiles.forEach(file => dataTransfer.items.add(file));
 
                     // Set the files
                     fileInput.files = dataTransfer.files;
@@ -899,13 +920,13 @@ export class StylingPlayground {
                     const event = new Event('change', { bubbles: true });
                     fileInput.dispatchEvent(event);
 
-                    this.showToast('📁 Dummy files loaded!', 'success');
+                    this.showToast('Dummy files loaded!', 'success');
                 } else {
-                    this.showToast('⚠️ Could not find file input. Try manually uploading files.', 'info');
+                    this.showToast('Could not find file input. Try manually uploading files.', 'info');
                 }
             } catch (e) {
                 console.error('Error loading dummy files:', e);
-                this.showToast('⚠️ Please manually upload files to see Files View', 'info');
+                this.showToast('Please manually upload files to see Files View', 'info');
             }
         }, 100);
     }
@@ -936,6 +957,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#e2e8f0' },
                 'summary-size': { 'color': '#94a3b8' },
                 'summary-remove': { 'color': '#ef4444' },
+                'accordion-content': { 'background-color': '#1e293b', 'border-top': '1px solid #334155' },
+                'folder-summary': { 'background-color': '#2d3a4f', 'border-bottom': '1px solid #334155' },
+                'folder-file-name': { 'color': '#e2e8f0' },
+                'nested-file-name': { 'color': '#cbd5e1' },
+                'nested-file-size': { 'color': '#94a3b8' },
+                'nested-file-remove': { 'color': '#ef4444' },
             },
             minimal: {
                 'modal': { 'background-color': '#ffffff', 'border-radius': '0px' },
@@ -952,6 +979,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#000000' },
                 'summary-size': { 'color': '#6b7280' },
                 'summary-remove': { 'color': '#000000' },
+                'accordion-content': { 'background-color': '#f9fafb', 'border-top': '1px solid #e5e7eb' },
+                'folder-summary': { 'background-color': '#ffffff', 'border-bottom': '1px solid #e5e7eb' },
+                'folder-file-name': { 'color': '#000000' },
+                'nested-file-name': { 'color': '#374151' },
+                'nested-file-size': { 'color': '#6b7280' },
+                'nested-file-remove': { 'color': '#000000' },
             },
             vibrant: {
                 'modal': { 'background-color': '#fef3c7', 'color': '#78350f' },
@@ -968,6 +1001,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#78350f', 'font-weight': '600' },
                 'summary-size': { 'color': '#92400e' },
                 'summary-remove': { 'color': '#dc2626' },
+                'accordion-content': { 'background-color': '#fef3c7', 'border-top': '1px solid #fbbf24' },
+                'folder-summary': { 'background-color': '#fde68a', 'border-bottom': '1px solid #fbbf24' },
+                'folder-file-name': { 'color': '#78350f' },
+                'nested-file-name': { 'color': '#92400e' },
+                'nested-file-size': { 'color': '#92400e' },
+                'nested-file-remove': { 'color': '#dc2626' },
             },
             ocean: {
                 'modal': { 'background-color': '#e0f2fe', 'color': '#164e63' },
@@ -986,6 +1025,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#0c4a6e', 'font-weight': '500' },
                 'summary-size': { 'color': '#0369a1' },
                 'summary-remove': { 'color': '#0ea5e9' },
+                'accordion-content': { 'background-color': '#e0f2fe', 'border-top': '1px solid #7dd3fc' },
+                'folder-summary': { 'background-color': '#bae6fd', 'border-bottom': '1px solid #7dd3fc' },
+                'folder-file-name': { 'color': '#0c4a6e' },
+                'nested-file-name': { 'color': '#164e63' },
+                'nested-file-size': { 'color': '#0369a1' },
+                'nested-file-remove': { 'color': '#0ea5e9' },
             },
             forest: {
                 'modal': { 'background-color': '#dcfce7', 'color': '#14532d' },
@@ -1004,6 +1049,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#166534', 'font-weight': '600' },
                 'summary-size': { 'color': '#15803d' },
                 'summary-remove': { 'color': '#dc2626' },
+                'accordion-content': { 'background-color': '#dcfce7', 'border-top': '1px solid #86efac' },
+                'folder-summary': { 'background-color': '#bbf7d0', 'border-bottom': '1px solid #86efac' },
+                'folder-file-name': { 'color': '#166534' },
+                'nested-file-name': { 'color': '#14532d' },
+                'nested-file-size': { 'color': '#15803d' },
+                'nested-file-remove': { 'color': '#dc2626' },
             },
             sunset: {
                 'modal': { 'background': 'linear-gradient(135deg, #fecaca 0%, #fde68a 50%, #fbcfe8 100%)', 'color': '#7c2d12' },
@@ -1022,6 +1073,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#7c2d12', 'font-weight': '600' },
                 'summary-size': { 'color': '#9a3412' },
                 'summary-remove': { 'color': '#ef4444' },
+                'accordion-content': { 'background': 'rgba(254, 202, 202, 0.4)', 'border-top': '1px solid #f97316' },
+                'folder-summary': { 'background': 'rgba(254, 202, 202, 0.6)', 'border-bottom': '1px solid rgba(249, 115, 22, 0.3)' },
+                'folder-file-name': { 'color': '#7c2d12' },
+                'nested-file-name': { 'color': '#9a3412' },
+                'nested-file-size': { 'color': '#9a3412' },
+                'nested-file-remove': { 'color': '#ef4444' },
             },
             neon: {
                 'modal': { 'background-color': '#18181b', 'color': '#fafafa' },
@@ -1040,6 +1097,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#a78bfa', 'font-weight': '600' },
                 'summary-size': { 'color': '#d4d4d8' },
                 'summary-remove': { 'color': '#ef4444', 'box-shadow': '0 0 10px rgba(239, 68, 68, 0.5)' },
+                'accordion-content': { 'background-color': '#18181b', 'border-top': '2px solid #6366f1' },
+                'folder-summary': { 'background-color': '#27272a', 'border-bottom': '1px solid #3f3f46' },
+                'folder-file-name': { 'color': '#a78bfa' },
+                'nested-file-name': { 'color': '#c4b5fd' },
+                'nested-file-size': { 'color': '#d4d4d8' },
+                'nested-file-remove': { 'color': '#ef4444', 'box-shadow': '0 0 10px rgba(239, 68, 68, 0.5)' },
             },
             nature: {
                 'modal': { 'background-color': '#f0fdf4', 'color': '#14532d' },
@@ -1058,6 +1121,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#166534', 'font-weight': '600' },
                 'summary-size': { 'color': '#15803d' },
                 'summary-remove': { 'color': '#dc2626' },
+                'accordion-content': { 'background-color': '#f0fdf4', 'border-top': '1px solid #bef264' },
+                'folder-summary': { 'background-color': '#ecfccb', 'border-bottom': '1px solid #bef264' },
+                'folder-file-name': { 'color': '#166534' },
+                'nested-file-name': { 'color': '#365314' },
+                'nested-file-size': { 'color': '#15803d' },
+                'nested-file-remove': { 'color': '#dc2626' },
             },
             midnight: {
                 'modal': { 'background-color': '#0c1445', 'color': '#e0e7ff' },
@@ -1076,6 +1145,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#c7d2fe', 'font-weight': '600' },
                 'summary-size': { 'color': '#a5b4fc' },
                 'summary-remove': { 'color': '#f87171' },
+                'accordion-content': { 'background-color': '#0c1445', 'border-top': '1px solid #312e81' },
+                'folder-summary': { 'background-color': '#1e1b4b', 'border-bottom': '1px solid #312e81' },
+                'folder-file-name': { 'color': '#c7d2fe' },
+                'nested-file-name': { 'color': '#e0e7ff' },
+                'nested-file-size': { 'color': '#a5b4fc' },
+                'nested-file-remove': { 'color': '#f87171' },
             },
             candy: {
                 'modal': { 'background': 'linear-gradient(135deg, #fae8ff 0%, #fce7f3 50%, #fbcfe8 100%)', 'color': '#831843' },
@@ -1094,6 +1169,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#9f1239', 'font-weight': '600' },
                 'summary-size': { 'color': '#be123c' },
                 'summary-remove': { 'color': '#ec4899' },
+                'accordion-content': { 'background-color': '#fdf4ff', 'border-top': '2px solid #f9a8d4' },
+                'folder-summary': { 'background-color': '#fce7f3', 'border-bottom': '1px solid #f9a8d4' },
+                'folder-file-name': { 'color': '#9f1239' },
+                'nested-file-name': { 'color': '#831843' },
+                'nested-file-size': { 'color': '#be123c' },
+                'nested-file-remove': { 'color': '#ec4899' },
             },
             autumn: {
                 'modal': { 'background-color': '#fef2f2', 'color': '#7c2d12' },
@@ -1112,6 +1193,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#9a3412', 'font-weight': '600' },
                 'summary-size': { 'color': '#c2410c' },
                 'summary-remove': { 'color': '#dc2626' },
+                'accordion-content': { 'background-color': '#fef2f2', 'border-top': '1px solid #fdba74' },
+                'folder-summary': { 'background-color': '#fed7aa', 'border-bottom': '1px solid #fdba74' },
+                'folder-file-name': { 'color': '#9a3412' },
+                'nested-file-name': { 'color': '#7c2d12' },
+                'nested-file-size': { 'color': '#c2410c' },
+                'nested-file-remove': { 'color': '#dc2626' },
             },
             arctic: {
                 'modal': { 'background-color': '#f0f9ff', 'color': '#0c4a6e' },
@@ -1130,6 +1217,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#075985', 'font-weight': '600' },
                 'summary-size': { 'color': '#0369a1' },
                 'summary-remove': { 'color': '#0ea5e9' },
+                'accordion-content': { 'background-color': '#f0f9ff', 'border-top': '1px solid #bae6fd' },
+                'folder-summary': { 'background-color': '#e0f2fe', 'border-bottom': '1px solid #bae6fd' },
+                'folder-file-name': { 'color': '#075985' },
+                'nested-file-name': { 'color': '#0c4a6e' },
+                'nested-file-size': { 'color': '#0369a1' },
+                'nested-file-remove': { 'color': '#0ea5e9' },
             },
             retro: {
                 'modal': { 'background-color': '#fffbeb', 'color': '#78350f' },
@@ -1148,6 +1241,12 @@ export class StylingPlayground {
                 'summary-item-name': { 'color': '#78350f', 'font-weight': '700' },
                 'summary-size': { 'color': '#92400e' },
                 'summary-remove': { 'color': '#dc2626' },
+                'accordion-content': { 'background-color': '#fffbeb', 'border-top': '3px solid #78350f' },
+                'folder-summary': { 'background-color': '#fef3c7', 'border-bottom': '3px solid #78350f' },
+                'folder-file-name': { 'color': '#78350f' },
+                'nested-file-name': { 'color': '#92400e', 'font-weight': '700' },
+                'nested-file-size': { 'color': '#92400e' },
+                'nested-file-remove': { 'color': '#dc2626' },
             },
         };
     }
@@ -1164,7 +1263,7 @@ export class StylingPlayground {
 
             if (elementSelector && Object.keys(styles).length > 0) {
                 const styleString = Object.entries(styles)
-                    .map(([prop, val]) => `  ${prop}: ${val};`)
+                    .map(([prop, val]) => `  ${prop}: ${val} !important;`)
                     .join('\n');
                 css += `.fsp-picker ${elementSelector} {\n${styleString}\n}\n\n`;
             }

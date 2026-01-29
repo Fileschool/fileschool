@@ -181,12 +181,12 @@ body {
     flex-direction: column;
 }
 
-/* Accordion */
-.accordion-item {
+/* Accordion - scoped to sidebar to avoid conflicting with Filestack picker */
+.sidebar .accordion-item {
     border-bottom: 1px solid var(--border-color);
 }
 
-.accordion-header {
+.sidebar .accordion-header {
     padding: 15px 20px;
     cursor: pointer;
     display: flex;
@@ -196,25 +196,25 @@ body {
     color: var(--text-main);
 }
 
-.accordion-header:hover {
+.sidebar .accordion-header:hover {
     background: var(--bg-panel-hover);
 }
 
-.accordion-content {
+.sidebar .accordion-content {
     display: none;
     padding: 15px 20px;
     background: #f8f9fa;
 }
 
-.accordion-content.open {
+.sidebar .accordion-content.open {
     display: block;
 }
 
-.accordion-header i {
+.sidebar .accordion-header i {
     transition: transform 0.2s;
 }
 
-.accordion-content.open+.accordion-header i {
+.sidebar .accordion-content.open+.accordion-header i {
     transform: rotate(180deg);
 }
 
@@ -401,6 +401,9 @@ body {
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
 }
 
 .sdk-container.active {
@@ -698,19 +701,22 @@ pre[class*="language-"] {
     flex-direction: column;
 }
 
+/* Visual tab header: fixed top, doesn't scroll */
+.visual-tab-header {
+    flex-shrink: 0;
+    padding-top: 16px;
+}
+
 /* Instructions Box */
 .instructions-box {
     background: #fff3cd;
     border: 1px solid #ffc107;
     border-radius: 8px;
     padding: 12px;
-    margin: 20px 20px 16px 20px;
+    margin: 0 20px 12px 20px;
     display: flex;
     gap: 10px;
     align-items: start;
-    position: sticky;
-    top: 0;
-    z-index: 5;
 }
 
 .instructions-icon {
@@ -769,15 +775,10 @@ pre[class*="language-"] {
 .category-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin: 0 20px 16px 20px;
-    padding-bottom: 12px;
+    gap: 6px;
+    margin: 0 20px;
+    padding: 10px 0;
     border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--bg-panel);
-    padding-top: 8px;
 }
 
 .category-nav-chip {
@@ -815,24 +816,14 @@ pre[class*="language-"] {
 }
 
 .section-label {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin: 0 20px 12px 20px;
-    padding: 12px 0 8px 0;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--bg-panel);
-    border-bottom: 1px solid var(--border-color);
+    display: none;
 }
 
 .element-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 0 20px 20px 20px;
+    gap: 6px;
+    padding: 12px 20px 20px 20px;
 }
 
 .element-category {
@@ -847,6 +838,20 @@ pre[class*="language-"] {
     letter-spacing: 0.5px;
     margin-bottom: 8px;
     padding: 0 8px;
+}
+
+.element-category-note {
+    font-size: 0.72rem;
+    color: var(--accent-color, #f59e0b);
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin: 0 8px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.4;
 }
 
 .element-item {
@@ -1035,21 +1040,20 @@ pre[class*="language-"] {
     border-bottom: none;
 }
 
-/* Modal backdrop overlay */
+/* Modal backdrop overlay (transparent - keeps picker visible) */
 .style-editor-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: transparent;
     z-index: 9998;
     display: none;
 }
 
 .style-editor-backdrop.visible {
     display: block;
-    animation: fadeIn 0.2s ease;
 }
 
 @keyframes fadeIn {
@@ -1432,18 +1436,17 @@ pre[class*="language-"] {
 
 /* View Toggle Controls */
 .view-toggle-controls {
-    background: #fff3cd;
-    border: 1px solid #ffc107;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 16px;
+    padding: 0 20px 12px 20px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .view-toggle-controls h4 {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: var(--text-main);
-    margin-bottom: 8px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
 }
 
 .view-toggle-buttons {

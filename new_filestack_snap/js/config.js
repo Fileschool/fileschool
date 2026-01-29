@@ -10,7 +10,8 @@ export const state = {
             'local_file_system', 'url', 'imagesearch', 'facebook', 'instagram', 'googledrive', 'dropbox', 'box', 'onedrive', 'webcam', 'audio', 'video'
         ],
         accept: [],
-        maxFiles: 5,
+        minFiles: 15,
+        maxFiles: 30,
         maxSize: 10, // MB
         displayMode: 'inline', // overlay, inline, dropPane
         container: '#inline-container'
@@ -87,6 +88,7 @@ export function initConfig() {
 
     // 2. Bind Static Inputs
     bindInput('api-key-input', (val) => { state.apiKey = val; triggerUpdate(); });
+    bindInput('constraint-minfiles', (val) => { state.picker.minFiles = parseInt(val); triggerUpdate(); });
     bindInput('constraint-maxfiles', (val) => { state.picker.maxFiles = parseInt(val); triggerUpdate(); });
     bindInput('constraint-maxsize', (val) => { state.picker.maxSize = parseInt(val); triggerUpdate(); });
     bindInput('display-mode-select', (val) => {

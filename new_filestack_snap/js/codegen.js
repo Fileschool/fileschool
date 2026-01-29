@@ -117,6 +117,7 @@ export function updateCode(state) {
     const options = {
         fromSources: state.picker.sources,
         accept: state.picker.accept,
+        minFiles: state.picker.minFiles,
         maxFiles: state.picker.maxFiles,
         maxSize: state.picker.maxSize * 1024 * 1024,
         displayMode: state.picker.displayMode,

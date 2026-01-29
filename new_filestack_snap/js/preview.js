@@ -56,6 +56,7 @@ function launchPicker(state) {
         const options = {
             fromSources: state.picker.sources,
             accept: state.picker.accept.length > 0 ? state.picker.accept : undefined,
+            minFiles: state.picker.minFiles,
             maxFiles: state.picker.maxFiles,
             maxSize: state.picker.maxSize * 1024 * 1024, // Convert MB to bytes
             displayMode: state.picker.displayMode,

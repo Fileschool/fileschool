@@ -135,8 +135,12 @@
                             </div>
                             <div class="section-content collapsed" data-section-content="constraints">
                                 <div class="input-group">
+                                    <label>Min Files</label>
+                                    <input type="number" id="constraint-minfiles" value="15">
+                                </div>
+                                <div class="input-group">
                                     <label>Max Files</label>
-                                    <input type="number" id="constraint-maxfiles" value="5">
+                                    <input type="number" id="constraint-maxfiles" value="30">
                                 </div>
                                 <div class="input-group">
                                     <label>Max Size (MB)</label>
@@ -188,48 +192,34 @@
                         <!-- Styling Tabs -->
                         <div class="styling-tabs">
                             <button class="styling-tab-btn active" data-styling-tab="visual">Visual Editor</button>
-                            <button class="styling-tab-btn" data-styling-tab="code">CSS</button>
                             <button class="styling-tab-btn" data-styling-tab="presets">Presets</button>
                         </div>
 
                         <!-- Visual Editor Tab -->
                         <div id="visual-styling-tab" class="styling-tab-content active">
-                            <!-- Instructions Box -->
-                            <div id="styling-instructions-box" class="instructions-box">
-                                <div class="instructions-icon">💡</div>
-                                <div class="instructions-content">
-                                    <h4>Quick Start:</h4>
-                                    <p>Click any element below. It will light up in the picker!</p>
+                            <!-- Fixed Top Section -->
+                            <div class="visual-tab-header">
+                                <!-- Instructions Box -->
+                                <div id="styling-instructions-box" class="instructions-box">
+                                    <div class="instructions-icon">💡</div>
+                                    <div class="instructions-content">
+                                        <h4>Quick Start:</h4>
+                                        <p>Click any element below. It will light up in the picker!</p>
+                                    </div>
                                 </div>
+                                <!-- View toggle inserted here by JS -->
                             </div>
 
-                            <!-- Element Selector -->
+                            <!-- Scrollable Element Selector -->
                             <div id="styling-element-selector" class="element-selector">
                                 <!-- Category Navigation -->
                                 <div id="styling-category-nav" class="category-nav">
                                     <!-- Populated dynamically -->
                                 </div>
 
-                                <label class="section-label">Click an Element to Style:</label>
                                 <div id="styling-element-list" class="element-list">
                                     <!-- Populated dynamically -->
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- CSS Code Tab -->
-                        <div id="code-styling-tab" class="styling-tab-content hidden">
-                            <div class="css-code-header">
-                                <h4>Export Your Styles</h4>
-                                <p>This is the CSS code generated from your customizations.</p>
-                            </div>
-                            <div class="css-code-actions">
-                                <button class="btn secondary" id="copy-generated-css-btn">
-                                    <i class="fa-solid fa-copy"></i> Copy CSS
-                                </button>
-                            </div>
-                            <div id="styling-css-output" class="css-code-output">
-                                <div class="css-code-empty">No styles applied yet</div>
                             </div>
                         </div>
 

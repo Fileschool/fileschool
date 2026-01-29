@@ -52,6 +52,9 @@ export function initStyling(state) {
     const copyBtn = document.getElementById('copy-css-btn');
     const presetBtns = document.querySelectorAll('.preset-btn');
 
+    // Bail if legacy styling elements don't exist (replaced by StylingPlayground)
+    if (!cssInput) return;
+
     // Apply CSS live as user types
     cssInput.addEventListener('input', () => {
         state.customCSS = cssInput.value;
