@@ -5,7 +5,6 @@ import { initTransformations } from './transformations.js';
 
 export class App {
     constructor() {
-        console.log("Snap Filestack Initialized");
         this.stylingPlaygroundInitialized = false;
         this.transformationsInitialized = false;
         this.initEventListeners();
@@ -24,13 +23,11 @@ export class App {
         const checkAndInit = () => {
             const stylingConfig = document.getElementById('styling-config');
             if (stylingConfig) {
-                console.log('Initializing StylingPlayground...');
                 this.stylingPlayground = new StylingPlayground();
                 this.stylingPlayground.init();
                 // Make it globally accessible for close button
                 window.stylingPlayground = this.stylingPlayground;
             } else {
-                console.warn('styling-config not found, retrying...');
                 setTimeout(checkAndInit, 100);
             }
         };
