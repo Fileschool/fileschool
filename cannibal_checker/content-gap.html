@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Gap Analyzer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f6f8;
+            color: #1a1a2e;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        nav {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #e0e3e8;
+            padding-bottom: 12px;
+        }
+
+        nav a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 7px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        nav a:hover { color: #1a1a2e; background: #e8eaef; }
+        nav a.active { color: #2563eb; background: #eff4ff; font-weight: 600; }
+
+        header { text-align: center; margin-bottom: 36px; }
+        header h1 { font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+        header p { color: #6b7280; font-size: 14px; }
+
+        .input-card {
+            background: #fff;
+            border: 1px solid #e0e3e8;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.dataset { flex: 0 0 200px; }
+        .form-group.niche { flex: 1; }
+
+        label {
+            font-size: 12px; font-weight: 600; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        select, input[type="text"] {
+            background: #f9fafb; border: 1px solid #d1d5db; border-radius: 8px;
+            color: #1a1a2e; padding: 11px 14px; font-size: 15px;
+            font-family: inherit; outline: none; transition: all 0.2s;
+        }
+        select:focus, input[type="text"]:focus { border-color: #2563eb; box-shadow: 0 0 0 3px #2563eb18; }
+        input[type="text"]::placeholder { color: #9ca3af; }
+
+        .hint { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+
+        .btn-row { display: flex; gap: 12px; align-items: center; }
+
+        button {
+            font-family: inherit; cursor: pointer; border: none; border-radius: 8px;
+            font-size: 14px; font-weight: 600; padding: 11px 24px; transition: all 0.2s;
+        }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-primary:disabled { background: #93b4f5; color: #d4e2fc; cursor: not-allowed; }
+        .btn-clear { background: transparent; color: #6b7280; border: 1px solid #d1d5db; }
+        .btn-clear:hover { color: #1a1a2e; border-color: #9ca3af; background: #f3f4f6; }
+
+        .status {
+            font-size: 14px; color: #6b7280; margin-left: 8px;
+            display: none; align-items: center; gap: 8px;
+        }
+        .status.visible { display: flex; }
+
+        .spinner {
+            width: 16px; height: 16px; border: 2px solid #d1d5db;
+            border-top-color: #2563eb; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .blog-count { font-size: 13px; color: #6b7280; margin-top: 8px; display: none; }
+        .blog-count.visible { display: block; }
+
+        .progress-wrap { margin-top: 16px; display: none; }
+        .progress-wrap.visible { display: block; }
+        .progress-bar-bg { background: #e5e7eb; border-radius: 6px; height: 6px; overflow: hidden; }
+        .progress-bar-fill {
+            background: #2563eb; height: 100%; width: 0%;
+            border-radius: 6px; transition: width 0.3s ease;
+        }
+        .progress-label { font-size: 12px; color: #6b7280; margin-top: 6px; }
+
+        .results-card {
+            background: #fff; border: 1px solid #e0e3e8;
+            border-radius: 12px; padding: 28px; display: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .results-card.visible { display: block; }
+
+        .results-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;
+        }
+        .results-header h2 { font-size: 18px; font-weight: 600; color: #1a1a2e; }
+
+        /* ── Rendered markdown content ── */
+        #results-content { line-height: 1.75; font-size: 15px; color: #374151; }
+
+        #results-content h1 {
+            font-size: 20px; font-weight: 700; color: #1a1a2e;
+            margin: 28px 0 12px; padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        #results-content h2 {
+            font-size: 16px; font-weight: 700; color: #1e40af;
+            margin: 28px 0 10px; padding: 10px 14px;
+            background: #eff4ff; border-left: 3px solid #2563eb;
+            border-radius: 0 6px 6px 0;
+        }
+        #results-content h3 {
+            font-size: 15px; font-weight: 600; color: #1a1a2e;
+            margin: 20px 0 8px; padding-left: 12px;
+            border-left: 2px solid #d1d5db;
+        }
+        #results-content p { margin-bottom: 10px; }
+        #results-content strong { color: #1a1a2e; font-weight: 600; }
+        #results-content em { color: #4b5563; }
+        #results-content a { color: #2563eb; text-decoration: none; font-weight: 500; }
+        #results-content a:hover { text-decoration: underline; }
+        #results-content ul, #results-content ol { margin: 8px 0 14px 8px; padding-left: 20px; }
+        #results-content li { margin-bottom: 6px; padding-left: 4px; }
+        #results-content li::marker { color: #9ca3af; }
+        #results-content hr { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+        #results-content code {
+            background: #f3f4f6; padding: 2px 6px; border-radius: 4px;
+            font-size: 13px; color: #7c3aed; font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .cursor-blink {
+            display: inline-block; width: 2px; height: 18px;
+            background: #2563eb; margin-left: 2px;
+            animation: blink 1s step-end infinite; vertical-align: text-bottom;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        @media (max-width: 600px) {
+            .form-row { flex-direction: column; }
+            .form-group.dataset { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html">Cannibalization Checker</a>
+            <a href="content-gap.html" class="active">Content Gap Analyzer</a>
+        </nav>
+
+        <header>
+            <h1>Content Gap Analyzer</h1>
+            <p>Find missing content opportunities and thin content &mdash; 2-Pass Batch Pipeline</p>
+        </header>
+
+        <div class="input-card">
+            <div class="form-row">
+                <div class="form-group dataset">
+                    <label for="dataset">Dataset</label>
+                    <select id="dataset">
+                        <option value="filestack">Filestack</option>
+                        <option value="froala">Froala</option>
+                    </select>
+                </div>
+                <div class="form-group niche">
+                    <label for="niche">Focus Area (optional)</label>
+                    <input type="text" id="niche" placeholder="e.g. React, file uploads, image processing">
+                    <span class="hint">Leave blank to analyze all content, or narrow to a specific topic area</span>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn-primary" id="checkBtn" onclick="runAnalysis()">Find Content Gaps</button>
+                <button class="btn-clear" onclick="clearResults()">Clear</button>
+                <div class="status" id="status">
+                    <div class="spinner"></div>
+                    <span id="statusText">Analyzing...</span>
+                </div>
+            </div>
+            <div class="blog-count" id="blogCount"></div>
+            <div class="progress-wrap" id="progressWrap">
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+                <div class="progress-label" id="progressLabel"></div>
+            </div>
+        </div>
+
+        <div class="results-card" id="resultsCard">
+            <div class="results-header">
+                <h2>Content Gap Report</h2>
+            </div>
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const DEEPSEEK_API_KEY = 'sk-4f83e81073eb49c6b78400444a3dbc92';
+        const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
+        const BATCH_SIZE = 150;
+
+        const DATASETS = {
+            filestack: 'filestack_blog_data.json',
+            froala: 'froala_blog_data.json'
+        };
+
+        const BRAND_CONTEXT = {
+            filestack: 'Filestack is a file handling API/service for uploads, transformations, delivery, and cloud storage integrations. Their blog covers file uploads, image processing, OCR, document handling, security, and developer tutorials across frameworks like React, Angular, Python, PHP, Node.js, etc.',
+            froala: 'Froala is a WYSIWYG HTML editor for web apps. Their blog covers rich text editing, HTML editors, framework integrations (React, Angular, Vue), content management, document editing, and web development topics.'
+        };
+
+        let blogDataCache = {};
+        let abortController = null;
+
+        document.getElementById('dataset').addEventListener('change', () => loadBlogData());
+        document.getElementById('niche').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') runAnalysis();
+        });
+        loadBlogData();
+
+        async function loadBlogData() {
+            const dataset = document.getElementById('dataset').value;
+            const countEl = document.getElementById('blogCount');
+            if (blogDataCache[dataset]) {
+                countEl.textContent = `${blogDataCache[dataset].length} blogs loaded`;
+                countEl.classList.add('visible');
+                return;
+            }
+            countEl.textContent = 'Loading blog data...';
+            countEl.classList.add('visible');
+            try {
+                const resp = await fetch(DATASETS[dataset]);
+                blogDataCache[dataset] = await resp.json();
+                countEl.textContent = `${blogDataCache[dataset].length} blogs loaded`;
+            } catch (err) {
+                countEl.textContent = 'Failed to load blog data. Make sure you are running via serve.py.';
+            }
+        }
+
+        // ── Non-streaming API call (for extraction pass) ──
+        async function callDeepSeek(messages, signal, maxTokens = 2048) {
+            const resp = await fetch(DEEPSEEK_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages,
+                    max_tokens: maxTokens,
+                    temperature: 0.1,
+                }),
+                signal
+            });
+            if (!resp.ok) throw new Error(`API ${resp.status}: ${await resp.text()}`);
+            const data = await resp.json();
+            return data.choices[0].message.content;
+        }
+
+        // ── Streaming API call (for final report) ──
+        async function streamDeepSeek(messages, signal, onChunk) {
+            const resp = await fetch(DEEPSEEK_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages,
+                    max_tokens: 8192,
+                    temperature: 0.4,
+                    stream: true
+                }),
+                signal
+            });
+            if (!resp.ok) throw new Error(`API ${resp.status}: ${await resp.text()}`);
+
+            const reader = resp.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+                for (const line of lines) {
+                    if (!line.startsWith('data: ')) continue;
+                    const d = line.slice(6).trim();
+                    if (d === '[DONE]') return;
+                    try {
+                        const chunk = JSON.parse(d);
+                        const c = chunk.choices?.[0]?.delta?.content || '';
+                        if (c) onChunk(c);
+                    } catch (e) {}
+                }
+            }
+        }
+
+        function setProgress(pct, label) {
+            const wrap = document.getElementById('progressWrap');
+            const fill = document.getElementById('progressFill');
+            const lbl = document.getElementById('progressLabel');
+            wrap.classList.add('visible');
+            fill.style.width = pct + '%';
+            lbl.textContent = label;
+        }
+
+        function renderMarkdown(md) {
+            let html = md
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/^---+$/gm, '<hr>')
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+                .replace(/(^|[^"(])((https?:\/\/)[^\s<]+)/gm, '$1<a href="$2" target="_blank">$2</a>')
+                .replace(/^\- (.+)$/gm, '<li>$1</li>')
+                .replace(/^\d+\.\s(.+)$/gm, '<li>$1</li>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            html = html.replace(/((<li>.*?<\/li>\s*<br>?)+)/g, '<ul>$1</ul>');
+            html = '<p>' + html + '</p>';
+            html = html.replace(/<p><\/p>/g, '').replace(/<p><h/g, '<h')
+                .replace(/<\/h([1-3])><\/p>/g, '</h$1>').replace(/<p><hr><\/p>/g, '<hr>')
+                .replace(/<p><hr>/g, '<hr><p>').replace(/<p><ul>/g, '<ul>')
+                .replace(/<\/ul><\/p>/g, '</ul>');
+            // Clean up stray <br> inside <ul>
+            html = html.replace(/<ul>(.*?)<\/ul>/gs, (match) => {
+                return match.replace(/<br>/g, '');
+            });
+            return html;
+        }
+
+        // ── MAIN: 2-Pass Pipeline ──
+        async function runAnalysis() {
+            const dataset = document.getElementById('dataset').value;
+            const niche = document.getElementById('niche').value.trim();
+
+            await loadBlogData();
+            const blogs = blogDataCache[dataset];
+            if (!blogs) return;
+
+            const name = dataset.charAt(0).toUpperCase() + dataset.slice(1);
+            const checkBtn = document.getElementById('checkBtn');
+            const statusEl = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            const resultsCard = document.getElementById('resultsCard');
+            const resultsContent = document.getElementById('results-content');
+
+            checkBtn.disabled = true;
+            statusEl.classList.add('visible');
+            resultsCard.classList.add('visible');
+            resultsContent.innerHTML = '';
+
+            abortController = new AbortController();
+            const signal = abortController.signal;
+
+            const nicheLabel = niche ? ` (focus: ${niche})` : '';
+
+            try {
+                // ═══════════════════════════════════════════════════
+                // PASS 1: Extract topic coverage from each batch
+                // ═══════════════════════════════════════════════════
+                const batches = [];
+                for (let i = 0; i < blogs.length; i += BATCH_SIZE) {
+                    batches.push(blogs.slice(i, i + BATCH_SIZE).map((b, j) => ({
+                        blog: b,
+                        globalIdx: i + j + 1
+                    })));
+                }
+
+                statusText.textContent = `Pass 1/2: Extracting topics from ${batches.length} batches...`;
+                setProgress(0, `Extracting batch 0/${batches.length}`);
+
+                const nicheInstruction = niche
+                    ? `Focus ONLY on topics related to: "${niche}". Ignore posts unrelated to this area.`
+                    : 'Cover all topic areas.';
+
+                const extractPromises = batches.map((batch, batchIdx) => {
+                    const catalog = batch.map(b => {
+                        const blog = b.blog;
+                        const title = blog.title || 'Untitled';
+                        const url = blog.link || blog.url || '';
+                        const content = blog.content || '';
+                        const excerpt = content.substring(0, 150).replace(/\n/g, ' ').trim();
+                        return `${b.globalIdx}. "${title}" | ${url}\n   ${excerpt}`;
+                    }).join('\n');
+
+                    const messages = [
+                        {
+                            role: 'system',
+                            content: `You are a content analyst. Given a batch of blog posts, extract a structured summary of what topics, keywords, and search intents are ALREADY covered.
+
+${nicheInstruction}
+
+Return a JSON object with this exact structure:
+{
+  "topics_covered": ["topic1", "topic2", ...],
+  "keywords_targeted": ["keyword1", "keyword2", ...],
+  "how_to_covered": ["how to X", "how to Y", ...],
+  "comparisons_covered": ["A vs B", ...],
+  "troubleshooting_covered": ["fixing X error", ...],
+  "thin_content": [{"idx": 123, "title": "...", "url": "...", "issue": "too shallow on X"}]
+}
+
+- topics_covered: broad topic categories (e.g. "React file uploads", "image compression")
+- keywords_targeted: specific SEO keywords each post targets
+- how_to_covered: any "how to" style guides present
+- comparisons_covered: any "vs" or comparison posts
+- troubleshooting_covered: any error-fixing/troubleshooting posts
+- thin_content: posts that appear thin, outdated, or incomplete based on their title/excerpt
+
+Return ONLY valid JSON. No markdown, no code fences, no explanation.`
+                        },
+                        {
+                            role: 'user',
+                            content: `BLOG BATCH (${batchIdx + 1}/${batches.length}, posts ${batch[0].globalIdx}-${batch[batch.length-1].globalIdx}):\n${catalog}`
+                        }
+                    ];
+
+                    return callDeepSeek(messages, signal, 3000).then(result => {
+                        setProgress(
+                            Math.round(((batchIdx + 1) / batches.length) * 50),
+                            `Extracted batch ${batchIdx + 1}/${batches.length}`
+                        );
+                        return result;
+                    });
+                });
+
+                const extractResults = await Promise.all(extractPromises);
+
+                // Merge all batch summaries
+                const merged = {
+                    topics_covered: [],
+                    keywords_targeted: [],
+                    how_to_covered: [],
+                    comparisons_covered: [],
+                    troubleshooting_covered: [],
+                    thin_content: []
+                };
+
+                for (const result of extractResults) {
+                    try {
+                        const cleaned = result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+                        const parsed = JSON.parse(cleaned);
+                        for (const key of Object.keys(merged)) {
+                            if (Array.isArray(parsed[key])) {
+                                merged[key].push(...parsed[key]);
+                            }
+                        }
+                    } catch (e) {
+                        const match = result.match(/\{[\s\S]*\}/);
+                        if (match) {
+                            try {
+                                const parsed = JSON.parse(match[0]);
+                                for (const key of Object.keys(merged)) {
+                                    if (Array.isArray(parsed[key])) {
+                                        merged[key].push(...parsed[key]);
+                                    }
+                                }
+                            } catch (e2) {}
+                        }
+                    }
+                }
+
+                // Deduplicate
+                for (const key of ['topics_covered', 'keywords_targeted', 'how_to_covered', 'comparisons_covered', 'troubleshooting_covered']) {
+                    merged[key] = [...new Set(merged[key].map(s => s.toLowerCase()))];
+                }
+
+                setProgress(55, `Extracted ${merged.topics_covered.length} topics, ${merged.keywords_targeted.length} keywords`);
+
+                // ═══════════════════════════════════════════════════
+                // PASS 2: Gap analysis using the extracted topic map
+                // ═══════════════════════════════════════════════════
+                statusText.textContent = `Pass 2/2: Analyzing gaps...`;
+                setProgress(60, 'Running gap analysis...');
+
+                const topicMapSummary = `TOPICS ALREADY COVERED (${merged.topics_covered.length}):
+${merged.topics_covered.join(', ')}
+
+KEYWORDS ALREADY TARGETED (${merged.keywords_targeted.length}):
+${merged.keywords_targeted.join(', ')}
+
+"HOW TO" GUIDES THAT EXIST (${merged.how_to_covered.length}):
+${merged.how_to_covered.join('\n')}
+
+COMPARISON ARTICLES THAT EXIST (${merged.comparisons_covered.length}):
+${merged.comparisons_covered.join('\n')}
+
+TROUBLESHOOTING ARTICLES THAT EXIST (${merged.troubleshooting_covered.length}):
+${merged.troubleshooting_covered.join('\n')}
+
+THIN/WEAK CONTENT FLAGGED (${merged.thin_content.length}):
+${merged.thin_content.map(t => `- #${t.idx} "${t.title}" (${t.url}) — ${t.issue}`).join('\n')}`;
+
+                // Also provide a compact title list for cross-checking
+                const allTitlesCompact = blogs.map((b, i) =>
+                    `${i+1}. ${b.title || 'Untitled'} | ${b.link || b.url || ''}`
+                ).join('\n');
+
+                const nicheClause = niche
+                    ? `Focus specifically on the area of: "${niche}". Only surface gaps related to this focus area.`
+                    : 'Analyze the full breadth of topics the blog covers.';
+
+                const gapSystemPrompt = `You are an SEO content strategist specializing in content gap analysis for the ${name} blog.
+
+${BRAND_CONTEXT[dataset]}
+
+You are receiving a PRE-ANALYZED TOPIC MAP that was extracted from all ${blogs.length} blog posts in batches. This map tells you exactly what topics, keywords, how-to guides, comparisons, and troubleshooting articles already exist.
+
+You are also receiving a COMPLETE TITLE LIST of all posts for cross-referencing.
+
+Your job is to find what's MISSING — content gaps that represent real search demand.
+
+CRITICAL RULES:
+- Every suggestion must be cross-checked against both the topic map AND the title list
+- Do NOT suggest anything that overlaps with existing coverage
+- Focus on ACTIONABLE long-tail keywords, not broad generic topics
+- Suggest specific blog post titles, not vague categories
+- Cover a variety of content types: tutorials, comparisons, developer guides, and more
+
+IMPORTANT — HYPERLINK ALL POST REFERENCES:
+Whenever you mention or reference an existing blog post, you MUST use markdown hyperlink format: [Post Title](URL). The URL is provided in the title list (each entry has the post title and URL). Never mention a post by title alone or by number alone — always hyperlink it. For example, write [React File Upload Tutorial with Filestack](https://blog.filestack.com/...) instead of just "Post #575" or "React File Upload Tutorial".
+
+CRITICAL — DO NOT HALLUCINATE CODE OR PRODUCT DETAILS:
+- Do NOT invent or assume code snippets, API methods, function names, SDK properties, configuration options, or product features for ${name} or any other product.
+- When suggesting content outlines, do NOT include made-up code examples or assumed API details.
+- If a suggested post would involve code or technical implementation, note that the writer should "refer to the official ${name} documentation for accurate code examples and API details."
+- Only reference product capabilities that are clearly evident from the existing blog content provided to you.`;
+
+                const gapUserPrompt = `${nicheClause}
+
+${topicMapSummary}
+
+COMPLETE TITLE LIST (all ${blogs.length} posts):
+${allTitlesCompact}
+
+Based on the topic map and title list above, provide a comprehensive content gap report:
+
+1. **TOP 15 MISSING "HOW TO" ARTICLES**
+   For each:
+   - Suggested title (long-tail, search-optimized)
+   - Target search query users would Google
+   - Why this is a gap (confirm no existing coverage in the topic map)
+   - Estimated search demand: High / Medium / Low
+   - Brief outline (3-4 bullet points of what it should cover)
+
+2. **TOP 5 MISSING COMPARISON / "VS" ARTICLES**
+   - Relevant to ${name}'s product space
+   - Confirm the comparison doesn't already exist
+   - For each: title, target query, why it's a gap, and brief outline
+
+3. **TOP 10 MISSING DEVELOPER GUIDES & DEEP DIVES**
+   - These are NOT "how to" tutorials — they are in-depth technical articles developers would bookmark and reference.
+   - Examples: architecture decision guides, best practices articles, performance optimization guides, security hardening guides, integration patterns, migration guides, scalability strategies, etc.
+   - Must be relevant to ${name}'s product space and the problems their developer audience faces.
+   - For each: title, target query, why it's a gap, estimated search demand, and brief outline (3-4 bullet points)
+
+4. **THIN CONTENT TO EXPAND** (up to 10 posts)
+   - Use the thin content flagged in the topic map
+   - Add any others you spot from the title list
+   - What subtopics or sections are missing
+   - Specific recommendations to improve
+
+5. **QUICK WINS** — 5 easy posts that fill obvious gaps with minimal effort`;
+
+                const gapMessages = [
+                    { role: 'system', content: gapSystemPrompt },
+                    { role: 'user', content: gapUserPrompt }
+                ];
+
+                let fullText = '';
+                resultsContent.innerHTML = '<span class="cursor-blink"></span>';
+
+                await streamDeepSeek(gapMessages, signal, (chunk) => {
+                    fullText += chunk;
+                    resultsContent.innerHTML = renderMarkdown(fullText) + '<span class="cursor-blink"></span>';
+                    // no auto-scroll — let the user read at their own pace
+                });
+
+                resultsContent.innerHTML = renderMarkdown(fullText);
+                setProgress(100, 'Complete');
+                statusText.textContent = 'Done';
+                setTimeout(() => {
+                    statusEl.classList.remove('visible');
+                    document.getElementById('progressWrap').classList.remove('visible');
+                }, 3000);
+
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    statusText.textContent = 'Cancelled';
+                } else {
+                    resultsContent.innerHTML = `<p style="color:#dc2626;">Error: ${err.message}</p>`;
+                    statusText.textContent = 'Failed';
+                }
+            } finally {
+                checkBtn.disabled = false;
+                abortController = null;
+            }
+        }
+
+        function clearResults() {
+            if (abortController) abortController.abort();
+            document.getElementById('resultsCard').classList.remove('visible');
+            document.getElementById('results-content').innerHTML = '';
+            document.getElementById('status').classList.remove('visible');
+            document.getElementById('progressWrap').classList.remove('visible');
+            document.getElementById('niche').value = '';
+            document.getElementById('niche').focus();
+        }
+    </script>
+</body>
+</html>

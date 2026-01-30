@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Cannibalization Checker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f6f8;
+            color: #1a1a2e;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        nav {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #e0e3e8;
+            padding-bottom: 12px;
+        }
+
+        nav a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 7px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        nav a:hover { color: #1a1a2e; background: #e8eaef; }
+        nav a.active { color: #2563eb; background: #eff4ff; font-weight: 600; }
+
+        header { text-align: center; margin-bottom: 36px; }
+        header h1 { font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+        header p { color: #6b7280; font-size: 14px; }
+
+        .input-card {
+            background: #fff;
+            border: 1px solid #e0e3e8;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.dataset { flex: 0 0 200px; }
+        .form-group.topic { flex: 1; }
+
+        label {
+            font-size: 12px; font-weight: 600; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        select, input[type="text"] {
+            background: #f9fafb; border: 1px solid #d1d5db; border-radius: 8px;
+            color: #1a1a2e; padding: 11px 14px; font-size: 15px;
+            font-family: inherit; outline: none; transition: all 0.2s;
+        }
+        select:focus, input[type="text"]:focus { border-color: #2563eb; box-shadow: 0 0 0 3px #2563eb18; }
+        input[type="text"]::placeholder { color: #9ca3af; }
+
+        .btn-row { display: flex; gap: 12px; align-items: center; }
+
+        button {
+            font-family: inherit; cursor: pointer; border: none; border-radius: 8px;
+            font-size: 14px; font-weight: 600; padding: 11px 24px; transition: all 0.2s;
+        }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-primary:disabled { background: #93b4f5; color: #d4e2fc; cursor: not-allowed; }
+        .btn-clear { background: transparent; color: #6b7280; border: 1px solid #d1d5db; }
+        .btn-clear:hover { color: #1a1a2e; border-color: #9ca3af; background: #f3f4f6; }
+
+        .status {
+            font-size: 14px; color: #6b7280; margin-left: 8px;
+            display: none; align-items: center; gap: 8px;
+        }
+        .status.visible { display: flex; }
+
+        .spinner {
+            width: 16px; height: 16px; border: 2px solid #d1d5db;
+            border-top-color: #2563eb; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .blog-count { font-size: 13px; color: #6b7280; margin-top: 8px; display: none; }
+        .blog-count.visible { display: block; }
+
+        /* Progress bar */
+        .progress-wrap { margin-top: 16px; display: none; }
+        .progress-wrap.visible { display: block; }
+        .progress-bar-bg { background: #e5e7eb; border-radius: 6px; height: 6px; overflow: hidden; }
+        .progress-bar-fill {
+            background: #2563eb; height: 100%; width: 0%;
+            border-radius: 6px; transition: width 0.3s ease;
+        }
+        .progress-label { font-size: 12px; color: #6b7280; margin-top: 6px; }
+
+        /* ── Results card ── */
+        .results-card {
+            background: #fff; border: 1px solid #e0e3e8;
+            border-radius: 12px; padding: 28px; display: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .results-card.visible { display: block; }
+
+        .results-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;
+        }
+        .results-header h2 { font-size: 18px; font-weight: 600; color: #1a1a2e; }
+
+        .verdict-badge {
+            padding: 5px 14px; border-radius: 20px; font-size: 12px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .verdict-high { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .verdict-medium { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+        .verdict-low { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .verdict-none { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+
+        /* ── Rendered markdown content (shared by results + brief) ── */
+        .rendered-content { line-height: 1.75; font-size: 15px; color: #374151; }
+
+        .rendered-content h1 {
+            font-size: 20px; font-weight: 700; color: #1a1a2e;
+            margin: 28px 0 12px; padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .rendered-content h2 {
+            font-size: 16px; font-weight: 700; color: #1e40af;
+            margin: 28px 0 10px; padding: 10px 14px;
+            background: #eff4ff; border-left: 3px solid #2563eb;
+            border-radius: 0 6px 6px 0;
+        }
+        .rendered-content h3 {
+            font-size: 15px; font-weight: 600; color: #1a1a2e;
+            margin: 20px 0 8px; padding-left: 12px;
+            border-left: 2px solid #d1d5db;
+        }
+        .rendered-content p { margin-bottom: 10px; }
+        .rendered-content strong { color: #1a1a2e; font-weight: 600; }
+        .rendered-content em { color: #4b5563; }
+        .rendered-content a { color: #2563eb; text-decoration: none; font-weight: 500; }
+        .rendered-content a:hover { text-decoration: underline; }
+
+        .rendered-content ul, .rendered-content ol {
+            margin: 8px 0 14px 8px; padding-left: 20px;
+        }
+        .rendered-content li {
+            margin-bottom: 6px; padding-left: 4px;
+        }
+        .rendered-content li::marker { color: #9ca3af; }
+
+        .rendered-content hr {
+            border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;
+        }
+        .rendered-content code {
+            background: #f3f4f6; padding: 2px 6px; border-radius: 4px;
+            font-size: 13px; color: #7c3aed; font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .cursor-blink {
+            display: inline-block; width: 2px; height: 18px;
+            background: #2563eb; margin-left: 2px;
+            animation: blink 1s step-end infinite; vertical-align: text-bottom;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* ── Content Brief Section ── */
+        .brief-card {
+            background: #fff; border: 1px solid #e0e3e8;
+            border-radius: 12px; padding: 28px; margin-top: 24px; display: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .brief-card.visible { display: block; }
+
+        .brief-card > h2 {
+            font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #1a1a2e;
+        }
+        .brief-card p.brief-desc { font-size: 14px; color: #6b7280; margin-bottom: 16px; }
+
+        .alt-topics { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .alt-topic-btn {
+            background: #f3f4f6; border: 1px solid #d1d5db; color: #374151;
+            padding: 7px 16px; border-radius: 20px; font-size: 13px; cursor: pointer;
+            font-family: inherit; transition: all 0.2s; font-weight: 500;
+        }
+        .alt-topic-btn:hover { background: #eff4ff; border-color: #2563eb; color: #2563eb; }
+
+        .brief-input-row { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
+        .brief-input-row input[type="text"] { flex: 1; }
+        .btn-brief { background: #7c3aed; color: #fff; }
+        .btn-brief:hover { background: #6d28d9; }
+        .btn-brief:disabled { background: #c4b5fd; color: #ede9fe; cursor: not-allowed; }
+
+        .brief-results {
+            background: #fafbfc; border: 1px solid #e5e7eb;
+            border-radius: 8px; padding: 24px; margin-top: 16px; display: none;
+        }
+        .brief-results.visible { display: block; }
+
+        .brief-status {
+            font-size: 14px; color: #6b7280;
+            display: none; align-items: center; gap: 8px;
+        }
+        .brief-status.visible { display: flex; }
+
+        @media (max-width: 600px) {
+            .form-row { flex-direction: column; }
+            .form-group.dataset { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html" class="active">Cannibalization Checker</a>
+            <a href="content-gap.html">Content Gap Analyzer</a>
+        </nav>
+
+        <header>
+            <h1>Blog Cannibalization Checker</h1>
+            <p>Powered by DeepSeek AI &mdash; 2-Pass Batch Pipeline</p>
+        </header>
+
+        <div class="input-card">
+            <div class="form-row">
+                <div class="form-group dataset">
+                    <label for="dataset">Dataset</label>
+                    <select id="dataset">
+                        <option value="filestack">Filestack</option>
+                        <option value="froala">Froala</option>
+                    </select>
+                </div>
+                <div class="form-group topic">
+                    <label for="topic">Blog Topic Idea</label>
+                    <input type="text" id="topic" placeholder="e.g. Folder upload with React">
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn-primary" id="checkBtn" onclick="runCheck()">Check Cannibalization</button>
+                <button class="btn-clear" onclick="clearResults()">Clear</button>
+                <div class="status" id="status">
+                    <div class="spinner"></div>
+                    <span id="statusText">Analyzing...</span>
+                </div>
+            </div>
+            <div class="blog-count" id="blogCount"></div>
+            <div class="progress-wrap" id="progressWrap">
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+                <div class="progress-label" id="progressLabel"></div>
+            </div>
+        </div>
+
+        <div class="results-card" id="resultsCard">
+            <div class="results-header">
+                <h2>Analysis Results</h2>
+                <span class="verdict-badge" id="verdictBadge" style="display:none;"></span>
+            </div>
+            <div id="results-content" class="rendered-content"></div>
+        </div>
+
+        <div class="brief-card" id="briefCard">
+            <h2>Generate Content Brief</h2>
+            <p class="brief-desc">Pick a topic below or type your own to generate a full content brief that accounts for existing content.</p>
+            <div class="alt-topics" id="altTopics"></div>
+            <div class="brief-input-row">
+                <input type="text" id="briefTopic" placeholder="Or type a custom topic...">
+                <button class="btn-brief" id="briefBtn" onclick="runBrief()">Generate Brief</button>
+                <div class="brief-status" id="briefStatus">
+                    <div class="spinner"></div>
+                    <span id="briefStatusText">Generating...</span>
+                </div>
+            </div>
+            <div class="brief-results rendered-content" id="briefResults"></div>
+        </div>
+    </div>
+
+    <script>
+        const DEEPSEEK_API_KEY = 'sk-4f83e81073eb49c6b78400444a3dbc92';
+        const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
+        const BATCH_SIZE = 150;
+
+        const DATASETS = {
+            filestack: 'filestack_blog_data.json',
+            froala: 'froala_blog_data.json'
+        };
+
+        let blogDataCache = {};
+        let abortController = null;
+
+        document.getElementById('dataset').addEventListener('change', () => loadBlogData());
+        document.getElementById('topic').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') runCheck();
+        });
+        loadBlogData();
+
+        async function loadBlogData() {
+            const dataset = document.getElementById('dataset').value;
+            const countEl = document.getElementById('blogCount');
+            if (blogDataCache[dataset]) {
+                countEl.textContent = `${blogDataCache[dataset].length} blogs loaded`;
+                countEl.classList.add('visible');
+                return;
+            }
+            countEl.textContent = 'Loading blog data...';
+            countEl.classList.add('visible');
+            try {
+                const resp = await fetch(DATASETS[dataset]);
+                blogDataCache[dataset] = await resp.json();
+                countEl.textContent = `${blogDataCache[dataset].length} blogs loaded`;
+            } catch (err) {
+                countEl.textContent = 'Failed to load blog data. Make sure you are running via serve.py.';
+            }
+        }
+
+        function buildCompactEntry(blog, idx) {
+            const title = blog.title || 'Untitled';
+            const url = blog.link || blog.url || '';
+            return `${idx}. "${title}" | ${url}`;
+        }
+
+        function buildDetailedEntry(blog, idx) {
+            const title = blog.title || 'Untitled';
+            const url = blog.link || blog.url || '';
+            const content = blog.content || '';
+            const excerpt = content.substring(0, 300).replace(/\n/g, ' ').trim();
+            return `${idx}. "${title}"\n   URL: ${url}\n   Excerpt: ${excerpt}`;
+        }
+
+        // ── Non-streaming API call (for scan pass) ──
+        async function callDeepSeek(messages, signal) {
+            const resp = await fetch(DEEPSEEK_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages,
+                    max_tokens: 2048,
+                    temperature: 0.1,
+                }),
+                signal
+            });
+            if (!resp.ok) throw new Error(`API ${resp.status}: ${await resp.text()}`);
+            const data = await resp.json();
+            return data.choices[0].message.content;
+        }
+
+        // ── Streaming API call (for final analysis) ──
+        async function streamDeepSeek(messages, signal, onChunk) {
+            const resp = await fetch(DEEPSEEK_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages,
+                    max_tokens: 8192,
+                    temperature: 0.3,
+                    stream: true
+                }),
+                signal
+            });
+            if (!resp.ok) throw new Error(`API ${resp.status}: ${await resp.text()}`);
+
+            const reader = resp.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+                for (const line of lines) {
+                    if (!line.startsWith('data: ')) continue;
+                    const d = line.slice(6).trim();
+                    if (d === '[DONE]') return;
+                    try {
+                        const chunk = JSON.parse(d);
+                        const c = chunk.choices?.[0]?.delta?.content || '';
+                        if (c) onChunk(c);
+                    } catch (e) {}
+                }
+            }
+        }
+
+        function setProgress(pct, label) {
+            const wrap = document.getElementById('progressWrap');
+            const fill = document.getElementById('progressFill');
+            const lbl = document.getElementById('progressLabel');
+            wrap.classList.add('visible');
+            fill.style.width = pct + '%';
+            lbl.textContent = label;
+        }
+
+        function renderMarkdown(md) {
+            let html = md
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/^---+$/gm, '<hr>')
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+                .replace(/(^|[^"(])((https?:\/\/)[^\s<]+)/gm, '$1<a href="$2" target="_blank">$2</a>')
+                .replace(/^\- (.+)$/gm, '<li>$1</li>')
+                .replace(/^\d+\.\s(.+)$/gm, '<li>$1</li>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            html = html.replace(/((<li>.*?<\/li>\s*<br>?)+)/g, '<ul>$1</ul>');
+            html = '<p>' + html + '</p>';
+            html = html.replace(/<p><\/p>/g, '').replace(/<p><h/g, '<h')
+                .replace(/<\/h([1-3])><\/p>/g, '</h$1>').replace(/<p><hr><\/p>/g, '<hr>')
+                .replace(/<p><hr>/g, '<hr><p>').replace(/<p><ul>/g, '<ul>')
+                .replace(/<\/ul><\/p>/g, '</ul>');
+            // Clean up stray <br> inside <ul>
+            html = html.replace(/<ul>(.*?)<\/ul>/gs, (match) => {
+                return match.replace(/<br>/g, '');
+            });
+            return html;
+        }
+
+        function detectVerdict(text) {
+            const u = text.toUpperCase();
+            if (u.includes('VERDICT') || u.includes('CANNIBALIZATION')) {
+                if (/\bHIGH\b/.test(u)) return 'high';
+                if (/\bMEDIUM\b/.test(u)) return 'medium';
+                if (/\bLOW\b/.test(u)) return 'low';
+                if (/\bNONE\b/.test(u)) return 'none';
+            }
+            return null;
+        }
+
+        // ── MAIN: 2-Pass Pipeline ──
+        async function runCheck() {
+            const dataset = document.getElementById('dataset').value;
+            const topic = document.getElementById('topic').value.trim();
+            if (!topic) { document.getElementById('topic').focus(); return; }
+
+            await loadBlogData();
+            const blogs = blogDataCache[dataset];
+            if (!blogs) return;
+
+            const name = dataset.charAt(0).toUpperCase() + dataset.slice(1);
+            const checkBtn = document.getElementById('checkBtn');
+            const statusEl = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            const resultsCard = document.getElementById('resultsCard');
+            const resultsContent = document.getElementById('results-content');
+            const verdictBadge = document.getElementById('verdictBadge');
+
+            checkBtn.disabled = true;
+            statusEl.classList.add('visible');
+            verdictBadge.style.display = 'none';
+            resultsCard.classList.add('visible');
+            resultsContent.innerHTML = '';
+
+            abortController = new AbortController();
+            const signal = abortController.signal;
+
+            try {
+                // ═══════════════════════════════════════════════
+                // PASS 1: Batch scan — find overlapping posts
+                // ═══════════════════════════════════════════════
+                const batches = [];
+                for (let i = 0; i < blogs.length; i += BATCH_SIZE) {
+                    batches.push(blogs.slice(i, i + BATCH_SIZE).map((b, j) => ({
+                        blog: b,
+                        globalIdx: i + j + 1
+                    })));
+                }
+
+                statusText.textContent = `Pass 1/${2}: Scanning ${batches.length} batches for overlaps...`;
+                setProgress(0, `Scanning batch 0/${batches.length}`);
+
+                const scanPromises = batches.map((batch, batchIdx) => {
+                    const catalog = batch.map(b => buildCompactEntry(b.blog, b.globalIdx)).join('\n');
+                    const messages = [
+                        {
+                            role: 'system',
+                            content: `You are an SEO overlap detector. Given a proposed blog topic and a list of existing blog posts, identify posts that would TRULY COMPETE for the same search queries.
+
+IMPORTANT — Be precise about what counts as overlap:
+- TRUE OVERLAP: Another post targets the SAME specific topic, same framework, same use case, and same search intent. A searcher would be confused about which post to click.
+- NOT OVERLAP: Posts that cover a BROADER topic where the proposed topic is just one subtopic. A "Complete Guide to X" does NOT cannibalize a specific "How to do Y with Z framework" tutorial — they serve different search intents (overview vs. specific implementation).
+- NOT OVERLAP: Release announcements, changelogs, or "what's new" posts that mention the feature. These are news content, not evergreen tutorials.
+- NOT OVERLAP: Posts about the same technology/framework but a completely different feature or use case.
+
+Only flag posts where a Google searcher typing the proposed topic's keywords would realistically find BOTH posts competing for the same click.
+
+Return ONLY a JSON array of objects for posts that truly overlap. Each object must have:
+- "idx": the post number
+- "title": the post title
+- "url": the post URL
+- "overlap_type": "direct" (same specific topic) or "partial" (shares some keywords but different angle)
+- "reason": one short sentence explaining the overlap
+
+If NO posts overlap, return an empty array: []
+
+Return ONLY valid JSON. No markdown, no explanation, no code fences.`
+                        },
+                        {
+                            role: 'user',
+                            content: `PROPOSED TOPIC: "${topic}"\n\nEXISTING POSTS (batch ${batchIdx + 1}/${batches.length}):\n${catalog}`
+                        }
+                    ];
+
+                    return callDeepSeek(messages, signal).then(result => {
+                        setProgress(
+                            Math.round(((batchIdx + 1) / batches.length) * 50),
+                            `Scanned batch ${batchIdx + 1}/${batches.length}`
+                        );
+                        return result;
+                    });
+                });
+
+                const scanResults = await Promise.all(scanPromises);
+
+                // Parse flagged posts from all batches
+                let flaggedPosts = [];
+                for (const result of scanResults) {
+                    try {
+                        // Strip code fences if present
+                        const cleaned = result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+                        const parsed = JSON.parse(cleaned);
+                        if (Array.isArray(parsed)) {
+                            flaggedPosts.push(...parsed);
+                        }
+                    } catch (e) {
+                        // Try to extract JSON array from the response
+                        const match = result.match(/\[[\s\S]*\]/);
+                        if (match) {
+                            try { flaggedPosts.push(...JSON.parse(match[0])); } catch (e2) {}
+                        }
+                    }
+                }
+
+                setProgress(55, `Found ${flaggedPosts.length} potentially overlapping posts`);
+
+                // ═══════════════════════════════════════════════
+                // PASS 2: Deep analysis on flagged posts only
+                // ═══════════════════════════════════════════════
+                statusText.textContent = `Pass 2/${2}: Deep analysis on ${flaggedPosts.length} flagged posts...`;
+                setProgress(60, 'Running deep analysis...');
+
+                // Build detailed catalog of ONLY flagged posts
+                let flaggedCatalog;
+                if (flaggedPosts.length === 0) {
+                    flaggedCatalog = '(No potentially overlapping posts were found in any batch)';
+                } else {
+                    // Look up full blog data for flagged posts
+                    flaggedCatalog = flaggedPosts.map(fp => {
+                        const idx = fp.idx - 1;
+                        const blog = blogs[idx] || {};
+                        const title = fp.title || blog.title || 'Untitled';
+                        const url = fp.url || blog.link || blog.url || '';
+                        const content = blog.content || '';
+                        const excerpt = content.substring(0, 400).replace(/\n/g, ' ').trim();
+                        const overlapType = fp.overlap_type || 'unknown';
+                        return `- "${title}"\n  URL: ${url}\n  Overlap type: ${overlapType}\n  Scan reason: ${fp.reason || 'potential overlap'}\n  Excerpt: ${excerpt}`;
+                    }).join('\n\n');
+                }
+
+                // Also provide a compact title+URL list of ALL blogs for alternative cross-checking
+                const allTitlesCompact = blogs.map((b, i) =>
+                    `${i+1}. ${b.title || 'Untitled'} | ${b.link || b.url || ''}`
+                ).join('\n');
+
+                const deepSystemPrompt = `You are an SEO expert specializing in content cannibalization analysis for the ${name} blog.
+
+Content cannibalization occurs when multiple pages on the same website target the same or very similar keywords/topics, causing them to compete against each other in search engine rankings.
+
+You are receiving:
+1. The FLAGGED POSTS that a pre-scan identified as potentially overlapping with the proposed topic (with excerpts for context)
+2. A COMPLETE TITLE LIST of all ${blogs.length} existing posts (titles only, for cross-checking alternatives)
+
+IMPORTANT — RELEASE/CHANGELOG ARTICLES ARE NOT TRUE CANNIBALIZATION:
+Posts that are release announcements, changelogs, version updates (e.g. "What's New in 4.0", "v3.2 Release", "Product Update") serve a fundamentally different search intent (news/announcement) compared to evergreen content (tutorials, guides, how-tos). If the proposed topic overlaps with a release/changelog article:
+- Still mention the overlap for awareness
+- But do NOT count it as high cannibalization — the search intents are different
+- A how-to guide about a feature mentioned in a release post is COMPLEMENTARY, not competing
+- Only flag true cannibalization when two posts would target the same evergreen search queries
+
+IMPORTANT — HYPERLINK ALL POST REFERENCES:
+Whenever you mention or reference an existing blog post, you MUST use markdown hyperlink format: [Post Title](URL). The URL is provided in the catalog. Never mention a post by title alone or by number alone — always hyperlink it. For example, write [React File Upload Tutorial with Filestack](https://blog.filestack.com/...) instead of just "Post #575" or "React File Upload Tutorial".
+
+Be thorough. Check for:
+- Direct keyword overlap (same primary keywords)
+- Semantic overlap (different words, same topic)
+- Search intent overlap (both targeting same user query)
+- Subtopic cannibalization (new post covers ground already in existing post's sections)
+- But differentiate between true competition (same intent, same audience) and complementary content (different intent, supports each other)`;
+
+                const deepUserPrompt = `PROPOSED BLOG TOPIC: "${topic}"
+
+FLAGGED POSTS (${flaggedPosts.length} posts identified as potentially overlapping):
+${flaggedCatalog}
+
+COMPLETE TITLE LIST (all ${blogs.length} posts, for cross-checking alternatives):
+${allTitlesCompact}
+
+Analyze the proposed topic. Provide:
+
+1. **CANNIBALIZATION VERDICT**: High / Medium / Low / None
+
+   Use this rubric:
+   - **High**: An existing post covers the EXACT SAME specific topic with the same angle and search intent. Writing this post would create a near-duplicate.
+   - **Medium**: Existing posts have significant keyword overlap, but the proposed post has a meaningfully different angle, scope, or target audience (e.g. framework-specific tutorial vs. general overview).
+   - **Low**: Only broad/tangential overlap. Existing posts touch on related themes but serve a clearly different search intent.
+   - **None**: No meaningful overlap found.
+
+   IMPORTANT: A specific tutorial (e.g. "How to do X in React") does NOT deserve a High verdict just because broad overview posts exist about X. The overview and the specific tutorial serve different searchers. Similarly, release/changelog posts mentioning a feature do NOT cannibalize a dedicated tutorial about that feature.
+
+   If the pre-scan found 0 flagged posts, the verdict should likely be None or Low. Review each flagged post carefully — many may be false positives.
+
+2. **COMPETING POSTS**: For each truly competing post:
+   - Title and URL
+   - Overlap type: Direct (same specific topic) or Partial (related but different angle)
+   - Overlapping keywords/themes
+   - Why they would or would not cannibalize each other
+   - Discard any false positives from the scan and explain why they are false positives
+
+3. **SEARCH INTENT ANALYSIS**: What search intent does the proposed topic target, and do any existing posts already satisfy that EXACT intent? Be specific — "how to implement X in Y framework" is a different intent than "overview of X" or "announcing X in version Z."
+
+4. **RECOMMENDATION**: Should this topic proceed as-is, be modified, or be abandoned? If the overlap is only with broad overview posts or release articles, the recommendation should usually be to proceed, possibly with internal linking to the related posts.
+
+5. **ALTERNATIVE TOPICS** (if cannibalization risk is High or Medium): 5 alternative angles. For each:
+   - State the suggested topic
+   - Cross-check it against the COMPLETE TITLE LIST above
+   - Confirm it does NOT overlap with any existing post
+   - If it would cannibalize any existing post, discard it and suggest a different one`;
+
+                const deepMessages = [
+                    { role: 'system', content: deepSystemPrompt },
+                    { role: 'user', content: deepUserPrompt }
+                ];
+
+                // Stream the final analysis
+                let fullText = '';
+                let verdictFound = false;
+
+                resultsContent.innerHTML = '<span class="cursor-blink"></span>';
+
+                await streamDeepSeek(deepMessages, signal, (chunk) => {
+                    fullText += chunk;
+                    resultsContent.innerHTML = renderMarkdown(fullText) + '<span class="cursor-blink"></span>';
+
+                    if (!verdictFound) {
+                        const verdict = detectVerdict(fullText);
+                        if (verdict) {
+                            verdictFound = true;
+                            verdictBadge.textContent = verdict;
+                            verdictBadge.className = `verdict-badge verdict-${verdict}`;
+                            verdictBadge.style.display = '';
+                        }
+                    }
+                    // no auto-scroll — let the user read at their own pace
+                });
+
+                resultsContent.innerHTML = renderMarkdown(fullText);
+                setProgress(100, 'Complete');
+                statusText.textContent = 'Done';
+                setTimeout(() => {
+                    statusEl.classList.remove('visible');
+                    document.getElementById('progressWrap').classList.remove('visible');
+                }, 3000);
+
+                // Show content brief section (Pass 3)
+                showBriefSection(fullText, flaggedPosts, dataset);
+
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    statusText.textContent = 'Cancelled';
+                } else {
+                    resultsContent.innerHTML = `<p style="color:#dc2626;">Error: ${err.message}</p>`;
+                    statusText.textContent = 'Failed';
+                }
+            } finally {
+                checkBtn.disabled = false;
+                abortController = null;
+            }
+        }
+
+        // ── State for Pass 3 ──
+        let lastAnalysisText = '';
+        let lastFlaggedPosts = [];
+        let lastDataset = '';
+        let briefAbortController = null;
+
+        function extractAlternativeTopics(text) {
+            // Try to pull alternative topic suggestions from the Pass 2 output
+            const topics = [];
+            const lines = text.split('\n');
+            let inAlternatives = false;
+            for (const line of lines) {
+                if (/alternative\s+topic/i.test(line) || /suggested\s+topic/i.test(line)) {
+                    inAlternatives = true;
+                    continue;
+                }
+                if (inAlternatives) {
+                    // Stop if we hit another major section header
+                    if (/^#{1,3}\s/.test(line) && !/alternative/i.test(line)) {
+                        break;
+                    }
+                    // Extract topic from numbered or bulleted lines
+                    const match = line.match(/^\s*(?:\d+[\.\)]\s*)?(?:\*\*|"|')(.+?)(?:\*\*|"|')/);
+                    if (match && match[1].length > 5 && match[1].length < 200) {
+                        topics.push(match[1].trim());
+                    }
+                }
+            }
+            return topics;
+        }
+
+        function showBriefSection(analysisText, flaggedPosts, dataset) {
+            lastAnalysisText = analysisText;
+            lastFlaggedPosts = flaggedPosts;
+            lastDataset = dataset;
+
+            const briefCard = document.getElementById('briefCard');
+            const altTopicsEl = document.getElementById('altTopics');
+            const briefTopicInput = document.getElementById('briefTopic');
+
+            // Pre-fill with the original topic
+            const originalTopic = document.getElementById('topic').value.trim();
+            briefTopicInput.value = originalTopic;
+
+            // Extract and show alternative topics as clickable buttons
+            const alts = extractAlternativeTopics(analysisText);
+            altTopicsEl.innerHTML = '';
+
+            // Add original topic as first button
+            const origBtn = document.createElement('button');
+            origBtn.className = 'alt-topic-btn';
+            origBtn.textContent = originalTopic;
+            origBtn.onclick = () => { briefTopicInput.value = originalTopic; };
+            altTopicsEl.appendChild(origBtn);
+
+            for (const alt of alts) {
+                const btn = document.createElement('button');
+                btn.className = 'alt-topic-btn';
+                btn.textContent = alt;
+                btn.onclick = () => { briefTopicInput.value = alt; };
+                altTopicsEl.appendChild(btn);
+            }
+
+            briefCard.classList.add('visible');
+            briefCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        async function runBrief() {
+            const briefTopic = document.getElementById('briefTopic').value.trim();
+            if (!briefTopic) { document.getElementById('briefTopic').focus(); return; }
+
+            const dataset = lastDataset || document.getElementById('dataset').value;
+            const blogs = blogDataCache[dataset];
+            if (!blogs) return;
+
+            const name = dataset.charAt(0).toUpperCase() + dataset.slice(1);
+            const briefBtn = document.getElementById('briefBtn');
+            const briefStatusEl = document.getElementById('briefStatus');
+            const briefStatusText = document.getElementById('briefStatusText');
+            const briefResults = document.getElementById('briefResults');
+
+            briefBtn.disabled = true;
+            briefStatusEl.classList.add('visible');
+            briefStatusText.textContent = 'Generating content brief...';
+            briefResults.innerHTML = '<span class="cursor-blink"></span>';
+            briefResults.classList.add('visible');
+
+            briefAbortController = new AbortController();
+            const signal = briefAbortController.signal;
+
+            // Build context about competing posts
+            let competingContext = '(No competing posts identified)';
+            if (lastFlaggedPosts.length > 0) {
+                competingContext = lastFlaggedPosts.map(fp => {
+                    const idx = fp.idx - 1;
+                    const blog = blogs[idx] || {};
+                    const title = fp.title || blog.title || 'Untitled';
+                    const url = fp.url || blog.link || blog.url || '';
+                    return `- "${title}" (${url}) — ${fp.reason || 'potential overlap'}`;
+                }).join('\n');
+            }
+
+            // Compact title list for internal linking suggestions
+            const allTitlesCompact = blogs.map((b, i) =>
+                `${i+1}. ${b.title || 'Untitled'} | ${b.link || b.url || ''}`
+            ).join('\n');
+
+            const briefSystemPrompt = `You are a senior content strategist creating a comprehensive content brief for the ${name} blog.
+
+You have full awareness of the existing blog catalog and any cannibalization risks. Your job is to create an actionable, detailed content brief that a writer can follow to produce a high-quality, SEO-optimized blog post that does NOT compete with existing content.
+
+Be specific and prescriptive. The writer should be able to follow this brief without needing additional research.
+
+IMPORTANT — HYPERLINK ALL POST REFERENCES:
+Whenever you mention or reference an existing blog post, you MUST use markdown hyperlink format: [Post Title](URL). The URL is provided in the catalog. Never mention a post by title alone or by number alone — always hyperlink it.
+
+CRITICAL — DO NOT HALLUCINATE CODE OR PRODUCT DETAILS:
+- Do NOT invent or assume code snippets, API methods, function names, SDK properties, configuration options, or product features for ${name} or any other product.
+- If you are not 100% certain about a specific API method, code pattern, or product capability, say "refer to the official ${name} documentation" and do NOT include a made-up code example.
+- Only include code snippets or API details if they are directly evident from the existing blog content provided to you.
+- When referencing product capabilities you are confident about, point the writer to the official documentation (e.g. "See the ${name} docs for the exact API usage").
+- It is far better to leave a placeholder like "[Insert code example from ${name} docs]" than to fabricate incorrect code.`;
+
+            const briefUserPrompt = `TOPIC FOR CONTENT BRIEF: "${briefTopic}"
+
+CANNIBALIZATION CONTEXT (posts that are related or could overlap — the new post must differentiate from these):
+${competingContext}
+
+PREVIOUS ANALYSIS SUMMARY:
+${lastAnalysisText.substring(0, 3000)}
+
+FULL BLOG CATALOG (${blogs.length} posts, for internal linking opportunities):
+${allTitlesCompact}
+
+Generate a comprehensive content brief with the following sections:
+
+1. **TARGET KEYWORD & SEARCH INTENT**
+   - Primary keyword to target
+   - Secondary/related keywords (5-10)
+   - Search intent (informational, transactional, navigational)
+   - What the searcher expects to find
+
+2. **META INFORMATION**
+   - Suggested meta title (under 60 chars)
+   - Suggested meta description (under 155 chars)
+   - Recommended URL slug
+
+3. **CONTENT OUTLINE (H2/H3 STRUCTURE)**
+   - Full heading structure with H2s and H3s
+   - For each section, 2-3 bullet points of what to cover
+   - Clearly mark which sections are CRITICAL for differentiation from existing content
+
+4. **KEY POINTS TO COVER**
+   - Must-include topics and talking points
+   - Data points, statistics, or examples to include
+   - Technical details or code snippets if relevant
+
+5. **WHAT TO EXPLICITLY AVOID**
+   - Topics already covered by competing posts (list them)
+   - Angles that would cause cannibalization
+   - Common pitfalls for this topic
+
+6. **DIFFERENTIATION ANGLE**
+   - How this post should be uniquely positioned
+   - What makes it different from existing content on this topic
+   - Unique value proposition for the reader
+
+7. **INTERNAL LINKING OPPORTUNITIES**
+   - Specific existing posts to link TO from this new post (with URLs)
+   - How to naturally reference them
+   - Anchor text suggestions
+
+8. **RECOMMENDED WORD COUNT & FORMAT**
+   - Target word count
+   - Recommended format (tutorial, listicle, guide, comparison, etc.)
+   - Suggested visual elements (screenshots, diagrams, code blocks, tables)
+
+9. **CTA RECOMMENDATIONS**
+   - Primary call-to-action
+   - Secondary CTAs
+   - Where to place them in the article
+
+10. **COMPETITOR REFERENCE URLS**
+    - Top 3-5 competing articles on other sites covering this topic
+    - What they do well that this post should match or beat
+    - Gaps in competitor content this post can exploit`;
+
+            const briefMessages = [
+                { role: 'system', content: briefSystemPrompt },
+                { role: 'user', content: briefUserPrompt }
+            ];
+
+            try {
+                let fullText = '';
+                await streamDeepSeek(briefMessages, signal, (chunk) => {
+                    fullText += chunk;
+                    briefResults.innerHTML = renderMarkdown(fullText) + '<span class="cursor-blink"></span>';
+                    // no auto-scroll — let the user read at their own pace
+                });
+
+                briefResults.innerHTML = renderMarkdown(fullText);
+                briefStatusText.textContent = 'Done';
+                setTimeout(() => briefStatusEl.classList.remove('visible'), 3000);
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    briefStatusText.textContent = 'Cancelled';
+                } else {
+                    briefResults.innerHTML = `<p style="color:#dc2626;">Error: ${err.message}</p>`;
+                    briefStatusText.textContent = 'Failed';
+                }
+            } finally {
+                briefBtn.disabled = false;
+                briefAbortController = null;
+            }
+        }
+
+        document.getElementById('briefTopic').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') runBrief();
+        });
+
+        function clearResults() {
+            if (abortController) abortController.abort();
+            if (briefAbortController) briefAbortController.abort();
+            document.getElementById('resultsCard').classList.remove('visible');
+            document.getElementById('results-content').innerHTML = '';
+            document.getElementById('verdictBadge').style.display = 'none';
+            document.getElementById('status').classList.remove('visible');
+            document.getElementById('progressWrap').classList.remove('visible');
+            document.getElementById('briefCard').classList.remove('visible');
+            document.getElementById('briefResults').classList.remove('visible');
+            document.getElementById('briefResults').innerHTML = '';
+            document.getElementById('altTopics').innerHTML = '';
+            document.getElementById('briefTopic').value = '';
+            document.getElementById('topic').value = '';
+            document.getElementById('topic').focus();
+            lastAnalysisText = '';
+            lastFlaggedPosts = [];
+        }
+    </script>
+</body>
+</html>
