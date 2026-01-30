@@ -68,21 +68,8 @@ class OnboardingTour {
     }
 
     init() {
-        // Check if user has completed or dismissed onboarding
-        const hasSeenOnboarding = localStorage.getItem('snap-filestack-onboarding-completed');
-
-        console.log('Onboarding initialized, hasSeenOnboarding:', hasSeenOnboarding);
-
-        if (!hasSeenOnboarding) {
-            // Show welcome modal after a short delay
-            setTimeout(() => {
-                this.showWelcome();
-            }, 500);
-        } else {
-            // Show restart tour button
-            this.addRestartButton();
-        }
-
+        // Always show the rocket button — user clicks it to start onboarding
+        this.addRestartButton();
         this.attachEventListeners();
     }
 
@@ -121,10 +108,8 @@ class OnboardingTour {
 
         // Restart tour button (added dynamically)
         document.addEventListener('click', (e) => {
-            console.log('Click detected:', e.target);
             if (e.target.closest('.restart-tour-btn')) {
-                console.log('Restart button clicked!');
-                this.startTour();
+                this.showWelcome();
             }
         });
     }
