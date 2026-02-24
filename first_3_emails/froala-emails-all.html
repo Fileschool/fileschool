@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Froala Trial Emails — All 3</title>
+  <style>
+    :root { --brand-blue: #0098f7; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #e8e8ee;
+      min-height: 100vh;
+    }
+
+    .preview-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    .shell-header {
+      background: #1a1a2e;
+      border-radius: 10px 10px 0 0;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .shell-header h1 {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .tab-bar {
+      background: #14142a;
+      display: flex;
+      gap: 2px;
+      padding: 0 16px;
+    }
+
+    .tab {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      padding: 11px 18px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .tab:hover { color: rgba(255,255,255,0.75); }
+
+    .tab.active {
+      color: #ffffff;
+      border-bottom-color: #0098f7;
+    }
+
+    .email-panel {
+      display: none;
+      background: #f0f0f3;
+      border-radius: 0 0 10px 10px;
+      padding: 28px 20px;
+    }
+
+    .email-panel.active { display: block; }
+
+    /* ── Comparison grid ── */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .comparison-col { min-width: 0; }
+
+    .col-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      margin-bottom: 10px;
+      display: inline-block;
+      color: #fff;
+    }
+
+    .col-before { background: #666; }
+    .col-after  { background: #0098f7; }
+
+    /* Override max-width within columns */
+    .comparison-col .email-card,
+    .comparison-col .subject-display {
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    /* ── Subject display (new/proposed) ── */
+    .subject-display {
+      max-width: 560px;
+      background: #fff;
+      border-radius: 8px 8px 0 0;
+      border-bottom: 1px solid #e8e8f0;
+      padding: 12px 20px;
+      margin-bottom: 0;
+    }
+
+    .subject-display .label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a0a0b8;
+      margin-bottom: 6px;
+    }
+
+    .subject-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      counter-reset: subject-counter;
+    }
+
+    .subject-list li {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      color: #2e2e3a;
+      padding: 5px 0;
+      border-bottom: 1px solid #f0f0f4;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .subject-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .subject-list li::before {
+      content: counter(subject-counter);
+      counter-increment: subject-counter;
+      font-size: 10px;
+      font-weight: 700;
+      color: #0098f7;
+      min-width: 14px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── Old email subject display ── */
+    .old-subject-display {
+      background: #fff;
+      border-bottom: 1px solid #e8e8f0;
+      border-radius: 8px 8px 0 0;
+      padding: 12px 20px;
+    }
+
+    .old-subject-display .label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a0a0b8;
+      margin-bottom: 4px;
+    }
+
+    .old-subject-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    /* ── Old email body (Gmail plain style) ── */
+    .old-email {
+      background: #fff;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      padding: 24px 28px 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: #222;
+    }
+
+    .old-email p { margin-bottom: 13px; }
+    .old-email p:last-child { margin-bottom: 0; }
+    .old-email a { color: #1a0dab; }
+    .old-email ul, .old-email ol { padding-left: 22px; margin-bottom: 13px; }
+    .old-email li { margin-bottom: 5px; }
+    .old-email strong { font-weight: 700; }
+
+    .old-cta-link {
+      color: #0098f7;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .old-unsub {
+      font-size: 11px;
+      color: #aaa;
+      border-top: 1px solid #eee;
+      margin-top: 18px;
+      padding-top: 12px;
+    }
+
+    .old-sig-name { font-weight: 700; }
+    .old-sig-title { color: #0098f7; font-weight: 600; }
+
+    /* Old Froala Email 1 — blue header template */
+    .old-froala-header {
+      background: #0098f7;
+      padding: 28px 40px;
+      text-align: center;
+      border-radius: 0;
+      margin: -24px -28px 20px;
+    }
+
+    /* ── New email card ── */
+    .email-card {
+      max-width: 560px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 0 0 10px 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .email-header {
+      padding: 24px 40px 20px;
+      border-bottom: 1px solid #ebebf0;
+      text-align: center;
+    }
+
+    .email-logo {
+      height: 28px;
+      width: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .email-body {
+      padding: 30px 40px 26px;
+    }
+
+    .email-p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #2e2e3a;
+      margin-bottom: 14px;
+    }
+
+    .email-p-last { margin-bottom: 24px; }
+
+    .cta-wrap { margin-bottom: 24px; }
+
+    .cta-btn {
+      display: inline-block;
+      background-color: #0098f7;
+      color: #ffffff !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-decoration: none !important;
+      padding: 11px 22px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .cta-btn:hover { background-color: #007fd4 !important; }
+
+    .email-divider {
+      border: none;
+      border-top: 1px solid #ebebf0;
+      margin: 0 0 22px;
+    }
+
+    .ps-block {
+      background-color: #f5f8ff;
+      border-left: 3px solid #0098f7;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      margin-top: 20px;
+    }
+
+    .ps-block p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #5a5a6e;
+      margin: 0;
+    }
+
+    .ps-block a { color: #0098f7; font-weight: 500; text-decoration: none; }
+
+    .feature-list-block {
+      background-color: #f5f8ff;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+    }
+
+    .feature-list-item {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #5a5a6e;
+      padding: 3px 0;
+    }
+
+    .feature-list-item .arrow { color: #0098f7; margin-right: 8px; }
+
+    .feature-list-item a { color: #5a5a6e; text-decoration: underline; }
+    .feature-list-item a:hover { color: #0098f7; }
+
+    .spotlight-card {
+      border: 1px solid #e0e0eb;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .spotlight-header {
+      background-color: #0098f7;
+      padding: 11px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .spotlight-badge {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #ffffff;
+      background-color: rgba(255,255,255,0.2);
+      padding: 3px 7px;
+      border-radius: 3px;
+    }
+
+    .spotlight-title {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .spotlight-body {
+      background-color: #f5f8ff;
+      padding: 14px 18px;
+    }
+
+    .spotlight-body p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.65;
+      color: #5a5a6e;
+      margin: 0;
+    }
+
+    .spotlight-body a { color: #0098f7; font-weight: 500; text-decoration: none; }
+
+    .sig-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .sig-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .sig-name {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 2px;
+    }
+
+    .sig-title {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: #0098f7;
+      margin-bottom: 4px;
+    }
+
+    .sig-email {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      color: #6b6b7e;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .sig-logo {
+      height: 16px;
+      width: auto;
+      display: block;
+    }
+
+    .team-sig-name {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #6b6b7e;
+      margin-bottom: 2px;
+    }
+
+    .team-sig-link {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      color: #0098f7;
+      text-decoration: none;
+    }
+
+    .email-footer {
+      padding: 14px 40px 20px;
+      border-top: 1px solid #ebebf0;
+      text-align: center;
+    }
+
+    .email-footer p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #a0a0b4;
+    }
+
+    .email-footer a { color: #a0a0b4; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="preview-shell">
+  <div class="shell-header">
+    <h1>Froala Trial Sequence — Emails 1–3</h1>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="showTab(0)">Email 1 — Day 1</div>
+    <div class="tab" onclick="showTab(1)">Email 2 — Day 2</div>
+    <div class="tab" onclick="showTab(2)">Email 3 — Day 4</div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       EMAIL 1 — Day 1
+  ══════════════════════════════════════════════════════ -->
+  <div class="email-panel active" id="panel-0">
+    <div class="comparison-grid">
+
+      <!-- CURRENT -->
+      <div class="comparison-col">
+        <div class="col-label col-before">Current</div>
+        <div class="old-subject-display">
+          <div class="label">Subject line</div>
+          <div class="old-subject-text">Let's get started with your new WYSIWYG editor</div>
+        </div>
+        <div class="old-email">
+          <div class="old-froala-header">
+            <img src="froala.png" alt="Froala" style="height:26px; filter:brightness(0) invert(1);">
+          </div>
+          <p>Hi Carl,</p>
+          <p>Thanks for starting your Froala trial. <strong>You now have 30 days of full access to all plugins and features,</strong> so let's make the most of your trial.</p>
+          <p>Take a look at our extensive documentation to get started. It only takes a few minutes, and we have guides for integrating over seventeen development frameworks!</p>
+          <p>In addition, there are live examples available in the documentation for everything from creating custom buttons to adding PDF export functionality.</p>
+          <p style="margin: 18px 0;"><a href="#" style="background:#0098f7; color:#fff; padding:10px 22px; text-decoration:none; font-weight:600; border-radius:4px; font-size:14px;">Get Started</a></p>
+          <p>At Froala, we want to make sure you have the most comprehensive information to integrate our editor into your app seamlessly, so we also provide documentation in the following areas:</p>
+          <ul>
+            <li>Plugins include alignment options, emoticons, font families, and more.</li>
+            <li>Concepts, so you can understand the basics of working with the Froala editor.</li>
+            <li>APIs, with information on events, methods, and options.</li>
+            <li>Server integrations so you can quickly implement image, video, and file uploads.</li>
+            <li>Migration guides to help you move from older Froala versions or other rich text editors.</li>
+          </ul>
+          <p style="margin: 18px 0;"><a href="#" style="background:#0098f7; color:#fff; padding:10px 22px; text-decoration:none; font-weight:600; border-radius:4px; font-size:14px;">See Examples</a></p>
+          <p>Do you have a problem getting started or need tech support? Reply to this email, and we'll help you out.</p>
+          <p>From,<br>The Froala Team</p>
+          <p><strong>PS.</strong> Check out our sister company, <a href="#">Filestack</a>, to simplify your file uploads, transformations, and delivery management. Since it's a native plugin, incorporating it into your Froala setup is straightforward.</p>
+          <p><img src="froala.png" alt="Froala — An Idera, Inc. Company" style="height:24px; margin-top:6px;"></p>
+          <p class="old-unsub">If you would like me to stop sending you emails, please <a href="#" style="color:#aaa;">click here</a></p>
+        </div>
+      </div>
+
+      <!-- PROPOSED -->
+      <div class="comparison-col">
+        <div class="col-label col-after">Proposed</div>
+        <div class="subject-display">
+          <div class="label">Subject lines</div>
+          <ul class="subject-list">
+            <li>Your Froala trial starts now</li>
+            <li>Start here</li>
+            <li>Full access. Here's where to begin.</li>
+            <li>Your 30 days of full access start today</li>
+            <li>Get your first integration done today</li>
+            <li>Every plugin. Every feature. Yours for 30 days.</li>
+            <li>Your trial is active</li>
+            <li>The fastest way to your first integration</li>
+            <li>Ready when you are</li>
+            <li>Pick your framework. Start building.</li>
+          </ul>
+        </div>
+        <div class="email-card">
+          <div class="email-header">
+            <img class="email-logo" src="froala.png" alt="Froala">
+          </div>
+          <div class="email-body">
+            <p class="email-p">Hi [First Name],</p>
+            <p class="email-p">Your 30-day trial is active. You have full access to every plugin and feature.</p>
+            <p class="email-p email-p-last">The fastest way to get started is the documentation. Guides cover integration across 17 frameworks, with live code examples for everything from custom toolbar buttons to PDF export.</p>
+            <div class="cta-wrap">
+              <a href="https://froala.com/wysiwyg-editor/docs/overview/" class="cta-btn">Get Started in the Docs &rarr;</a>
+            </div>
+            <p class="email-p email-p-last">If you have a question about your specific use case, reply to this email. We're happy to help.</p>
+            <hr class="email-divider">
+            <p class="team-sig-name">The Froala Team</p>
+            <a href="https://froala.com" class="team-sig-link">froala.com</a>
+            <div class="ps-block">
+              <p><strong style="color:#2e2e3a;">P.S.</strong> If your app handles file uploads, check out <a href="https://www.filestack.com/">Filestack</a> — it's a native Froala plugin, so adding file upload, transformation, and delivery to your editor takes minutes.</p>
+            </div>
+          </div>
+          <div class="email-footer">
+            <p>You're receiving this because you started a Froala trial.<br>
+            <a href="#">Unsubscribe</a></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       EMAIL 2 — Day 2 · Sandy
+  ══════════════════════════════════════════════════════ -->
+  <div class="email-panel" id="panel-1">
+    <div class="comparison-grid">
+
+      <!-- CURRENT -->
+      <div class="comparison-col">
+        <div class="col-label col-before">Current</div>
+        <div class="old-subject-display">
+          <div class="label">Subject line</div>
+          <div class="old-subject-text">How's your Froala trial going?</div>
+        </div>
+        <div class="old-email">
+          <p>Hi Carl!</p>
+          <p>I'm Sandy. I help developers get the most out of their Froala trials.</p>
+          <p>Before you spend time on integration, you might want to try our interactive demo. It lets you test the editor directly in your browser (toolbar customization, plugins, inline editing) without writing any code.</p>
+          <p>It's useful for figuring out which features you actually need before you start building. Once you know what you want, the <a href="#">examples library</a> has code snippets for each feature.</p>
+          <p><a href="#" class="old-cta-link">Try the Interactive Demo →</a></p>
+          <p>If you have questions about your specific use case, reply here. I'm happy to point you in the right direction.</p>
+          <p>
+            Sandy Dey<br>
+            <span class="old-sig-title">Sales Director, Froala</span><br>
+            E: <a href="mailto:Sandy.Dey@Froala.com">Sandy.Dey@Froala.com</a>
+          </p>
+          <p><img src="froala.png" alt="Froala — An Idera, Inc. Company" style="height:24px; margin-top:6px;"></p>
+          <p class="old-unsub">If you would like me to stop sending you emails, please <a href="#" style="color:#aaa;">click here</a></p>
+        </div>
+      </div>
+
+      <!-- PROPOSED -->
+      <div class="comparison-col">
+        <div class="col-label col-after">Proposed</div>
+        <div class="subject-display">
+          <div class="label">Subject lines</div>
+          <ul class="subject-list">
+            <li>Try the editor before you build</li>
+            <li>Worth 2 minutes before you finalize your setup</li>
+            <li>See exactly what Froala can do</li>
+            <li>Test it in your browser first</li>
+            <li>Confirm which features you need before you build</li>
+            <li>Before you lock in your setup</li>
+            <li>The interactive demo is worth a look</li>
+            <li>Two minutes. Then you'll know exactly what you need.</li>
+            <li>A faster way to figure out your setup</li>
+            <li>Try it directly in your browser</li>
+          </ul>
+        </div>
+        <div class="email-card">
+          <div class="email-header">
+            <img class="email-logo" src="froala.png" alt="Froala">
+          </div>
+          <div class="email-body">
+            <p class="email-p">Hi [First Name],</p>
+            <p class="email-p">I'm Sandy. I help developers get the most out of their Froala trials.</p>
+            <p class="email-p">If you haven't tried the interactive demo yet, it's worth a few minutes. You can test directly in your browser to confirm which features fit your use case before locking in your setup:</p>
+            <div class="feature-list-block">
+              <div class="feature-list-item"><span class="arrow">→</span><a href="https://froala.com/wysiwyg-editor/examples/toolbar-buttons-2/">Toolbar customization</a></div>
+              <div class="feature-list-item"><span class="arrow">→</span><a href="https://froala.com/wysiwyg-editor/docs/plugins/">Plugin behavior</a></div>
+              <div class="feature-list-item"><span class="arrow">→</span><a href="https://froala.com/wysiwyg-editor/examples/inline/">Inline editing modes</a></div>
+            </div>
+            <p class="email-p email-p-last">Once you know what you want, the <a href="https://froala.com/wysiwyg-editor/examples/" style="color:#0098f7; font-weight:500; text-decoration:none;">examples library</a> has ready-to-use code snippets for each feature.</p>
+            <div class="cta-wrap">
+              <a href="https://froala.com/wysiwyg-editor/demo/" class="cta-btn">Try the Interactive Demo &rarr;</a>
+            </div>
+            <p class="email-p email-p-last">Questions about your specific setup? Reply here and I'll point you in the right direction.</p>
+            <hr class="email-divider">
+            <div class="sig-wrap">
+              <div class="sig-avatar" style="background-color:#0098f7;">S</div>
+              <div>
+                <div class="sig-name">Sandy Dey</div>
+                <div class="sig-title">Sales Director, Froala</div>
+                <a href="mailto:Sandy.Dey@Froala.com" class="sig-email">Sandy.Dey@Froala.com</a>
+                <img class="sig-logo" src="froala.png" alt="Froala">
+              </div>
+            </div>
+          </div>
+          <div class="email-footer">
+            <p>You're receiving this because you started a Froala trial.<br>
+            <a href="#">Unsubscribe</a></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       EMAIL 3 — Day 4 · Karthik
+  ══════════════════════════════════════════════════════ -->
+  <div class="email-panel" id="panel-2">
+    <div class="comparison-grid">
+
+      <!-- CURRENT -->
+      <div class="comparison-col">
+        <div class="col-label col-before">Current</div>
+        <div class="old-subject-display">
+          <div class="label">Subject line</div>
+          <div class="old-subject-text">Pro Tips from Froala's Product Manager</div>
+        </div>
+        <div class="old-email">
+          <p>Hi Carl</p>
+          <p>As the product manager for Froala, I want to ensure you're getting the most out of your trial. Froala seamlessly integrates into any part of your app where text needs to be modified, and with over ten modes available, you have complete control over the editing experience.</p>
+          <p>If you're building an LMS, I highly recommend checking out <a href="#">Document Ready Mode</a>. It's designed to optimize content creation in learning environments.</p>
+          <p style="margin: 18px 0;"><a href="#" style="background:#0098f7; color:#fff; padding:10px 22px; text-decoration:none; font-weight:600; border-radius:4px; font-size:14px;">Dive into our docs</a></p>
+          <p>Our documentation has everything you need to start, from setup guides to advanced customization tips. It's the best way to ensure you use Froala to its full potential.</p>
+          <p>If you have any questions, feel free to reply to this email or reach out at <a href="mailto:support@froala.com">support@froala.com</a>. Our team is happy to help.</p>
+          <p>Happy coding!</p>
+          <p>
+            Regards,<br>
+            <strong>Karthik,</strong><br>
+            <span class="old-sig-title">Product Manager</span>
+          </p>
+          <p><img src="froala.png" alt="Froala — An Idera, Inc. Company" style="height:24px; margin-top:6px;"></p>
+          <p class="old-unsub">If you would like me to stop sending you emails, please <a href="#" style="color:#aaa;">click here</a></p>
+        </div>
+      </div>
+
+      <!-- PROPOSED -->
+      <div class="comparison-col">
+        <div class="col-label col-after">Proposed</div>
+        <div class="subject-display">
+          <div class="label">Subject lines</div>
+          <ul class="subject-list">
+            <li>A feature worth knowing about</li>
+            <li>One Froala mode worth configuring early</li>
+            <li>Set this up before you go too far in</li>
+            <li>A quick tip from our product manager</li>
+            <li>Most developers configure this after they start building</li>
+            <li>One editing mode worth knowing about</li>
+            <li>Worth setting up before your build goes too far</li>
+            <li>A note from Karthik on your trial</li>
+            <li>The editing mode developers wish they'd set up sooner</li>
+            <li>Configure this before you ship</li>
+          </ul>
+        </div>
+        <div class="email-card">
+          <div class="email-header">
+            <img class="email-logo" src="froala.png" alt="Froala">
+          </div>
+          <div class="email-body">
+            <p class="email-p">Hi [First Name],</p>
+            <p class="email-p">I'm Karthik, Froala's product manager.</p>
+            <p class="email-p">Froala supports over ten editing modes, giving you precise control over the experience you build into your app. One that developers often configure after they've started building — and wish they'd set up sooner:</p>
+            <div class="spotlight-card">
+              <div class="spotlight-header">
+                <span class="spotlight-badge">Feature spotlight</span>
+                <span class="spotlight-title">Document Ready Mode</span>
+              </div>
+              <div class="spotlight-body">
+                <p>Built for content-heavy environments like LMS platforms and document editors. It changes how the editor initializes to match that context, giving users a focused, document-first experience right out of the box. <a href="https://froala.com/wysiwyg-editor/examples/document-ready/">See how it works &rarr;</a></p>
+              </div>
+            </div>
+            <p class="email-p email-p-last">If it fits your use case, it's worth configuring before you go too far into your build. The example page has everything you need to get it running.</p>
+            <div class="cta-wrap">
+              <a href="https://froala.com/wysiwyg-editor/examples/document-ready/" class="cta-btn">See the Document Ready Example &rarr;</a>
+            </div>
+            <p class="email-p email-p-last">Questions? Reply here or reach out at <a href="mailto:support@froala.com" style="color:#0098f7; text-decoration:none;">support@froala.com</a>. We're happy to help.</p>
+            <hr class="email-divider">
+            <div class="sig-wrap">
+              <div class="sig-avatar" style="background-color:#1a1a2e;">K</div>
+              <div>
+                <div class="sig-name">Karthik</div>
+                <div class="sig-title">Product Manager, Froala</div>
+                <a href="mailto:support@froala.com" class="sig-email">support@froala.com</a>
+                <img class="sig-logo" src="froala.png" alt="Froala">
+              </div>
+            </div>
+          </div>
+          <div class="email-footer">
+            <p>You're receiving this because you started a Froala trial.<br>
+            <a href="#">Unsubscribe</a></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showTab(index) {
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === index));
+    document.querySelectorAll('.email-panel').forEach((p, i) => p.classList.toggle('active', i === index));
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filestack Trial Emails — All 3</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #e4e4e8;
+      min-height: 100vh;
+    }
+
+    .preview-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    .shell-header {
+      background: #1a1a1a;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .shell-header h1 {
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .tab-bar {
+      background: #111;
+      display: flex;
+      gap: 0;
+      padding: 0 16px;
+      border-bottom: 2px solid #EF4A25;
+    }
+
+    .tab {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.38);
+      padding: 11px 18px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .tab:hover { color: rgba(255,255,255,0.65); }
+
+    .tab.active {
+      color: #fff;
+      border-bottom-color: #EF4A25;
+      background: rgba(239,74,37,0.08);
+    }
+
+    .email-panel {
+      display: none;
+      background: #dcdce0;
+      padding: 28px 20px;
+    }
+
+    .email-panel.active { display: block; }
+
+    /* ── Comparison grid ── */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .comparison-col {
+      min-width: 0;
+    }
+
+    .col-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      margin-bottom: 10px;
+      display: inline-block;
+      color: #fff;
+    }
+
+    .col-before { background: #666; }
+    .col-after  { background: #EF4A25; }
+
+    /* Override centered/max-width constraints within comparison columns */
+    .comparison-col .email-card,
+    .comparison-col .subject-display {
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    /* ── Subject display (new/proposed) ── */
+    .subject-display {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e4;
+      padding: 14px 22px;
+    }
+
+    .meta-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #b0b0be;
+      margin-bottom: 6px;
+    }
+
+    .subject-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      counter-reset: subject-counter;
+    }
+
+    .subject-list li {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      color: #2a2a2a;
+      padding: 5px 0;
+      border-bottom: 1px solid #f0f0f4;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .subject-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .subject-list li::before {
+      content: counter(subject-counter);
+      counter-increment: subject-counter;
+      font-size: 10px;
+      font-weight: 700;
+      color: #EF4A25;
+      min-width: 14px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── Old email subject display ── */
+    .old-subject-display {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e4;
+      padding: 14px 22px;
+    }
+
+    .old-subject-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    /* ── Old email body (Gmail plain style) ── */
+    .old-email {
+      background: #fff;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+      padding: 24px 28px 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: #222;
+    }
+
+    .old-email p { margin-bottom: 13px; }
+    .old-email p:last-child { margin-bottom: 0; }
+    .old-email a { color: #EF4A25; }
+    .old-email ul, .old-email ol { padding-left: 22px; margin-bottom: 13px; }
+    .old-email li { margin-bottom: 5px; }
+    .old-email strong { font-weight: 700; }
+
+    .old-cta-link {
+      color: #EF4A25;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .old-unsub {
+      font-size: 11px;
+      color: #aaa;
+      border-top: 1px solid #eee;
+      margin-top: 18px;
+      padding-top: 12px;
+    }
+
+    .old-sig-name { font-weight: 700; }
+    .old-sig-title { color: #EF4A25; font-weight: 600; }
+
+    /* ── New email card ── */
+    .email-card {
+      max-width: 560px;
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+
+    .email-header {
+      padding: 20px 40px;
+      border-bottom: 3px solid #EF4A25;
+    }
+
+    .email-logo {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    .email-body {
+      padding: 32px 40px 28px;
+    }
+
+    .ep {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #2a2a2a;
+      margin-bottom: 14px;
+    }
+
+    .ep-xl { margin-bottom: 24px; }
+
+    .cta-wrap { margin-bottom: 24px; }
+
+    .cta-btn {
+      display: inline-block;
+      background-color: #EF4A25;
+      color: #fff !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-decoration: none !important;
+      padding: 11px 22px;
+    }
+
+    .cta-btn:hover { background-color: #d43d1c !important; }
+
+    .e-divider {
+      border: none;
+      border-top: 1px solid #e8e8ec;
+      margin: 0 0 22px;
+    }
+
+    .ps-block {
+      background-color: #fff8f6;
+      border-left: 3px solid #EF4A25;
+      padding: 12px 16px;
+      margin-top: 20px;
+    }
+
+    .ps-block p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #5a5a5a;
+      margin: 0;
+    }
+
+    .ps-block a { color: #EF4A25; font-weight: 500; text-decoration: none; }
+
+    .step-list {
+      background: #fafafa;
+      border: 1px solid #e8e8ec;
+      border-left: 3px solid #EF4A25;
+      padding: 14px 18px;
+      margin-bottom: 22px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 4px 0;
+    }
+
+    .step-num {
+      width: 20px;
+      height: 20px;
+      background: #EF4A25;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 20px;
+      text-align: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-text {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #3a3a3a;
+    }
+
+    .step-text a { color: #EF4A25; font-weight: 500; text-decoration: none; }
+
+    /* Workflows block */
+    .workflow-block {
+      border: 1px solid #d8d8dc;
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+
+    .workflow-bar {
+      background: #1a1a1a;
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .workflow-bar-label {
+      font-family: 'SFMono-Regular', 'Consolas', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .workflow-bar-name {
+      font-family: 'SFMono-Regular', 'Consolas', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: #EF4A25;
+    }
+
+    .workflow-code {
+      background: #f6f6f8;
+      padding: 14px 16px;
+      border-bottom: 1px solid #e4e4e8;
+    }
+
+    .code-line {
+      font-family: 'SFMono-Regular', 'Consolas', monospace;
+      font-size: 11.5px;
+      line-height: 1.8;
+      color: #444;
+    }
+
+    .code-key { color: #8b6914; }
+    .code-val { color: #1a6e3c; }
+    .code-comment { color: #999; font-style: italic; }
+    .code-orange { color: #EF4A25; font-weight: 600; }
+
+    .workflow-desc {
+      background: #fff;
+      padding: 12px 16px;
+    }
+
+    .workflow-desc p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #5a5a5a;
+      margin: 0;
+    }
+
+    .workflow-desc a { color: #EF4A25; font-weight: 500; text-decoration: none; }
+
+    .sig-logo {
+      height: 18px;
+      width: auto;
+      display: block;
+      margin-top: 8px;
+    }
+
+    .team-sig-name {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #6b6b6b;
+      margin-bottom: 3px;
+    }
+
+    .team-sig-link {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      color: #EF4A25;
+      text-decoration: none;
+    }
+
+    .email-footer {
+      padding: 14px 40px 20px;
+      border-top: 1px solid #e8e8ec;
+      text-align: center;
+    }
+
+    .email-footer p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #b4b4be;
+    }
+
+    .email-footer a { color: #b4b4be; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="preview-shell">
+
+  <div class="shell-header">
+    <h1>Filestack Trial Sequence — Emails 1–3</h1>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="showTab(0)">Email 1 — Day 1</div>
+    <div class="tab" onclick="showTab(1)">Email 2 — Day 2</div>
+    <div class="tab" onclick="showTab(2)">Email 3 — Day 4</div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       EMAIL 1 — Day 1
+  ══════════════════════════════════════════════════════ -->
+  <div class="email-panel active" id="panel-0">
+    <div class="comparison-grid">
+
+      <!-- CURRENT -->
+      <div class="comparison-col">
+        <div class="col-label col-before">Current</div>
+        <div class="old-subject-display">
+          <div class="meta-label">Subject line</div>
+          <div class="old-subject-text">Welcome to Filestack! Let's get you up and running in 5 minutes 🚀</div>
+        </div>
+        <div class="old-email">
+          <p>Hi Carl,</p>
+          <p>Welcome to Filestack! You've just unlocked a powerful file management solution that thousands of developers trust.</p>
+          <p><strong>Get started in under 5 minutes:</strong></p>
+          <ul>
+            <li>📚 <a href="#">Quick Start Guide</a> — Your fastest path to implementation</li>
+            <li>🔧 <a href="#">Choose Your SDK</a> — JavaScript, React, Python, and more</li>
+            <li>⚡ <a href="#">Generate Code Instantly</a> — Auto-generate your Filestack code</li>
+          </ul>
+          <p>Filestack isn't just file uploads—it's your complete solution for uploading, transforming, and delivering files with our global CDN and enterprise-grade security.</p>
+          <p><a href="#" class="old-cta-link">Start Building Now →</a></p>
+          <p>Questions? Reply to this email or reach us at <a href="mailto:support@filestack.com">support@filestack.com</a>.</p>
+          <p>The Filestack Team</p>
+          <p><img src="filestack.png" alt="Filestack" style="height:28px; margin-top:4px;"></p>
+          <p class="old-unsub">If you would like me to stop sending you emails, please <a href="#" style="color:#aaa;">click here</a></p>
+        </div>
+      </div>
+
+      <!-- PROPOSED -->
+      <div class="comparison-col">
+        <div class="col-label col-after">Proposed</div>
+        <div class="subject-display">
+          <div class="meta-label">Subject lines</div>
+          <ul class="subject-list">
+            <li>Your Filestack account is active</li>
+            <li>Start here</li>
+            <li>Your API key is waiting</li>
+            <li>One guide. Your first upload done.</li>
+            <li>Get your first integration done today</li>
+            <li>Full access. Here's where to start.</li>
+            <li>Your 30-day trial starts now</li>
+            <li>The fastest way to your first upload</li>
+            <li>Pick your framework. We'll handle the rest.</li>
+            <li>Ready when you are</li>
+          </ul>
+        </div>
+        <div class="email-card">
+          <div class="email-header">
+            <img class="email-logo" src="filestack.png" alt="Filestack">
+          </div>
+          <div class="email-body">
+            <p class="ep">Hi [First Name],</p>
+            <p class="ep">Your Filestack account is active. You have access to file uploads, transformations, CDN delivery, and storage, so you can handle files in your app without building the infrastructure yourself.</p>
+            <p class="ep ep-xl">The Quick Start guide gets you to your first upload in minutes. It covers API key setup, SDK installation, and a working integration across your framework of choice.</p>
+            <div class="cta-wrap">
+              <a href="https://www.filestack.com/docs/getting-started/quick-start/" class="cta-btn">Open the Quick Start Guide &rarr;</a>
+            </div>
+            <p class="ep ep-xl">Questions about your setup? Reply to this email or reach out at <a href="mailto:support@filestack.com" style="color:#EF4A25; text-decoration:none;">support@filestack.com</a>.</p>
+            <hr class="e-divider">
+            <p class="team-sig-name">The Filestack Team</p>
+            <a href="https://www.filestack.com" class="team-sig-link">filestack.com</a>
+            <img class="sig-logo" src="filestack.png" alt="Filestack">
+            <div class="ps-block">
+              <p><strong style="color:#1a1a1a;">P.S.</strong> If your app also needs a rich text editor, check out <a href="https://froala.com/">Froala</a>. It's a native Filestack integration, so adding file upload directly to your editor takes minutes.</p>
+            </div>
+          </div>
+          <div class="email-footer">
+            <p>You're receiving this because you created a Filestack account.<br>
+            <a href="#">Unsubscribe</a></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       EMAIL 2 — Day 2
+  ══════════════════════════════════════════════════════ -->
+  <div class="email-panel" id="panel-1">
+    <div class="comparison-grid">
+
+      <!-- CURRENT -->
+      <div class="comparison-col">
+        <div class="col-label col-before">Current</div>
+        <div class="old-subject-display">
+          <div class="meta-label">Subject line</div>
+          <div class="old-subject-text">One integration, endless possibilities</div>
+        </div>
+        <div class="old-email">
+          <p>Hi Carl,</p>
+          <p>Ready to integrate Filestack? It's easier than you think.</p>
+          <p><strong>3 simple steps:</strong></p>
+          <ol>
+            <li><strong>Pick your framework</strong> — We support <a href="#">JavaScript</a>, <a href="#">React</a>, <a href="#">Python</a>, <a href="#">Angular</a>, and <a href="#">more</a></li>
+            <li><strong>Grab your API key</strong> from the Dev Portal</li>
+            <li><strong>Initialize and customize</strong> — Tailor appearance, behavior, and security to your needs</li>
+          </ol>
+          <p><strong>Pro tip:</strong> Use <a href="#">snap.filestack.com</a> to generate production-ready code instantly—no manual coding required.</p>
+          <p><a href="#" class="old-cta-link">View Integration Guides →</a></p>
+          <p>Happy coding!</p>
+          <p>The Filestack Team</p>
+          <p><img src="filestack.png" alt="Filestack" style="height:28px; margin-top:4px;"></p>
+          <p class="old-unsub">If you would like me to stop sending you emails, please <a href="#" style="color:#aaa;">click here</a></p>
+        </div>
+      </div>
+
+      <!-- PROPOSED -->
+      <div class="comparison-col">
+        <div class="col-label col-after">Proposed</div>
+        <div class="subject-display">
+          <div class="meta-label">Subject lines</div>
+          <ul class="subject-list">
+            <li>Your first Filestack integration</li>
+            <li>Three steps to a working file upload</li>
+            <li>Still setting up? Here's the shortcut.</li>
+            <li>The fastest path from API key to production</li>
+            <li>Get unstuck in 10 minutes</li>
+            <li>Your integration checklist</li>
+            <li>Pick a framework. We have the rest.</li>
+            <li>Working file uploads, faster than you think</li>
+            <li>From API key to live upload</li>
+            <li>Skip the setup. Start with working code.</li>
+          </ul>
+        </div>
+        <div class="email-card">
+          <div class="email-header">
+            <img class="email-logo" src="filestack.png" alt="Filestack">
+          </div>
+          <div class="email-body">
+            <p class="ep">Hi [First Name],</p>
+            <p class="ep">As you work through your first integration, here's the clearest path from your API key to a working file upload:</p>
+            <div class="step-list">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-text"><strong>Pick your framework.</strong> Filestack supports <a href="https://www.filestack.com/docs/uploads/pickers/web/">JavaScript, React, and Angular</a> for web, plus iOS and Android natively.</div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-text"><strong>Grab your API key</strong> from the <a href="https://dev.filestack.com/login/">Dev Portal</a> and initialize the client in your project.</div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-text"><strong>Configure and deploy.</strong> Set your accepted file types, storage destination, and upload sources. Then ship.</div>
+              </div>
+            </div>
+            <p class="ep ep-xl">If you want to skip straight to working code, <a href="https://snap.filestack.com" style="color:#EF4A25; font-weight:500; text-decoration:none;">snap.filestack.com</a> generates a production-ready integration for your framework instantly.</p>
+            <div class="cta-wrap">
+              <a href="https://www.filestack.com/docs/api/sdks/" class="cta-btn">Browse the SDK Docs &rarr;</a>
+            </div>
+            <p class="ep ep-xl">Questions about your specific setup? Reply here and we'll point you in the right direction.</p>
+            <hr class="e-divider">
+            <p class="team-sig-name">The Filestack Team</p>
+            <a href="https://www.filestack.com" class="team-sig-link">filestack.com</a>
+            <img class="sig-logo" src="filestack.png" alt="Filestack">
+          </div>
+          <div class="email-footer">
+            <p>You're receiving this because you created a Filestack account.<br>
+            <a href="#">Unsubscribe</a></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       EMAIL 3 — Day 4
+  ══════════════════════════════════════════════════════ -->
+  <div class="email-panel" id="panel-2">
+    <div class="comparison-grid">
+
+      <!-- CURRENT -->
+      <div class="comparison-col">
+        <div class="col-label col-before">Current</div>
+        <div class="old-subject-display">
+          <div class="meta-label">Subject line</div>
+          <div class="old-subject-text">Carl, a quick tip from your account manager</div>
+        </div>
+        <div class="old-email">
+          <p>Hi, Carl,</p>
+          <p>I'm Paul, your account manager at Filestack!</p>
+          <p>Quick question: Have you already implemented our file-handling solution into your project? If not, try using this <a href="#">simple tool</a> to get started in a snap.</p>
+          <p>Happy to assist you! Thanks and have a great day!</p>
+          <p>Many thanks</p>
+          <p>
+            <span class="old-sig-name">Paul Thomson</span><br>
+            <span class="old-sig-title">Customer Success Executive</span><br>
+            E: <a href="mailto:paul.thomson@filestack.com">paul.thomson@filestack.com</a><br>
+            O: +441 628 684460<br>
+            <strong>Schedule a Meeting!</strong><br>
+            <a href="#">https://zcal.co/i/DxPBCEhd</a>
+          </p>
+          <p><img src="filestack.png" alt="Filestack" style="height:28px; margin-top:8px;"></p>
+          <p style="margin-top:10px;"><a href="#" style="color:#EF4A25; font-size:12px; display:block;">https://snap.filestack.com/#dashboard</a><a href="#" style="color:#EF4A25; font-size:12px; display:block;">https://www.filestack.com/</a></p>
+          <p class="old-unsub">If you would like me to stop sending you emails, please <a href="#" style="color:#aaa;">click here</a></p>
+        </div>
+      </div>
+
+      <!-- PROPOSED -->
+      <div class="comparison-col">
+        <div class="col-label col-after">Proposed</div>
+        <div class="subject-display">
+          <div class="meta-label">Subject lines</div>
+          <ul class="subject-list">
+            <li>A Filestack feature worth setting up early</li>
+            <li>Configure this before you go too far in</li>
+            <li>One thing worth doing before you ship</li>
+            <li>Most developers add this after launch</li>
+            <li>A quick tip from our customer success team</li>
+            <li>Worth 5 minutes before your build goes too far</li>
+            <li>Set this up now. Thank yourself later.</li>
+            <li>The part of Filestack that saves the most dev time</li>
+            <li>Before you ship — a note from Jordan</li>
+            <li>One workflow config that changes how you build</li>
+          </ul>
+        </div>
+        <div class="email-card">
+          <div class="email-header">
+            <img class="email-logo" src="filestack.png" alt="Filestack">
+          </div>
+          <div class="email-body">
+            <p class="ep">Hi [First Name],</p>
+            <p class="ep">I'm Jordan, on the customer success team at Filestack.</p>
+            <p class="ep">Filestack handles uploads, but the part that tends to save the most dev time is Workflows. You define the processing logic once, attach it to your upload config, and every file that comes through gets handled automatically. One worth knowing about before you get too far into your build:</p>
+            <div class="workflow-block">
+              <div class="workflow-bar">
+                <span class="workflow-bar-label">workflow config</span>
+                <span class="workflow-bar-name">filestack.workflows</span>
+              </div>
+              <div class="workflow-code">
+                <div class="code-line"><span class="code-key">trigger</span>: <span class="code-val">"on_upload"</span></div>
+                <div class="code-line"><span class="code-key">tasks</span>: [</div>
+                <div class="code-line">&nbsp;&nbsp;<span class="code-orange">resize</span>, <span class="code-orange">convert</span>, <span class="code-orange">virus_scan</span>, <span class="code-orange">custom_logic</span></div>
+                <div class="code-line">]</div>
+                <div class="code-line"><span class="code-key">attach_to_picker</span>: <span class="code-val">storeTo.workflows: [<span class="code-orange">YOUR_WORKFLOW_ID</span>]</span></div>
+                <div class="code-line"><span class="code-comment">// runs automatically on every upload, no backend code required</span></div>
+              </div>
+              <div class="workflow-desc">
+                <p>Process files on upload without writing backend code. Resize images, convert documents, run virus scans, or trigger custom logic. You attach a workflow ID to your upload config and Filestack handles the rest. <a href="https://www.filestack.com/docs/workflows/overview/">See the full Workflows docs &rarr;</a></p>
+              </div>
+            </div>
+            <p class="ep ep-xl">If it fits your use case, it's worth configuring before you go too far into your build. The example in the docs shows the full setup.</p>
+            <div class="cta-wrap">
+              <a href="https://www.filestack.com/docs/workflows/overview/" class="cta-btn">See the Workflows Docs &rarr;</a>
+            </div>
+            <p class="ep ep-xl">Questions about your specific use case? Reply here and I'm happy to help.</p>
+            <hr class="e-divider">
+            <p class="team-sig-name">Jordan at Filestack</p>
+            <img class="sig-logo" src="filestack.png" alt="Filestack">
+          </div>
+          <div class="email-footer">
+            <p>You're receiving this because you created a Filestack account.<br>
+            <a href="#">Unsubscribe</a></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showTab(index) {
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === index));
+    document.querySelectorAll('.email-panel').forEach((p, i) => p.classList.toggle('active', i === index));
+  }
+</script>
+
+</body>
+</html>
