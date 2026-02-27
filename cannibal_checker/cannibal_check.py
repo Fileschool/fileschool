@@ -3,7 +3,7 @@ import sys
 import os
 import requests
 
-DEEPSEEK_API_KEY = "sk-4f83e81073eb49c6b78400444a3dbc92"
+DEEPSEEK_API_KEY = "aa"
 DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"
 
 DATASETS = {
