@@ -299,7 +299,6 @@ Once you've uploaded your first file, explore these Filestack capabilities:
 | Documentation | [filestack.com/docs](https://www.filestack.com/docs) |
 | API Reference | [filestack.github.io/filestack-js](https://filestack.github.io/filestack-js) |
 | GitHub | [github.com/filestack](https://github.com/filestack) |
-| Support | [support.filestack.com](https://support.filestack.com) |
 | Discord | [discord.com/invite/58TRKSRPxD](https://discord.com/invite/58TRKSRPxD) |
 | Quick Start (official) | [filestack.com/docs/getting-started/quick-start](https://www.filestack.com/docs/getting-started/quick-start/) |
 
