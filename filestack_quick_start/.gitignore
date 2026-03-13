@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Build outputs
+*.class
+*.jar
+build/
+dist/
+out/
+
+# iOS / macOS
+*.xcworkspace
+Pods/
+.DS_Store
+
+# Go
+*.exe
+
+# Environment / secrets
+.env
+*.env.local
+
+# Editor
+.vscode/
+.idea/
+*.swp

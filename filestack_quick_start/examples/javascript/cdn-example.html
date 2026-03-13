@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Filestack — CDN Example</title>
+  <script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"
+          crossorigin="anonymous"></script>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+    button { padding: 12px 24px; font-size: 16px; cursor: pointer; background: #0066ff; color: white; border: none; border-radius: 6px; }
+    button:hover { background: #0052cc; }
+    #result { margin-top: 20px; word-break: break-all; max-width: 600px; }
+  </style>
+</head>
+<body>
+  <h1>Filestack Upload Demo</h1>
+  <button id="picker">Upload File</button>
+  <div id="result"></div>
+
+  <script>
+    const API_KEY = "YOUR_API_KEY"; // Replace with your Filestack API key
+
+    const client = filestack.init(API_KEY);
+    const options = {
+      onUploadDone: (res) => {
+        const file = res.filesUploaded[0];
+        document.getElementById("result").innerHTML =
+          `<strong>Uploaded!</strong><br>URL: <a href="${file.url}" target="_blank">${file.url}</a>`;
+        console.log(res);
+      },
+    };
+    const picker = client.picker(options);
+
+    document.getElementById("picker")
+      .addEventListener("click", () => picker.open());
+  </script>
+</body>
+</html>
