@@ -10,7 +10,7 @@
 
 Filestack is a file upload and content management API that powers file handling for thousands of applications. The **File Uploader** (also called the Picker) is an embeddable widget that lets users upload from their device, cloud drives (Google Drive, Dropbox, Box, OneDrive, and more), or via URL - with no backend infrastructure required.
 
-**Get your free API key:** [dev.filestack.com/signup/free](https://dev.filestack.com/signup/free)
+**Get your free API key:** [[dev.filestack.com/signup/free](https://dev.filestack.com/signup/free)](https://www.filestack.com/signup-start/)
 
 ---
 
