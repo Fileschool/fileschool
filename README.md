@@ -4,7 +4,7 @@
 
 ![Filestack Logo](./images/filestack-logo.png)
 
-**[Examples](https://github.com/filestack/filestack-js) • [GitHub](https://github.com/filestack) • [Blog](https://blog.filestack.com/) • [Docs](https://www.filestack.com/docs/) • [API Reference](https://www.filestack.com/docs/api/file/)**
+**[Quick Start](https://github.com/Fileschool/fileschool/tree/main/filestack_quick_start) • [GitHub](https://github.com/filestack) • [Blog](https://blog.filestack.com/) • [Docs](https://www.filestack.com/docs/) • [API Reference](https://www.filestack.com/docs/api/file/)**
 
 *Community-organized libraries, tools, and resources for the Filestack ecosystem.*
 
