@@ -66,7 +66,7 @@ npm install filestack-js
 **Quickest start - CDN (no build step):**
 
 ```html
-<script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+<script src="//static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"></script>
 <button id="picker">Upload File</button>
 <script>
   const client = filestack.init("YOUR_API_KEY");
