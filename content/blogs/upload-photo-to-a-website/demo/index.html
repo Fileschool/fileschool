@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload a Photo with Filestack</title>
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      text-align: center;
+    }
+    #preview {
+      margin-top: 20px;
+      max-width: 100%;
+      max-height: 400px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      object-fit: contain;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #0077ff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fd1;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Upload a Photo to Your Website</h2>
+  <p>Click the button below to select and upload your photo:</p>
+
+  <button onclick="openPicker()">Upload Photo</button> <br>
+
+  <img id="preview" src="" alt="Your uploaded photo will appear here" loading="lazy" />
+
+  <script>
+    const client = filestack.init('YOUR_API_KEY'); // Replace with your real API key 
+
+    function openPicker() {
+      client.picker({
+        accept: ['image/*'],
+        onUploadDone: (res) => {
+          const imageUrl = res.filesUploaded[0].url;
+          displayImage(imageUrl);
+        }
+      }).open();
+    }
+
+    function displayImage(url) {
+      const preview = document.getElementById('preview');
+      preview.src = url;
+      preview.alt = 'Successfully uploaded image'; // optional override
+    }
+  </script>
+
+</body>
+</html>

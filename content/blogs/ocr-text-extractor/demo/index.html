@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Text Extractor</title>
+    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #text-output {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .uploaded-image {
+            max-width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload a Scanned Report & Extract Text</h2>
+        <button onclick="uploadFile()">Upload File</button>
+        <div id="image-preview"></div>
+        <textarea id="text-output" placeholder="Extracted text will appear here..." readonly></textarea>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const filestackClient = filestack.init('YOUR_API_KEY'); // Replace with your Filestack API Key
+
+            window.uploadFile = function() {
+                filestackClient.picker({
+                    accept: ['image/*', 'application/pdf'],
+                    uploadInBackground: false, // Background upload is disabled to avoid conflicts when the cropper is enabled
+                    onUploadDone: (response) => {
+                        const fileUrl = response.filesUploaded[0].url;
+                        const fileHandle = response.filesUploaded[0].handle;
+                        displayImage(fileUrl);
+                        extractText(fileHandle);
+                    }
+                }).open();
+            };
+
+            function displayImage(fileUrl) {
+                document.getElementById('image-preview').innerHTML = 
+                    `<img src="${fileUrl}" class="uploaded-image">`;
+            }
+
+            function extractText(fileHandle) {
+                const policy = 'YOUR_POLICY'; // Replace with your generated policy
+                const signature = 'YOUR_SIGNATURE'; // Replace with your generated signature
+                fetch(`https://cdn.filestackcontent.com/security=p:${policy},s:${signature}/ocr/${fileHandle}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('text-output').value = data.text || 'No text detected.';
+                    })
+                    .catch(error => {
+                        console.error('Error extracting text:', error);
+                        document.getElementById('text-output').value = 'Error processing file.';
+                    });
+            }
+        };
+    </script>
+</body>
+</html>

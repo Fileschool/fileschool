@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Upload with Filestack</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+    #uploader-container {
+      text-align: center;
+      padding: 40px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    #upload-button {
+      background-color: #007bff;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    #upload-button:hover {
+      background-color: #0056b3;
+    }
+    #file-list {
+      margin-top: 20px;
+    }
+    .file-name {
+      font-size: 16px;
+      color: #555;
+    }
+    .success-message {
+      color: #28a745;
+      font-weight: bold;
+    }
+    .preview-container {
+      margin-top: 15px;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  </style>
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+</head>
+<body>
+
+  <div id="uploader-container">
+    <h1>Upload Your Files</h1>
+    <button id="upload-button">Upload Files</button>
+    <div id="file-list"></div>
+    <div class="preview-container" id="preview-container"></div>
+  </div>
+
+  <script>
+    const filestackClient = filestack.init('YOUR_API_KEY'); // Replace 'YOUR_API_KEY' with your actual Filestack API key.
+    const uploadButton = document.getElementById('upload-button');
+    const fileList = document.getElementById('file-list');
+    const previewContainer = document.getElementById('preview-container');
+
+    uploadButton.addEventListener('click', () => {
+      filestackClient.picker({
+        maxFiles: 5, // Allow up to 5 files
+        accept: 'application/*', // Accept all document types
+        onUploadDone: (result) => {
+          fileList.innerHTML = ''; // Clear the file list before showing new files
+          previewContainer.innerHTML = ''; // Clear previous previews
+
+          result.filesUploaded.forEach(file => {
+            // Display file name
+            const fileNameElement = document.createElement('div');
+            fileNameElement.classList.add('file-name');
+            fileNameElement.innerText = file.filename;
+            fileList.appendChild(fileNameElement);
+
+            // Add preview iframe
+            const iframe = document.createElement('iframe');
+            iframe.src = file.url;
+            previewContainer.appendChild(iframe);
+          });
+
+          // Success message
+          const successMessage = document.createElement('div');
+          successMessage.classList.add('success-message');
+          successMessage.innerText = 'Files uploaded successfully!';
+          fileList.appendChild(successMessage);
+        }
+      }).open();
+    });
+  </script>
+
+</body>
+</html>

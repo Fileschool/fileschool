@@ -1,0 +1,127 @@
+/* General page styling */
+
+        body {
+
+            font-family: 'Poppins', sans-serif;
+
+            text-align: center;
+
+            margin: 0;
+
+            padding: 0;
+
+            height: 100vh;
+
+            background: linear-gradient(135deg, #f06, #3cf);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        /* Container styling for the form */
+
+        .container {
+
+            max-width: 600px;
+
+            margin: 50px auto;
+
+            padding: 20px;
+
+            background: rgba(255, 255, 255, 0.9);
+
+            border-radius: 10px;
+
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+
+            color: black;
+
+        }
+
+        h2, h3 {
+
+            color: #333;
+
+        }
+
+        /* Button styling */
+
+        button {
+
+            width: 100%;
+
+            padding: 10px;
+
+            margin-top: 10px;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            transition: 0.3s;
+
+        }
+
+        /* Specific button colors */
+
+        .upload-btn { background: #007bff; color: white; }
+
+        .submit-btn { background: #28a745; color: white; }
+
+        .reset-btn { background: #dc3545; color: white; }
+
+
+        /* Button hover effect */
+
+        button:hover {
+
+            opacity: 0.8;
+
+        }
+
+
+
+        /* Form input styling */
+
+        select, input {
+
+            width: 100%;
+
+            padding: 8px;
+
+            margin: 5px 0;
+
+            border: 1px solid #ddd;
+
+            border-radius: 5px;
+
+        }
+
+
+
+        /* Shirt preview image styling */
+
+        .shirt-preview {
+
+            max-width: 250px;
+
+            display: block;
+
+            margin: 10px auto;
+
+        }
+
+
+
+        /* Hidden class to toggle visibility */
+
+        .hidden { display: none; }

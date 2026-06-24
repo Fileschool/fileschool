@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filestack Bulk Upload</title>
+  <script src="https://static.filestackapi.com/filestack-js/3.27.0/filestack.min.js"></script>
+  <style>
+    /* General Page Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #upload-status {
+      margin-top: 30px;
+      width: 80%;
+      max-width: 1200px;
+    }
+
+    #upload-status h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .image-grid img {
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .image-grid img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .image-grid p {
+    text-align: center;
+    font-size: 14px;
+    color: #333; 
+    margin-top: 10px; 
+    margin-bottom: 5px; 
+    }
+
+    .image-grid a {
+      text-decoration: none;
+      color: #007bff;
+      font-size: 14px;
+      display: block;
+      margin-top: 5px;
+      text-align: center;
+    }
+
+    .image-grid a:hover {
+      color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Filestack Bulk Upload Example</h1>
+  <button id="upload-btn">Upload Images</button>
+  <div id="upload-status"></div>
+
+  <script>
+    // Initialize Filestack client with your API Key
+    const client = filestack.init('YOUR_API_KEY'); // Replace with your Filestack API key 
+
+    // Add event listener to the button
+    document.getElementById('upload-btn').addEventListener('click', () => {
+      // Open the picker
+      client.picker({
+        maxFiles: 50, // Set the max number of files to upload
+        accept: ['image/*'], // Accept only image files
+        uploadInBackground: false, // Ensures uploads complete before closing picker
+        onUploadDone: (result) => {
+            // Display uploaded files with resize and other transformations
+            const uploadedFiles = result.filesUploaded;
+            let uploadStatus = '<h2>Uploaded Images:</h2>';
+            uploadStatus += '<div class="image-grid">';
+            uploadedFiles.forEach(file => {
+                const resizedUrl = `https://cdn.filestackcontent.com/resize=width:200,height:200,fit:crop/${file.handle}`;
+                uploadStatus += `
+                <div>
+                    <img src="${resizedUrl}" alt="${file.filename}" />
+                    <p>${file.filename}</p>
+                    <a href="${file.url}" target="_blank">View Image</a>
+                </div>
+                `;
+            });
+          uploadStatus += '</div>';
+          document.getElementById('upload-status').innerHTML = uploadStatus;
+        },
+      }).open();
+    });
+  </script>
+</body>
+</html>

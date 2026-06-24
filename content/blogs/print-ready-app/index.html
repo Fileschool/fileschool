@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Print-Ready Workflow Demo</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Make Your Image Print-Ready</h1>
+        <p>Upload a file using the Filestack File Picker. The app will send it through a Filestack Workflow and return the print-ready version.</p>
+
+        <button id="uploadBtn">Upload Image</button>
+
+        <div class="preview-section">
+            <div class="image-box">
+                <h3>Original Image</h3>
+                <img id="originalImage" src="" alt="Original upload" />
+            </div>
+
+            <div class="image-box">
+                <h3>Print-Ready Image</h3>
+                <img id="processedImage" src="" alt="Processed output" />
+            </div>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

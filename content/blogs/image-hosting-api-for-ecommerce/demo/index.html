@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Custom Shirt Design</title>
+
+   
+    <!-- FileStack API for uploading images -->
+
+    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+
+   
+    <style>
+
+        /* General page styling */
+
+        body {
+
+            font-family: 'Poppins', sans-serif;
+
+            text-align: center;
+
+            margin: 0;
+
+            padding: 0;
+
+            height: 100vh;
+
+            background: linear-gradient(135deg, #f06, #3cf);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        /* Container styling for the form */
+
+        .container {
+
+            max-width: 600px;
+
+            margin: 50px auto;
+
+            padding: 20px;
+
+            background: rgba(255, 255, 255, 0.9);
+
+            border-radius: 10px;
+
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+
+            color: black;
+
+        }
+
+        h2, h3 {
+
+            color: #333;
+
+        }
+
+        /* Button styling */
+
+        button {
+
+            width: 100%;
+
+            padding: 10px;
+
+            margin-top: 10px;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            transition: 0.3s;
+
+        }
+
+        /* Specific button colors */
+
+        .upload-btn { background: #007bff; color: white; }
+
+        .submit-btn { background: #28a745; color: white; }
+
+        .reset-btn { background: #dc3545; color: white; }
+
+
+        /* Button hover effect */
+
+        button:hover {
+
+            opacity: 0.8;
+
+        }
+
+
+
+        /* Form input styling */
+
+        select, input {
+
+            width: 100%;
+
+            padding: 8px;
+
+            margin: 5px 0;
+
+            border: 1px solid #ddd;
+
+            border-radius: 5px;
+
+        }
+
+
+
+        /* Shirt preview image styling */
+
+        .shirt-preview {
+
+            max-width: 250px;
+
+            display: block;
+
+            margin: 10px auto;
+
+        }
+
+
+
+        /* Hidden class to toggle visibility */
+
+        .hidden { display: none; }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>Get Customized Shirt Now!</h2>
+
+        <!-- Upload button to trigger FileStack picker -->
+
+        <button class="upload-btn" id="uploadBtn">Upload Your Design</button>
+
+        <img id="previewImage" class="shirt-preview hidden" alt="Uploaded Design">
+
+       
+        <!-- Form for customization options -->
+
+        <div id="customizationForm" class="hidden">
+
+            <h3>Enter Your Requirements</h3>
+
+
+            <label>Quantity:</label>
+
+            <input type="number" id="quantity" min="1" required>
+
+
+            <label>Color:</label>
+
+            <select id="color">
+
+                <option>Red</option>
+
+                <option>Blue</option>
+
+                <option>Black</option>
+
+                <option>White</option>
+
+                <option>Green</option>
+
+                <option>Yellow</option>
+
+            </select>
+
+
+
+            <label>Size:</label>
+
+            <select id="size">
+
+                <option>S</option>
+
+                <option>M</option>
+
+                <option>L</option>
+
+                <option>XL</option>
+
+                <option>XXL</option>
+
+            </select>
+
+           
+
+            <!-- Submit and Reset Buttons -->
+
+            <button class="submit-btn" id="submitBtn">Submit</button>
+
+            <button class="reset-btn hidden" id="resetBtn">Reset</button>
+
+        </div>
+
+
+        <!-- Confirmation Message Section -->
+
+        <div id="confirmationMessage" class="hidden">
+
+            <h3>Your Design Has Been Received!</h3>
+
+            <p>Our team will reach out to you shortly.</p>
+
+            <p id="finalDetails"></p>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        // Initialize Filestack client
+
+        const client = filestack.init('YOUR_API_KEY'); //Replace the placeholder with your Filestack API Key
+
+
+        // Upload button click event
+
+        document.getElementById('uploadBtn').addEventListener('click', () => {
+
+            client.picker({
+
+                onUploadDone: (result) => {
+
+                    // Get uploaded file URL and show preview
+
+                    const fileUrl = result.filesUploaded[0].url;
+
+                    document.getElementById('previewImage').src = fileUrl;
+
+                    document.getElementById('previewImage').classList.remove('hidden');
+
+                    document.getElementById('customizationForm').classList.remove('hidden');
+
+                }
+
+            }).open();
+
+        });
+
+
+        // Submit button click event
+
+        document.getElementById('submitBtn').addEventListener('click', () => {
+
+            const quantity = document.getElementById('quantity').value;
+
+            const color = document.getElementById('color').value;
+
+            const size = document.getElementById('size').value;
+
+           
+
+            // Validate quantity input
+
+            if (!quantity || quantity < 1) {
+
+                alert("Please enter a valid quantity.");
+
+                return;
+
+            }
+
+
+            // Display order confirmation
+
+            document.getElementById('finalDetails').innerText =
+
+                `Quantity: ${quantity}, Color: ${color}, Size: ${size}`;
+
+           
+
+            document.getElementById('customizationForm').classList.add('hidden');
+
+            document.getElementById('confirmationMessage').classList.remove('hidden');
+
+            document.getElementById('resetBtn').classList.remove('hidden');
+
+        });
+
+
+
+        // Reset button click event
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+
+            // Reset the form and hide elements
+
+            document.getElementById('previewImage').src = '';
+
+            document.getElementById('previewImage').classList.add('hidden');
+
+            document.getElementById('customizationForm').classList.add('hidden');
+
+            document.getElementById('confirmationMessage').classList.add('hidden');
+
+            document.getElementById('resetBtn').classList.add('hidden');
+
+        });
+
+    </script>
+
+</body>
+
+</html>

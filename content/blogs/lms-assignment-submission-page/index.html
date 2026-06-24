@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LMS Assignment Submission</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Filestack -->
+  <script src="https://static.filestackapi.com/filestack-js/4.x.x/filestack.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Submit Your Assignment</h1>
+    <p class="subtext">Upload all required files for this assignment. PDF, images, ZIPs, and videos are supported.</p>
+
+    <form id="uploadForm">
+      <label for="studentId">Student ID</label>
+      <input type="text" id="studentId" placeholder="e.g., STU12345" required>
+
+      <label for="assignmentId">Assignment ID</label>
+      <input type="text" id="assignmentId" placeholder="e.g., ASSIGN-04" required>
+
+      <button type="button" id="uploadBtn">Select & Upload Files</button>
+    </form>
+
+    <h2>Uploaded Files</h2>
+    <div id="uploadedFiles" class="uploaded-list"></div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

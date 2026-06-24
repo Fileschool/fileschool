@@ -1,0 +1,14 @@
+{
+  "name": "froala-nodejs-html-to-pdf",
+  "version": "1.0.0",
+  "description": "Froala WYSIWYG to PDF export (Node.js + Express + Puppeteer)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "puppeteer": "^23.0.0"
+  }
+}

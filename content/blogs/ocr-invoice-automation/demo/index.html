@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR Data Extraction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url('https://blog.filestack.com/wp-content/uploads/2023/12/Online-File-Delivery.png');
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #upload-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #ocr-output {
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      max-width: 600px;
+    }
+    #ocr-text {
+      white-space: pre-line; /* Preserve line breaks */
+    }
+  </style>
+</head>
+<body>
+  <!-- Filestack file uploader will be triggered when this button is clicked -->
+  <button id="upload-btn">Upload Image</button>
+  <div id="ocr-output" style="display:none;">
+    <div id="ocr-text"></div>
+  </div>
+
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+  <script>
+    const FILESTACK_API_KEY = 'YOUR_API_KEY'; // Replace 'YOUR_API_KEY' with your Filestack API key 
+    const policy = 'YOUR_POLICY'; // Replace 'YOUR_POLICY' with your Filestack security policy
+    const signature = 'YOUR_SIGNATURE'; // Replace 'YOUR_SIGNATURE' with your Filestack security signature
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('upload-btn').addEventListener('click', function() {
+        // Open Filestack file uploader
+        filestackFileUpload();
+      });
+
+      // Function to open Filestack file uploader
+      function filestackFileUpload() {
+        const client = filestack.init(FILESTACK_API_KEY);
+
+        const options = {
+          onUploadDone: function(result) {
+            console.log('Filestack upload result:', result);
+            const fileHandle = result.filesUploaded[0].handle;
+            performOCR(fileHandle);
+          },
+          accept: ['image/*']
+        };
+
+        client.picker(options).open();
+      }
+
+      function performOCR(fileHandle) {
+        const ocrUrl = `https://cdn.filestackcontent.com/${FILESTACK_API_KEY}/security=p:${policy},s:${signature}/ocr/${fileHandle}`;
+
+        fetch(ocrUrl)
+        .then(response => response.json())
+        .then(data => {
+          console.log('OCR data:', data);
+          const ocrText = data.text;
+          document.getElementById('ocr-output').style.display = 'block';
+          document.getElementById('ocr-text').textContent = 'OCR Result:\n' + ocrText;
+        })
+        .catch(error => console.error('Error performing OCR:', error));
+      }
+    });
+  </script>
+</body>
+</html>

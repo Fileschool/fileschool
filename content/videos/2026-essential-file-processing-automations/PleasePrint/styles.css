@@ -1,0 +1,90 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #fafafa;
+
+    background-image: url('bg.png');
+    background-size: contain;
+    background-position: center;
+}
+
+.print-card {
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  background: #fff;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.add-card {
+  cursor: pointer;
+}
+
+.add-card .plus {
+  font-size: 48px;
+  font-weight: 600;
+}
+
+.print-thumb {
+  height: 140px;
+  border-radius: 12px;
+  background: #eee;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.print-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gradient-btn {
+  background: linear-gradient(90deg, #f06d22, #bf3147);
+  color: #fff;
+  border: none;
+}
+
+.gradient-btn:hover {
+  opacity: 0.9;
+}
+
+.remove-link {
+  color: #dc3545;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.upload-box {
+  border: 2px dashed #bbb;
+  padding: 40px;
+  text-align: center;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.badge.ready {
+  background: #28a745;
+}
+
+.badge.rejected {
+  background: #dc3545;
+}
+
+.print-preview {
+  width: 420px;              /* A4 portrait visual */
+  height: 594px;             /* ~1:1.414 ratio */
+  margin: 24px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f0f0f0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.print-preview iframe {
+  width: 100%;
+  height: 100%;
+}

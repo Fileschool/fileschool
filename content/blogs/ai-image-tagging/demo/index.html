@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta charset for character encoding -->
+    <meta charset="UTF-8">
+
+    <!-- Meta tag to make the page responsive on different screen sizes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title of the webpage -->
+    <title>Image Upload and Tags</title>
+
+    <!-- Filestack JavaScript library for file uploading and tagging -->
+    <script src="https://static.filestackapi.com/v3/filestack.js"></script>
+
+    <style>
+        /* Styles for the body element */
+        body {
+            font-family: Arial, sans-serif; /* Set font family */
+            background-color: #f4f4f9; /* Light background color */
+            display: flex; /* Flexbox layout for center alignment */
+            justify-content: center; /* Horizontally center the content */
+            align-items: center; /* Vertically center the content */
+            height: 100vh; /* Full height of the viewport */
+            margin: 0; /* Remove default margin */
+        }
+
+        /* Styles for the container div */
+        .container {
+            text-align: center; /* Center-align text inside the container */
+            background-color: #fff; /* White background */
+            border-radius: 8px; /* Rounded corners */
+            padding: 30px; /* Padding inside the container */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            width: 80%; /* Responsive width */
+            max-width: 400px; /* Maximum width */
+        }
+
+        /* Styles for the heading */
+        h2 {
+            color: #333; /* Dark gray text color */
+            font-size: 24px; /* Font size */
+        }
+
+        /* Styles for the button */
+        button {
+            padding: 12px 25px; /* Padding inside the button */
+            font-size: 16px; /* Font size */
+            background-color: #007BFF; /* Blue background color */
+            color: #fff; /* White text color */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s ease; /* Smooth transition on hover */
+        }
+
+        /* Button hover effect */
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Styles for subheading */
+        h3 {
+            color: #333; /* Dark gray text color */
+            margin-top: 20px; /* Spacing above the heading */
+            font-size: 18px; /* Font size */
+        }
+
+        /* Styles for the tags paragraph */
+        #tags {
+            color: #555; /* Medium gray text color */
+            font-size: 16px; /* Font size */
+            margin-top: 10px; /* Spacing above the tags */
+            word-wrap: break-word; /* Allow long tags to wrap */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main container to hold content -->
+    <div class="container">
+        <!-- Main heading -->
+        <h2>Upload an Image and Get Tags</h2>
+
+        <!-- Button to trigger the file upload -->
+        <button id="uploadBtn">Upload Image</button>
+
+        <!-- Subheading for the tag results -->
+        <h3>Image Tags:</h3>
+
+        <!-- Paragraph to display the fetched tags -->
+        <p id="tags"></p>
+    </div>
+
+    <script>
+        // Replace placeholders with your Filestack API credentials
+        const apiKey = 'YOUR_API_KEY';
+        const policy = 'YOUR_POLICY';
+        const signature = 'YOUR_SIGNATURE';
+
+        // Initialize the Filestack client
+        const client = filestack.init(apiKey);
+
+        // Add an event listener to the upload button
+        document.getElementById('uploadBtn').addEventListener('click', function () {
+            // Open the Filestack File Picker
+            client.pick().then(function (result) {
+                // Get the handle of the uploaded file
+                const handle = result.filesUploaded[0].handle;
+
+                // Construct the URL to fetch tags
+                const tagsUrl = `https://cdn.filestackcontent.com/${apiKey}/security=p:${policy},s:${signature}/tags/${handle}`;
+
+                // Fetch the tags using the constructed URL
+                fetch(tagsUrl)
+                    .then(response => response.json()) // Parse the response as JSON
+                    .then(data => {
+                        // Check if tags exist and are auto-generated
+                        if (data.tags && data.tags.auto) {
+                            // Extract tag names
+                            const tagNames = Object.keys(data.tags.auto);
+                            // Join tag names into a comma-separated string
+                            const tags = tagNames.join(', ');
+                            // Display tags in the tags paragraph
+                            document.getElementById('tags').textContent = tags;
+                        } else {
+                            // Display a message if no tags are found
+                            document.getElementById('tags').textContent = 'No tags found for this image.';
+                        }
+                    })
+                    .catch(error => {
+                        // Display an error message if fetching tags fails
+                        document.getElementById('tags').textContent = 'Error fetching tags.';
+                    });
+            }).catch(function (error) {
+                // Log errors related to file upload
+                console.error('File upload error:', error);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
+

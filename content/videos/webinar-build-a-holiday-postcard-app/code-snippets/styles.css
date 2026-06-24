@@ -1,0 +1,84 @@
+a{
+    text-decoration: none;
+}
+
+.bgcolor{
+    background-color: #0098f7;
+}
+
+.btn-style{
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #0098f7;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.btn-style:hover{
+    background-color: #0385d6;
+}
+
+.btn-style-outline{
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    color: #afafaf;
+    text-decoration: none;
+    border: 1px solid #afafaf;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.btn-style-outline:hover{
+    background-color: #afafaf;
+    color: #ffffff;
+}
+
+.weatherIcon{
+    border-radius: 50px;
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card-body{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-title{
+    margin-top: auto;
+}
+
+.card-text{
+    margin-top: 0.5rem;
+}
+
+.card button{
+    width: auto;
+    padding: 8px 16px;
+    text-align: center;
+    white-space: nowrap;
+    flex-grow: 0;
+    align-self: start;
+}
+
+.card-img:hover{
+    rotate: 5deg;
+    cursor: pointer;
+}
+
+body{
+    background-image: url('../demo/assets/background.png');
+    background-color: rgba(255,255,255);
+    background-repeat: repeat-y;
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filestack Transformations Playground</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f9fafb;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .handle-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .handle-input input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .handle-input button {
+            padding: 10px 16px;
+            background: #ff6900;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .handle-input button:hover {
+            background: #e85d00;
+        }
+
+        .image-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .url-container {
+            background: #f3f4f6;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+            text-align: left;
+        }
+
+        .transformations {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .transform-option {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .transform-option label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .transform-option input[type="range"],
+        .transform-option input[type="number"] {
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .transform-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .transform-btn:hover {
+            background: #1e4db7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Filestack Transformations Playground</h1>
+
+        <div class="handle-input">
+            <input type="text" id="handleInput" placeholder="Enter Filestack handle" />
+            <button id="setHandleBtn">Load</button>
+        </div>
+
+        <div class="image-container">
+            <img id="mainImage" src="https://via.placeholder.com/600x400.png?text=Upload+or+Enter+Handle+to+Begin"
+                alt="Transformed Image" />
+            <div class="url-container">
+                <code id="transformationUrl">No image loaded</code>
+            </div>
+        </div>
+
+        <div class="transformations" id="transformationsList"></div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

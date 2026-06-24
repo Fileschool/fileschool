@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filestack Smart Crop Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    .image-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .image-container div {
+      text-align: center;
+    }
+    img {
+      max-width: 250px;
+      max-height: 450px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Smart Image Cropping Example</h1>
+    <input type="file" id="filePicker" accept="image/*">
+    <div id="imageOutput" class="image-container"></div>
+  </div>
+
+  <!-- Include Filestack JavaScript SDK -->
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+  <script>
+    const client = filestack.init('YOUR_API_KEY'); // Replace with your Filestack API Key 
+
+    document.getElementById('filePicker').addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) {
+        alert('Please select a file!');
+        return;
+      }
+
+      try {
+        const uploadResponse = await client.upload(file);
+        const fileHandle = uploadResponse.handle;
+        const originalImageUrl = `https://cdn.filestackcontent.com/${fileHandle}`;
+
+        // Generate URLs for normal and smart crops
+        const normalCropUrl = `https://cdn.filestackcontent.com/resize=w:576,h:1024,fit:crop/${fileHandle}`;
+        const smartCropUrl = `https://cdn.filestackcontent.com/smart_crop=width:576,height:1024,mode:face/${fileHandle}`;
+
+        displayImages(originalImageUrl, normalCropUrl, smartCropUrl);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('File upload failed.');
+      }
+    });
+
+    function displayImages(original, normal, smart) {
+      const outputDiv = document.getElementById('imageOutput');
+      outputDiv.innerHTML = `
+        <div>
+          <img src="${original}" alt="Original Image">
+          <p>Original Image</p>
+        </div>
+        <div>
+          <img src="${normal}" alt="Normal Crop">
+          <p>Normal Crop (9:16)</p>
+        </div>
+        <div>
+          <img src="${smart}" alt="Smart Crop">
+          <p>Smart Crop (9:16)</p>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

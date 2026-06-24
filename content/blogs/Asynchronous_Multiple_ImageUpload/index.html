@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Filestack Image Uploader</title>
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+</head>
+<body>
+
+  <h2>Upload Images</h2>
+  <button id="uploadBtn">Select Images</button>
+
+  <script>
+    // Replace with your actual Filestack API key
+    const client = filestack.init('YOUR_FILESTACK_API_KEY');
+
+    document.getElementById('uploadBtn').addEventListener('click', () => {
+      client.picker({
+        accept: ['image/*'],         // Accept all image types
+        maxFiles: 5,                 // Allow multiple uploads
+        uploadInBackground: true     // Enable background upload
+      }).open();
+    });
+  </script>
+
+</body>
+</html>

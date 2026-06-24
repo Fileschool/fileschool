@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python LMS File Picker Demo</title>
+    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
+    <h2>📚 Python File Picker for LMS Apps</h2>
+    <p>Upload your assignment or resource file using Filestack:</p>
+
+    <button id="uploadBtn">Select File</button>
+    <p id="status"></p>
+    <p id="fileLink"></p>
+
+    <script>
+        const client = filestack.init("YOUR_FILESTACK_API_KEY"); // Replace with your actual key 
+
+        document.getElementById("uploadBtn").addEventListener("click", function() {
+            client.picker({
+                fromSources: ["local_file_system", "url", "imagesearch", "googledrive", "dropbox"],
+                onUploadDone: (res) => {
+                    const fileUrl = res.filesUploaded[0].url;
+                    document.getElementById("status").innerText = "✅ File uploaded successfully!";
+                    document.getElementById("fileLink").innerHTML = `<a href="${fileUrl}" target="_blank">${fileUrl}</a>`;
+                    console.log("File uploaded:", fileUrl);
+                }
+            }).open();
+        });
+    </script>
+</body>
+</html>

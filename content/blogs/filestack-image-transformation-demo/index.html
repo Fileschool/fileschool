@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Filestack Image Transformation Demo</title>
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    img {
+      margin: 10px;
+      max-width: 200px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Filestack Image Transformation Demo</h1>
+
+  <button onclick="openPicker()">Upload Image</button>
+
+  <h2>Original Image</h2>
+  <img id="preview" alt="Original Image" />
+
+  <h2>Transformed Images</h2>
+  <img id="resize" alt="Resized Image" />
+  <img id="crop" alt="Cropped Image" />
+  <img id="rotate" alt="Rotated Image" />
+  <img id="filter" alt="Filtered Image" />
+
+  <script>
+    const client = filestack.init('YOUR_API_KEY'); // Replace with your API key 
+
+    function openPicker() {
+      client.picker({
+        onUploadDone: (result) => {
+          const fileUrl = result.filesUploaded[0].url;
+          const fileHandle = result.filesUploaded[0].handle;
+          document.getElementById('preview').src = fileUrl;
+
+          // Apply transformations
+          document.getElementById('resize').src = `https://cdn.filestackcontent.com/resize=width:300/${fileHandle}`; //Shrinks image width to 300px
+          document.getElementById('crop').src = `https://cdn.filestackcontent.com/crop=dim:[1700,600,400,400]/${fileHandle}`; //Crops 400×400px from position (1700, 600)
+          document.getElementById('rotate').src = `https://cdn.filestackcontent.com/rotate=deg:90/${fileHandle}`; //Rotates the image 90°
+          document.getElementById('filter').src = `https://cdn.filestackcontent.com/monochrome/${fileHandle}`; //Applies a black-and-white filter
+        }
+      }).open();
+    }
+  </script>
+
+</body>
+</html>

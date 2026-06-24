@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SaaS Onboarding Upload</title>
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 40px;
+      color: #222;
+    }
+
+    .form-container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:focus {
+      outline: 3px solid #ffcc00;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>SaaS Onboarding</h2>
+
+    <label for="username">Your Name</label>
+    <input type="text" id="username" placeholder="Enter your name" />
+
+    <label for="uploadBtn">Upload Profile Photo or Company Document</label>
+    <button id="uploadBtn" aria-label="Upload profile image or document">Select File</button>
+
+    <div id="message" class="message" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const apikey = 'YOUR_API_KEY'; // Replace with your own Filestack API key
+    const client = filestack.init(apikey);
+
+    const uploadBtn = document.getElementById('uploadBtn');
+    const messageEl = document.getElementById('message');
+
+    uploadBtn.addEventListener('click', () => {
+      messageEl.textContent = '';
+
+      client.picker({
+        fromSources: ['local_file_system', 'googledrive', 'dropbox', 'facebook', 'instagram'],
+        accept: ['image/*', 'application/pdf'],
+        maxFiles: 1,
+        maxSize: 5 * 1024 * 1024, // Maximum file size 5MB 
+        onUploadDone: (res) => {
+          messageEl.classList.remove('error');
+          messageEl.classList.add('success');
+          messageEl.textContent = 'Upload successful!';
+          console.log('Uploaded file:', res.filesUploaded);
+        },
+        onFileUploadFailed: (file, error) => {
+          messageEl.classList.remove('success');
+          messageEl.classList.add('error');
+          messageEl.textContent = `Upload failed: ${error.message}`;
+        },
+        onFileSelected: (file) => {
+          if (file.size > 5 * 1024 * 1024) {
+            messageEl.textContent = 'Error: File size exceeds 5MB.';
+            return false;
+          }
+
+          if (!['application/pdf', 'image/jpeg', 'image/png', 'image/gif'].includes(file.mimetype)) {
+            messageEl.textContent = 'Error: Only images and PDFs are allowed.';
+            return false;
+          }
+
+          return true;
+        }
+      }).open();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accessible File Upload with Filestack</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+</head>
+<body>
+
+  <h1>Accessible File Upload with Filestack</h1>
+
+  <!-- Method 1: Filestack File Picker -->
+  <section>
+    <h2>🔹 Method 1: Filestack File Picker (Quick Setup)</h2>
+    <p>This method uses Filestack's prebuilt accessible widget.</p>
+    <button onclick="openPicker()">Upload using File Picker</button>
+  </section>
+
+  <hr>
+
+  <!-- Method 2: Custom File Upload with ARIA & SDK -->
+  <section>
+    <h2>🔹 Method 2: Custom Accessible Upload with ARIA</h2>
+    <label for="resumeUpload">Upload your resume (PDF only):</label>
+    <input 
+      type="file" 
+      id="resumeUpload" 
+      aria-describedby="resumeHelp" 
+      accept=".pdf"
+      onchange="uploadWithFilestack(this.files[0])"
+    />
+    <p id="resumeHelp">Accepted format: PDF. Max size: 2MB.</p>
+    <div id="uploadStatus" aria-live="polite" class="status-message"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

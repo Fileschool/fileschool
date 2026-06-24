@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple File Upload UI</title>
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 40px;
+      color: #222;
+    }
+
+    .upload-container {
+      background: #fff;
+      max-width: 500px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:focus {
+      outline: 3px solid #ffcc00;
+    }
+
+    .message {
+      margin-top: 20px;
+      color: red;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    /* Accessible focus style */
+    button:focus-visible {
+      outline: 3px solid #ffcc00;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="upload-container" role="region" aria-label="File Upload Section">
+    <h2 id="uploadTitle">Upload Files</h2>
+    <p>Only images (JPG, PNG, GIF) and PDFs up to 5MB allowed.</p>
+    
+    <button id="uploadBtn" aria-labelledby="uploadTitle" aria-describedby="uploadDesc">Select Files</button>
+    <div id="uploadDesc" hidden>Opens a file picker to upload documents or images</div>
+    
+    <div id="message" class="message" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const apikey = 'YOUR_API_KEY'; // Replace with your Filestack API key 
+    const client = filestack.init(apikey);
+
+    const uploadBtn = document.getElementById('uploadBtn');
+    const messageEl = document.getElementById('message');
+
+    uploadBtn.addEventListener('click', () => {
+      messageEl.textContent = ''; // Clear previous message
+
+      client.picker({
+        maxFiles: 5,
+        fromSources: ['local_file_system', 'url', 'imagesearch', 'googledrive', 'dropbox', 'facebook', 'instagram'],
+        accept: ['image/*', 'application/pdf'],
+        maxSize: 5 * 1024 * 1024, // 5MB
+        onUploadDone: (res) => {
+          messageEl.classList.remove('error');
+          messageEl.classList.add('success');
+          messageEl.textContent = 'Upload successful!';
+          console.log('Files:', res.filesUploaded);
+        },
+        onFileUploadFailed: (file, error) => {
+          messageEl.classList.remove('success');
+          messageEl.classList.add('error');
+          messageEl.textContent = `Upload failed: ${error.message}`;
+        },
+        onFileSelected: (file) => {
+          // Custom validation
+          if (file.size > 5 * 1024 * 1024) {
+            messageEl.textContent = 'Error: File size exceeds 5MB.';
+            return false;
+          }
+
+          if (!['application/pdf', 'image/jpeg', 'image/png', 'image/gif'].includes(file.mimetype)) {
+            messageEl.textContent = 'Error: Only image files and PDFs are allowed.';
+            return false;
+          }
+
+          return true;
+        }
+      }).open();
+    });
+  </script>
+
+</body>
+</html>

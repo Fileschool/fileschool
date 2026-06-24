@@ -1,0 +1,102 @@
+        /* Set up the body with a gradient background and center content */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #444;
+        }
+
+        /* Style the container for the app interface */
+        .container {
+            text-align: center;
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 450px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Add a fade-in animation for the container */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Style the app title */
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff5757;
+        }
+
+        /* Style the upload button */
+        button {
+            padding: 14px 30px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #ff5757 0%, #ff7979 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        /* Add hover effect to the button */
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(255, 87, 87, 0.3);
+        }
+
+        /* Style the generated hashtags heading */
+        h3 {
+            margin-top: 25px;
+            font-size: 20px;
+            color: #444;
+        }
+
+        /* Style the hashtags display area */
+        #hashtags {
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            word-wrap: break-word;
+            text-align: left;
+        }
+
+        /* Add a decorative animated circle above the container */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff5757 0%, #ff7979 100%);
+            border-radius: 50%;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Add a pulse animation to the decorative circle */
+        @keyframes pulse {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                transform: translateX(-50%) scale(1.1);
+            }
+        }

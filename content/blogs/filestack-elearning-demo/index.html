@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>E-Learning Upload</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>E-Learning Tool</h1>
+    <h2>Upload Lesson Materials</h2>
+
+    <button id="upload-btn">Upload File</button>
+
+    <div id="file-link"></div>
+  </div>
+
+  <script>
+    const client = filestack.init("YOUR_API_KEY"); // Replace this with your Filestack API Key
+
+    document.getElementById("upload-btn").onclick = () => {
+      client.picker({
+        accept: [".pdf", ".mp4", ".docx", "image/*"],
+        maxFiles: 1,
+        onUploadDone: (res) => {
+          const file = res.filesUploaded[0];
+
+          const cdnURL = `https://cdn.filestackcontent.com/${file.handle}`;
+
+          document.getElementById("file-link").innerHTML = `
+            <p><strong>Stored File:</strong> ${file.filename}</p>
+            <p>CDN Delivery URL:</p>
+            <p><a href="lesson-viewer.html?file=${file.handle}" target="_blank">
+              Open in Student Viewer
+            </a></p>
+            <p><a href="${cdnURL}" target="_blank">Direct CDN Link</a></p>
+          `;
+        }
+      }).open();
+    };
+  </script>
+</body>
+</html>

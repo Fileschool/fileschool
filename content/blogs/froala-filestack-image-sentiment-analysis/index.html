@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visual HTML WYSIWYG Editor with Image Sentiment</title>
+  <meta name="description" content="Initialize Froala and Filestack, then run image sentiment analysis on uploaded images." />
+
+  <!-- Froala & Filestack stylesheets -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" />
+  <link rel="stylesheet" href="https://static.filestackapi.com/transforms-ui/2.x.x/transforms.css" />
+
+  <!-- Optional: basic page styling -->
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    .container { max-width: 960px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+    #froala-editor { border: 1px solid #e5e7eb; }
+    .hint { color: #6b7280; margin: 12px 0 24px; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <noscript>This page requires JavaScript to run the editor and image sentiment analysis.</noscript>
+
+  <main class="container">
+    <h1>Froala Editor + Filestack Image Sentiment</h1>
+    <p class="hint">Use the image button in the toolbar to upload an image and see sentiment results inserted into the editor.</p>
+
+    <!-- Editor mount point -->
+    <div id="froala-editor"></div>
+  </main>
+
+  <!-- Filestack & Froala scripts (order matters) -->
+  <script src="https://static.filestackapi.com/filestack-js/3.32.0/filestack.min.js"></script>
+  <script src="https://static.filestackapi.com/filestack-drag-and-drop-js/1.1.1/filestack-drag-and-drop.min.js"></script>
+  <script src="https://static.filestackapi.com/transforms-ui/2.x.x/transforms.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
+
+  <!-- Your initialization & sentiment logic -->
+  <script src="js/index.js"></script>
+</body>
+</html>

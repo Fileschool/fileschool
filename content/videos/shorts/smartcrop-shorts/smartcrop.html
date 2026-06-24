@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Filestack Smart Crop</title>
+    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet"/>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            color: #333;
+        }
+
+        .card {
+            background: #ffffffcc;
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #212121;
+            font-size: 20px;
+        }
+
+        .instructions {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #ffffff;
+            background-color: #ef4a25;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #d33f1f;
+        }
+
+        #result {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        #smartCropForm {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #smartCropForm input,
+        #smartCropForm select {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #croppedImagePreview {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        #errorMessage {
+            margin-top: 10px;
+            color: red;
+            font-size: 14px;
+        }
+
+        /* Adjust for vertical (YouTube Shorts) screens */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 18px;
+            }
+            .btn {
+                font-size: 14px;
+                padding: 10px;
+            }
+            #smartCropForm input,
+            #smartCropForm select {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Filestack Smart Crop</h1>
+        <p class="instructions">
+            Click "Select an Image" to upload your file. Then, specify the crop dimensions, mode, and other options to apply smart cropping.
+        </p>
+
+        <button id="uploadButton" class="btn" onclick="openFilePicker()">
+            📄 Select an Image
+        </button>
+
+        <div id="result">
+            <img id="imagePreview" alt="Uploaded Image Preview" />
+            <form id="smartCropForm" onsubmit="applySmartCrop(event)">
+                <input type="number" id="width" placeholder="Width (1-10000)" required min="1" max="10000"/>
+                <input type="number" id="height" placeholder="Height (1-10000)" required min="1" max="10000"/>
+                <select id="mode">
+                    <option value="auto">Auto</option>
+                    <option value="face">Face</option>
+                    <option value="object">Object</option>
+                </select>
+                <input type="text" id="object" placeholder="Object (e.g., dog)" style="display: none;"/>
+                <input type="text" id="fillColor" placeholder="Fill Color (e.g., red, #FF0000)"/>
+                <label>
+                    <input type="checkbox" id="coords"/> Return Coordinates
+                </label>
+                <button type="submit" class="btn">Apply Smart Crop</button>
+            </form>
+            <img id="croppedImagePreview" alt="Cropped Image Preview" />
+            <pre id="coordsResult"></pre>
+        </div>
+
+        <p id="errorMessage"></p>
+    </div>
+
+    <script>
+      const apikey = '';
+        const client = filestack.init(apikey);
+
+        const policy = '==';
+        const signature = '';
+
+        let fileHandle = null;
+        let fileUrl = null;
+
+        function openFilePicker() {
+            const options = {
+                onUploadDone: (res) => {
+                    fileHandle = res.filesUploaded[0].handle;
+                    fileUrl = res.filesUploaded[0].url;
+
+                    document.getElementById('imagePreview').src = fileUrl;
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('errorMessage').textContent = '';
+                },
+            };
+            const picker = client.picker(options);
+            picker.open();
+        }
+
+        function applySmartCrop(event) {
+            event.preventDefault();
+
+            const width = document.getElementById('width').value;
+            const height = document.getElementById('height').value;
+            const mode = document.getElementById('mode').value;
+            const object = document.getElementById('object').value;
+            const fillColor = document.getElementById('fillColor').value;
+            const coords = document.getElementById('coords').checked;
+
+            let smartCropUrl = `https://cdn.filestackcontent.com/${apikey}/security=p:${policy},s:${signature}/smart_crop=width:${width},height:${height}`;
+
+            if (mode === 'object' && object) {
+                smartCropUrl += `,mode:object,object:${object}`;
+            } else if (mode === 'face') {
+                smartCropUrl += `,mode:face`;
+            } else {
+                smartCropUrl += `,mode:auto`;
+            }
+
+            if (fillColor) {
+                smartCropUrl += `,fill_color:${fillColor}`;
+            }
+
+            if (coords) {
+                smartCropUrl += `,coords:true`;
+            }
+
+            smartCropUrl += `/${fileHandle}`;
+
+            if (coords) {
+                fetch(smartCropUrl)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        document.getElementById('coordsResult').textContent = JSON.stringify(data, null, 2);
+                        document.getElementById('croppedImagePreview').src = fileUrl; // Show original image
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        document.getElementById('errorMessage').textContent = 'An error occurred while fetching coordinates.';
+                    });
+            } else {
+                document.getElementById('croppedImagePreview').src = smartCropUrl;
+                document.getElementById('coordsResult').textContent = '';
+            }
+
+            document.getElementById('errorMessage').textContent = '';
+        }
+
+        // Show/hide object input based on mode
+        document.getElementById('mode').addEventListener('change', (e) => {
+            const objectInput = document.getElementById('object');
+            objectInput.style.display = e.target.value === 'object' ? 'block' : 'none';
+        });
+    </script>
+</body>
+</html>

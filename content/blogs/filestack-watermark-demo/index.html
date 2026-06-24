@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Filestack Watermark Demo</title>
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 40px; }
+    button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+    img { max-width: 300px; margin: 10px; border: 1px solid #ccc; border-radius: 6px; }
+  </style>
+</head>
+<body>
+
+  <h1>🖼️ Filestack Watermark Example</h1>
+
+  <button onclick="uploadTarget()">Upload Target Image</button>
+  <button onclick="uploadLogo()">Upload Logo for Watermark</button>
+
+  <div id="preview-section" style="display:none;">
+    <h2>Original Image</h2>
+    <img id="target" alt="Target Image">
+    <h2>Watermarked Image</h2>
+    <img id="watermarked" alt="Watermarked Image">
+  </div>
+
+  <script>
+    const client = filestack.init('YOUR_API_KEY'); // Replace with your Filestack API key 
+    let targetHandle = '';
+    let logoHandle = '';
+
+    function uploadTarget() {
+      client.picker({
+        onUploadDone: (res) => {
+          targetHandle = res.filesUploaded[0].handle;
+          document.getElementById('target').src = `https://cdn.filestackcontent.com/${targetHandle}`;
+          showIfReady();
+        }
+      }).open();
+    }
+
+    function uploadLogo() {
+      client.picker({
+        onUploadDone: (res) => {
+          logoHandle = res.filesUploaded[0].handle;
+          showIfReady();
+        }
+      }).open();
+    }
+
+    function showIfReady() {
+      if (targetHandle && logoHandle) {
+        const watermarkedURL = `https://cdn.filestackcontent.com/watermark=file:${logoHandle},size:250,position:[middle, center]/${targetHandle}`;
+        document.getElementById('watermarked').src = watermarkedURL;
+        document.getElementById('preview-section').style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>

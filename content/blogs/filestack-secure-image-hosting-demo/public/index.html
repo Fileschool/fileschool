@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secure Image Hosting Demo — Filestack</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Filestack JS SDK -->
+  <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+</head>
+<body>
+  <main class="container">
+    <h1>Secure Image Hosting API Demo (Filestack)</h1>
+    <p class="subtitle">
+      Upload an image securely, host it on Filestack CDN, and see a protected transformed version.
+    </p>
+
+    <button id="uploadBtn" class="btn">Upload Secure Image</button>
+
+    <section id="resultBox" class="preview-box hidden">
+      <h2>Uploaded Image</h2>
+      <img id="previewImage" class="preview-img" src="" alt="Uploaded Preview" />
+
+      <h3>CDN URL</h3>
+      <div id="cdnUrl" class="output-url"></div>
+
+      <h3>Transformed (Secure) Image</h3>
+      <img id="transformedImage" class="transformed-img" src="" alt="Transformed Preview" />
+      
+    </section>
+
+    <section class="info-box">
+      <h2>What this demo shows</h2>
+      <ul>
+        <li>Secure uploads with policy + signature</li>
+        <li>Direct-to-Filestack client-side uploads</li>
+        <li>CDN image hosting</li>
+        <li>Secure transformations (resize + quality)</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

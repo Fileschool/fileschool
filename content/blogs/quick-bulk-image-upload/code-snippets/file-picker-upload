@@ -1,0 +1,5 @@
+// Open the picker and bulk file upload
+      client.picker({
+        maxFiles: 50, // Set the max number of files to upload
+        accept: ['image/*'], // Accept only image files
+        uploadInBackground: false, // Ensures uploads complete before closing picker

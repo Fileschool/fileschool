@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Filestack Resize with Fit, Align, and Filter</title>
+    <script src="https://static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet"/>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            color: #333;
+        }
+
+        .card {
+            background: #ffffffcc;
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #212121;
+            font-size: 20px;
+        }
+
+        .instructions {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #ffffff;
+            background-color: #ef4a25;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #d33f1f;
+        }
+
+        select, input {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        #result {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        #resizedPreview {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        #errorMessage {
+            margin-top: 10px;
+            color: red;
+            font-size: 14px;
+        }
+
+        /* Adjust for vertical (YouTube Shorts) screens */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 18px;
+            }
+            .btn {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Filestack Resize</h1>
+        <p class="instructions">
+            Upload an image, set your resize options, and preview the results!
+        </p>
+
+        <button id="uploadButton" class="btn" onclick="openFilePicker()">
+            📄 Select an Image
+        </button>
+
+        <div id="settings" style="display:none;">
+            <select id="fitSelect">
+                <option value="clip" selected>clip (Default)</option>
+                <option value="crop">crop</option>
+                <option value="scale">scale</option>
+                <option value="max">max</option>
+            </select>
+            <select id="alignSelect">
+                <option value="center" selected>center (Default)</option>
+                <option value="top">top</option>
+                <option value="bottom">bottom</option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+                <option value="faces">faces</option>
+            </select>
+            <select id="filterSelect">
+                <option value="lanczos3" selected>lanczos3 (Default)</option>
+                <option value="catrom">catrom</option>
+                <option value="lanczos2">lanczos2</option>
+                <option value="mitchell">mitchell</option>
+                <option value="nearest">nearest</option>
+            </select>
+            <input type="number" id="resizeWidth" placeholder="Width (px)" />
+            <input type="number" id="resizeHeight" placeholder="Height (px)" />
+            <button id="resizeButton" class="btn" onclick="resizeImage()">🔧 Resize Image</button>
+        </div>
+
+        <div id="result">
+            <img id="imagePreview" alt="Uploaded Image Preview" />
+            <h3>Resized Image</h3>
+            <img id="resizedPreview" alt="Resized Image Preview" />
+        </div>
+
+        <p id="errorMessage"></p>
+    </div>
+
+    <script>
+        const apikey = '';
+        const client = filestack.init(apikey);
+
+        const policy = '==';
+        const signature = '';
+
+        let uploadedFileHandle;
+        let uploadedFileUrl;
+
+        function openFilePicker() {
+            const options = {
+                onUploadDone: (res) => {
+                    uploadedFileHandle = res.filesUploaded[0].handle;
+                    uploadedFileUrl = res.filesUploaded[0].url;
+
+                    document.getElementById('imagePreview').src = uploadedFileUrl;
+                    document.getElementById('settings').style.display = 'block';
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('errorMessage').textContent = '';
+                },
+            };
+            const picker = client.picker(options);
+            picker.open();
+        }
+
+        function resizeImage() {
+            const width = document.getElementById('resizeWidth').value;
+            const height = document.getElementById('resizeHeight').value;
+            const fit = document.getElementById('fitSelect').value;
+            const align = document.getElementById('alignSelect').value;
+            const filter = document.getElementById('filterSelect').value;
+
+            if (!width && !height) {
+                document.getElementById('errorMessage').textContent = 'Please provide at least one dimension.';
+                return;
+            }
+
+            const resizeParams = [
+                width ? `width:${width}` : '',
+                height ? `height:${height}` : '',
+                `fit:${fit}`,
+                `align:${align}`,
+                `filter:${filter}`,
+            ].filter(Boolean).join(',');
+
+            const resizeUrl = `https://cdn.filestackcontent.com/${apikey}/security=p:${policy},s:${signature}/resize=${resizeParams}/${uploadedFileHandle}`;
+
+            document.getElementById('resizedPreview').src = resizeUrl;
+            document.getElementById('errorMessage').textContent = '';
+        }
+    </script>
+</body>
+</html>

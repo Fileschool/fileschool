@@ -1,0 +1,102 @@
+.hStyle {
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.cStyle {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+
+body {
+    background-color: #f9fafb;
+}
+
+.app-container {
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 280px;
+    min-width: 280px;
+    flex-shrink: 0;
+    background: #f93a61;
+    color: #fff;
+}
+
+.sidebar h4 {
+    font-weight: 600;
+}
+
+.course-list li {
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.course-list li:hover,
+.course-list li.active {
+    text-decoration: underline;
+}
+
+/* CONTENT */
+.content-area {
+    background: #ffffff;
+}
+
+.content-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.content-list li {
+    margin-bottom: 10px;
+}
+
+.btnStyle1 {
+    background-color: #ffffff;
+    color: #f93a61;
+}
+
+.btnStyle1:hover {
+    background-color: #f93a61;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+}
+
+.btnStyle2 {
+    background-color: #f93a61;
+    color: #ffffff;
+}
+
+.btnStyle2:hover {
+    background-color: #ffffff;
+    border: 2px solid #f93a61;
+    color: #f93a61;
+}
+
+.btnStyle3 {
+    background-color: #ffffff;
+    border: 2px solid #3e177e;
+    color: #3e177e;
+}
+
+.btnStyle3:hover {
+    background-color: #3e177e;
+    color: #ffffff;
+}
+
+a {
+    color: #f93a61;
+}
+
+.textColor1 {
+    color: #f93a61;
+}

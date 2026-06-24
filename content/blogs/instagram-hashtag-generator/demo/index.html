@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Hashtags Generator</title>
+    <!-- Include Filestack JavaScript library -->
+    <script src="https://static.filestackapi.com/v3/filestack.js"></script>
+    <style>
+        /* Set up the body with a gradient background and center content */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #444;
+        }
+
+        /* Style the container for the app interface */
+        .container {
+            text-align: center;
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 450px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Add a fade-in animation for the container */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Style the app title */
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff5757;
+        }
+
+        /* Style the upload button */
+        button {
+            padding: 14px 30px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #ff5757 0%, #ff7979 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        /* Add hover effect to the button */
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(255, 87, 87, 0.3);
+        }
+
+        /* Style the generated hashtags heading */
+        h3 {
+            margin-top: 25px;
+            font-size: 20px;
+            color: #444;
+        }
+
+        /* Style the hashtags display area */
+        #hashtags {
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            word-wrap: break-word;
+            text-align: left;
+        }
+
+        /* Add a decorative animated circle above the container */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff5757 0%, #ff7979 100%);
+            border-radius: 50%;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Add a pulse animation to the decorative circle */
+        @keyframes pulse {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                transform: translateX(-50%) scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- App title -->
+    <h2>Instagram Hashtags Generator</h2>
+    <!-- Button to trigger Filestack file upload -->
+    <button id="uploadBtn">Upload Image</button>
+    <!-- Heading for generated hashtags -->
+    <h3>Generated Hashtags:</h3>
+    <!-- Placeholder for hashtags -->
+    <p id="hashtags"></p>
+</div>
+
+<script>
+    // Filestack API credentials
+    const apiKey = 'YOUR_API_KEY'; // Replace with your Filestack API Key 
+    const policy = 'YOUR_POLICY'; // Replace with your Filestack policy
+    const signature = 'YOUR_SIGNATURE'; // Replace with your Filestack signature
+
+    // Initialize Filestack client
+    const client = filestack.init(apiKey);
+
+    // Add event listener for the "Upload Image" button
+    document.getElementById('uploadBtn').addEventListener('click', function() {
+        client.pick().then(function(result) {
+            // Extract file handle after successful upload
+            const handle = result.filesUploaded[0].handle;
+
+            // Construct the API URL for tagging
+            const tagsUrl = `https://cdn.filestackcontent.com/${apiKey}/security=p:${policy},s:${signature}/tags/${handle}`;
+
+            // Fetch tags from the Filestack API
+            fetch(tagsUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.tags && data.tags.auto) {
+                        // Extract tag names and generate hashtags
+                        const tagNames = Object.keys(data.tags.auto);
+                        const hashtags = tagNames.map(tag => `#${tag}`).join(' ');
+                        document.getElementById('hashtags').textContent = hashtags;
+                    } else {
+                        document.getElementById('hashtags').textContent = 'No hashtags found for this image.';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('hashtags').textContent = 'Error fetching hashtags.';
+                });
+        }).catch(function(error) {
+            console.error('File upload error:', error);
+        });
+    });
+</script>
+
+</body>
+</html>
